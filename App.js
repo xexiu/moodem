@@ -1,3 +1,4 @@
+import { AppLoading } from 'expo';
 import React, { Component } from 'react';
 import { PreLoader } from './components/common/PreLoader';
 import { Login } from './components/Guest/Login';
@@ -14,7 +15,7 @@ export class App extends Component {
       accessToken: null,
       tokenType: null,
       refreshToken: null,
-      hasLoaded: false
+      showLoader: true
     }
   }
 
@@ -24,7 +25,7 @@ export class App extends Component {
       accessToken: data.access_token,
       tokenType: data.token_type,
       refreshToken: data.refresh_token,
-      hasLoaded: true
+      showLoader: false
     });
   }
 
@@ -34,7 +35,7 @@ export class App extends Component {
       accessToken: null,
       tokenType: null,
       refreshToken: null,
-      hasLoaded: true
+      hasLoaded: false
     });
   }
 
@@ -57,14 +58,14 @@ export class App extends Component {
     console.log('render(), App.js', calls++);
     const {
       accessToken,
-      hasLoaded
+      showLoader
     } = this.state;
 
-    if (!hasLoaded) {
-      return (<PreLoader state={this.state} />);
+    if (showLoader) {
+      return (<PreLoader updateLoader={loaderState => this.setState({ showLoader: loaderState })} />);
     } else if (accessToken) {
-      // AsyncStorage.clear().then(() => console.log('Cleared'));
-      return (<P2PLanding />);
+      AsyncStorage.clear().then(() => console.log('Cleared'));
+      return (<P2PLanding token={this.state.accessToken}/>);
     }
 
     return (<Login updateState={this.updateState.bind(this)} />);

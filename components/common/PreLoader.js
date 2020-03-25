@@ -12,10 +12,12 @@ export class PreLoader extends Component {
                     size={30}
                     progress={100}
                     animateFromValue={0}
-                    duration={3000}
+                    duration={1000}
                     color={'white'}
                     fullColor={'red'}
-                    onAnimationComplete={() => {}}
+                    onAnimationComplete={() => {
+                        this.props.updateLoader(false)
+                    }}
                 />
             </View>
         );
