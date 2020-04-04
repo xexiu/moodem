@@ -9,6 +9,10 @@
       "android",
       "web"
     ],
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": ["ts", "tsx", "scss", "sass", "js", "jsx"]
+    },
     "scheme": "moodem",
     "version": "1.0.0",
     "orientation": "portrait",

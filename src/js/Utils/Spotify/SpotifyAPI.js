@@ -30,6 +30,17 @@ export default class SpotifyAPI {
         }, callback);
     }
 
+    getTokenWithRefreshedToken(path, refreshToken, callback) {
+        doFetch(`${SPOTIFY_HOST}${path}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${btoa(`${this.getClientId()}:${this.getClientSecret()}`)}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+        }, callback);
+    }
+
     getCredentials() {
         return this.credentials;
     }

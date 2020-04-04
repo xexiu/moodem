@@ -26,14 +26,20 @@
     ]
   },
   "dependencies": {
+    "@react-native-community/netinfo": "4.6.0",
     "expo": "~36.0.0",
+    "node-sass": "^4.13.1",
     "react": "~16.9.0",
     "react-devtools": "^4.5.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-elements": "^1.2.7",
     "react-native-progress-wheel": "^1.0.5",
+    "react-native-sass-transformer": "^1.4.0",
+    "react-native-touchable-scale": "^2.1.1",
+    "react-native-track-player": "^1.2.2",
     "react-native-web": "~0.11.7",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
     "babel-jest": "23.4.2",

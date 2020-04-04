@@ -1,7 +1,166 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import io from 'socket.io-client';
-/* eslint-disable class-methods-use-this */
+//import TrackPlayer from 'react-native-track-player';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    FlatList,
+    SafeAreaView,
+    YellowBox
+} from 'react-native';
+import TouchableScale from 'react-native-touchable-scale';
+import { TrackItem } from './TrackItem';
+import { SearchBar, ListItem, ButtonGroup, Icon } from 'react-native-elements';
+import { ErrorBoundary } from '../common/ErrorBoundary';
+import { MainContainer } from '../common/MainContainer';
+import { HeaderContainer } from '../common/HeaderContainer';
+import { BurgerMenuIcon } from '../common/BurgerMenuIcon';
+import { TopSearchBar } from '../common/TopSearchBar';
+import { BodyContainer } from '../common/BodyContainer';
+import { PlayerContainer } from '../common/PlayerContainer';
+import { SongInfoContainer } from '../common/SongInfoContainer';
+import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
+import { TracksListContainer } from '../common/TracksListContainer';
+import { SongInfoALbum } from '../common/SongInfoALbum';
+import { SongInfoTitle } from '../common/SongInfoTitle';
+import { SongInfoArtist } from '../common/SongInfoArtist';
+import { SongInfoTime } from '../common/SongInfoTime';
+import { PlayerControlShuffle } from '../common/PlayerControlShuffle';
+import { PlayerControlBackward } from '../common/PlayerControlBackward';
+import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
+import { PlayerControlForward } from '../common/PlayerControlForward';
+import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
+import { TrackListItems } from '../common/TrackListItems';
+import { TrackListItem } from '../common/TrackListItem';
+import { clearStorage, setStorage } from '../../src/js/Utils/User/session';
+
+let renderCalled = 0;
+
+const LIST_TRACKS = [
+    {
+        name: 'Track1',
+        artists: [
+            {
+                name: 'Artist1'
+            }
+        ]
+    },
+    {
+        name: 'Track2',
+        artists: [
+            {
+                name: 'Artist2'
+            }
+        ]
+    },
+    {
+        name: 'Track3',
+        artists: [
+            {
+                name: 'Artist3'
+            }
+        ]
+    },
+    {
+        name: 'Track4',
+        artists: [
+            {
+                name: 'Artist4'
+            }
+        ]
+    },
+    {
+        name: 'Track5',
+        artists: [
+            {
+                name: 'Artist5'
+            }
+        ]
+    },
+    {
+        name: 'Track1',
+        artists: [
+            {
+                name: 'Artist1'
+            }
+        ]
+    },
+    {
+        name: 'Track2',
+        artists: [
+            {
+                name: 'Artist2'
+            }
+        ]
+    },
+    {
+        name: 'Track3',
+        artists: [
+            {
+                name: 'Artist3'
+            }
+        ]
+    },
+    {
+        name: 'Track4',
+        artists: [
+            {
+                name: 'Artist4'
+            }
+        ]
+    },
+    {
+        name: 'Track5',
+        artists: [
+            {
+                name: 'Artist5'
+            }
+        ]
+    },
+    {
+        name: 'Track1',
+        artists: [
+            {
+                name: 'Artist1'
+            }
+        ]
+    },
+    {
+        name: 'Track2',
+        artists: [
+            {
+                name: 'Artist2'
+            }
+        ]
+    },
+    {
+        name: 'Track3',
+        artists: [
+            {
+                name: 'Artist3'
+            }
+        ]
+    },
+    {
+        name: 'Track4',
+        artists: [
+            {
+                name: 'Artist4'
+            }
+        ]
+    },
+    {
+        name: 'Track5',
+        artists: [
+            {
+                name: 'Artist5'
+            }
+        ]
+    }
+]
 
 // check local storage
 // if token exists then set state with token
@@ -20,123 +179,199 @@ import io from 'socket.io-client';
 //         debugger;
 //       });
 
-let e;
+
 export class P2PLanding extends Component {
     constructor(props) {
         super(props);
-        e = this;
 
-        this.socket = io('https://5136817f.ngrok.io', {
-            transports: ['websocket'],
-            jsonp: false,
-            reconnectionAttempts: 15
-        });
+        // this.socket = io('http://192.168.10.12:3000', {
+        //     transports: ['websocket'],
+        //     jsonp: false,
+        //     reconnectionAttempts: "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
+        //     timeout: 10000, //before connect_error and connect_timeout are emitted.
+        //     "force new connection": true
+        // });
 
         this.state = {
             isConnected: false,
-            data: null,
-            messages: [],
-            text: ''
+            searchedTracksList: [],
+            search: '',
+            isVotedSong: 0,
+            isPremiumSong: null,
+            hasError: false,
+            showLoadingSpin: false,
+            songName: 'Waiting...',
+            artistName: '',
+            listTracks: LIST_TRACKS,
+            clearIconState: true,
+            text: [],
+            showListTracks: 0,
+            showListSearchedTracks: 1,
+            isSearchingTracks: false
         }
-
-        this.socket.on('server-send-message', function(data) {
-            console.log('Data received from Server', data);
-            e.setState({
-                text: data
-            });
-        });
     }
 
-    _sendPing() {
-        //emit a dong message to socket server
-        debugger;
-        socket.emit('ding');
-    }
+    // static getDerivedStateFromError(error) {
+    //     // Update state so the next render will show the fallback UI.
+    //     return { hasError: true };
+    // }
 
-    _getReply(data) {
-        //get reply from socket server, log it to console
-        debugger;
-        console.log('Reply from server:' + data);
-        // this.setState(previousState => ({
-        //     messages: GiftedChat.append(previousState.messages, data),
-        // }))
+    // componentDidCatch(error, info) {
+    //     // You can also log the error to an error reporting service (Elastic search maybe)
+    //     //logErrorToMyService(error, info);
+    // }
+
+    // updateSearch = search => {
+    //     this.setState({ search });
+    // };
+
+    // messageFromServer = (songName, artistName) => {
+    //     console.log('messageFromServer() sent to all sockets', songName, artistName);
+    //     this.setState({
+    //         listTracks: [...this.state.listTracks, {
+    //             song: songName,
+    //             artist: artistName
+    //         }]
+    //     });
+    // }
+
+    componentWillUnmount() {
+        // Cancel all subscriptions in order to prevent memory leaks
+        this.socket = null;
     }
 
     componentDidMount() {
-        console.log('Called componentDidMount()')
+        // this.socket.on('server-send-message', this.messageFromServer.bind(this));
+        // this.socket.on('connect', function () {
+        //     this.setState({ isConnected: true });
+        // }.bind(this));
+    }
 
-        this.socket.on('connect', function (socket) {
-            debugger;
-            console.log('SocketID-Connect', socket);
-            this.socket.emit('i-am-connected');
-        }.bind(this));
-        this.socket.on('connection', function (socket) {
-            debugger;
-            console.log('SocketID-connection', socket);
-        })
-        // this.socket.on('ping', (data) => {
-        //     debugger;
-        //     console.log('Reply from server:' + data)
-        // });
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, this.state.messages),
-        }));
+    // clickme = (songName, artistName) => {
+    //     this.socket.emit('send-message', songName, artistName);
+
+    // }
+
+    // pressedItem(songName, artistName) {
+    //     return new Promise(resolve => {
+    //         console.log('Item pressed:', songName, 'Item Artist:', artistName);
+
+    //         // this.setState({
+    //         //     listTracks: [...this.state.listTracks, {
+    //         //         song: songName,
+    //         //         artist: artistName
+    //         //     }]
+    //         // });
+
+    //         console.log('List Tracks:', this.state.listTracks),
+    //             this.setState({
+    //                 songName,
+    //                 searchedTracks: []
+    //             });
+
+    //         this.clearSearchbar();
+    //         this.setState({
+    //             text: songName
+    //         });
+
+    //         resolve(songName, artistName);
+    //     });
+    // }
+
+    // clearSearchbar() {
+    //     console.log('This was cleared');
+    //     this.setState({
+    //         searchedTracks: [],
+    //         search: '',
+    //         clearIconState: false
+    //     });
+    // }
+
+    handlingOnPressSearch = (searchedTracks) => {
+        console.log('Searching....', this.state.searchedTracksList);
+
         this.setState({
-            messages: [
-                {
-                    _id: 1,
-                    text: 'Hello developer',
-                    createdAt: new Date(),
-                    user: {
-                        _id: 2,
-                        name: 'React Native',
-                        avatar: 'https://placeimg.com/140/140/any',
-                    },
-                },
-            ],
+            searchedTracksList: searchedTracks,
+            isSearchingTracks: true
         })
     }
 
-    onSend(messages = []) {
-        debugger;
-        this.socket.on('event', this._getReply(messages[0].text));
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }))
-        //this.componentDidMount();
+    getArtists = artists => {
+        artists.map(artist => {
+            return Object.values(artist).toString();
+        }).toString()
     }
 
-    clickme(){
-        console.log('Pressed')
-        this.socket.emit('send-message', this.state.text);
+    dispatchActionsSearchedTrack = ({ artists, name }) => {
+        console.log('Track Pressed from Search Results', artists, name);
+        this.setState({
+            searchedTracksList: [],
+            isSearchingTracks: false,
+            listTracks: [...this.state.listTracks, {
+                name: name,
+                artists: artists && this.getArtists(artists)
+            }]
+        });
+    }
+
+    handlingTrackItemPressed = (isSearchingTracks, track) => {
+        if (isSearchingTracks) {
+            this.dispatchActionsSearchedTrack(track)
+        } else {
+            // dispatchActionsPressedTrack()
+        }
     }
 
     render() {
-        console.log('Called render()')
+        console.log('Called render()', renderCalled++)
+        const {
+            search,
+            showLoadingSpin,
+            songName,
+            listTracks,
+            searchedTracksList,
+            clearIconState,
+            isSearchingTracks
+        } = this.state;
+        const {
+            token,
+            refreshToken,
+            spotifyApi
+        } = this.props;
+
+        console.log('Searched finished', listTracks);
+
         return (
-            <View style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', backgroundColor: '#FDD7E4', justifyContent: 'center', flex: 1 }}>
-                <View style={styles.container}>
-                    <View style={styles.container}>
-                        <Text>Token (_id): {this.props.token.slice(0, 6)}</Text>
-                        <Text>Text: {this.state.text}</Text>
-                    </View>
-                </View>
-                <View style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', backgroundColor: '#FDD7E4', justifyContent: 'center', flex: 6 }}>
-                    <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1 }} onChangeText={text => this.setState({ text })} value={this.state.text} />
-                    {/* <GiftedChat
-                        style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', backgroundColor: '#FDD7E4', justifyContent: 'center', flex: 1 }}
-                        messages={this.state.messages}
-                        onSend={messages => this.onSend(messages)}
-                        user={{
-                            _id: this.props.token.slice(0, 6),
-                            name: 'Matt ' + Math.random()
-                        }}
-                    /> */}
-                    <TouchableOpacity onPress={() => this.clickme()}>
-                        <Text>Send Text</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <ErrorBoundary>
+                <MainContainer>
+                    <HeaderContainer>
+                        <BurgerMenuIcon />
+                        <TopSearchBar actionOnPressSearch={this.handlingOnPressSearch.bind(this)} />
+                    </HeaderContainer>
+                    <BodyContainer>
+                        <PlayerContainer>
+                            <SongInfoContainer>
+                                <SongInfoALbum songAlbum={"The Hunting Party"} />
+                                <SongInfoTitle songTitle={"Final Masquerade"} />
+                                <SongInfoArtist songArtist={"Linkin Park"} />
+                                <SongInfoTime songTime={"4:52"} />
+                            </SongInfoContainer>
+                            <PlayerControlsContainer>
+                                <PlayerControlShuffle />
+                                <PlayerControlBackward />
+                                <PlayerControlPlayPause />
+                                <PlayerControlForward />
+                                <PlayerControlRepeat />
+                            </PlayerControlsContainer>
+                        </PlayerContainer>
+                        <TracksListContainer>
+                            <TrackListItems data={isSearchingTracks ? searchedTracksList : listTracks} actionOnPressItem={this.handlingTrackItemPressed.bind(this, isSearchingTracks)}>
+                                <TrackListItem />
+                            </TrackListItems>
+                        </TracksListContainer>
+                    </BodyContainer>
+                </MainContainer>
+            </ErrorBoundary>
         );
     }
 }

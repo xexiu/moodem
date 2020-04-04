@@ -7,6 +7,6 @@ export function doFetch(url, options, callback) {
             return Promise.resolve(callback(data));
         })
         .catch(err => {
-            return Promise.reject(new Error(err.message))
+            throw new Error('doFecth()', err.message);
         });
 };
