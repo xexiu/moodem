@@ -1,4 +1,4 @@
-import React, { Component, cloneElement, Children } from 'react';
+import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import { TrackListItem } from './TrackListItem';
 
@@ -9,7 +9,7 @@ export class TrackListItems extends Component {
             actionOnPressItem
         } = this.props
         return (
-            <View style={{borderWidth: 2, borderColor: 'green', flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <FlatList style={{ border: 0, marginLeft: 10, marginRight: 10 }}
                             windowSize={12}
                             keyboardShouldPersistTaps="always"

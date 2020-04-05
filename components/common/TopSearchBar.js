@@ -1,238 +1,13 @@
 import React, { Component } from 'react';
 import { SearchBar } from 'react-native-elements';
 import { Dimensions } from 'react-native';
+import { doFetch } from '../../src/js/Utils/ConnectionManager';
+import { getFromStorage, setStorage, clearStorage } from '../../src/js/Utils/User/session';
 
 const MARGIN_RIGHT = 80;
 const {
     width
 } = Dimensions.get('window');
-
-const DUMMY_TRACKS = [
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name2',
-        artists: [
-            {
-                name: 'Artist2'
-            }
-        ]
-    },
-    {
-        name: 'Name3',
-        artists: [
-            {
-                name: 'Artist3'
-            }
-        ]
-    },
-    {
-        name: 'Name4',
-        artists: [
-            {
-                name: 'Artist4'
-            }
-        ]
-    },
-    {
-        name: 'Name5',
-        artists: [
-            {
-                name: 'Artist5'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Name1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Last Song Name',
-        artists: [
-            {
-                name: 'Last Artist Name'
-            }
-        ]
-    }
-]
 
 function handleCancelSearchBar() {
     this.setState({
@@ -241,8 +16,6 @@ function handleCancelSearchBar() {
 };
 
 function handlePressSeachOnEnd() {
-
-    console.log('You Pressed Search, text:', this.state.searchText);
     this.setState({
         showLoadingSpin: !!this.state.searchText,
         clearIconState: true,
@@ -287,7 +60,10 @@ export class TopSearchBar extends Component {
         } = this.state;
 
         const {
-            actionOnPressSearch
+            actionOnPressSearch,
+            token,
+            refreshToken,
+            spotifyApi
         } = this.props;
 
         return (
@@ -312,11 +88,34 @@ export class TopSearchBar extends Component {
                 showLoading={showLoadingSpin}
                 onCancel={handleCancelSearchBar.bind(this)}
                 onEndEditing={() => {
-                    if (!!this.state.searchText) {
-                        // Perform fetch to spotify with searchText
-                        actionOnPressSearch(DUMMY_TRACKS)
+                    const searchText = this.state.searchText;
+
+                    if (!!searchText) {
+                        this.setState({
+                            showLoadingSpin: true
+                        });
+
+                        spotifyApi.searchTracks(`/v1/search?q=${searchText}&type=track,playlist&limit=20`, token, repeat = (data) => {
+                            const error = data.error;
+                            if (error && error.status === 401 && error && error.message === 'The access token expired') {
+                                debugger;
+                                spotifyApi.getTokenWithRefreshedToken('/api/token', refreshToken, (data) => {
+                                    getFromStorage('spotifyAuth').then(session => {
+                                        debugger;
+                                        const obj = JSON.parse(session);
+                                        setStorage('spotifyAuth', {
+                                            access_token: data.access_token,
+                                            token_type: obj.token_type,
+                                            refresh_token: obj.refresh_token
+                                        }, spotifyApi.searchTracks(`/v1/search?q=${searchText}&type=track,playlist&limit=20`, data.access_token, repeat));
+                                    });
+                                })
+                            } else {
+                                actionOnPressSearch(data.tracks.items);
+                                handlePressSeachOnEnd.call(this);
+                            }
+                        });
                     }
-                    handlePressSeachOnEnd.call(this);
                 }}
             />
         )

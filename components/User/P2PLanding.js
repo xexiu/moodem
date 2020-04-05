@@ -12,7 +12,6 @@ import {
     YellowBox
 } from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
-import { TrackItem } from './TrackItem';
 import { SearchBar, ListItem, ButtonGroup, Icon } from 'react-native-elements';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
@@ -41,6 +40,9 @@ let renderCalled = 0;
 
 const LIST_TRACKS = [
     {
+        album: {
+            name: 'Album Name1'
+        },
         name: 'Track1',
         artists: [
             {
@@ -53,110 +55,6 @@ const LIST_TRACKS = [
         artists: [
             {
                 name: 'Artist2'
-            }
-        ]
-    },
-    {
-        name: 'Track3',
-        artists: [
-            {
-                name: 'Artist3'
-            }
-        ]
-    },
-    {
-        name: 'Track4',
-        artists: [
-            {
-                name: 'Artist4'
-            }
-        ]
-    },
-    {
-        name: 'Track5',
-        artists: [
-            {
-                name: 'Artist5'
-            }
-        ]
-    },
-    {
-        name: 'Track1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Track2',
-        artists: [
-            {
-                name: 'Artist2'
-            }
-        ]
-    },
-    {
-        name: 'Track3',
-        artists: [
-            {
-                name: 'Artist3'
-            }
-        ]
-    },
-    {
-        name: 'Track4',
-        artists: [
-            {
-                name: 'Artist4'
-            }
-        ]
-    },
-    {
-        name: 'Track5',
-        artists: [
-            {
-                name: 'Artist5'
-            }
-        ]
-    },
-    {
-        name: 'Track1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Track2',
-        artists: [
-            {
-                name: 'Artist2'
-            }
-        ]
-    },
-    {
-        name: 'Track3',
-        artists: [
-            {
-                name: 'Artist3'
-            }
-        ]
-    },
-    {
-        name: 'Track4',
-        artists: [
-            {
-                name: 'Artist4'
-            }
-        ]
-    },
-    {
-        name: 'Track5',
-        artists: [
-            {
-                name: 'Artist5'
             }
         ]
     }
@@ -179,18 +77,28 @@ const LIST_TRACKS = [
 //         debugger;
 //       });
 
+function getArtists(artists) {
+    const _artisits = [];
+    artists.map(artist => { _artisits.push(artist.name)});
+
+    return _artisits.join(', ');
+}
+
+function isEmpty(x) {
+	return !x || (x.constructor !== Number && Object.keys(x).length === 0);
+}
 
 export class P2PLanding extends Component {
     constructor(props) {
         super(props);
 
-        // this.socket = io('http://192.168.10.12:3000', {
-        //     transports: ['websocket'],
-        //     jsonp: false,
-        //     reconnectionAttempts: "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
-        //     timeout: 10000, //before connect_error and connect_timeout are emitted.
-        //     "force new connection": true
-        // });
+        this.socket = io('http://192.168.10.12:3000', {
+            transports: ['websocket'],
+            jsonp: false,
+            reconnectionAttempts: "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
+            timeout: 10000, //before connect_error and connect_timeout are emitted.
+            "force new connection": true
+        });
 
         this.state = {
             isConnected: false,
@@ -206,34 +114,24 @@ export class P2PLanding extends Component {
             clearIconState: true,
             text: [],
             showListTracks: 0,
-            showListSearchedTracks: 1,
-            isSearchingTracks: false
+            isSearchingTracks: false,
+            songAlbum: 'The Hunting Party',
+            songTitle: 'Final Masquerade',
+            songArtist: 'Linkin Park',
+            songTime: '4:52'
         }
     }
 
-    // static getDerivedStateFromError(error) {
-    //     // Update state so the next render will show the fallback UI.
-    //     return { hasError: true };
-    // }
-
-    // componentDidCatch(error, info) {
-    //     // You can also log the error to an error reporting service (Elastic search maybe)
-    //     //logErrorToMyService(error, info);
-    // }
-
-    // updateSearch = search => {
-    //     this.setState({ search });
-    // };
-
-    // messageFromServer = (songName, artistName) => {
-    //     console.log('messageFromServer() sent to all sockets', songName, artistName);
-    //     this.setState({
-    //         listTracks: [...this.state.listTracks, {
-    //             song: songName,
-    //             artist: artistName
-    //         }]
-    //     });
-    // }
+    messageFromServer = (name, artists, album) => {
+        console.log('messageFromServer() sent to all sockets', name, artists, album);
+        this.setState({
+            listTracks: [...this.state.listTracks, {
+                name: name,
+                artists: artists,
+                album: !isEmpty(album) ? album : 'No album'
+            }]
+        });
+    }
 
     componentWillUnmount() {
         // Cancel all subscriptions in order to prevent memory leaks
@@ -241,76 +139,38 @@ export class P2PLanding extends Component {
     }
 
     componentDidMount() {
-        // this.socket.on('server-send-message', this.messageFromServer.bind(this));
-        // this.socket.on('connect', function () {
-        //     this.setState({ isConnected: true });
-        // }.bind(this));
+        this.socket.on('server-send-message', this.messageFromServer.bind(this));
+        this.socket.on('connect', function () {
+            this.setState({ isConnected: true });
+        }.bind(this));
     }
 
-    // clickme = (songName, artistName) => {
-    //     this.socket.emit('send-message', songName, artistName);
-
-    // }
-
-    // pressedItem(songName, artistName) {
-    //     return new Promise(resolve => {
-    //         console.log('Item pressed:', songName, 'Item Artist:', artistName);
-
-    //         // this.setState({
-    //         //     listTracks: [...this.state.listTracks, {
-    //         //         song: songName,
-    //         //         artist: artistName
-    //         //     }]
-    //         // });
-
-    //         console.log('List Tracks:', this.state.listTracks),
-    //             this.setState({
-    //                 songName,
-    //                 searchedTracks: []
-    //             });
-
-    //         this.clearSearchbar();
-    //         this.setState({
-    //             text: songName
-    //         });
-
-    //         resolve(songName, artistName);
-    //     });
-    // }
-
-    // clearSearchbar() {
-    //     console.log('This was cleared');
-    //     this.setState({
-    //         searchedTracks: [],
-    //         search: '',
-    //         clearIconState: false
-    //     });
-    // }
-
     handlingOnPressSearch = (searchedTracks) => {
-        console.log('Searching....', this.state.searchedTracksList);
-
         this.setState({
             searchedTracksList: searchedTracks,
             isSearchingTracks: true
         })
     }
 
-    getArtists = artists => {
-        artists.map(artist => {
-            return Object.values(artist).toString();
-        }).toString()
+    sendSocketMsg = (songName, artistName, albumName) => {
+        this.socket.emit('send-message', songName, artistName, albumName);
+
     }
 
-    dispatchActionsSearchedTrack = ({ artists, name }) => {
-        console.log('Track Pressed from Search Results', artists, name);
+    dispatchActionsSearchedTrack = ({ artists, name, album }) => {
         this.setState({
             searchedTracksList: [],
-            isSearchingTracks: false,
-            listTracks: [...this.state.listTracks, {
-                name: name,
-                artists: artists && this.getArtists(artists)
-            }]
+            isSearchingTracks: false
+        });
+
+        this.sendSocketMsg(name, artists, !isEmpty(album) ? album.name : 'No album');
+    }
+
+    dispatchActionsPressedTrack = ({ artists, name, album }) => {
+        this.setState({
+            songAlbum: !isEmpty(album) ? album.name : 'No album',
+            songTitle: name,
+            songArtist: getArtists(artists)
         });
     }
 
@@ -318,7 +178,7 @@ export class P2PLanding extends Component {
         if (isSearchingTracks) {
             this.dispatchActionsSearchedTrack(track)
         } else {
-            // dispatchActionsPressedTrack()
+            this.dispatchActionsPressedTrack(track)
         }
     }
 
@@ -327,7 +187,10 @@ export class P2PLanding extends Component {
         const {
             search,
             showLoadingSpin,
-            songName,
+            songAlbum,
+            songTitle,
+            songArtist,
+            songTime,
             listTracks,
             searchedTracksList,
             clearIconState,
@@ -339,22 +202,20 @@ export class P2PLanding extends Component {
             spotifyApi
         } = this.props;
 
-        console.log('Searched finished', listTracks);
-
         return (
             <ErrorBoundary>
                 <MainContainer>
                     <HeaderContainer>
                         <BurgerMenuIcon />
-                        <TopSearchBar actionOnPressSearch={this.handlingOnPressSearch.bind(this)} />
+                        <TopSearchBar actionOnPressSearch={this.handlingOnPressSearch.bind(this)} token={token} refreshToken={refreshToken} spotifyApi={spotifyApi} />
                     </HeaderContainer>
                     <BodyContainer>
                         <PlayerContainer>
                             <SongInfoContainer>
-                                <SongInfoALbum songAlbum={"The Hunting Party"} />
-                                <SongInfoTitle songTitle={"Final Masquerade"} />
-                                <SongInfoArtist songArtist={"Linkin Park"} />
-                                <SongInfoTime songTime={"4:52"} />
+                                <SongInfoALbum songAlbum={songAlbum} />
+                                <SongInfoTitle songTitle={songTitle} />
+                                <SongInfoArtist songArtist={songArtist} />
+                                <SongInfoTime songTime={songTime} />
                             </SongInfoContainer>
                             <PlayerControlsContainer>
                                 <PlayerControlShuffle />
@@ -375,13 +236,3 @@ export class P2PLanding extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%'
-    },
-});

@@ -41,6 +41,14 @@ export default class SpotifyAPI {
         }, callback);
     }
 
+    searchTracks(path, token, callback){
+        doFetch(`https://api.spotify.com${path}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }, callback);
+    }
+
     getCredentials() {
         return this.credentials;
     }

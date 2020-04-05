@@ -8,9 +8,9 @@ app.get('/', function(req, res){
 
 io.on('connection', function(client){
   console.log('a user connected ====>', client.id);
-  client.on('send-message', function(songName, artistName) {
-    console.log('Client sent Message to server: ====>', songName, artistName);
-    io.sockets.emit('server-send-message', songName, artistName);
+  client.on('send-message', function(songName, artistName, albumName) {
+    console.log('Client sent Message to server: ====>', songName, artistName, albumName);
+    io.sockets.emit('server-send-message', songName, artistName, albumName);
   });
 });
 

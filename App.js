@@ -99,7 +99,7 @@ export class App extends Component {
       return (<PreLoader updateLoader={loaderState => this.setState({ showLoader: loaderState })} />);
     } else if (accessToken) {
       //clearStorage();
-      return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} refreshToken={refreshToken} />);
+      return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} refreshToken={refreshToken} spotifyApi={spotifyApi} />);
     }
 
     return (<Login spotifyApi={spotifyApi} updateState={this.updateState.bind(this)} />);
