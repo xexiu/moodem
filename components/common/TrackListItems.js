@@ -6,7 +6,7 @@ export class TrackListItems extends Component {
     render() {
         const {
             data,
-            actionOnPressItem
+            trackItemPressed
         } = this.props
         return (
             <View style={{ flex: 1 }}>
@@ -14,7 +14,7 @@ export class TrackListItems extends Component {
                             windowSize={12}
                             keyboardShouldPersistTaps="always"
                             data={data} // this.state.searchedTracks - this.state.listTracks
-                            renderItem={({ item }) => (<TrackListItem itemProps={item} actionOnPressItem={actionOnPressItem} />)}
+                            renderItem={({ item }) => (<TrackListItem track={item} trackPressed={trackItemPressed} />)}
                             keyExtractor={(item, index) => index.toString()}
                         />
             </View>

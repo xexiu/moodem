@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { SearchBar } from 'react-native-elements';
 import { Dimensions } from 'react-native';
-import { doFetch } from '../../src/js/Utils/ConnectionManager';
-import { getFromStorage, setStorage, clearStorage } from '../../src/js/Utils/User/session';
+import { getFromStorage, setStorage } from '../../src/js/Utils/User/session';
 
 const MARGIN_RIGHT = 80;
 const {

@@ -12,8 +12,8 @@ function getArtists(artists) {
 export class TrackListItem extends Component {
     render() {
         const {
-            itemProps,
-            actionOnPressItem = () => { console.log('Item from list has been pressed!') }
+            track,
+            trackPressed = () => { console.log('Item from list has been pressed!') }
         } = this.props
 
         return (
@@ -21,12 +21,12 @@ export class TrackListItem extends Component {
                 <ListItem
                     bottomDivider
                     Component={TouchableOpacity}
-                    title={itemProps.name}
+                    title={track.name}
                     subtitleStyle={{ fontSize:14, color: '#999', fontStyle: 'italic' }}
-                    subtitle={getArtists(itemProps.artists)}
+                    subtitle={getArtists(track.artists)}
                     titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                     onPress={() => {
-                        this.props.actionOnPressItem(itemProps);
+                        this.props.trackPressed(track);
                     }}
                 />
             </View>

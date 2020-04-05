@@ -1,18 +1,6 @@
-import React, { Component } from 'react';
 import io from 'socket.io-client';
-//import TrackPlayer from 'react-native-track-player';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    FlatList,
-    SafeAreaView,
-    YellowBox
-} from 'react-native';
-import TouchableScale from 'react-native-touchable-scale';
-import { SearchBar, ListItem, ButtonGroup, Icon } from 'react-native-elements';
+import React, { Component } from 'react';
+import { YellowBox } from 'react-native';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
 import { HeaderContainer } from '../common/HeaderContainer';
@@ -34,7 +22,11 @@ import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { TrackListItems } from '../common/TrackListItems';
 import { TrackListItem } from '../common/TrackListItem';
-import { clearStorage, setStorage } from '../../src/js/Utils/User/session';
+
+YellowBox.ignoreWarnings([
+    'Remote debugger',
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 
 let renderCalled = 0;
 
@@ -60,32 +52,11 @@ const LIST_TRACKS = [
     }
 ]
 
-// check local storage
-// if token exists then set state with token
-// else set token to null
-
-// debugger;
-// const headers = { "Authorization": "Bearer " + data.access_token };
-//     fetch('https://api.spotify.com/v1/search?q=calladita&type=track,playlist&limit=10', {
-//       headers
-//     })
-//       .then(resp => {
-//         debugger;
-//         return resp.json();
-//       })
-//       .then(data => {
-//         debugger;
-//       });
-
 function getArtists(artists) {
     const _artisits = [];
-    artists.map(artist => { _artisits.push(artist.name)});
+    artists.map(artist => { _artisits.push(artist.name) });
 
     return _artisits.join(', ');
-}
-
-function isEmpty(x) {
-	return !x || (x.constructor !== Number && Object.keys(x).length === 0);
 }
 
 export class P2PLanding extends Component {
@@ -101,19 +72,10 @@ export class P2PLanding extends Component {
         });
 
         this.state = {
-            isConnected: false,
             searchedTracksList: [],
-            search: '',
             isVotedSong: 0,
             isPremiumSong: null,
-            hasError: false,
-            showLoadingSpin: false,
-            songName: 'Waiting...',
-            artistName: '',
             listTracks: LIST_TRACKS,
-            clearIconState: true,
-            text: [],
-            showListTracks: 0,
             isSearchingTracks: false,
             songAlbum: 'The Hunting Party',
             songTitle: 'Final Masquerade',
@@ -123,12 +85,11 @@ export class P2PLanding extends Component {
     }
 
     messageFromServer = (name, artists, album) => {
-        console.log('messageFromServer() sent to all sockets', name, artists, album);
         this.setState({
             listTracks: [...this.state.listTracks, {
                 name: name,
                 artists: artists,
-                album: !isEmpty(album) ? album : 'No album'
+                album: album
             }]
         });
     }
@@ -136,13 +97,12 @@ export class P2PLanding extends Component {
     componentWillUnmount() {
         // Cancel all subscriptions in order to prevent memory leaks
         this.socket = null;
+        this.handlingOnPressSearch = null;
+        this.handlingTrackItemPressed = null;
     }
 
     componentDidMount() {
         this.socket.on('server-send-message', this.messageFromServer.bind(this));
-        this.socket.on('connect', function () {
-            this.setState({ isConnected: true });
-        }.bind(this));
     }
 
     handlingOnPressSearch = (searchedTracks) => {
@@ -152,23 +112,23 @@ export class P2PLanding extends Component {
         })
     }
 
-    sendSocketMsg = (songName, artistName, albumName) => {
-        this.socket.emit('send-message', songName, artistName, albumName);
+    sendSocketMsg = (name, artits, album) => {
+        this.socket.emit('send-message', name, artits, album);
 
     }
 
-    dispatchActionsSearchedTrack = ({ artists, name, album }) => {
+    dispatchActionsSearchedTrack = ({ artists, name, album = { name: 'No Album' } }) => {
         this.setState({
             searchedTracksList: [],
             isSearchingTracks: false
         });
 
-        this.sendSocketMsg(name, artists, !isEmpty(album) ? album.name : 'No album');
+        this.sendSocketMsg(name, artists, album);
     }
 
-    dispatchActionsPressedTrack = ({ artists, name, album }) => {
+    dispatchActionsPressedTrack = ({ artists, name, album = { name: 'No Album' } }) => {
         this.setState({
-            songAlbum: !isEmpty(album) ? album.name : 'No album',
+            songAlbum: album.name,
             songTitle: name,
             songArtist: getArtists(artists)
         });
@@ -185,15 +145,12 @@ export class P2PLanding extends Component {
     render() {
         console.log('Called render()', renderCalled++)
         const {
-            search,
-            showLoadingSpin,
             songAlbum,
             songTitle,
             songArtist,
             songTime,
             listTracks,
             searchedTracksList,
-            clearIconState,
             isSearchingTracks
         } = this.state;
         const {
@@ -207,7 +164,12 @@ export class P2PLanding extends Component {
                 <MainContainer>
                     <HeaderContainer>
                         <BurgerMenuIcon />
-                        <TopSearchBar actionOnPressSearch={this.handlingOnPressSearch.bind(this)} token={token} refreshToken={refreshToken} spotifyApi={spotifyApi} />
+                        <TopSearchBar
+                            actionOnPressSearch={this.handlingOnPressSearch.bind(this)}
+                            token={token}
+                            refreshToken={refreshToken}
+                            spotifyApi={spotifyApi}
+                        />
                     </HeaderContainer>
                     <BodyContainer>
                         <PlayerContainer>
@@ -226,9 +188,10 @@ export class P2PLanding extends Component {
                             </PlayerControlsContainer>
                         </PlayerContainer>
                         <TracksListContainer>
-                            <TrackListItems data={isSearchingTracks ? searchedTracksList : listTracks} actionOnPressItem={this.handlingTrackItemPressed.bind(this, isSearchingTracks)}>
-                                <TrackListItem />
-                            </TrackListItems>
+                            <TrackListItems
+                                data={isSearchingTracks ? searchedTracksList : listTracks}
+                                trackItemPressed={this.handlingTrackItemPressed.bind(this, isSearchingTracks)}
+                            />
                         </TracksListContainer>
                     </BodyContainer>
                 </MainContainer>
