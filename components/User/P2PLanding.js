@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import React, { Component } from 'react';
+import { Audio } from 'expo-av';
 import { YellowBox } from 'react-native';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
@@ -14,14 +15,14 @@ import { TracksListContainer } from '../common/TracksListContainer';
 import { SongInfoALbum } from '../common/SongInfoALbum';
 import { SongInfoTitle } from '../common/SongInfoTitle';
 import { SongInfoArtist } from '../common/SongInfoArtist';
-import { SongInfoTime } from '../common/SongInfoTime';
 import { PlayerControlShuffle } from '../common/PlayerControlShuffle';
 import { PlayerControlBackward } from '../common/PlayerControlBackward';
 import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
 import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
+import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
 import { TrackListItems } from '../common/TrackListItems';
-import { TrackListItem } from '../common/TrackListItem';
+import { View, Text, TouchableHighlight } from 'react-native';
 
 YellowBox.ignoreWarnings([
     'Remote debugger',
@@ -80,8 +81,11 @@ export class P2PLanding extends Component {
             songAlbum: 'The Hunting Party',
             songTitle: 'Final Masquerade',
             songArtist: 'Linkin Park',
-            songTime: '4:52'
+            songTime: '4:52',
+            isPlaying: false
         }
+
+        this.loadAudio = this.loadAudio.bind(this);
     }
 
     messageFromServer = (name, artists, album) => {
@@ -99,10 +103,12 @@ export class P2PLanding extends Component {
         this.socket = null;
         this.handlingOnPressSearch = null;
         this.handlingTrackItemPressed = null;
+        this.soundObject.stopAsync();
     }
 
     componentDidMount() {
         this.socket.on('server-send-message', this.messageFromServer.bind(this));
+        this.loadAudio();
     }
 
     handlingOnPressSearch = (searchedTracks) => {
@@ -135,11 +141,44 @@ export class P2PLanding extends Component {
     }
 
     handlingTrackItemPressed = (isSearchingTracks, track) => {
+        console.log('TRACKKKK', track);
         if (isSearchingTracks) {
             this.dispatchActionsSearchedTrack(track)
         } else {
             this.dispatchActionsPressedTrack(track)
         }
+    }
+
+    seek(time) {
+        time = Math.round(time);
+        //this.refs.audioElement && this.refs.audioElement.seek(time);
+        this.setState({
+            currentPosition: time,
+            paused: false,
+        });
+    }
+
+    async loadAudio() {
+        await Audio.setIsEnabledAsync(true);
+        this.soundObject = new Audio.Sound();
+        this.soundObject.loadAsync({uri: 'http://russprince.com/hobbies/files/13%20Beethoven%20-%20Fur%20Elise.mp3' }, {shouldPlay: true}, true)
+        .then((res)=>{
+            // res.sound.setOnPlaybackStatusUpdate((status)=>{
+            //     if(!status.didJustFinish) return;
+            //     console.log('Unloading '+name);
+            //     res.sound.unloadAsync().catch(()=>{});
+            // });
+        }).catch((error)=>{});
+    }
+
+    toggleAudioPlayback() {
+        console.log('Plaing', this.state.isPlaying)
+        this.soundObject.playAsync();
+        // this.setState({
+        //     isPlaying: !this.state.isPlaying,
+        // }, () => (this.state.isPlaying
+        //     ? this.soundObject.playAsync()
+        //     : this.soundObject.stopAsync()));
     }
 
     render() {
@@ -173,11 +212,16 @@ export class P2PLanding extends Component {
                     </HeaderContainer>
                     <BodyContainer>
                         <PlayerContainer>
+                            <TouchableHighlight onPress={this.toggleAudioPlayback.bind(this)}>
+                                <View style={this.props.style}>
+                                    <Text>HELLO</Text>
+                                    {this.props.children}
+                                </View>
+                            </TouchableHighlight>
                             <SongInfoContainer>
                                 <SongInfoALbum songAlbum={songAlbum} />
                                 <SongInfoTitle songTitle={songTitle} />
                                 <SongInfoArtist songArtist={songArtist} />
-                                <SongInfoTime songTime={songTime} />
                             </SongInfoContainer>
                             <PlayerControlsContainer>
                                 <PlayerControlShuffle />
@@ -185,6 +229,7 @@ export class P2PLanding extends Component {
                                 <PlayerControlPlayPause />
                                 <PlayerControlForward />
                                 <PlayerControlRepeat />
+                                <PlayerControlTimeSeek trackLength={176.13333} currentPosition={116.13333} onSlidingStart={() => this.setState({ paused: true })} onSeek={this.seek.bind(this)} />
                             </PlayerControlsContainer>
                         </PlayerContainer>
                         <TracksListContainer>
