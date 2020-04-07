@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Linking, Text } from 'react-native';
 import { CustomButton } from '../common/CustomButton';
 import { BgImage } from '../common/BgImage';
 import { setStorage } from '../../src/js/Utils/User/session';
-import styles from '../../src/css/styles/Login.scss';
-import { AuthSession } from 'expo';
+import { btoa } from '../../src/js/Utils/Base64';
+
+const apiCredentials = {
+    clientId: 'fe1b8e46e4f048009d55382540d3fa5f',
+    clientSecret: '5a6d65bb87f840ac963a30f448b314df',
+    redirectUri: 'https://auth.expo.io/@sergio.m/moodem'
+}
 
 function handleActions(data, updateState, spotifyApi) {
     setStorage('spotifyAuth', {
@@ -58,6 +63,25 @@ export class Login extends Component {
         //logErrorToMyService(error, info);
     }
 
+    componentDidMount() {
+        this.initAccessToken();
+    }
+
+    initAccessToken = () => {
+        fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${btoa(`${apiCredentials.clientId}:${apiCredentials.clientSecret}`)}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=client_credentials`
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                debugger;
+            });
+    }
+
     render() {
         const {
             customButtonRef
@@ -66,19 +90,31 @@ export class Login extends Component {
             spotifyApi,
             updateState
         } = this.props;
+        const authURL = spotifyApi.createAuthorizeURL('/authorize');
         return (
-            <View style={styles["login-container"]}>
+            <View style={loginContainer}>
                 <BgImage source={require('../../assets/images/logo_moodem.png')} />
-                <CustomButton
+                {/* <CustomButton
                     ref={customButtonRef}
                     btnTitle="Login with Spotify"
-                    btnStyle="btn-green"
+                    btnStyle={{ background: '#90c520', borderWidth: 0, width: 200, marginLeft: 'auto', marginRight: 'auto' }}
                     btnOnPress={() => {
                         customButtonRef.current.updateLoadingBtn(true);
                         logInWithSpotify.call(this, customButtonRef, spotifyApi, updateState);
                     }}
-                />
+                /> */}
+
+                <Text style={{ color: 'blue' }}
+                    onPress={() => Linking.openURL(`${authURL}`)}>
+                    Google
+</Text>
             </View>
         );
     }
+}
+
+const loginContainer = {
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'center'
 }

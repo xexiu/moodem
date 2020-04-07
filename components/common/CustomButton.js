@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
-import styles from '../../src/css/styles/CustomButton.scss';
 
 function defaultAction(evt) {
 	// eslint-disable-next-line
@@ -41,8 +39,8 @@ export class CustomButton extends Component {
 				title={btnTitle}
 				type={btnType}
 				raised={btnRaised}
-				buttonStyle={[styles[btnStyle], btnShadow]}
-				titleStyle={styles[btnTitleStyle]}
+				buttonStyle={[btnStyle, btnShadow]}
+				titleStyle={btnTitleStyle}
 				onPress={btnOnPress}
 			/>
 		);
@@ -61,7 +59,7 @@ const btnShadow = {
 }
 
 CustomButton.propTypes = {
-	btnStyle: PropTypes.string,
+	btnStyle: PropTypes.object,
 	btnTitleStyle: PropTypes.string,
 	btnTitle: PropTypes.string,
 	btnLoading: PropTypes.bool,

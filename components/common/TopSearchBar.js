@@ -63,7 +63,6 @@ export class TopSearchBar extends Component {
         const {
             actionOnPressSearch,
             token,
-            refreshToken,
             spotifyApi
         } = this.props;
 
@@ -96,23 +95,22 @@ export class TopSearchBar extends Component {
                             showLoadingSpin: true
                         });
 
-                        spotifyApi.searchTracks(`/v1/search?q=${searchText}&type=track,playlist&limit=20`, token, repeat = (data) => {
+                        spotifyApi.fetchTracksOnSearch(`/v1/search?q=${searchText}&type=track,playlist&limit=40`, token, repeat = (data) => {
                             const error = data.error;
                             if (error && error.status === 401 && error && error.message === 'The access token expired' && intents < MAX_INTENTS) {
                                 intents++;
-                                spotifyApi.getTokenWithRefreshedToken('/api/token', refreshToken, (data) => {
+                                spotifyApi.fetchAccessToken('/api/token', (data) => {
                                     getFromStorage('spotifyAuth').then(session => {
                                         const obj = JSON.parse(session);
                                         setStorage('spotifyAuth', {
                                             access_token: data.access_token,
-                                            token_type: obj.token_type,
-                                            refresh_token: obj.refresh_token
-                                        }, spotifyApi.searchTracks(`/v1/search?q=${searchText}&type=track,playlist&limit=20`, data.access_token, repeat));
+                                            token_type: obj.token_type
+                                        }, spotifyApi.fetchTracksOnSearch(`/v1/search?q=${searchText}&type=track,playlist&limit=40`, data.access_token, repeat));
                                     });
                                 })
                             } else {
                                 actionOnPressSearch(data.tracks.items);
-                                spotifyApi.searchTracks(`/v1/tracks/${data.tracks.items[0].id}`, token, data => {
+                                spotifyApi.fetchTracksOnSearch(`/v1/tracks/${data.tracks.items[0].id}`, token, data => {
                                     debugger;
                                 })
                                 handlePressSeachOnEnd.call(this);

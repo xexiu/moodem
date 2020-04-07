@@ -19,7 +19,7 @@ export default class SpotifyAPI {
         }
     }
 
-    getTokenWithAuthorizationCode(path, callback) {
+    fetchTokenWithAuthorizationCode(path, callback) {
         doFetch(`${SPOTIFY_HOST}${path}`, {
             method: 'POST',
             headers: {
@@ -30,7 +30,18 @@ export default class SpotifyAPI {
         }, callback);
     }
 
-    getTokenWithRefreshedToken(path, refreshToken, callback) {
+    fetchAccessToken(path, callback) {
+        doFetch(`${SPOTIFY_HOST}${path}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${btoa(`${this.getClientId()}:${this.getClientSecret()}`)}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=client_credentials`,
+        }, callback);
+    }
+
+    fetchTokenWithRefreshedToken(path, refreshToken, callback) {
         doFetch(`${SPOTIFY_HOST}${path}`, {
             method: 'POST',
             headers: {
@@ -41,7 +52,7 @@ export default class SpotifyAPI {
         }, callback);
     }
 
-    searchTracks(path, token, callback){
+    fetchTracksOnSearch(path, token, callback){
         doFetch(`https://api.spotify.com${path}`, {
             headers: {
                 Authorization: `Bearer ${token}`

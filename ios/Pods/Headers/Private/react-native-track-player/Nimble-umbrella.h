@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-track-player/ios/RNTrackPlayer/Vendor/AudioPlayer/Example/Pods/Target Support Files/Nimble/Nimble-umbrella.h

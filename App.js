@@ -5,12 +5,11 @@ import { PreLoader } from './components/common/PreLoader';
 import { OfflineNotice } from './components/common/OfflineNotice'
 import { Login } from './components/Guest/Login';
 import { P2PLanding } from './components/User/P2PLanding';
-import { clearStorage, getFromStorage } from './src/js/Utils/User/session';
+import { clearStorage, getFromStorage, setStorage } from './src/js/Utils/User/session';
 
 const spotifyApi = new SpotifyAPI({
   clientId: 'fe1b8e46e4f048009d55382540d3fa5f',
-  clientSecret: '5a6d65bb87f840ac963a30f448b314df',
-  redirectUri: 'https://auth.expo.io/@sergio.m/moodem'
+  clientSecret: '5a6d65bb87f840ac963a30f448b314df'
 });
 
 export class App extends Component {
@@ -22,32 +21,20 @@ export class App extends Component {
     this.state = {
       accessToken: null,
       tokenType: null,
-      refreshToken: null,
       showLoader: true,
       hasInternetConnection: true,
       hasError: false
     }
   }
 
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, info) {
-    // You can also log the error to an error reporting service (Elastic search maybe)
-    //logErrorToMyService(error, info);
-  }
-
   handleConnectivityChange = (state) => {
-		return state.isConnected && this.setState({ hasInternetConnection: true });
-	}
+    return state.isConnected && this.setState({ hasInternetConnection: true });
+  }
 
   updateState(data) {
     this.setState({
       accessToken: data.access_token,
       tokenType: data.token_type,
-      refreshToken: data.refresh_token,
       showLoader: false
     });
   }
@@ -56,7 +43,6 @@ export class App extends Component {
     this.setState({
       accessToken: null,
       tokenType: null,
-      refreshToken: null,
       hasLoaded: false
     });
   }
@@ -68,8 +54,10 @@ export class App extends Component {
 
   async componentDidMount() {
     this.netInfo = NetInfo.fetch()
-    .then(this.handleConnectivityChange)
-    .catch(() => {})
+      .then(this.handleConnectivityChange)
+      .catch(() => { });
+
+    this.initAccessToken();
 
     this.getStorage = getFromStorage('spotifyAuth')
       .then((session) => {
@@ -83,12 +71,25 @@ export class App extends Component {
       .catch(this.resetState());
   }
 
+  initAccessToken = () => {
+    spotifyApi.fetchAccessToken('/api/token', data => {
+
+      setStorage('spotifyAuth', {
+        access_token: data.access_token,
+        token_type: data.token_type
+      });
+
+      this.updateState(data)
+      spotifyApi.setAccessToken(data.access_token);
+      spotifyApi.setTokenType(data.token_type);
+    })
+  }
+
 
   render() {
     console.log('Called render(), from App Component')
     const {
       accessToken,
-      refreshToken,
       showLoader,
       hasInternetConnection
     } = this.state;
@@ -99,10 +100,10 @@ export class App extends Component {
       return (<PreLoader updateLoader={loaderState => this.setState({ showLoader: loaderState })} />);
     } else if (accessToken) {
       //clearStorage();
-      return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} refreshToken={refreshToken} spotifyApi={spotifyApi} />);
+      return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} spotifyApi={spotifyApi} />);
     }
 
-    return (<Login spotifyApi={spotifyApi} updateState={this.updateState.bind(this)} />);
+    //return (<Login spotifyApi={spotifyApi} updateState={this.updateState.bind(this)} />);
   }
 }
 

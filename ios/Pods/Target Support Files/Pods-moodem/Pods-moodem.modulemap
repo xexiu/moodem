@@ -1,0 +1,6 @@
+module Pods_moodem {
+  umbrella header "Pods-moodem-umbrella.h"
+
+  export *
+  module * { export * }
+}

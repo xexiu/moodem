@@ -9,10 +9,6 @@
       "android",
       "web"
     ],
-    "packagerOpts": {
-      "config": "metro.config.js",
-      "sourceExts": ["ts", "tsx", "scss", "sass", "js", "jsx"]
-    },
     "scheme": "moodem",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,6 +26,9 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
-  }
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
+  },
+  "displayName": "moodem",
+  "name": "moodem"
 }

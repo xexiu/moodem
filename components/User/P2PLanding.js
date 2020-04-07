@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import React, { Component } from 'react';
-import { Audio } from 'expo-av';
+import TrackPlayer from 'react-native-track-player';
 import { YellowBox } from 'react-native';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
@@ -103,13 +103,17 @@ export class P2PLanding extends Component {
         this.socket = null;
         this.handlingOnPressSearch = null;
         this.handlingTrackItemPressed = null;
-        this.soundObject.stopAsync();
     }
 
     componentDidMount() {
         this.socket.on('server-send-message', this.messageFromServer.bind(this));
         this.loadAudio();
+        this.initPlayer();
     }
+
+    initPlayer = async () => {
+        await TrackPlayer.setupPlayer();
+    };
 
     handlingOnPressSearch = (searchedTracks) => {
         this.setState({
@@ -159,26 +163,11 @@ export class P2PLanding extends Component {
     }
 
     async loadAudio() {
-        await Audio.setIsEnabledAsync(true);
-        this.soundObject = new Audio.Sound();
-        this.soundObject.loadAsync({uri: 'http://russprince.com/hobbies/files/13%20Beethoven%20-%20Fur%20Elise.mp3' }, {shouldPlay: true}, true)
-        .then((res)=>{
-            // res.sound.setOnPlaybackStatusUpdate((status)=>{
-            //     if(!status.didJustFinish) return;
-            //     console.log('Unloading '+name);
-            //     res.sound.unloadAsync().catch(()=>{});
-            // });
-        }).catch((error)=>{});
+        // To Do
     }
 
     toggleAudioPlayback() {
         console.log('Plaing', this.state.isPlaying)
-        this.soundObject.playAsync();
-        // this.setState({
-        //     isPlaying: !this.state.isPlaying,
-        // }, () => (this.state.isPlaying
-        //     ? this.soundObject.playAsync()
-        //     : this.soundObject.stopAsync()));
     }
 
     render() {
@@ -194,7 +183,6 @@ export class P2PLanding extends Component {
         } = this.state;
         const {
             token,
-            refreshToken,
             spotifyApi
         } = this.props;
 
@@ -206,7 +194,6 @@ export class P2PLanding extends Component {
                         <TopSearchBar
                             actionOnPressSearch={this.handlingOnPressSearch.bind(this)}
                             token={token}
-                            refreshToken={refreshToken}
                             spotifyApi={spotifyApi}
                         />
                     </HeaderContainer>
