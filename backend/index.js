@@ -8,8 +8,8 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (client) {
   console.log('a user connected ====>', client.id);
-  client.on('send-message', function (name, artists, album) {
-    io.sockets.emit('server-send-message', name, artists, album);
+  client.on('send-message', function (track) {
+    io.sockets.emit('server-send-message', track);
   });
 });
 

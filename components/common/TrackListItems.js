@@ -8,15 +8,16 @@ export class TrackListItems extends Component {
             data,
             trackItemPressed
         } = this.props
+
         return (
             <View style={{ flex: 1 }}>
-                <FlatList style={{ border: 0, marginLeft: 10, marginRight: 10 }}
-                            windowSize={12}
-                            keyboardShouldPersistTaps="always"
-                            data={data} // this.state.searchedTracks - this.state.listTracks
-                            renderItem={({ item }) => (<TrackListItem track={item} trackPressed={trackItemPressed} />)}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                <FlatList
+                    windowSize={12}
+                    keyboardShouldPersistTaps="always"
+                    data={data} // this.state.searchedTracks - this.state.listTracks
+                    renderItem={({ item }) => (<TrackListItem track={item} trackPressed={trackItemPressed} />)}
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </View>
         )
     }

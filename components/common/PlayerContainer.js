@@ -4,7 +4,7 @@ import { View } from 'react-native';
 export class PlayerContainer extends Component {
     render() {
         return (
-            <View style={[{ height: 500, borderBottomColor: '#eee', borderBottomWidth: 1, marginLeft: 10, marginRight: 10, position: 'relative' }, {
+            <View style={[{ height: 160, borderBottomColor: '#eee', borderBottomWidth: 1, marginLeft: 10, marginRight: 10, position: 'relative' }, {
                 shadowColor: "#000",
                 shadowOffset: {
                     width: 0,

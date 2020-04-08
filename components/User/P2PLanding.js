@@ -1,7 +1,6 @@
 import io from 'socket.io-client';
 import React, { Component } from 'react';
 import Video from 'react-native-video';
-import { YellowBox } from 'react-native';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
 import { HeaderContainer } from '../common/HeaderContainer';
@@ -12,7 +11,6 @@ import { PlayerContainer } from '../common/PlayerContainer';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
 import { TracksListContainer } from '../common/TracksListContainer';
-import { SongInfoALbum } from '../common/SongInfoALbum';
 import { SongInfoTitle } from '../common/SongInfoTitle';
 import { SongInfoArtist } from '../common/SongInfoArtist';
 import { PlayerControlShuffle } from '../common/PlayerControlShuffle';
@@ -22,43 +20,11 @@ import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
 import { TrackListItems } from '../common/TrackListItems';
+import { SC_KEY } from '../../src/js//Utils/Constants/Api/soundCloud';
+import { PreLoader } from '../common/PreLoader';
 import { View, Text, TouchableHighlight } from 'react-native';
 
-import {
-    auth as SpotifyAuth,
-    remote as SpotifyRemote,
-    ApiScope,
-    ApiConfig
-} from 'react-native-spotify-remote';
-
-YellowBox.ignoreWarnings([
-    'Remote debugger',
-    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
-]);
-
 let renderCalled = 0;
-
-const LIST_TRACKS = [
-    {
-        album: {
-            name: 'Album Name1'
-        },
-        name: 'Track1',
-        artists: [
-            {
-                name: 'Artist1'
-            }
-        ]
-    },
-    {
-        name: 'Track2',
-        artists: [
-            {
-                name: 'Artist2'
-            }
-        ]
-    }
-]
 
 function getArtists(artists) {
     const _artisits = [];
@@ -83,25 +49,23 @@ export class P2PLanding extends Component {
             searchedTracksList: [],
             isVotedSong: 0,
             isPremiumSong: null,
-            listTracks: LIST_TRACKS,
+            listTracks: [],
             isSearchingTracks: false,
             songAlbum: 'The Hunting Party',
             songTitle: 'Final Masquerade',
             songArtist: 'Linkin Park',
             songTime: '4:52',
-            isPlaying: false
+            isPlaying: false,
+            currentSong: 'https://api.soundcloud.com/tracks/31406576/stream',
+            isBuffering: true
         }
 
         this.loadAudio = this.loadAudio.bind(this);
     }
 
-    messageFromServer = (name, artists, album) => {
+    messageFromServer = (track) => {
         this.setState({
-            listTracks: [...this.state.listTracks, {
-                name: name,
-                artists: artists,
-                album: album
-            }]
+            listTracks: [...this.state.listTracks, track]
         });
     }
 
@@ -129,25 +93,28 @@ export class P2PLanding extends Component {
         })
     }
 
-    sendSocketMsg = (name, artits, album) => {
-        this.socket.emit('send-message', name, artits, album);
+    sendSocketMsg = (track) => {
+        this.socket.emit('send-message', track);
 
     }
 
-    dispatchActionsSearchedTrack = ({ artists, name, album = { name: 'No Album' } }) => {
+    dispatchActionsSearchedTrack = (track) => {
         this.setState({
             searchedTracksList: [],
             isSearchingTracks: false
         });
 
-        this.sendSocketMsg(name, artists, album);
+        this.sendSocketMsg(track);
     }
 
-    dispatchActionsPressedTrack = ({ artists, name, album = { name: 'No Album' } }) => {
+    dispatchActionsPressedTrack = (track) => {
+        console.log('Presssed', track)
         this.setState({
-            songAlbum: album.name,
-            songTitle: name,
-            songArtist: getArtists(artists)
+            currentSong: track.stream_url,
+            isPlaying: true,
+            songAlbum: track.name,
+            songTitle: track.title,
+            songArtist: track.user && track.user.username
         });
     }
 
@@ -173,8 +140,26 @@ export class P2PLanding extends Component {
         // To Do
     }
 
-    toggleAudioPlayback() {
-        console.log('Plaing', this.state.isPlaying)
+    onPlayProgress = ({ currentTime }) => {
+        // updatePlayerTime <-- seek
+    }
+
+    onPlayEnd = () => {
+        // PlayNextSong on end
+    }
+
+    handlePlay = (isPlaying) => {
+        this.setState({ isPlaying: !isPlaying });
+    }
+
+    onBuffer = (buffer) => {
+        const { isBuffering } = buffer;
+        console.log('Buffering ===>', isBuffering)
+        this.setState({ isBuffering });
+    }
+
+    onAudioError = (error) => {
+        console.log('There was an error on: onAudioError()', error)
     }
 
     render() {
@@ -186,12 +171,17 @@ export class P2PLanding extends Component {
             songTime,
             listTracks,
             searchedTracksList,
-            isSearchingTracks
+            isSearchingTracks,
+            currentSong,
+            isPlaying,
+            isBuffering
         } = this.state;
         const {
             token,
             spotifyApi
         } = this.props;
+
+        console.log('Song', isBuffering);
 
         return (
             <ErrorBoundary>
@@ -206,28 +196,33 @@ export class P2PLanding extends Component {
                     </HeaderContainer>
                     <BodyContainer>
                         <PlayerContainer>
-                            <TouchableHighlight onPress={this.toggleAudioPlayback.bind(this)}>
-                                <View style={this.props.style}>
-                                    <Text>HELLO</Text>
-                                    <Video source={{ uri: '' }} //https://p.scdn.co/mp3-preview/6bd1eafc0bdc2930072eb216cf169f4d6ffbf876?cid=fe1b8e46e4f048009d55382540d3fa5f // STREAM -- > https://api.soundcloud.com/tracks/631459077/stream?client_id=b8f06bbb8e4e9e201f9e6e46001c3acb
-                                        ref="audio"
-                                        volume={1.0}
-                                        muted={false}
-                                        resizeMode="cover"
-                                        playInBackground={true}
-                                        playWhenInactive={true}
-                                        repeat={false} />
-                                </View>
-                            </TouchableHighlight>
+
+                            <View style={this.props.style}>
+                                <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }} //https://p.scdn.co/mp3-preview/6bd1eafc0bdc2930072eb216cf169f4d6ffbf876?cid=fe1b8e46e4f048009d55382540d3fa5f // STREAM -- > https://api.soundcloud.com/tracks/631459077/stream?client_id=b8f06bbb8e4e9e201f9e6e46001c3acb
+                                    ref='player'
+                                    volume={1.0}
+                                    muted={false}
+                                    playInBackground={true}
+                                    playWhenInactive={true}
+                                    onBuffer={this.onBuffer}
+                                    onError={this.onAudioError}
+                                    paused={!isPlaying}
+                                    onProgress={this.onPlayProgress}
+                                    onEnd={this.onPlayEnd}
+                                    repeat={false} />
+                            </View>
+
                             <SongInfoContainer>
-                                <SongInfoALbum songAlbum={songAlbum} />
                                 <SongInfoTitle songTitle={songTitle} />
                                 <SongInfoArtist songArtist={songArtist} />
                             </SongInfoContainer>
                             <PlayerControlsContainer>
                                 <PlayerControlShuffle />
                                 <PlayerControlBackward />
-                                <PlayerControlPlayPause />
+                                {isBuffering ?
+                                    <PreLoader /> :
+                                    <PlayerControlPlayPause isPlaying={isPlaying} onPressHandler={this.handlePlay.bind(this)} />
+                                }
                                 <PlayerControlForward />
                                 <PlayerControlRepeat />
                                 <PlayerControlTimeSeek trackLength={176.13333} currentPosition={116.13333} onSlidingStart={() => this.setState({ paused: true })} onSeek={this.seek.bind(this)} />

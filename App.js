@@ -94,14 +94,14 @@ export class App extends Component {
       hasInternetConnection
     } = this.state;
 
-    if (!hasInternetConnection) {
-      return (<OfflineNotice />);
-    } else if (showLoader) {
-      return (<PreLoader updateLoader={loaderState => this.setState({ showLoader: loaderState })} />);
-    } else if (accessToken) {
-      //clearStorage();
-      return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} spotifyApi={spotifyApi} />);
-    }
+    // if (!hasInternetConnection) {
+    //   return (<OfflineNotice />);
+    // } else if (showLoader) {
+    //   return (<PreLoader updateLoader={loaderState => this.setState({ showLoader: loaderState })} />);
+    // } else if (accessToken) {
+    //   //clearStorage();
+    // }
+    return (<P2PLanding spotifyApi={spotifyApi} token={accessToken} spotifyApi={spotifyApi} />);
 
     //return (<Login spotifyApi={spotifyApi} updateState={this.updateState.bind(this)} />);
   }

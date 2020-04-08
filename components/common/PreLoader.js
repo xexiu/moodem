@@ -7,16 +7,16 @@ import { preloaderStyles } from '../../src/css/styles/components';
 export class PreLoader extends Component {
     render() {
         return (
-            <View style={preloaderStyles}>
+            <View style={{ marginTop: 4, paddingLeft: 5, paddingRight: 5 }}>
                 <AnimatedProgressWheel
-                    size={30}
+                    size={58}
                     progress={100}
                     animateFromValue={0}
-                    duration={1000}
+                    duration={4000}
                     color={'white'}
-                    fullColor={'red'}
+                    fullColor={'#dd0031'}
                     onAnimationComplete={() => {
-                        this.props.updateLoader(false)
+                        //this.props.updateLoader(false)
                     }}
                 />
             </View>
