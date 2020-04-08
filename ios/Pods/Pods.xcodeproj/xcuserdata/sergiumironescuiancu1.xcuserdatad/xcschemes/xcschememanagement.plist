@@ -99,6 +99,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>RNEventEmitter.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>RNGestureHandler.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -110,6 +115,11 @@
 			<false/>
 		</dict>
 		<key>RNScreens.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RNSpotifyRemote.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -284,7 +294,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>react-native-track-player.xcscheme</key>
+		<key>react-native-video.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

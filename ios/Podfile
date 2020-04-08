@@ -5,7 +5,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 target 'moodem' do
   rnPrefix = "../node_modules/react-native"
-  platform :ios, '10.0'
 
   # React Native and its dependencies
   pod 'FBLazyVector', :path => "#{rnPrefix}/Libraries/FBLazyVector"
@@ -36,7 +35,6 @@ target 'moodem' do
   pod 'DoubleConversion', :podspec => "#{rnPrefix}/third-party-podspecs/DoubleConversion.podspec"
   pod 'glog', :podspec => "#{rnPrefix}/third-party-podspecs/glog.podspec"
   pod 'Folly', :podspec => "#{rnPrefix}/third-party-podspecs/Folly.podspec"
-  pod 'React', :path => '../node_modules/react-native', :modular_headers => true
 
   # Other native modules
 

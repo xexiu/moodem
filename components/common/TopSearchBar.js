@@ -3,6 +3,24 @@ import { SearchBar } from 'react-native-elements';
 import { Dimensions } from 'react-native';
 import { getFromStorage, setStorage } from '../../src/js/Utils/User/session';
 
+import {
+    auth as SpotifyAuth,
+    remote as SpotifyRemote,
+    ApiScope,
+    ApiConfig
+} from 'react-native-spotify-remote';
+
+const spotifyApi = {
+    clientID: 'fe1b8e46e4f048009d55382540d3fa5f',
+    clientSecret: '5a6d65bb87f840ac963a30f448b314df',
+    redirectURL: 'moodem://spotify-login-callback',
+    tokenRefreshURL: "http://localhost:3000/refresh",
+    tokenSwapURL: "http://localhost:3000/swap",
+    playURI: 'spotify:track:7p5bQJB4XsZJEEn6Tb7EaL',
+    showDialog: false,
+    scope: ApiScope.AppRemoteControlScope | ApiScope.UserFollowReadScope
+};
+
 const MARGIN_RIGHT = 80;
 const MAX_INTENTS = 5;
 const {
@@ -15,6 +33,58 @@ function handleCancelSearchBar() {
         showLoadingSpin: false
     });
 };
+
+
+function logInWithSpotify(spotifyApi) {
+    const auth = spotifyApi.createAuthorizeURL('/authorize');
+
+    fetch(auth)
+        .then(resp => resp.text())
+        .then(data => {
+            debugger;
+        })
+        .catch(err => {
+            debugger;
+        })
+}
+
+
+function soundCloud(query, limit = 10, page = 0) {
+    const SC_KEY = 'b8f06bbb8e4e9e201f9e6e46001c3acb';
+
+    return fetch(
+        `https://api-v2.soundcloud.com/search/tracks?q=${query}&client_id=${SC_KEY}&limit=${limit}&offset=${page * limit}&linked_partitioning=1`
+    ).then(res => res.json())
+        .then(json => {
+            debugger
+        })
+        .catch(err => {
+            debugger;
+        });
+}
+
+async function playEpicSong() {
+    try {
+        const token = await SpotifyAuth.initialize(spotifyApi);
+        await SpotifyRemote.connect(token);
+        await SpotifyRemote.isConnectedAsync();
+
+        await SpotifyRemote.playUri("spotify:track:7p5bQJB4XsZJEEn6Tb7EaL");
+        await SpotifyRemote.seek(58000);
+    } catch (err) {
+        console.error("Couldn't authorize with or connect to Spotify", err);
+    }
+}
+
+function playEpicSong2(token) {
+    //const token = await SpotifyAuth.initialize(spotifyApi);
+    SpotifyRemote.connect(token)
+        .then(data => {
+
+            debugger;
+            console.log('DATA', data);
+        });
+}
 
 function handlePressSeachOnEnd() {
     this.setState({
@@ -109,10 +179,18 @@ export class TopSearchBar extends Component {
                                     });
                                 })
                             } else {
+                                //logInWithSpotify(spotifyApi);
                                 actionOnPressSearch(data.tracks.items);
-                                spotifyApi.fetchTracksOnSearch(`/v1/tracks/${data.tracks.items[0].id}`, token, data => {
-                                    debugger;
-                                })
+                                soundCloud('Calladita');
+                                // SpotifyRemote.connect(token)
+                                //     .then(data => {
+                                //         debugger;
+                                //         remote.playUri("spotify:track:6IA8E2Q5ttcpbuahIejO74")
+                                //             .then(data => {
+                                //                 debugger;
+                                //                 remote.seek(58000);
+                                //             });
+                                //     });
                                 handlePressSeachOnEnd.call(this);
                             }
                         });

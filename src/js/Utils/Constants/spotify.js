@@ -5,6 +5,6 @@ export const SPOTIFY_CREDENTIALS = {
 }
 export const PERMISSIONS_ARR = ['user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-state', 'user-library-modify',
     'user-library-read', 'playlist-read-private', 'playlist-read-collaborative', 'playlist-modify-public',
-    'playlist-modify-private', 'user-read-recently-played', 'user-top-read'];
+    'playlist-modify-private', 'user-read-recently-played', 'user-top-read', 'streaming', 'app-remote-control'];
 export const PERMISSIONS = PERMISSIONS_ARR.join(' ');
 export const SPOTIFY_HOST = 'https://accounts.spotify.com';

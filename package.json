@@ -41,8 +41,8 @@
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-swift": "^1.2.3",
     "react-native-touchable-scale": "^2.1.1",
-    "react-native-track-player": "^1.2.2",
     "react-native-unimodules": "~0.7.0",
+    "react-native-video": "^4.4.5",
     "react-native-web": "~0.11.7",
     "socket.io-client": "^2.3.0"
   },

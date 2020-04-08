@@ -1,1 +1,0 @@
-../../../../../node_modules/react-native-track-player/ios/RNTrackPlayer/Vendor/AudioPlayer/Example/Pods/Target Support Files/Pods-SwiftAudio_Example/Pods-SwiftAudio_Example-umbrella.h

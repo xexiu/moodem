@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import React, { Component } from 'react';
-import TrackPlayer from 'react-native-track-player';
+import Video from 'react-native-video';
 import { YellowBox } from 'react-native';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
@@ -23,6 +23,13 @@ import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
 import { TrackListItems } from '../common/TrackListItems';
 import { View, Text, TouchableHighlight } from 'react-native';
+
+import {
+    auth as SpotifyAuth,
+    remote as SpotifyRemote,
+    ApiScope,
+    ApiConfig
+} from 'react-native-spotify-remote';
 
 YellowBox.ignoreWarnings([
     'Remote debugger',
@@ -112,7 +119,7 @@ export class P2PLanding extends Component {
     }
 
     initPlayer = async () => {
-        await TrackPlayer.setupPlayer();
+        //await TrackPlayer.setupPlayer();
     };
 
     handlingOnPressSearch = (searchedTracks) => {
@@ -202,7 +209,14 @@ export class P2PLanding extends Component {
                             <TouchableHighlight onPress={this.toggleAudioPlayback.bind(this)}>
                                 <View style={this.props.style}>
                                     <Text>HELLO</Text>
-                                    {this.props.children}
+                                    <Video source={{ uri: '' }} //https://p.scdn.co/mp3-preview/6bd1eafc0bdc2930072eb216cf169f4d6ffbf876?cid=fe1b8e46e4f048009d55382540d3fa5f // STREAM -- > https://api.soundcloud.com/tracks/631459077/stream?client_id=b8f06bbb8e4e9e201f9e6e46001c3acb
+                                        ref="audio"
+                                        volume={1.0}
+                                        muted={false}
+                                        resizeMode="cover"
+                                        playInBackground={true}
+                                        playWhenInactive={true}
+                                        repeat={false} />
                                 </View>
                             </TouchableHighlight>
                             <SongInfoContainer>

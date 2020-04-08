@@ -19,6 +19,16 @@ export default class SpotifyAPI {
         }
     }
 
+    fetchPlayer(token, callback){
+        doFetch('https://api.spotify.com/v1/me/player/volume?volume_percent=55&device_id=b84d818d1e63b4ccf38c598c90508246ca11a72a', {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        },callback);
+    }
+
     fetchTokenWithAuthorizationCode(path, callback) {
         doFetch(`${SPOTIFY_HOST}${path}`, {
             method: 'POST',

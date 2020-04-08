@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-spotify-remote/ios/RNSpotifyRemotePromise.h
