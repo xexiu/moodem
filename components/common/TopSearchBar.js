@@ -12,9 +12,10 @@ const {
 function filterCleanData(data) {
     const filteredTracks = [];
 
-    data.forEach(track => {
+    data.forEach((track, index) => {
         if (track.kind === 'track' && track.streamable) {
             filteredTracks.push({
+                index: index,
                 id: track.id,
                 created_at: track.created_at,
                 last_modified: track.last_modified,
@@ -92,7 +93,7 @@ export class TopSearchBar extends Component {
         } = this.state;
 
         const {
-            actionOnPressSearch
+            fillTracksList
         } = this.props;
 
         return (
@@ -113,11 +114,15 @@ export class TopSearchBar extends Component {
                 placeholder="Search song..."
                 onChangeText={updateSearch.bind(this)}
                 value={searchText}
-                onClear={clearSearch.bind(this)}
+                onClear={() => {
+                    clearSearch.bind(this);
+                    fillTracksList([])
+                }}
                 showLoading={showLoadingSpin}
                 onCancel={() => this.setState({ showLoadingSpin: false })}
                 onEndEditing={() => {
                     const searchText = this.state.searchText;
+                    this.setState({ clearIconState: false });
 
                     if (!!searchText) {
                         this.getSoundCloudData(searchText)
@@ -128,7 +133,7 @@ export class TopSearchBar extends Component {
                                     showLoadingSpin: false,
                                     searchText: ''
                                 });
-                                return actionOnPressSearch(tracks);
+                                return fillTracksList(tracks);
                             });
                     }
                 }}

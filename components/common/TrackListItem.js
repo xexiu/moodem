@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
-
-function getArtists(artists) {
-    const _artisits = [];
-    artists.map(artist => { _artisits.push(artist.name) });
-
-    return _artisits.join(', ');
-}
+import TouchableScale from 'react-native-touchable-scale';
 
 export class TrackListItem extends Component {
     render() {
         const {
+            isSearchingTracks,
+            chevron = true,
             track,
-            trackPressed = () => { console.log('Item from list has been pressed!') }
+            trackPressed,
+            sendSongToTrackList
         } = this.props
 
         return (
@@ -27,12 +24,27 @@ export class TrackListItem extends Component {
                     subtitleStyle={{ fontSize: 14, color: '#999', fontStyle: 'italic', marginLeft: -12 }}
                     subtitle={track.user && track.user.username}
                     titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                    chevron={true}
+                    chevron={chevron}
                     checkmark={() => { }}
                     onPress={() => {
-                        this.props.trackPressed(track);
+                        trackPressed(track);
                     }}
                 />
+                {
+                    isSearchingTracks &&
+                    <View style={{ position: 'absolute', right: 0, top: 15 }}>
+                        <Icon
+                            Component={TouchableScale}
+                            name='chevron-right'
+                            type='entypo'
+                            size={25}
+                            color='#dd0031'
+                            onPress={() => {
+                                sendSongToTrackList(track);
+                            }}
+                        />
+                    </View>
+                }
                 <View style={{ position: 'absolute', right: 0, bottom: 12, flexDirection: 'row' }}>
                     <View style={{ marginRight: 3 }}>
                         <Icon

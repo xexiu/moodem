@@ -10,7 +10,7 @@ export class PlayerControlPlayPause extends Component {
     render() {
         const {
             isPlaying,
-            onPressHandler
+            onPressPlayPause
         } = this.props;
 
         return (
@@ -22,8 +22,7 @@ export class PlayerControlPlayPause extends Component {
                 size={25}
                 color='#dd0031'
                 onPress={() => {
-                    console.log('Pressed Play Control Player - remeber to pause', isPlaying);
-                    onPressHandler(isPlaying);
+                    onPressPlayPause(isPlaying);
                 }} />
         )
     }

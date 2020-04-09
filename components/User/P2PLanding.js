@@ -26,11 +26,16 @@ import { View, Text, TouchableHighlight } from 'react-native';
 
 let renderCalled = 0;
 
-function getArtists(artists) {
-    const _artisits = [];
-    artists.map(artist => { _artisits.push(artist.name) });
+function convertToTimeDuration(duration) {
+    let totalDuration;
 
-    return _artisits.join(', ');
+    if (String(duration).length === 5) {
+        totalDuration = String(duration).substr(0, 2);
+    } else if (String(duration).length > 5) {
+        totalDuration = String(duration).substr(0, 3);
+    }
+
+    return Number(totalDuration);
 }
 
 export class P2PLanding extends Component {
@@ -54,18 +59,31 @@ export class P2PLanding extends Component {
             songAlbum: 'The Hunting Party',
             songTitle: 'Final Masquerade',
             songArtist: 'Linkin Park',
+            songIndex: 0,
             songTime: '4:52',
             isPlaying: false,
             currentSong: 'https://api.soundcloud.com/tracks/31406576/stream',
-            isBuffering: true
+            isBuffering: true,
+            shouldRepeat: false,
+            shouldShuffle: false,
+            trackCurrentTime: 0,
+            trackMaxDuration: 0,
+            time: 100
         }
 
         this.loadAudio = this.loadAudio.bind(this);
     }
 
     messageFromServer = (track) => {
+        this.state.listTracks.push(track);
+
+        for (let i = 0; i < this.state.listTracks.length; i++) {
+            const track = this.state.listTracks[i];
+            track.index = i
+        }
+
         this.setState({
-            listTracks: [...this.state.listTracks, track]
+            listTracks: [...this.state.listTracks]
         });
     }
 
@@ -73,7 +91,7 @@ export class P2PLanding extends Component {
         // Cancel all subscriptions in order to prevent memory leaks
         this.socket = null;
         this.handlingOnPressSearch = null;
-        this.handlingTrackItemPressed = null;
+        this.handlingTrackPressed = null;
     }
 
     componentDidMount() {
@@ -89,8 +107,8 @@ export class P2PLanding extends Component {
     handlingOnPressSearch = (searchedTracks) => {
         this.setState({
             searchedTracksList: searchedTracks,
-            isSearchingTracks: true
-        })
+            isSearchingTracks: !!searchedTracks.length
+        });
     }
 
     sendSocketMsg = (track) => {
@@ -100,40 +118,89 @@ export class P2PLanding extends Component {
 
     dispatchActionsSearchedTrack = (track) => {
         this.setState({
-            searchedTracksList: [],
-            isSearchingTracks: false
+            currentSong: track.stream_url,
+            songAlbum: track.name,
+            songTitle: track.title,
+            songArtist: track.user && track.user.username,
+            songIndex: track.index
         });
-
-        this.sendSocketMsg(track);
     }
 
     dispatchActionsPressedTrack = (track) => {
         console.log('Presssed', track)
         this.setState({
             currentSong: track.stream_url,
-            isPlaying: true,
             songAlbum: track.name,
             songTitle: track.title,
-            songArtist: track.user && track.user.username
+            songArtist: track.user && track.user.username,
+            songIndex: track.index
         });
     }
 
-    handlingTrackItemPressed = (isSearchingTracks, track) => {
-        console.log('TRACKKKK', track);
+    handlingTrackPressed = (isSearchingTracks, track) => {
         if (isSearchingTracks) {
+            this.setState({ isPlaying: !this.state.isPlaying });
             this.dispatchActionsSearchedTrack(track)
         } else {
+            this.setState({ isPlaying: !this.state.isPlaying });
             this.dispatchActionsPressedTrack(track)
         }
     }
 
-    seek(time) {
-        time = Math.round(time);
-        //this.refs.audioElement && this.refs.audioElement.seek(time);
+    sendSongToTrackList = (track) => {
         this.setState({
-            currentPosition: time,
-            paused: false,
+            searchedTracksList: [],
+            isSearchingTracks: false,
+            trackMaxDuration: convertToTimeDuration(track.duration)
         });
+
+        this.sendSocketMsg(track);
+    }
+
+
+    handleOnPressPlayPause = (isPlaying) => {
+        this.setState({ isPlaying: !isPlaying });
+    }
+
+    handleOnPressForward = (tracks, songIndex) => {
+        if (tracks[songIndex + 1]) {
+            this.dispatchActionsPressedTrack(tracks[songIndex + 1])
+        } else {
+            this.dispatchActionsPressedTrack(tracks[songIndex - 1])
+        }
+    }
+
+    handleOnPressBackward = (tracks, songIndex) => {
+        if (tracks[songIndex - 1]) {
+            this.dispatchActionsPressedTrack(tracks[songIndex - 1])
+        } else {
+            this.dispatchActionsPressedTrack(tracks[songIndex + 1])
+        }
+    }
+
+    hanleOnPressRepeat = (shouldRepeat) => {
+        this.setState({
+            shouldRepeat: !shouldRepeat
+        });
+    }
+
+    hanleOnPressShuffle = (tracks, shouldShuffle) => {
+        const random = Math.floor((Math.random() * tracks.length) + 0);
+        if (tracks[random]) {
+            this.dispatchActionsPressedTrack(tracks[random]);
+            this.setState({
+                shouldShuffle: !shouldShuffle
+            });
+        }
+    }
+
+    seek(trackCurrentTime) {
+        this.setState({
+            currentPosition: trackCurrentTime,
+            paused: false
+        });
+
+        this.refs.audioElement && this.refs.audioElement.seek(200);
     }
 
     async loadAudio() {
@@ -141,25 +208,27 @@ export class P2PLanding extends Component {
     }
 
     onPlayProgress = ({ currentTime }) => {
-        // updatePlayerTime <-- seek
+        this.setState({
+            trackCurrentTime: currentTime
+        });
     }
 
-    onPlayEnd = () => {
-        // PlayNextSong on end
-    }
-
-    handlePlay = (isPlaying) => {
-        this.setState({ isPlaying: !isPlaying });
+    onPlayEnd = (tracks, songIndex) => {
+        tracks[songIndex + 1] && this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
     }
 
     onBuffer = (buffer) => {
         const { isBuffering } = buffer;
-        console.log('Buffering ===>', isBuffering)
         this.setState({ isBuffering });
     }
 
     onAudioError = (error) => {
         console.log('There was an error on: onAudioError()', error)
+    }
+
+    handleOnTouchMove = (move) => {
+        console.log('You moved me', move);
+        this.player.seek();
     }
 
     render() {
@@ -168,20 +237,24 @@ export class P2PLanding extends Component {
             songAlbum,
             songTitle,
             songArtist,
+            songIndex,
             songTime,
             listTracks,
             searchedTracksList,
             isSearchingTracks,
             currentSong,
             isPlaying,
-            isBuffering
+            isBuffering,
+            shouldRepeat,
+            shouldShuffle,
+            trackCurrentTime,
+            trackMaxDuration
         } = this.state;
         const {
             token,
             spotifyApi
         } = this.props;
-
-        console.log('Song', isBuffering);
+        const tracks = isSearchingTracks ? searchedTracksList : listTracks
 
         return (
             <ErrorBoundary>
@@ -189,7 +262,7 @@ export class P2PLanding extends Component {
                     <HeaderContainer>
                         <BurgerMenuIcon />
                         <TopSearchBar
-                            actionOnPressSearch={this.handlingOnPressSearch.bind(this)}
+                            fillTracksList={this.handlingOnPressSearch.bind(this)}
                             token={token}
                             spotifyApi={spotifyApi}
                         />
@@ -199,7 +272,9 @@ export class P2PLanding extends Component {
 
                             <View style={this.props.style}>
                                 <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }} //https://p.scdn.co/mp3-preview/6bd1eafc0bdc2930072eb216cf169f4d6ffbf876?cid=fe1b8e46e4f048009d55382540d3fa5f // STREAM -- > https://api.soundcloud.com/tracks/631459077/stream?client_id=b8f06bbb8e4e9e201f9e6e46001c3acb
-                                    ref='player'
+                                    ref={(ref) => {
+                                        this.player = ref
+                                    }}
                                     volume={1.0}
                                     muted={false}
                                     playInBackground={true}
@@ -208,8 +283,8 @@ export class P2PLanding extends Component {
                                     onError={this.onAudioError}
                                     paused={!isPlaying}
                                     onProgress={this.onPlayProgress}
-                                    onEnd={this.onPlayEnd}
-                                    repeat={false} />
+                                    onEnd={this.onPlayEnd.bind(this, tracks, songIndex)}
+                                    repeat={shouldRepeat} />
                             </View>
 
                             <SongInfoContainer>
@@ -217,21 +292,23 @@ export class P2PLanding extends Component {
                                 <SongInfoArtist songArtist={songArtist} />
                             </SongInfoContainer>
                             <PlayerControlsContainer>
-                                <PlayerControlShuffle />
-                                <PlayerControlBackward />
+                                <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this, tracks)} />
+                                <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
                                 {isBuffering ?
                                     <PreLoader /> :
-                                    <PlayerControlPlayPause isPlaying={isPlaying} onPressHandler={this.handlePlay.bind(this)} />
+                                    <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
                                 }
-                                <PlayerControlForward />
-                                <PlayerControlRepeat />
-                                <PlayerControlTimeSeek trackLength={176.13333} currentPosition={116.13333} onSlidingStart={() => this.setState({ paused: true })} onSeek={this.seek.bind(this)} />
+                                <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, tracks, songIndex)} />
+                                <PlayerControlRepeat shouldRepeat={shouldRepeat} onPressRepeat={this.hanleOnPressRepeat.bind(this)} />
+                                <PlayerControlTimeSeek trackLength={trackMaxDuration} currentPosition={trackCurrentTime} onSlidingStart={() => this.setState({ paused: true })} onSeek={this.seek.bind(this, trackCurrentTime)} onTouchMove={this.handleOnTouchMove.bind(this)} />
                             </PlayerControlsContainer>
                         </PlayerContainer>
                         <TracksListContainer>
                             <TrackListItems
-                                data={isSearchingTracks ? searchedTracksList : listTracks}
-                                trackItemPressed={this.handlingTrackItemPressed.bind(this, isSearchingTracks)}
+                                isSearchingTracks={isSearchingTracks}
+                                data={tracks}
+                                trackPressed={this.handlingTrackPressed.bind(this, isSearchingTracks)}
+                                sendSongToTrackList={this.sendSongToTrackList.bind(this)}
                             />
                         </TracksListContainer>
                     </BodyContainer>

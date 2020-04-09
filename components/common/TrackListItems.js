@@ -5,8 +5,10 @@ import { TrackListItem } from './TrackListItem';
 export class TrackListItems extends Component {
     render() {
         const {
+            isSearchingTracks,
             data,
-            trackItemPressed
+            trackPressed,
+            sendSongToTrackList
         } = this.props
 
         return (
@@ -15,7 +17,23 @@ export class TrackListItems extends Component {
                     windowSize={12}
                     keyboardShouldPersistTaps="always"
                     data={data} // this.state.searchedTracks - this.state.listTracks
-                    renderItem={({ item }) => (<TrackListItem track={item} trackPressed={trackItemPressed} />)}
+                    renderItem={({ item }) => {
+                        return isSearchingTracks ?
+                            <TrackListItem
+                                isSearchingTracks={isSearchingTracks}
+                                chevron={false}
+                                track={item}
+                                trackPressed={trackPressed}
+                                sendSongToTrackList={sendSongToTrackList}
+                            /> :
+                            <TrackListItem
+                                isSearchingTracks={isSearchingTracks}
+                                chevron={false}
+                                track={item}
+                                trackPressed={trackPressed}
+                                sendSongToTrackList={sendSongToTrackList}
+                            />
+                    }}
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
