@@ -94,12 +94,16 @@ export class Player extends Component {
     }
 
     handleOnPressForward = (tracks, songIndex) => {
-        this.setState({ trackCurrentTime: 0 });
+        if (tracks.length > 1) {
+            this.setState({ trackCurrentTime: 0 });
+        }
         tracks[songIndex + 1] && this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
     }
 
     handleOnPressBackward = (tracks, songIndex) => {
-        this.setState({ trackCurrentTime: 0 });
+        if (tracks.length > 1) {
+            this.setState({ trackCurrentTime: 0 });
+        }
         tracks[songIndex - 1] && this.dispatchActionsPressedTrack(tracks[songIndex - 1]);
     }
 
@@ -126,6 +130,7 @@ export class Player extends Component {
     }
 
     onPlayEnd = (tracks, songIndex, shouldShuffle) => {
+        this.setState({ trackCurrentTime: 0 });
         if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
             if (tracks[random]) {
@@ -146,7 +151,6 @@ export class Player extends Component {
     }
 
     render() {
-        console.log('Called render Player()', renderCalled++)
         const {
             songAlbumCover,
             songTitle,
@@ -160,11 +164,14 @@ export class Player extends Component {
             trackCurrentTime,
             trackMaxDuration
         } = this.state;
+        const {
+            tracks
+        } = this.props;
 
         return (
             <View style={this.props.style} ref={this.props.playerRef}>
                 <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
-                    ref={ref => this.player = ref }
+                    ref={ref => this.player = ref}
                     volume={1.0}
                     muted={false}
                     playInBackground={true}
@@ -173,7 +180,7 @@ export class Player extends Component {
                     onError={this.onAudioError}
                     paused={!isPlaying}
                     onProgress={this.onPlayProgress}
-                    onEnd={this.onPlayEnd.bind(this, this.getTracks(), songIndex, shouldShuffle)}
+                    onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle)}
                     repeat={shouldRepeat} />
 
                 <SongInfoContainer>
@@ -183,12 +190,12 @@ export class Player extends Component {
                 </SongInfoContainer>
                 <PlayerControlsContainer>
                     <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this)} />
-                    <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, this.getTracks(), songIndex)} />
+                    <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
                     {isBuffering ?
                         <PreLoader /> :
                         <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
                     }
-                    <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, this.getTracks(), songIndex)} />
+                    <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, tracks, songIndex)} />
                     <PlayerControlRepeat shouldRepeat={shouldRepeat} onPressRepeat={this.hanleOnPressRepeat.bind(this)} />
                     <PlayerControlTimeSeek trackLength={trackMaxDuration} currentPosition={trackCurrentTime} onTouchMove={this.handleOnTouchMoveSliderSeek.bind(this)} />
                 </PlayerControlsContainer>

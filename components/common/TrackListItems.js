@@ -11,8 +11,6 @@ export class TrackListItems extends Component {
             sendSongToTrackList
         } = this.props
 
-        console.log('Called Render TrackListItems()');
-
         return (
             <View style={{ flex: 1 }}>
                 <FlatList

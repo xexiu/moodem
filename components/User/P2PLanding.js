@@ -13,6 +13,10 @@ import { TrackListItems } from '../common/TrackListItems';
 
 let renderCalled = 0;
 
+function setLastTrackFromList(track) {
+    track.index = this.state.tracksList.length;
+}
+
 export class P2PLanding extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +31,7 @@ export class P2PLanding extends Component {
         });
         this.state = {
             searchedTracksList: [],
-            listTracks: [],
+            tracksList: [],
             isSearchingTracks: false
         }
     }
@@ -35,6 +39,8 @@ export class P2PLanding extends Component {
     componentDidMount() {
         this.socket.on('server-send-message', this.messageFromServer.bind(this));
     }
+
+
 
     componentWillUnmount() {
         // Cancel all subscriptions in order to prevent memory leaks
@@ -45,7 +51,7 @@ export class P2PLanding extends Component {
 
     messageFromServer = (track) => {
         this.setState({
-            listTracks: [...this.state.listTracks, track]
+            tracksList: [...this.state.tracksList, track]
         });
     }
 
@@ -60,7 +66,7 @@ export class P2PLanding extends Component {
             isSearchingTracks: false
         });
 
-        this.playerRef.current.setTracks([...this.state.listTracks, track]);
+        setLastTrackFromList.call(this, track);
 
         this.sendSocketMsg(track);
     }
@@ -70,7 +76,6 @@ export class P2PLanding extends Component {
             searchedTracksList: searchedTracks,
             isSearchingTracks: !!searchedTracks.length
         });
-        this.playerRef.current.setTracks(searchedTracks);
     }
 
     handlingTrackPressed = (isSearchingTracks, track) => {
@@ -80,11 +85,11 @@ export class P2PLanding extends Component {
     render() {
         console.log('Called render P2PLanding()', renderCalled++)
         const {
-            listTracks,
+            tracksList,
             searchedTracksList,
             isSearchingTracks,
-            tracks = isSearchingTracks ? searchedTracksList : listTracks,
-        } = this.state;
+            tracks = isSearchingTracks ? searchedTracksList : tracksList,
+        } = this.state
 
         return (
             <ErrorBoundary>
@@ -95,7 +100,7 @@ export class P2PLanding extends Component {
                     </HeaderContainer>
                     <BodyContainer>
                         <PlayerContainer>
-                            <Player ref={this.playerRef} />
+                            <Player ref={this.playerRef} tracks={tracks} />
                         </PlayerContainer>
                         <TracksListContainer>
                             <TrackListItems

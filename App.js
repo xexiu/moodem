@@ -16,11 +16,8 @@ export class App extends Component {
   constructor(props) {
     super(props);
     netInfo = null;
-    getStorage = null;
 
     this.state = {
-      accessToken: null,
-      tokenType: null,
       showLoader: true,
       hasInternetConnection: true,
       hasError: false
@@ -31,59 +28,13 @@ export class App extends Component {
     return state.isConnected && this.setState({ hasInternetConnection: true });
   }
 
-  updateState(data) {
-    this.setState({
-      accessToken: data.access_token,
-      tokenType: data.token_type,
-      showLoader: false
-    });
-  }
-
-  resetState() {
-    this.setState({
-      accessToken: null,
-      tokenType: null,
-      hasLoaded: false
-    });
-  }
-
   componentWillUnmount() {
     this.netInfo = null;
-    this.getStorage = null;
   }
 
-  async componentDidMount() {
-    this.netInfo = NetInfo.fetch()
-      .then(this.handleConnectivityChange)
-      .catch(() => { });
-
-    this.initAccessToken();
-
-    this.getStorage = getFromStorage('spotifyAuth')
-      .then((session) => {
-        if (session) {
-          const obj = JSON.parse(session);
-          this.updateState(obj);
-        } else {
-          this.resetState();
-        }
-      })
-      .catch(this.resetState());
+  componentDidMount() {
   }
 
-  initAccessToken = () => {
-    spotifyApi.fetchAccessToken('/api/token', data => {
-
-      setStorage('spotifyAuth', {
-        access_token: data.access_token,
-        token_type: data.token_type
-      });
-
-      this.updateState(data)
-      spotifyApi.setAccessToken(data.access_token);
-      spotifyApi.setTokenType(data.token_type);
-    })
-  }
 
 
   render() {
