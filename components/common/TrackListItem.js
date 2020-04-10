@@ -16,7 +16,7 @@ export class TrackListItem extends Component {
         return (
             <View style={{ position: 'relative' }}>
                 <ListItem
-                    containerStyle={{ backgroundColor: 'transparent', marginBottom: 10 }}
+                    containerStyle={{ backgroundColor: 'transparent', marginBottom: 0 }}
                     bottomDivider
                     Component={TouchableOpacity}
                     title={track.title}
@@ -45,7 +45,7 @@ export class TrackListItem extends Component {
                         />
                     </View>
                 }
-                <View style={{ position: 'absolute', right: 0, bottom: 12, flexDirection: 'row' }}>
+                <View style={{ position: 'absolute', right: 0, bottom:4, flexDirection: 'row' }}>
                     <View style={{ marginRight: 3 }}>
                         <Icon
                             name='heart-o'

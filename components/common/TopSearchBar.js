@@ -9,6 +9,18 @@ const {
     width
 } = Dimensions.get('window');
 
+function convertToTimeDuration(duration) {
+    let totalDuration;
+
+    if (String(duration).length === 5) {
+        totalDuration = String(duration).substr(0, 2);
+    } else if (String(duration).length > 5) {
+        totalDuration = String(duration).substr(0, 3);
+    }
+
+    return Number(totalDuration);
+}
+
 function filterCleanData(data) {
     const filteredTracks = [];
 
@@ -17,10 +29,11 @@ function filterCleanData(data) {
             filteredTracks.push({
                 index: index,
                 id: track.id,
+                artwork_url: track.artwork_url,
                 created_at: track.created_at,
                 last_modified: track.last_modified,
                 title: track.title,
-                duration: track.duration,
+                duration: convertToTimeDuration(track.duration),
                 stream_url: track.stream_url,
                 genre: track.genre,
                 streamable: track.streamable,
@@ -68,6 +81,7 @@ export class TopSearchBar extends Component {
 
     componentWillUnmount() {
         this.signal.cancel('Api is being canceled');
+        this.getSoundCloudData = null;
     }
 
     getSoundCloudData = async (query) => {

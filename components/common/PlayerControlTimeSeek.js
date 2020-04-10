@@ -31,15 +31,11 @@ export class PlayerControlTimeSeek extends Component {
         const {
             trackLength,
             currentPosition,
-            onSeek,
-            onSlidingStart,
             onTouchMove
         } = this.props;
         const {
             value
         } = this.state;
-
-        const songTimg = timeFormat(value);
 
         return (
             <View style={styles.container}>
@@ -54,12 +50,10 @@ export class PlayerControlTimeSeek extends Component {
                 </View>
                 <Slider
                     onTouchMove={() => {
-                        console.log('Slider')
-                        onTouchMove();
+                        onTouchMove(value);
                     }}
                     maximumValue={Math.max(trackLength, 1, currentPosition + 1)}
-                    onSlidingStart={onSlidingStart}
-                    onSlidingComplete={onSeek}
+                    minimumValue={0}
                     value={currentPosition}
                     onValueChange={value => this.setState({ value: value })}
                     style={styles.slider}
