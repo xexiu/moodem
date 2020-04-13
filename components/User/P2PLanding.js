@@ -22,7 +22,7 @@ export class P2PLanding extends Component {
         super(props);
 
         this.playerRef = React.createRef();
-        this.socket = io('http://192.168.10.12:3000', { // Mobile --> http://172.20.10.9:3000
+        this.socket = io('http://138.68.239.239:3000', { // Mobile --> http://172.20.10.9:3000
             transports: ['websocket'],
             jsonp: false,
             reconnectionAttempts: "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart

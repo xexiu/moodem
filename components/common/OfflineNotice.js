@@ -1,16 +1,35 @@
-import React, {
-    Component
-} from 'react';
-import {
-    View,
-    Text
-} from 'react-native';
-import { offlineNoticeStyles } from '../../src/css/styles/common';
+import React, { Component } from 'react';
+import { View, Text, Dimensions } from 'react-native';
+import { BgImage } from '../common/BgImage';
+const { width } = Dimensions.get('window');
 
 export class OfflineNotice extends Component {
     render() {
-        return (<View style={offlineNoticeStyles.offlineContainer}>
-                <Text style={offlineNoticeStyles.offlineText}>No Internet Connection</Text>
-            </View>);
-        }
+        return (
+            <View>
+                <View style={styles.offlineContainer}>
+                    <Text style={styles.offlineText}>No Internet Connection</Text>
+                </View>
+                <View style={{ marginTop: 30 }}>
+                    <BgImage source={require('../../assets/images/logo_moodem.png')} />
+                </View>
+            </View>
+        );
     }
+}
+
+const styles = {
+    offlineContainer: {
+        backgroundColor: '#b52424',
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        width,
+        position: 'absolute',
+        top: 35
+    },
+    offlineText: {
+        color: '#fff'
+    }
+}

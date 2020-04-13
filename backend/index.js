@@ -13,6 +13,6 @@ io.on('connection', function (client) {
   });
 });
 
-server.listen(3000, function () {
+server.listen(3000, function () { // Digital Ocean Open Port
   console.log('listening on *:3000');
 });

@@ -165,11 +165,12 @@ export class Player extends Component {
             trackMaxDuration
         } = this.state;
         const {
-            tracks
+            tracks,
+            playerRef
         } = this.props;
 
         return (
-            <View style={this.props.style} ref={this.props.playerRef}>
+            <View ref={playerRef}>
                 <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
                     ref={ref => this.player = ref}
                     volume={1.0}
@@ -192,7 +193,7 @@ export class Player extends Component {
                     <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this)} />
                     <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
                     {isBuffering ?
-                        <PreLoader /> :
+                        <PreLoader size={58} /> :
                         <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
                     }
                     <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, tracks, songIndex)} />
