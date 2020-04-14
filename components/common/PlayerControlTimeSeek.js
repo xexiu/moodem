@@ -45,7 +45,7 @@ export class PlayerControlTimeSeek extends Component {
                     </Text>
                     <View style={{ flex: 1 }} />
                     <Text style={styles.text}>
-                        {timeFormat(trackLength)}
+                        {timeFormat(trackLength - currentPosition)}
                     </Text>
                 </View>
                 <Slider

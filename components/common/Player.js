@@ -36,6 +36,7 @@ export class Player extends Component {
             isBuffering: true,
             shouldRepeat: false,
             shouldShuffle: false,
+            songIsReady: false,
             trackCurrentTime: 0,
             trackMaxDuration: TRACK_DURATION_MASQUERADE
         }
@@ -57,6 +58,11 @@ export class Player extends Component {
         this.track = track;
     }
 
+    dispatchActionCurrentPlayingTrack = (track) => {
+        this.setState({ isPlaying: !this.state.isPlaying });
+        //delete track.isCurrentlyPlaying;
+    }
+
     dispatchActionsSearchedTrack = (track) => {
         this.setState({
             currentSong: track.stream_url,
@@ -64,7 +70,8 @@ export class Player extends Component {
             songTitle: track.title,
             songArtist: track.user && track.user.username,
             songIndex: track.index,
-            trackMaxDuration: track.duration
+            trackMaxDuration: track.duration,
+            isPlaying: true
         });
     }
 
@@ -75,16 +82,15 @@ export class Player extends Component {
             songTitle: track.title,
             songArtist: track.user && track.user.username,
             songIndex: track.index,
-            trackMaxDuration: track.duration
+            trackMaxDuration: track.duration,
+            isPlaying: true
         });
     }
 
     handlingTrackedPressed = (isSearchingTracks, track) => {
         if (isSearchingTracks) {
-            this.setState({ isPlaying: !this.state.isPlaying });
             this.dispatchActionsSearchedTrack(track)
         } else {
-            this.setState({ isPlaying: !this.state.isPlaying });
             this.dispatchActionsPressedTrack(track)
         }
     }
@@ -129,21 +135,28 @@ export class Player extends Component {
         });
     }
 
-    onPlayEnd = (tracks, songIndex, shouldShuffle) => {
+    onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
         this.setState({ trackCurrentTime: 0 });
-        if (shouldShuffle) {
+        const song = songIndex + 1;
+
+        if (shouldRepeat) {
+            return this.dispatchActionsPressedTrack(tracks[songIndex]);
+        } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
+
             if (tracks[random]) {
-                this.dispatchActionsPressedTrack(tracks[random]);
+                return this.dispatchActionsPressedTrack(tracks[random]);
             }
+        } else if (!tracks[song]) {
+            this.setState({ isPlaying:  !isPlaying });
         } else {
-            tracks[songIndex + 1] && this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
+            return tracks[song] && this.dispatchActionsPressedTrack(tracks[song]);
         }
     }
 
     onBuffer = (buffer) => {
         const { isBuffering } = buffer;
-        this.setState({ isBuffering });
+        this.setState({ isBuffering, songIsReady: !isBuffering });
     }
 
     onAudioError = (error) => {
@@ -181,7 +194,7 @@ export class Player extends Component {
                     onError={this.onAudioError}
                     paused={!isPlaying}
                     onProgress={this.onPlayProgress}
-                    onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle)}
+                    onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying)}
                     repeat={shouldRepeat} />
 
                 <SongInfoContainer>
