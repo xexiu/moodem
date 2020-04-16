@@ -148,6 +148,9 @@ export class TopSearchBar extends Component {
                                     searchText: ''
                                 });
                                 return fillTracksList(tracks);
+                            })
+                            .catch(err => {
+                                console.log('Error', err);
                             });
                     }
                 }}

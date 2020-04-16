@@ -14,6 +14,7 @@ import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
 import { PreLoader } from '../common/PreLoader';
+import Toast from 'react-native-easy-toast';
 
 const TRACK_DURATION_MASQUERADE = 217;
 const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
@@ -24,6 +25,7 @@ export class Player extends Component {
     constructor(props) {
         super(props);
 
+        this.toastRef = React.createRef();
         this.tracks = [];
         this.track = {};
         this.state = {
@@ -38,6 +40,7 @@ export class Player extends Component {
             shouldShuffle: false,
             songIsReady: false,
             trackCurrentTime: 0,
+            isSongLoading: true,
             trackMaxDuration: TRACK_DURATION_MASQUERADE
         }
     }
@@ -148,19 +151,21 @@ export class Player extends Component {
                 return this.dispatchActionsPressedTrack(tracks[random]);
             }
         } else if (!tracks[song]) {
-            this.setState({ isPlaying:  !isPlaying });
+            this.setState({ isPlaying: !isPlaying });
         } else {
             return tracks[song] && this.dispatchActionsPressedTrack(tracks[song]);
         }
     }
 
     onBuffer = (buffer) => {
-        const { isBuffering } = buffer;
-        this.setState({ isBuffering, songIsReady: !isBuffering });
+        if (!this.state.isBuffering) {
+            this.toastRef.current.show('Song Ready!');
+            this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
+        }
     }
 
-    onAudioError = (error) => {
-        console.log('There was an error on: onAudioError()', error)
+    onAudioError = ({ error }) => {
+        this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     }
 
     render() {
@@ -171,11 +176,11 @@ export class Player extends Component {
             songIndex,
             currentSong,
             isPlaying,
-            isBuffering,
             shouldRepeat,
             shouldShuffle,
             trackCurrentTime,
-            trackMaxDuration
+            trackMaxDuration,
+            songIsReady
         } = this.state;
         const {
             tracks,
@@ -187,12 +192,16 @@ export class Player extends Component {
                 <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
                     ref={ref => this.player = ref}
                     volume={1.0}
+                    audioOnly={true}
                     muted={false}
                     playInBackground={true}
                     playWhenInactive={true}
+                    ignoreSilentSwitch={"ignore"}
                     onBuffer={this.onBuffer}
                     onError={this.onAudioError}
                     paused={!isPlaying}
+                    onLoad={() => this.setState({ isBuffering: false, songIsReady: false })}
+                    onLoadStart={() => this.setState({ trackCurrentTime: 0, isBuffering: true, songIsReady: false })}
                     onProgress={this.onPlayProgress}
                     onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying)}
                     repeat={shouldRepeat} />
@@ -205,7 +214,7 @@ export class Player extends Component {
                 <PlayerControlsContainer>
                     <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this)} />
                     <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
-                    {isBuffering ?
+                    {!songIsReady ?
                         <PreLoader size={58} /> :
                         <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
                     }
@@ -213,6 +222,10 @@ export class Player extends Component {
                     <PlayerControlRepeat shouldRepeat={shouldRepeat} onPressRepeat={this.hanleOnPressRepeat.bind(this)} />
                     <PlayerControlTimeSeek trackLength={trackMaxDuration} currentPosition={trackCurrentTime} onTouchMove={this.handleOnTouchMoveSliderSeek.bind(this)} />
                 </PlayerControlsContainer>
+                <Toast
+                    position='top'
+                    ref={this.toastRef}
+                />
             </View>
         )
     }

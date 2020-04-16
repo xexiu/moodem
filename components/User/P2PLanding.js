@@ -10,6 +10,7 @@ import { PlayerContainer } from '../common/PlayerContainer';
 import { Player } from '../common/Player';
 import { TracksListContainer } from '../common/TracksListContainer';
 import { TrackListItems } from '../common/TrackListItems';
+import Toast from 'react-native-easy-toast';
 
 let renderCalled = 0;
 
@@ -22,6 +23,7 @@ export class P2PLanding extends Component {
         super(props);
 
         this.playerRef = React.createRef();
+        this.toastRef = React.createRef();
         this.socket = io('http://138.68.239.239:3000', { // Mobile --> http://172.20.10.9:3000
             transports: ['websocket'],
             jsonp: false,
@@ -101,6 +103,10 @@ export class P2PLanding extends Component {
                     <BodyContainer>
                         <PlayerContainer>
                             <Player ref={this.playerRef} tracks={tracks} />
+                            <Toast
+                                position='top'
+                                ref={this.toastRef}
+                            />
                         </PlayerContainer>
                         <TracksListContainer>
                             <TrackListItems
