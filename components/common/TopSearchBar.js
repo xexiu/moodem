@@ -41,6 +41,10 @@ function filterCleanData(data) {
                     username: track.user && track.user.username || 'Anonymous'
                 },
                 likes_count: track.likes_count,
+                boosts_count: 0,
+                votes_count: 0,
+                hasVoted: false,
+                hasBoosted: false,
                 video_url: track.video_url,
                 download_url: track.download_url
             });

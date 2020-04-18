@@ -8,7 +8,9 @@ export class TrackListItems extends Component {
             isSearchingTracks,
             data,
             trackPressed,
-            sendSongToTrackList
+            sendSongToTrackList,
+            sendVoteToTrackList,
+            sendBoostToTrackList
         } = this.props
 
         return (
@@ -25,6 +27,8 @@ export class TrackListItems extends Component {
                                 track={item}
                                 trackPressed={trackPressed}
                                 sendSongToTrackList={sendSongToTrackList}
+                                sendVoteToTrackList={sendVoteToTrackList}
+                                sendBoostToTrackList={sendBoostToTrackList}
                             /> :
                             <TrackListItem
                                 isSearchingTracks={isSearchingTracks}
@@ -32,6 +36,8 @@ export class TrackListItems extends Component {
                                 track={item}
                                 trackPressed={trackPressed}
                                 sendSongToTrackList={sendSongToTrackList}
+                                sendVoteToTrackList={sendVoteToTrackList}
+                                sendBoostToTrackList={sendBoostToTrackList}
                             />
                     }}
                     keyExtractor={(item, index) => index.toString()}
