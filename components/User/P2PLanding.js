@@ -27,23 +27,23 @@ export class P2PLanding extends Component {
         this.socket = io('http://192.168.10.12:3000', { // Mobile --> http://172.20.10.9:3000
             transports: ['websocket'],
             jsonp: false,
-            reconnectionAttempts: "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
+            reconnectionAttempts: 'Infinity', //avoid having user reconnect manually in order to prevent dead clients after a server restart
             timeout: 10000, //before connect_error and connect_timeout are emitted.
-            "force new connection": true
+            'force new connection': true
         });
         //this.socket.emit('join-global-chat-room', { chatRoom: 'global-chat-room' })
         this.state = {
             searchedTracksList: [],
             tracksList: [],
             isSearchingTracks: false
-        }
+        };
     }
 
     componentDidMount() {
         this.socket.on('server-send-message-track', this.messageFromServerWithTrack.bind(this));
         this.socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
         this.socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
-        this.socket.emit("send-message-track");
+        this.socket.emit('send-message-track');
     }
 
     componentWillUnmount() {
@@ -58,7 +58,7 @@ export class P2PLanding extends Component {
 
     messageFromServerWithBoost = (tracksList) => {
         this.setState({
-            tracksList: tracksList
+            tracksList
         });
     }
 
@@ -73,8 +73,8 @@ export class P2PLanding extends Component {
             this.setState({
                 userVoted: track.hasVoted,
                 userId: track.user.user_id
-            })
-        })
+            });
+        });
         this.setState({
             tracksList
         });
@@ -119,8 +119,8 @@ export class P2PLanding extends Component {
                 if (tracksList.id === searchedTrack.id) {
                     searchedTrack.isOnTracksList = true;
                 }
-            })
-        })
+            });
+        });
     }
 
     handlingOnPressSearch = (searchedTracks) => {
@@ -136,7 +136,7 @@ export class P2PLanding extends Component {
     }
 
     render() {
-        console.log('Called render P2PLanding()', renderCalled++)
+        console.log('Called render P2PLanding()', renderCalled++);
         const {
             tracksList,
             searchedTracksList,
@@ -144,13 +144,13 @@ export class P2PLanding extends Component {
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
 
-        console.log('Tracks', tracks);
+        console.log('Props', this.props);
 
         return (
             <ErrorBoundary>
                 <MainContainer>
                     <HeaderContainer>
-                        <BurgerMenuIcon />
+                        <BurgerMenuIcon action={() => this.props.navigation.openDrawer()} />
                         <TopSearchBar fillTracksList={this.handlingOnPressSearch.bind(this)} />
                     </HeaderContainer>
                     <BodyContainer>
@@ -165,6 +165,7 @@ export class P2PLanding extends Component {
                             <TrackListItems
                                 isSearchingTracks={isSearchingTracks}
                                 data={tracks}
+                                // eslint-disable-next-line max-len
                                 trackPressed={this.handlingTrackPressed.bind(this, isSearchingTracks)}
                                 sendSongToTrackList={this.sendSongToTrackList.bind(this)}
                                 sendVoteToTrackList={this.sendVoteToTrackList.bind(this)}

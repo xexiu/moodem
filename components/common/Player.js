@@ -1,7 +1,7 @@
 import Video from 'react-native-video';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { SC_KEY } from '../../src/js//Utils/Constants/Api/soundCloud';
+import { SC_KEY } from '../../src/js/Utils/constants/Api/soundCloud';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
 import { SongInfoAlbumCover } from '../common/SongInfoAlbumCover';
@@ -19,7 +19,7 @@ import Toast from 'react-native-easy-toast';
 const TRACK_DURATION_MASQUERADE = 217;
 const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
 
-let renderCalled = 0;
+const renderCalled = 0;
 
 export class Player extends Component {
     constructor(props) {
@@ -42,7 +42,7 @@ export class Player extends Component {
             trackCurrentTime: 0,
             isSongLoading: true,
             trackMaxDuration: TRACK_DURATION_MASQUERADE
-        }
+        };
     }
 
     getTracks() {
@@ -92,9 +92,9 @@ export class Player extends Component {
 
     handlingTrackedPressed = (isSearchingTracks, track) => {
         if (isSearchingTracks) {
-            this.dispatchActionsSearchedTrack(track)
+            this.dispatchActionsSearchedTrack(track);
         } else {
-            this.dispatchActionsPressedTrack(track)
+            this.dispatchActionsPressedTrack(track);
         }
     }
 
@@ -129,7 +129,7 @@ export class Player extends Component {
     }
 
     handleOnTouchMoveSliderSeek = (time) => {
-        this.player.seek(time)
+        this.player.seek(time);
     }
 
     onPlayProgress = ({ currentTime }) => {
@@ -189,14 +189,17 @@ export class Player extends Component {
 
         return (
             <View ref={playerRef}>
-                <Video source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
-                    ref={ref => this.player = ref}
+                <Video
+source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
+                    ref={ref => {
+                        this.player = ref;
+                    }}
                     volume={1.0}
-                    audioOnly={true}
+                    audioOnly
                     muted={false}
-                    playInBackground={true}
-                    playWhenInactive={true}
-                    ignoreSilentSwitch={"ignore"}
+                    playInBackground
+                    playWhenInactive
+                    ignoreSilentSwitch={'ignore'}
                     onBuffer={this.onBuffer}
                     onError={this.onAudioError}
                     paused={!isPlaying}
@@ -204,7 +207,8 @@ export class Player extends Component {
                     onLoadStart={() => this.setState({ trackCurrentTime: 0, isBuffering: true, songIsReady: false })}
                     onProgress={this.onPlayProgress}
                     onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying)}
-                    repeat={shouldRepeat} />
+                    repeat={shouldRepeat}
+                />
 
                 <SongInfoContainer>
                     <SongInfoAlbumCover songAlbumCover={songAlbumCover} />
@@ -227,6 +231,6 @@ export class Player extends Component {
                     ref={this.toastRef}
                 />
             </View>
-        )
+        );
     }
 }

@@ -22,7 +22,8 @@ export class PlayerControlBackward extends Component {
                 size={18}
                 onPress={() => {
                     onPressBackward();
-                }} />
-        )
+                }}
+            />
+        );
     }
 }

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { Component } from 'react';
+import axios from 'axios';
 import { SearchBar } from 'react-native-elements';
 import { Dimensions } from 'react-native';
 import { getSoundCloudTacks } from '../../src/js/Api/soundCloudApi';
@@ -27,7 +27,7 @@ function filterCleanData(data) {
     data.forEach((track, index) => {
         if (track.kind === 'track' && track.streamable) {
             filteredTracks.push({
-                index: index,
+                index,
                 id: track.id,
                 artwork_url: track.artwork_url,
                 created_at: track.created_at,
@@ -38,7 +38,7 @@ function filterCleanData(data) {
                 genre: track.genre,
                 streamable: track.streamable,
                 user: {
-                    username: track.user && track.user.username || 'Anonymous'
+                    username: (track.user && track.user.username) || 'Anonymous'
                 },
                 likes_count: track.likes_count,
                 boosts_count: 0,
@@ -59,7 +59,7 @@ function updateSearch(searchText) {
         searchText,
         clearIconState: true
     });
-};
+}
 
 function clearSearch() {
     console.log('Search was cleared');
@@ -68,7 +68,7 @@ function clearSearch() {
         clearIconState: false,
         showLoadingSpin: false
     });
-};
+}
 
 export class TopSearchBar extends Component {
     constructor(props) {
@@ -80,7 +80,7 @@ export class TopSearchBar extends Component {
             clearIconState: true,
             searchText: '',
             showLoadingSpin: false
-        }
+        };
     }
 
     componentWillUnmount() {
@@ -93,13 +93,12 @@ export class TopSearchBar extends Component {
             this.setState({ showLoadingSpin: true });
             const data = await getSoundCloudTacks(this.signal.token, query);
             return Promise.resolve(data);
-        }
-        catch (err) {
+        } catch (err) {
             if (axios.isCancel(err)) {
                 console.log('Error: ', err.message); // => prints: Api is being canceled
             } else {
                 this.setState({ showLoadingSpin: false });
-            };
+            }
         }
     }
 
@@ -117,7 +116,9 @@ export class TopSearchBar extends Component {
         return (
             <SearchBar
                 containerStyle={{
-                    width: width - MARGIN_RIGHT, padding: 0, backgroundColor: '#fff',
+                    width: width - MARGIN_RIGHT,
+                    padding: 0,
+                    backgroundColor: '#fff',
                     borderRadius: 25,
                     borderColor: '#eee',
                     borderWidth: 2,
@@ -127,23 +128,23 @@ export class TopSearchBar extends Component {
                     backgroundColor: '#fff',
                     height: 35
                 }}
-                lightTheme={true}
+                lightTheme
                 clearIcon={clearIconState}
                 placeholder="Search song..."
                 onChangeText={updateSearch.bind(this)}
                 value={searchText}
                 onClear={() => {
                     clearSearch.bind(this);
-                    fillTracksList([])
+                    fillTracksList([]);
                 }}
                 showLoading={showLoadingSpin}
                 onCancel={() => this.setState({ showLoadingSpin: false })}
                 onEndEditing={() => {
-                    const searchText = this.state.searchText;
+                    const text = this.state.searchText;
                     this.setState({ clearIconState: false });
 
-                    if (!!searchText) {
-                        this.getSoundCloudData(searchText)
+                    if (text) {
+                        this.getSoundCloudData(text)
                             .then(data => {
                                 const tracks = filterCleanData(data);
                                 this.setState({
@@ -159,6 +160,6 @@ export class TopSearchBar extends Component {
                     }
                 }}
             />
-        )
+        );
     }
 }

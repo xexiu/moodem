@@ -12,7 +12,7 @@ export class CustomButton extends Component {
 		super(props);
 		this.state = {
 			loadingButton: false
-		}
+		};
 	}
 
 	updateLoadingBtn = (isActive) => {
@@ -48,7 +48,7 @@ export class CustomButton extends Component {
 }
 
 const btnShadow = {
-	shadowColor: "#000",
+	shadowColor: '#000',
 	shadowOffset: {
 		width: 0,
 		height: 2,
@@ -56,7 +56,7 @@ const btnShadow = {
 	shadowOpacity: 0.25,
 	shadowRadius: 3.84,
 	elevation: 5
-}
+};
 
 CustomButton.propTypes = {
 	btnStyle: PropTypes.object,
