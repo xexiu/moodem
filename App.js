@@ -2,6 +2,7 @@
 import 'react-native-gesture-handler';
 import React, { Component } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import firebase from './src/js/Utils/Helpers/services/firebase';
@@ -11,7 +12,6 @@ import { P2PLanding } from './components/User/P2PLanding';
 import { Login } from './components/common/class-components/Login';
 import { Register } from './components/common/class-components/Register';
 import { GuestScreen } from './screens/Guest/functional-components/GuestScreen';
-import { View, Text, TouchableHighlight } from 'react-native';
 import { PreLoader } from './components/common/functional-components/PreLoader';
 
 
@@ -77,10 +77,9 @@ export class App extends Component {
   loginHandlerGuest = (data) => {
     if (data.hasForgotPassword) {
       this.setState({ hasForgotPassword: data.hasForgotPassword });
-    } else {
-      console.log('Handler guest', data);
+    } else if (data && data.user) {
+      this.setState({ user: data.user, isRegistered: true });
     }
-    //this.setState({ isLoading: true });
   }
 
   render() {

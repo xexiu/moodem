@@ -4,7 +4,15 @@ export function registerHandler(validate) {
     return new Promise((resolve, reject) => {
         firebase.auth().createUserWithEmailAndPassword(validate.email, validate.password)
             .then(auth => {
-                console.log('Auth user', auth.user.uid);
+                console.log('Auth user', auth.user);
+                auth.user.updateProfile({
+                    displayName: validate.name,
+                    photoURL: 'https://example.com/jane-q-user/profile.jpg'
+                }).then(() => {
+                    // Update successful.
+                }).catch((error) => {
+                    // An error happened.
+                });
                 firebase.database().ref(`Users/${auth.user.uid}`).push({
                     name: validate.name,
                     email: validate.email,

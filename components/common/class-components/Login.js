@@ -57,8 +57,6 @@ export class Login extends Component {
             loginHandlerGuest
         } = this.props;
 
-        console.log('Render login()', isLoading);
-
         if (hasForgotPassword) {
             return (
                 <View style={{ alignItems: 'center', padding: 5 }}>
