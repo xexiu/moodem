@@ -1,35 +1,17 @@
-import React, { Component } from 'react';
-import { View, Text, Dimensions } from 'react-native';
+/* eslint-disable global-require */
+import React from 'react';
+import { View, Text } from 'react-native';
 import { BgImage } from '../common/BgImage';
-const { width } = Dimensions.get('window');
+import { offlineContainer, offlineText } from '../../src/css/styles/offlineNotice';
+import { btnShadow } from '../../src/css/styles/common';
 
-export class OfflineNotice extends Component {
-    render() {
-        return (
-            <View>
-                <View style={styles.offlineContainer}>
-                    <Text style={styles.offlineText}>No Internet Connection</Text>
-                </View>
-                <View style={{ marginTop: 30 }}>
-                    <BgImage source={require('../../assets/images/logo_moodem.png')} />
-                </View>
-            </View>
-        );
-    }
-}
-
-const styles = {
-    offlineContainer: {
-        backgroundColor: '#b52424',
-        height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        width,
-        position: 'absolute',
-        top: 35
-    },
-    offlineText: {
-        color: '#fff'
-    }
-}
+export const OfflineNotice = () => (
+    <View>
+        <View style={[offlineContainer, btnShadow]}>
+            <Text style={offlineText}>No Internet Connection</Text>
+        </View>
+        <View style={{ marginTop: 30 }}>
+            <BgImage source={require('../../assets/images/logo_moodem.png')} />
+        </View>
+    </View>
+);

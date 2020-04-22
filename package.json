@@ -11,7 +11,7 @@
     "postinstall": "jetify"
   },
   "jest": {
-    "preset": "jest-expo",
+    "preset": "react-native",
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base)"
     ],
@@ -58,7 +58,8 @@
     "react-native-video": "^4.4.5",
     "react-native-web": "~0.11.7",
     "socket.io-client": "^2.3.0",
-    "tcomb-form-native": "^0.6.20"
+    "tcomb-form-native": "^0.6.20",
+    "react-test-renderer": "^16.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -68,8 +69,7 @@
     "eslint-config-rallycoding": "^3.2.0",
     "eslint-plugin-react": "^7.19.0",
     "jest": "~24.9.0",
-    "metro-react-native-babel-preset": "~0.56.0",
-    "react-test-renderer": "^16.9.0"
+    "metro-react-native-babel-preset": "~0.56.0"
   },
   "private": true
 }

@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import Video from 'react-native-video';
 import React, { Component } from 'react';
+import Toast from 'react-native-easy-toast';
 import { View } from 'react-native';
-import { SC_KEY } from '../../src/js/Utils/constants/Api/soundCloud';
+import { SC_KEY } from '../../src/js/Utils/constants/Api/apiKeys';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
 import { SongInfoAlbumCover } from '../common/SongInfoAlbumCover';
@@ -13,8 +15,7 @@ import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
 import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
-import { PreLoader } from '../common/PreLoader';
-import Toast from 'react-native-easy-toast';
+import { PreLoader } from './functional-components/PreLoader';
 
 const TRACK_DURATION_MASQUERADE = 217;
 const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
@@ -190,7 +191,7 @@ export class Player extends Component {
         return (
             <View ref={playerRef}>
                 <Video
-source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
+                    source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
                     ref={ref => {
                         this.player = ref;
                     }}

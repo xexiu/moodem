@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import App from './App';
+import '../App';
 
 describe('<App />', () => {
     it('has 4 childs', () => {

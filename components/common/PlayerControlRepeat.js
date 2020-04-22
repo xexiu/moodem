@@ -17,7 +17,8 @@ export class PlayerControlRepeat extends Component {
         return (
             <View style={{ position: 'relative' }}>
                 <View>
-                    <Icon iconStyle={{ marginTop: 20, marginLeft: 20 }}
+                    <Icon
+                        iconStyle={{ marginTop: 20, marginLeft: 20 }}
                         Component={TouchableScale}
                         name='repeat'
                         type='font-awesome'
@@ -30,7 +31,7 @@ export class PlayerControlRepeat extends Component {
                 </View>
                 {
                     shouldRepeat &&
-                    <View style={{ position: 'absolute', top: 5, right: 0, height: 15, width: 15}}>
+                    <View style={{ position: 'absolute', top: 5, right: 0, height: 15, width: 15 }}>
                         <Icon
                             Component={TouchableScale}
                             name='dot-single'
@@ -41,6 +42,6 @@ export class PlayerControlRepeat extends Component {
                     </View>
                 }
             </View>
-        )
+        );
     }
 }

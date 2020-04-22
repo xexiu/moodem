@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Linking, Text } from 'react-native';
-import { CustomButton } from '../common/CustomButton';
+import { CustomButton } from '../common/functional-components/CustomButton';
 import { BgImage } from '../common/BgImage';
 import { setStorage } from '../../src/js/Utils/User/session';
 import { btoa } from '../../src/js/Utils/Base64';

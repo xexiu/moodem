@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { SearchBar } from 'react-native-elements';
 import { Dimensions } from 'react-native';
-import { getSoundCloudTacks } from '../../src/js/Api/soundCloudApi';
+import { getSoundCloudTacks } from '../../src/js/SoundCloud/soundCloudFetchers';
 
 const MARGIN_RIGHT = 80;
 const {
