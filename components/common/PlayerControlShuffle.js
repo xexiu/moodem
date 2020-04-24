@@ -1,21 +1,17 @@
-import React, { Component } from 'react';
+/* eslint-disable max-len */
+import React from 'react';
 import { Icon } from 'react-native-elements';
 import { View } from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
 
-export class PlayerControlShuffle extends Component {
-    constructor(props) {
-        super(props);
-    }
+export const PlayerControlShuffle = props => {
+    const {
+        shouldShuffle,
+        onPressShuffle
+    } = props;
 
-    render() {
-        const {
-            shouldShuffle,
-            onPressShuffle
-        } = this.props;
-
-        return (
-            <View style={{ position: 'relative' }}>
+    return (
+        <View style={{ position: 'relative' }}>
                 <View>
                     <Icon
                         iconStyle={{ marginTop: 20, marginRight: 20 }}
@@ -25,11 +21,12 @@ export class PlayerControlShuffle extends Component {
                         color='#777'
                         onPress={() => {
                             onPressShuffle(shouldShuffle);
-                        }} />
+                        }}
+                    />
                 </View>
                 {
                     shouldShuffle &&
-                    <View style={{ position: 'absolute', top: 5, left: -10, height: 15, width: 15}}>
+                    <View style={{ position: 'absolute', top: 5, left: -10, height: 15, width: 15 }}>
                         <Icon
                             Component={TouchableScale}
                             name='dot-single'
@@ -40,6 +37,5 @@ export class PlayerControlShuffle extends Component {
                     </View>
                 }
             </View>
-        )
-    }
-}
+    );
+};

@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@babel/register": "^7.9.0",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/masked-view": "^0.1.9",
     "@react-native-community/netinfo": "4.6.0",
@@ -36,6 +37,7 @@
     "axios": "^0.19.2",
     "expo": "~36.0.0",
     "firebase": "^7.14.1",
+    "jsdom-quokka-plugin": "^1.0.15",
     "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
     "react": "~16.9.0",
@@ -57,9 +59,9 @@
     "react-native-unimodules": "~0.7.0",
     "react-native-video": "^4.4.5",
     "react-native-web": "~0.11.7",
+    "react-test-renderer": "^16.9.0",
     "socket.io-client": "^2.3.0",
-    "tcomb-form-native": "^0.6.20",
-    "react-test-renderer": "^16.9.0"
+    "tcomb-form-native": "^0.6.20"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

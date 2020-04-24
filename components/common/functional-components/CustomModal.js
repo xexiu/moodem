@@ -15,7 +15,7 @@ export const CustomModal = props => {
     return (
         <Modal isVisible={isModalVisible} animationIn={'fadeInDownBig'} onBackdropPress={onBackdropPress}>
             <View style={{ backgroundColor: '#fff', borderRadius: 10, padding: 10, paddingBottom: 20 }}>
-                <View style={{ alignItems: 'flex-end' }}>
+                <View style={{ alignSelf: 'flex-end' }}>
                     {showRemoveIcon && <Icon
                         containerStyle={{ width: 25 }}
                         name={'remove'}

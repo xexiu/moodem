@@ -15,8 +15,9 @@ export const CustomButton = (props) => {
 		btnStyle = btnStyleDefault,
 		btnRaised = false,
 		btnType = 'solid',
-		btnOnPress = defaultAction.bind(this),
-		btnIcon
+		btnIcon,
+		shadow = btnShadow,
+		action = defaultAction.bind(this)
 	} = props;
 
 	return (
@@ -26,9 +27,9 @@ export const CustomButton = (props) => {
 			title={btnTitle}
 			type={btnType}
 			raised={btnRaised}
-			buttonStyle={[btnStyle, btnShadow]}
+			buttonStyle={[btnStyle, shadow]}
 			titleStyle={btnTitleStyle}
-			onPress={btnOnPress}
+			onPress={action}
 		/>
 	);
 };

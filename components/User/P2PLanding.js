@@ -11,6 +11,7 @@ import { PlayerContainer } from '../common/PlayerContainer';
 import { Player } from '../common/Player';
 import { TracksListContainer } from '../common/TracksListContainer';
 import { TrackListItems } from '../common/TrackListItems';
+import { Icon } from 'react-native-elements';
 
 let renderCalled = 0;
 
@@ -18,7 +19,25 @@ function setLastTrackFromList(track) {
     track.index = this.state.tracksList.length;
 }
 
+function getDrawerIcon(name, type = 'font-awesome', size, style, color, action = () => { }) {
+    return (<Icon
+        name={name}
+        type={type}
+        size={size}
+        style={style}
+        color={color}
+        onPress={action}
+    />);
+}
+
 export class P2PLanding extends Component {
+    static navigationOptions = ({ navigation, route }) => ({
+        // drawerLabel: 'Test',
+        // drawerIcon: ({ tintColor }) => (getDrawerIcon('random', 'font-awesome', 20, {}, tintColor)),
+        // headerMode: 'none'
+        headerShown: false
+    });
+
     constructor(props) {
         super(props);
 
@@ -144,9 +163,10 @@ export class P2PLanding extends Component {
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
 
-        console.log('Props', this.props);
+        console.log('P2PLanding', this.props.navigation);
 
         return (
+
             <ErrorBoundary>
                 <MainContainer>
                     <HeaderContainer>

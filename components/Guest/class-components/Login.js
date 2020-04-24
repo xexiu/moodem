@@ -2,14 +2,14 @@
 import React, { Component } from 'react';
 import { form, struct } from 'tcomb-form-native';
 import { View, Text, TouchableHighlight } from 'react-native';
-import { CustomButton } from '../functional-components/CustomButton';
-import { CustomModal } from '../functional-components/CustomModal';
+import { CustomButton } from '../../../components/common/functional-components/CustomButton';
+import { CustomModal } from '../../../components/common/functional-components/CustomModal';
 import { loginHandler } from '../../../src/js/Utils/Helpers/actions/loginHandler';
 import { formValidation } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
 import { loginText } from '../../../src/css/styles/login';
-import { PreLoader } from '../functional-components/PreLoader';
-import { ResetPassword } from '../../common/class-components/ResetPassword';
+import { PreLoader } from '../../../components/common/functional-components/PreLoader';
+import doLater from '../../../src/js/Utils/Helpers/actions/doLater';
 
 const Form = form.Form;
 
@@ -19,7 +19,6 @@ export class Login extends Component {
         this.state = {
             isLoginModalVisible: false,
             isLoading: false,
-            hasForgotPassword: false,
             errorText: ''
         };
         this.refForm = React.createRef();
@@ -40,16 +39,11 @@ export class Login extends Component {
         this.setState({ isLoginModalVisible: !this.state.isLoginModalVisible });
     }
 
-    forgotPasswordHandler = (data) => {
-        this.setState({ hasForgotPassword: data.hasForgotPassword });
-    }
-
     render() {
         const {
             isLoginModalVisible,
             isLoading,
             errorText,
-            hasForgotPassword
         } = this.state;
         const {
             btnTitle,
@@ -57,20 +51,12 @@ export class Login extends Component {
             loginHandlerGuest
         } = this.props;
 
-        if (hasForgotPassword) {
-            return (
-                <View style={{ alignItems: 'center', padding: 5 }}>
-                    <ResetPassword hasForgotPassword={hasForgotPassword} forgotPasswordHandler={this.forgotPasswordHandler} />
-                </View>
-            );
-        }
-
         return (
             <View style={{ alignItems: 'center', padding: 5 }}>
                 <CustomButton
                     btnTitle={btnTitle}
                     btnStyle={btnStyle}
-                    btnOnPress={this.toggleModal}
+                    action={this.toggleModal}
                 />
 
                 <CustomModal isModalVisible={isLoginModalVisible} onBackdropPress={this.onBackdropPressHandler}>
@@ -86,14 +72,14 @@ export class Login extends Component {
                         <CustomButton
                             btnTitle="Login"
                             btnStyle={btnStyle}
-                            btnOnPress={() => {
+                            action={() => {
                                 const validate = this.refForm.current.getValue();
 
                                 if (validate) {
                                     this.setState({ isLoading: true });
                                     loginHandler(validate)
                                         .then(user => {
-                                            this.setState({ isLoading: false });
+                                            this.setState({ isLoading: false, isLoginModalVisible: false, errorText: '' });
                                             loginHandlerGuest(user);
                                         })
                                         .catch(err => {
@@ -110,8 +96,8 @@ export class Login extends Component {
                             <TouchableHighlight
                                 underlayColor={'#f0f0f0'}
                                 onPress={() => {
-                                    this.setState({ isLoginModalVisible: false, hasForgotPassword: true, errorText: '' });
-                                    loginHandlerGuest({ hasForgotPassword: true });
+                                    this.setState({ isLoginModalVisible: false, errorText: '' });
+                                    doLater(() => loginHandlerGuest(true), 500);
                                 }}
                             >
                                 <Text style={{ textAlign: 'center', margin: 10, color: '#dd0031' }}>Forgot password?</Text>

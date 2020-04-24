@@ -3,12 +3,12 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form-native';
 import { View, Text } from 'react-native';
-import { CustomButton } from '../functional-components/CustomButton';
-import { CustomModal } from '../functional-components/CustomModal';
+import { CustomButton } from '../../common/functional-components/CustomButton';
+import { CustomModal } from '../../common/functional-components/CustomModal';
 import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/resetPasswordHandler';
 import { formValidation } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import { loginText } from '../../../src/css/styles/login';
-import { PreLoader } from '../functional-components/PreLoader';
+import { PreLoader } from '../../common/functional-components/PreLoader';
 
 const Form = t.form.Form;
 
@@ -52,14 +52,14 @@ export class ResetPassword extends Component {
         const {
             btnTitle = 'Reset Password',
             btnStyle,
-            forgotPasswordHandler
+            loginHandlerGuest
         } = this.props;
 
         return (
             <CustomModal
                 isModalVisible={isResetPasswordModalVisible} onBackdropPress={() => {
                     this.onBackdropPressHandler();
-                    forgotPasswordHandler({ hasForgotPassword: false });
+                    loginHandlerGuest({ hasForgotPassword: false });
                 }}
             >
                 <Text style={loginText}>Give me my keys back!</Text>
@@ -74,7 +74,7 @@ export class ResetPassword extends Component {
                     <CustomButton
                         btnTitle={btnTitle}
                         btnStyle={btnStyle}
-                        btnOnPress={() => {
+                        action={() => {
                             const validate = this.refForm.current.getValue();
 
                             if (validate) {
@@ -82,7 +82,7 @@ export class ResetPassword extends Component {
                                 resetPasswordHandler(validate)
                                     .then(() => {
                                         this.setState({ isLoading: false });
-                                        forgotPasswordHandler({ hasForgotPassword: false });
+                                        loginHandlerGuest({ hasForgotPassword: false });
                                     })
                                     .catch(err => this.setState({ isLoading: false, errorText: err }));
                             }
