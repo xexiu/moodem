@@ -60,7 +60,7 @@ export class App extends Component {
   signOut = (navigation) => {
     firebase.auth().signOut().then(() => {
       this.setState({ user: null, groupName: 'Moodem' });
-      navigation.popToTop();
+      navigation.navigate('Guest');
     });
   }
 
@@ -141,8 +141,8 @@ export class App extends Component {
     if (user) {
       return (
         <CommonStackWrapper initialRouteName="Drawer">
-          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
           <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
+          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
         </CommonStackWrapper>
       );
     }
