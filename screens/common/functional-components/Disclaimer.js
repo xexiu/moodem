@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-export const Disclaimer = () => (
+const Disclaimer = () => (
     <View>
         <Text>Disclaimer</Text>
         <Text>Disclaimer</Text>
@@ -10,3 +10,15 @@ export const Disclaimer = () => (
         <Text>Disclaimer</Text>
     </View>
 );
+
+Disclaimer.navigationOptions = ({ navigation, route }) => ({
+    headerShown: false,
+    headerMode: 'none',
+    unmountOnBlur: true,
+    drawerLabel: () => null,
+    title: () => null,
+});
+
+export {
+    Disclaimer
+};

@@ -258,7 +258,7 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - ReactNativeART (1.2.0):
     - React
-  - RNCMaskedView (0.1.9):
+  - RNCMaskedView (0.1.10):
     - React
   - RNGestureHandler (1.5.6):
     - React
@@ -540,7 +540,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
-  RNCMaskedView: 5dba3cb07493765fb66156c83c3dd281ca709a48
+  RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: 254da4b84f25971cbb30ed3ddc84131f23cac812

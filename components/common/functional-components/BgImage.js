@@ -1,9 +1,10 @@
 import React from 'react';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { ImageBackground, Dimensions } from 'react-native';
 
 const {
-    width
+	width
 } = Dimensions.get('window');
 
 export const BgImage = props => {
@@ -14,19 +15,20 @@ export const BgImage = props => {
 	} = props;
 
 	return (
-		<ImageBackground
-			source={source}
-			style={bgImageStyle}
-		>
+		<View>
+			<ImageBackground
+				source={source}
+				style={bgImageStyle}
+			/>
 			{children}
-		</ImageBackground>
+		</View>
 	);
 };
 
 const defaultStyleLogo = {
-    width,
-    height: 400,
-    marginTop: 50
+	width,
+	height: 400,
+	marginTop: 50
 };
 
 BgImage.propTypes = {

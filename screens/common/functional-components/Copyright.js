@@ -1,26 +1,23 @@
 import React from 'react';
-import { Text, Dimensions } from 'react-native';
+import { View, Text } from 'react-native';
 
-const windowHeight = Dimensions.get('window').height;
+const Copyright = () => (
+    <View>
+        <Text>Copyright</Text>
+        <Text>Copyright</Text>
+        <Text>Copyright</Text>
+        <Text>Copyright</Text>
+        <Text>Copyright</Text>
+    </View>
+);
 
-const Copyright = (props) => {
-    const {
-        color
-    } = props;
-
-    return (
-        <Text>© <Text style={color}>Mood</Text>em</Text>
-    );
-};
-
-Copyright.containerStyle = {
-    borderTopColor: '#eee',
-    borderTopWidth: 1,
-    position: 'absolute',
-    top: windowHeight - 50,
-    left: 0,
-    right: 0
-};
+Copyright.navigationOptions = ({ navigation, route }) => ({
+    headerShown: false,
+    headerMode: 'none',
+    unmountOnBlur: true,
+    drawerLabel: () => null,
+    title: () => null,
+});
 
 export {
     Copyright

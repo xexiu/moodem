@@ -37,3 +37,21 @@ export const FORM_FIELDS_REGISTER = {
         secureTextEntry: true
     }
 };
+
+export const FORM_FIELDS_CREATE_GROUP = {
+    group_name: {
+        help: 'Enter a group name (letters/numbers and _- characters allwowed only!)',
+        error: 'Incorrect group name!',
+        autoCapitalize: 'none'
+    },
+    group_password: {
+        help: 'Enter group password. (mininum length must be 4 or greater)',
+        error: 'Bad password or not allowed! (mininum length must be 4 or greater)',
+        password: true,
+        secureTextEntry: true
+    },
+    invited_emails: {
+        help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
+        error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)'
+    }
+};

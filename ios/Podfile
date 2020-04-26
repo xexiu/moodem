@@ -44,6 +44,5 @@ target 'moodem' do
   # react-native-cli autolinking
   use_native_modules!
 
-  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
 end

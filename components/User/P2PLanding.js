@@ -12,6 +12,7 @@ import { Player } from '../common/Player';
 import { TracksListContainer } from '../common/TracksListContainer';
 import { TrackListItems } from '../common/TrackListItems';
 import { Icon } from 'react-native-elements';
+import { View, Text, TouchableHighlight, Button } from 'react-native';
 
 let renderCalled = 0;
 
@@ -31,12 +32,13 @@ function getDrawerIcon(name, type = 'font-awesome', size, style, color, action =
 }
 
 export class P2PLanding extends Component {
-    static navigationOptions = ({ navigation, route }) => ({
-        // drawerLabel: 'Test',
-        // drawerIcon: ({ tintColor }) => (getDrawerIcon('random', 'font-awesome', 20, {}, tintColor)),
-        // headerMode: 'none'
-        headerShown: false
-    });
+    static navigationOptions = ({ navigation, route }) => {
+        console.log('Landing P2P', navigation, route);
+        return ({
+            headerShown: false,
+            title: route.params.groupName
+        });
+    };
 
     constructor(props) {
         super(props);
@@ -163,7 +165,7 @@ export class P2PLanding extends Component {
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
 
-        console.log('P2PLanding', this.props.navigation);
+        console.log('P2PLanding', this.props);
 
         return (
 

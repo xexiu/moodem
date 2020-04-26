@@ -2,42 +2,34 @@
 import 'react-native-gesture-handler';
 import React, { Component } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import { View, Text, TouchableHighlight, Button } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { View } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import firebase from './src/js/Utils/Helpers/services/firebase';
 import './src/js/Utils/Helpers/services/sentry';
+import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
-import { P2PLanding } from './components/User/P2PLanding';
-import { Login } from './components/Guest/class-components/Login';
-import { Register } from './components/Guest/class-components/Register';
 import { GuestScreen } from './screens/Guest/class-components/GuestScreen';
 import { PreLoader } from './components/common/functional-components/PreLoader';
-import { Disclaimer } from './screens/common/functional-components/Disclaimer';
-import { FAQ } from './screens/common/functional-components/FAQ';
-import { About } from './screens/common/functional-components/About';
-import { Copyright } from './screens/common/functional-components/Copyright';
-import { GeneralChatRoom } from './screens/common/functional-components/GeneralChatRoom';
-import { Avatar } from './components/common/class-components/Avatar';
 import { Profile } from './components/User/class-components/Profile';
 import { Settings } from './components/User/class-components/Settings';
-import { avatarContainer } from './src/css/styles/Avatar';
-import { Icon } from 'react-native-elements';
+import { BgImage } from './components/common/functional-components/BgImage';
+import { CommonDrawerWrapper } from './components/common/functional-components/CommonDrawerWrapper';
+import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
 
+console.disableYellowBox = true;
 
 /* eslint-disable global-require */
 
-const GuestStack = createStackNavigator();
+const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export class App extends Component {
   state = {
     hasInternetConnection: true,
-    isRegistered: false,
     isViewingLandPage: false,
     loading: true,
     user: null,
+    groupName: 'Moodem',
     connectionParams: {
       connectionType: 'wifi',
       connectionDetails: null
@@ -49,7 +41,7 @@ export class App extends Component {
     // Sentry.nativeCrash();
     //throw new Error('My first app crash test for Sentry Logs');
     // For Testing NOT logged
-    firebase.auth().signOut();
+    //firebase.auth().signOut();
 
     firebase.auth().onAuthStateChanged(this.handleUserAuthFirebase);
     this.netInfo();
@@ -59,60 +51,47 @@ export class App extends Component {
     this.netInfo = null;
   }
 
-  CustomDrawerContent= (props, params) => (
-      <DrawerContentScrollView {...props}>
-        <DrawerItem
-          label={() => (<Icon
-            name='exit-to-app'
-            type='material-icons'
-            color='#dd0031'
-            size={25}
-          />)}
+  handleGroupName = (groupName) => {
+    this.setState({
+      groupName
+    });
+  }
 
-          style={[{ width: 70, alignItems: 'flex-start', position: 'absolute', top: 45, left: -40, margin: 30 }, {
-            transform: [{ rotate: '180deg' }]
-          }]}
-          onPress={() => firebase.auth().signOut().then(() => {
-            this.setState({ user: null });
-            props.navigation.navigate('Guest');
-          })}
-        />
-        <DrawerItem
-          label={() => <Avatar navigation={props.navigation} user={params.user} />} style={avatarContainer}
-          onPress={() => (params.user ? props.navigation.navigate('Profile') : props.navigation.navigate('Guest'))}
-        />
-        {!params.user && <DrawerItem label="Back to Login" onPress={() => props.navigation.navigate('Guest')} />}
-        <DrawerItemList {...props} />
-        <DrawerItem
-          label={() => <Copyright color={{ color: '#dd0031' }} />}
-          onPress={() => console.log('Pressed Copyright', props)}
-          style={Copyright.containerStyle}
-        />
-      </DrawerContentScrollView>
-    )
+  signOut = (navigation) => {
+    firebase.auth().signOut().then(() => {
+      this.setState({ user: null, groupName: 'Moodem' });
+      navigation.navigate('Guest');
+    });
+  }
 
-  SideBarDrawer = ({ navigation, route }) => (
-      <Drawer.Navigator initialRouteName="Moodem" drawerType="slide" drawerContent={(props) => this.CustomDrawerContent({ ...props }, { user: route.params.user })}>
-        <Drawer.Screen name="Moodem" component={P2PLanding} options={P2PLanding.navigationOptions} />
-        <Drawer.Screen name="Chat Room" component={GeneralChatRoom} />
-        {route.params.user && <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} />}
-        {route.params.user && <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} />}
-        <Drawer.Screen name="Disclaimer" component={Disclaimer} />
-        <Drawer.Screen name="FAQ" component={FAQ} />
-        <Drawer.Screen name="About" component={About} />
-      </Drawer.Navigator>
-    )
+  goHome = (navigation) => {
+    this.setState({ groupName: 'Moodem' });
+    navigation.navigate('Moodem');
+  }
+
+  SideBarDrawer = ({ navigation, route }) => {
+    if (route.params.user) {
+      return (
+        <CommonDrawerWrapper user={route.params.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName}>
+          <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
+          <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
+        </CommonDrawerWrapper>
+      );
+    }
+    return (
+      <CommonDrawerWrapper user={route.params.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName} />
+    );
+  }
 
   handleUserAuthFirebase = user => {
     if (user) {
       this.setState({
         user,
-        isRegistered: true,
         loading: false
       });
     } else {
       this.setState({
-        isRegistered: false,
+        user: null,
         loading: false
       });
     }
@@ -136,7 +115,7 @@ export class App extends Component {
     if (data.hasForgotPassword) {
       this.setState({ hasForgotPassword: data.hasForgotPassword });
     } else if (data && data.user) {
-      this.setState({ user: data.user, isRegistered: true });
+      this.setState({ user: data.user });
     }
   }
 
@@ -148,61 +127,36 @@ export class App extends Component {
     console.log('Called render(), from App Component');
     const {
       hasInternetConnection,
-      isRegistered,
-      isViewingLandPage,
-      loading,
-      user,
+      loading = false,
+      user
     } = this.state;
 
-    console.log('User', user);
+    if (!hasInternetConnection) {
+      return (<OfflineNotice />);
+    }
 
-    // if (!hasInternetConnection) {
-    //   return (<OfflineNotice />);
-    // } else if (false) {
-    //   return (
-    //     <GuestScreen>
-    //       <PreLoader size={50} />
-    //     </GuestScreen>
-    //   );
-    // } else if (isRegistered) {
-    //   //   const Drawer = createDrawerNavigator();
+    if (loading) {
+      return (
+        <View>
+          <BgImage source={require('./assets/images/logo_moodem.png')} />
+          <PreLoader containerStyle={{ justifyContent: 'center', alignItems: 'center' }} size={50} />
+        </View>
+      );
+    }
 
-    //   //   // return (<NavigationContainer>
-    //   //   //   <Drawer.Navigator initialRouteName="P2PLanding">
-    //   //   //      {/* Avatar */}
-    //   //   //      {/* Username */}
-    //   //   //     {/* Create New Group Button */}
-    //   //   //     <Drawer.Screen name="Chat Room" component={GeneralChatRoom} />
-    //   //   //     <Drawer.Screen name="About" component={About} />
-    //   //   //   </Drawer.Navigator>
-    //   //   // </NavigationContainer>);
-    //   // } else if (isViewingLandPage) {
-    //   //   const Drawer = createDrawerNavigator();
-
-    //   //   return (<NavigationContainer>
-    //   //     <Drawer.Navigator initialRouteName="P2PLanding">
-    //   //     {/* <Drawer.Screen name="Chat Room" component={GeneralChatRoom} /> */}
-    //   //     <Drawer.Screen name="Test" component={goToButton} />
-    //   //       <Drawer.Screen
-    //   //         name="P2PLanding" component={P2PLanding}
-    //   //       />
-    //   //       {/* Login/Register buttons */}
-    //   //       <Drawer.Screen name="About" component={About} />
-    //   //     </Drawer.Navigator>
-    //   //   </NavigationContainer>);
-    // }
+    if (user) {
+      return (
+        <CommonStackWrapper initialRouteName="Drawer">
+          <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
+        </CommonStackWrapper>
+      );
+    }
 
     return (
-      <NavigationContainer initialRouteName="Guest">
-        <GuestStack.Navigator>
-          <GuestStack.Screen
-            name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} initialParams={{ user }}
-          />
-          <GuestStack.Screen
-            name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }}
-          />
-        </GuestStack.Navigator>
-      </NavigationContainer>
+      <CommonStackWrapper initialRouteName="Guest">
+        <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
+        <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
+      </CommonStackWrapper>
     );
   }
 }

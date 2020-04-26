@@ -13,10 +13,12 @@ export const CustomButton = (props) => {
 		btnTitle = 'No button title provided!',
 		btnTitleStyle,
 		btnStyle = btnStyleDefault,
+		btnCustomStyle,
 		btnRaised = false,
 		btnType = 'solid',
 		btnIcon,
 		shadow = btnShadow,
+		btnViewComponent,
 		action = defaultAction.bind(this)
 	} = props;
 
@@ -27,9 +29,10 @@ export const CustomButton = (props) => {
 			title={btnTitle}
 			type={btnType}
 			raised={btnRaised}
-			buttonStyle={[btnStyle, shadow]}
+			buttonStyle={[btnStyle, shadow, btnCustomStyle]}
 			titleStyle={btnTitleStyle}
 			onPress={action}
+			ViewComponent={btnViewComponent}
 		/>
 	);
 };

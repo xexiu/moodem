@@ -50,11 +50,12 @@ export class GuestScreen extends Component {
                 <CustomButton
                     btnTitle="I want to see what's inside first!"
                     btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
-                    containerStyle={{ backgroundColor: '#fff' }}
                     btnRaised={false}
                     shadow={{}}
                     btnTitleStyle={{ color: '#00b7e0', fontSize: 16 }}
-                    action={() => navigation.navigate('Drawer')}
+                    action={() => navigation.navigate('Drawer', {
+                        screen: 'Moodem'
+                    })}
                 />
             </View>
         );

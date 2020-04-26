@@ -4,7 +4,8 @@ import android.app.Application;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.reactnativecommunity.art.ARTPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
+import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
