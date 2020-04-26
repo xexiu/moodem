@@ -9,7 +9,8 @@ import { ResetPassword } from '../../../components/Guest/class-components/ResetP
 
 export class GuestScreen extends Component {
     static navigationOptions = screeenProps => ({
-        headerShown: false
+        headerShown: false,
+        unmountOnBlur: true
     });
 
     constructor(props) {

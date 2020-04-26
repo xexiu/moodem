@@ -60,7 +60,7 @@ export class App extends Component {
   signOut = (navigation) => {
     firebase.auth().signOut().then(() => {
       this.setState({ user: null, groupName: 'Moodem' });
-      navigation.navigate('Guest');
+      navigation.popToTop();
     });
   }
 
@@ -69,8 +69,8 @@ export class App extends Component {
     navigation.navigate('Moodem');
   }
 
-  SideBarDrawer = ({ navigation, route }) => {
-    if (route.params.user) {
+  SideBarDrawer = ({ route }) => {
+    if (this.state.user) {
       return (
         <CommonDrawerWrapper user={route.params.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName}>
           <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
@@ -85,15 +85,9 @@ export class App extends Component {
 
   handleUserAuthFirebase = user => {
     if (user) {
-      this.setState({
-        user,
-        loading: false
-      });
+      this.setState({ user, loading: false });
     } else {
-      this.setState({
-        user: null,
-        loading: false
-      });
+      this.setState({ user: null, loading: false });
     }
   }
 
@@ -147,6 +141,7 @@ export class App extends Component {
     if (user) {
       return (
         <CommonStackWrapper initialRouteName="Drawer">
+          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
           <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
         </CommonStackWrapper>
       );
