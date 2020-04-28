@@ -37,9 +37,9 @@ export const CommonDrawerWrapper = (props) => {
             }}
             initialRouteName={groupName} drawerType="slide" drawerContent={(_props) => itemsDrawer({ ..._props }, { user, groupName, signOut, goHome })}
         >
-            <Drawer.Screen name={groupName} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, groupName }} />
+            <Drawer.Screen name={groupName} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />
             <Drawer.Screen name="Chat Room" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, groupName }} />
-            {groupName === 'Moodem' && <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />}
+            <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />
             {props.children}
         </Drawer.Navigator>
     );

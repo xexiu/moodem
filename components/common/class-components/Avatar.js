@@ -27,9 +27,10 @@ export class Avatar extends Component {
         return (
             <View style={avatarContainer}>
                 <TouchableHighlight underlayColor='#eee' onPress={hangleUserNavigation.bind(this, navigation, user, groupName)}>
-                    <BgImage source={require('../../../assets/images/avatars/avatar_moodem.png')} bgImageStyle={[avatarImage, btnShadow]} />
+                    <BgImage source={require('../../../assets/images/avatars/avatar_moodem.png')} bgImageStyle={[avatarImage, btnShadow]}>
+                        <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hello {user ? user.displayName : 'Guest' }</Text>
+                    </BgImage>
                 </TouchableHighlight>
-                {user && <Text>Welcome {user.displayName}</Text>}
             </View>
         );
     }

@@ -33,9 +33,9 @@ function getDrawerIcon(name, type = 'font-awesome', size, style, color, action =
 
 export class P2PLanding extends Component {
     static navigationOptions = ({ route }) => ({
-            headerShown: false,
-            title: route.params.groupName
-        });
+        headerShown: false,
+        title: route.params.groupName
+    });
 
     constructor(props) {
         super(props);
@@ -155,21 +155,39 @@ export class P2PLanding extends Component {
 
     render() {
         //console.log('Called render P2PLanding()', renderCalled++);
+        const handleGroupName = this.props.route.params.handleGroupName;
         const {
             tracksList,
             searchedTracksList,
             isSearchingTracks,
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
-
-        //console.log('P2PLanding', this.props);
+        const {
+            navigation
+        } = this.props;
 
         return (
 
             <ErrorBoundary>
                 <MainContainer>
                     <HeaderContainer>
-                        <BurgerMenuIcon action={() => this.props.navigation.openDrawer()} />
+                        {this.props.route.params.groupName === 'Moodem' ?
+                            <BurgerMenuIcon action={() => this.props.navigation.openDrawer()} /> :
+                            <View style={{ flexDirection: 'row', position: 'absolute' }}>
+                                <Icon
+                                    raised
+                                    name='chevron-left'
+                                    type='entypo'
+                                    size={25}
+                                    iconStyle={{ fontSize: 35 }}
+                                    color={'#777'}
+                                    onPress={() => {
+                                        handleGroupName('Moodem');
+                                        navigation.goBack(null);
+                                    }}
+                                />
+                            </View>
+                        }
                         <TopSearchBar fillTracksList={this.handlingOnPressSearch.bind(this)} />
                     </HeaderContainer>
                     <BodyContainer>

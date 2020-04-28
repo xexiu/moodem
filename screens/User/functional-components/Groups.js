@@ -34,29 +34,39 @@ function getGroupsFromDatabase(reference) {
 function getInvitedGroupsFromDatabase(reference) {
     return new Promise(resolve => {
         reference.on('value', snapshot => {
-            const invitedToGroups = [
-                {
-                    group_category_name: 'Invited Groups'
-                }
-            ];
+            const invitedToGroups = [];
 
             snapshot.forEach(s => {
                 const data = snapshot.child(s.key).val();
 
                 if (s.key === 'groups_invited') {
-                    Object.values(data).forEach(groupAttr => {
-                        const dbGroupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
-                        dbGroupRef.on('value', snapshotGroup => {
-                            const group = {};
-                            snapshotGroup.forEach(values => {
-                                group[values.key] = snapshotGroup.child(values.key).val();
+                    const groups = Object.values(data);
+
+                    if (groups.length) {
+                        for (let i = 0; i < groups.length; i++) {
+                            const groupAttr = groups[i];
+                            const dbGroupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
+
+                            dbGroupRef.on('value', snapshotGroup => {
+                                const group = {};
+                                snapshotGroup.forEach(values => {
+                                    group[values.key] = snapshotGroup.child(values.key).val();
+                                });
+                                invitedToGroups.push(group);
+
+                                if (i === (groups.length - 1)) {
+                                    invitedToGroups.unshift({
+                                        group_category_name: 'Invited to Groups'
+                                    });
+                                    resolve(invitedToGroups);
+                                }
                             });
-                            invitedToGroups.push(group);
-                        });
-                    });
+                        }
+                    } else {
+                        resolve(invitedToGroups);
+                    }
                 }
             });
-            resolve(invitedToGroups);
         });
     });
 }
@@ -89,6 +99,7 @@ export class Groups extends Component {
 
                 getInvitedGroupsFromDatabase(this.refUsers)
                     .then(invitedToGroups => {
+                        console.log('Inviiiited', invitedToGroups);
                         this.setState({
                             groups: [...this.state.groups, ...invitedToGroups],
                             loaded: true
@@ -109,6 +120,7 @@ export class Groups extends Component {
         return (
             <ListItem
                 containerStyle={{ backgroundColor: 'transparent', marginBottom: 0 }}
+                disabled={!!item.group_category_name}
                 bottomDivider
                 Component={TouchableOpacity}
                 title={item.group_name || <Text style={{ fontSize: 20 }}>{item.group_category_name}</Text>}

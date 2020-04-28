@@ -71,7 +71,11 @@ export class App extends Component {
           }
         ]
       });
-      navigation.navigate('Guest');
+      navigation.navigate('Guest', {
+        params: {
+          user: null
+        }
+      });
     });
   }
 
