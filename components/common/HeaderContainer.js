@@ -11,7 +11,7 @@ export class HeaderContainer extends Component {
             <View style={containerViewTopHeader}>
                 {this.props.children}
             </View>
-        )
+        );
     }
 }
 
@@ -23,4 +23,4 @@ const stylesTopHeader = {
         flexDirection: 'row',
         alignItems: 'center'
     }
-}
+};

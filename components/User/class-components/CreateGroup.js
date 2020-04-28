@@ -8,6 +8,7 @@ import { CustomModal } from '../../../components/common/functional-components/Cu
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
 import { PreLoader } from '../../../components/common/functional-components/PreLoader';
+import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
 
 const Form = form.Form;
 
@@ -53,11 +54,12 @@ export class CreateGroup extends Component {
 
         const {
             handleGroupName,
-            navigation
+            navigation,
+            user
         } = this.props;
 
         return (
-            <View style={{ alignItems: 'center', padding: 5 }}>
+            <View style={{ alignSelf: 'center', padding: 5 }}>
                 <CustomButton btnTitle="Create Group" action={this.toggleModal} style={{ alignItems: 'flex-end' }} />
 
                 <CustomModal isModalVisible={isCreateGroupModalVisible} onBackdropPress={this.onBackdropPressHandler}>
@@ -78,16 +80,23 @@ export class CreateGroup extends Component {
                                     this.setState({ isLoading: true });
                                     const groupName = this.refForm.current.getComponent('group_name').refs.input._getText();
 
-                                    handleGroupName(groupName);
-                                    this.setState({ isLoading: false }); // after setting the groupName - promise - DB?
+                                    createGroupHandler(validate, user)
+                                    .then(data => {
+                                        console.log('Dataaaaa', data);
+                                        handleGroupName(groupName);
+                                        this.setState({ isLoading: false }); // after setting the groupName - promise - DB?
 
-                                    navigation.push('Drawer', {
-                                        screen: 'Moodem',
-                                        params: {
-                                            groupName
-                                        }
+                                        navigation.push('Drawer', {
+                                            screen: 'Moodem',
+                                            params: {
+                                                groupName
+                                            }
+                                        });
+                                        this.onBackdropPressHandler();
+                                    })
+                                    .catch(err => {
+                                        this.setState({ isLoading: false, errorText: err });
                                     });
-                                    this.onBackdropPressHandler();
                                 }
                             }}
                         />

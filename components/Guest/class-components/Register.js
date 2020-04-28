@@ -59,6 +59,7 @@ export class Register extends Component {
         const {
             btnTitle,
             btnStyle,
+            navigation
         } = this.props;
 
         return (
@@ -90,7 +91,15 @@ export class Register extends Component {
                                     if (validate) {
                                         this.setState({ isLoading: true });
                                         registerHandler(validate)
-                                            .then(() => this.setState({ isLoading: false, isRegisterModalVisible: false, errorText: '' }))
+                                            .then((data) => {
+                                                this.setState({ isLoading: false, isRegisterModalVisible: false, errorText: '' });
+                                                navigation.navigate('Drawer', {
+                                                    screen: 'Moodem',
+                                                    params: {
+                                                        user: data.user
+                                                    }
+                                                });
+                                            })
                                             .catch(err => this.setState({ isLoading: false, errorText: err }));
                                     }
                                 }}

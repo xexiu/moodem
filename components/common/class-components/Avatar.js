@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { View, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { BgImage } from '../functional-components/BgImage';
 import { btnShadow } from '../../../src/css/styles/common';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
@@ -29,6 +29,7 @@ export class Avatar extends Component {
                 <TouchableHighlight underlayColor='#eee' onPress={hangleUserNavigation.bind(this, navigation, user, groupName)}>
                     <BgImage source={require('../../../assets/images/avatars/avatar_moodem.png')} bgImageStyle={[avatarImage, btnShadow]} />
                 </TouchableHighlight>
+                {user && <Text>Welcome {user.displayName}</Text>}
             </View>
         );
     }

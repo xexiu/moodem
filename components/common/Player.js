@@ -220,7 +220,7 @@ export class Player extends Component {
                     <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this)} />
                     <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
                     {!songIsReady ?
-                        <PreLoader size={58} /> :
+                        <PreLoader size={58} containerStyle={{}} /> :
                         <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
                     }
                     <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, tracks, songIndex)} />

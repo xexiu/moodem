@@ -5,6 +5,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { CommonActions } from '@react-navigation/native';
 import './src/js/Utils/Helpers/services/sentry';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
@@ -60,6 +61,16 @@ export class App extends Component {
   signOut = (navigation) => {
     firebase.auth().signOut().then(() => {
       this.setState({ user: null, groupName: 'Moodem' });
+      CommonActions.reset({
+        index: 0,
+        key: null,
+        routes: [
+          {
+            name: 'Guest',
+            params: { user: null }
+          }
+        ]
+      });
       navigation.navigate('Guest');
     });
   }

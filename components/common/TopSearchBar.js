@@ -122,6 +122,7 @@ export class TopSearchBar extends Component {
                     borderRadius: 25,
                     borderColor: '#eee',
                     borderWidth: 2,
+                    marginLeft: 70
                 }}
                 inputContainerStyle={{
                     borderRadius: 25,

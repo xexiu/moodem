@@ -13,10 +13,13 @@ export function registerHandler(validate) {
                 }).catch((error) => {
                     // An error happened.
                 });
-                firebase.database().ref(`Users/${auth.user.uid}`).push({
+                firebase.database().ref(`Users/${auth.user.uid}`).set({
+                    user_id: auth.user.uid,
                     name: validate.name,
                     email: validate.email,
-                    password: validate.password
+                    password: validate.password,
+                    user_owned_groups: null,
+                    user_is_invited_in_groups: null
                 }).then((data) => {
                     //success callback
                     console.log('Saved on database ', data);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from 'react-native-elements';
+import { View } from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
 
 export const BurgerMenuIcon = props => {
@@ -8,7 +9,8 @@ export const BurgerMenuIcon = props => {
     } = props;
 
     return (
-        <Icon
+        <View style={{ position: 'absolute', top: -12, left: 0, width: 70, height: 70 }}>
+            <Icon
             iconStyle={{ fontSize: 30 }}
             Component={TouchableScale}
             name='menu'
@@ -16,6 +18,7 @@ export const BurgerMenuIcon = props => {
             raised
             color='#444'
             onPress={action}
-        />
+            />
+        </View>
     );
 };

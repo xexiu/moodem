@@ -5,10 +5,7 @@ import firebase from '../services/firebase';
 export function loginHandler(validate) {
 	return new Promise((resolve, reject) => {
 		firebase.auth().signInWithEmailAndPassword(validate.email, validate.password)
-			.then((user) => {
-				console.log('Welcome back: ', user);
-				return resolve(user);
-			}).catch(error => {
+			.then((user) => resolve(user)).catch(error => {
 				console.log('Validate Error', error);
 				const errorCode = error.code;
 				const errorMessage = error.message;

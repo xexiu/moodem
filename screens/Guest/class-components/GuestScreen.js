@@ -46,7 +46,7 @@ export class GuestScreen extends Component {
                 <BgImage source={require('../../../assets/images/logo_moodem.png')} />
 
                 <Login btnTitle="Login to Moodem" loginHandlerGuest={data => this.loginHandlerGuest(data, navigation)} />
-                <Register btnTitle="Become a Mooder" btnStyle={{ backgroundColor: '#00b7e0' }} />
+                <Register btnTitle="Become a Mooder" btnStyle={{ backgroundColor: '#00b7e0' }} navigation={navigation} />
                 {hasForgotPassword && <ResetPassword loginHandlerGuest={this.loginHandlerGuest} />}
                 <CustomButton
                     btnTitle="I want to see what's inside first!"

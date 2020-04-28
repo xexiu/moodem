@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { Component } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { ListItem, Icon, Button } from 'react-native-elements';
@@ -12,19 +13,16 @@ export class TrackListItem extends Component {
             hasVoted: false,
             hasBoosted: false,
             isRegistered: !0
-        }
+        };
     }
 
-    trackItemOnSearchList = (track) => {
-        return (
+    trackItemOnSearchList = (track) => (
             <View style={{ marginBottom: 2, position: 'absolute', left: 0, bottom: -15, marginLeft: -12 }}>
                 <Text style={{ fontSize: 10, fontStyle: 'italic', color: '#999' }}>Likes: {track.likes_count}</Text>
             </View>
         )
-    }
 
-    trackItemList = (track, sendVoteToTrackList, sendBoostToTrackList) => {
-        return (
+    trackItemList = (track, sendVoteToTrackList, sendBoostToTrackList) => (
             <View>
                 <View style={{ flexDirection: 'row', height: 22, position: 'absolute', bottom: -30, left: -10 }}>
                     <Button
@@ -32,7 +30,7 @@ export class TrackListItem extends Component {
                         buttonStyle={{ margin: 0, padding: 3, backgroundColor: '#90c520' }}
                         containerStyle={{ marginRight: 5 }}
                         titleStyle={{ fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}
-                        raised={true}
+                        raised
                         icon={
                             <Icon
                                 name="thumbs-up"
@@ -54,7 +52,7 @@ export class TrackListItem extends Component {
                         buttonStyle={{ margin: 0, padding: 3, backgroundColor: '#00b7e0' }}
                         containerStyle={{ marginRight: 5 }}
                         titleStyle={{ fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}
-                        raised={true}
+                        raised
                         icon={
                             <Icon
                                 name="thunder-cloud"
@@ -76,7 +74,7 @@ export class TrackListItem extends Component {
                         buttonStyle={{ margin: 0, padding: 4, backgroundColor: '#dd0031' }}
                         containerStyle={{ marginRight: 5 }}
                         titleStyle={{ fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}
-                        raised={true}
+                        raised
                         icon={
                             <Icon
                                 name="remove"
@@ -108,7 +106,6 @@ export class TrackListItem extends Component {
                 </View>
             </View>
         )
-    }
     render() {
         const {
             isSearchingTracks,
@@ -117,7 +114,7 @@ export class TrackListItem extends Component {
             sendSongToTrackList,
             sendVoteToTrackList,
             sendBoostToTrackList
-        } = this.props
+        } = this.props;
 
         return (
             <View style={{ position: 'relative' }}>
@@ -145,6 +142,6 @@ export class TrackListItem extends Component {
                     }}
                 />
             </View>
-        )
+        );
     }
 }

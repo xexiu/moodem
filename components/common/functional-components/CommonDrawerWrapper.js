@@ -39,7 +39,7 @@ export const CommonDrawerWrapper = (props) => {
         >
             <Drawer.Screen name={groupName} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, groupName }} />
             <Drawer.Screen name="Chat Room" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, groupName }} />
-            <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />
+            {groupName === 'Moodem' && <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />}
             {props.children}
         </Drawer.Navigator>
     );

@@ -14,7 +14,7 @@ import { TrackListItems } from '../common/TrackListItems';
 import { Icon } from 'react-native-elements';
 import { View, Text, TouchableHighlight, Button } from 'react-native';
 
-let renderCalled = 0;
+const renderCalled = 0;
 
 function setLastTrackFromList(track) {
     track.index = this.state.tracksList.length;
@@ -32,13 +32,10 @@ function getDrawerIcon(name, type = 'font-awesome', size, style, color, action =
 }
 
 export class P2PLanding extends Component {
-    static navigationOptions = ({ navigation, route }) => {
-        console.log('Landing P2P', navigation, route);
-        return ({
+    static navigationOptions = ({ route }) => ({
             headerShown: false,
             title: route.params.groupName
         });
-    };
 
     constructor(props) {
         super(props);
@@ -157,7 +154,7 @@ export class P2PLanding extends Component {
     }
 
     render() {
-        console.log('Called render P2PLanding()', renderCalled++);
+        //console.log('Called render P2PLanding()', renderCalled++);
         const {
             tracksList,
             searchedTracksList,
@@ -165,7 +162,7 @@ export class P2PLanding extends Component {
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
 
-        console.log('P2PLanding', this.props);
+        //console.log('P2PLanding', this.props);
 
         return (
 
