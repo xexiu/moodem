@@ -12,10 +12,10 @@ const ChatRoom = () => (
     </View>
 );
 
-ChatRoom.navigationOptions = ({ navigation, route }) => ({
+ChatRoom.navigationOptions = ({ route }) => ({
     headerMode: 'none',
     headerShown: false,
-    title: getGroupName(route.params.groupName, 'Chat Room')
+    title: getGroupName(route.params.group.group_name, 'Chat Room')
 });
 
 export {

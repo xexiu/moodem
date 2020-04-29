@@ -4,10 +4,10 @@ import { View, Text } from 'react-native';
 import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 
 export class Settings extends Component {
-    static navigationOptions = ({ navigation, route }) => ({
+    static navigationOptions = ({ route }) => ({
         headerMode: 'none',
         headerShown: false,
-        title: getGroupName(route.params.groupName, 'Settings')
+        title: getGroupName(route.params.group.group_name, 'Settings')
     });
 
     constructor(props) {

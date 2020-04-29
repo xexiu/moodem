@@ -5,10 +5,10 @@ import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 import { WebView } from 'react-native-webview';
 
 export class Profile extends Component {
-    static navigationOptions = ({ navigation, route }) => ({
+    static navigationOptions = ({ route }) => ({
         headerMode: 'none',
         headerShown: false,
-        title: getGroupName(route.params.groupName, 'Profile')
+        title: getGroupName(route.params.group.group_name, 'Profile')
     });
 
     constructor(props) {

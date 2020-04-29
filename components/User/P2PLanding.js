@@ -154,8 +154,8 @@ export class P2PLanding extends Component {
     }
 
     render() {
-        //console.log('Called render P2PLanding()', renderCalled++);
-        const handleGroupName = this.props.route.params.handleGroupName;
+        console.log('Called render P2PLanding GROUP()', this.props.route.params.group);
+        console.log('Called render P2PLanding USER()', this.props.route.params.user);
         const {
             tracksList,
             searchedTracksList,

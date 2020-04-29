@@ -12,7 +12,7 @@ const Drawer = createDrawerNavigator();
 function itemsDrawer(props, params) {
     return (
         <DrawerContentScrollView {...props} style={{ position: 'relative' }}>
-            <SideBarTopHeader navigation={props.navigation} params={params} groupName={params.groupName} signOut={params.signOut} goHome={params.goHome} />
+            <SideBarTopHeader navigation={props.navigation} params={params} group={params.group} signOut={params.signOut} goHome={params.goHome} />
             <DrawerItemList {...props} />
             <SideBarFooter navigation={props.navigation} />
         </DrawerContentScrollView>
@@ -22,10 +22,10 @@ function itemsDrawer(props, params) {
 export const CommonDrawerWrapper = (props) => {
     const {
         user,
-        groupName,
+        group,
         signOut,
         goHome,
-        handleGroupName
+        handleGroup
     } = props;
 
     return (
@@ -34,11 +34,11 @@ export const CommonDrawerWrapper = (props) => {
                 activeTintColor: '#dd0031',
                 itemStyle: { marginVertical: -2 }
             }}
-            initialRouteName={groupName} drawerType="slide" drawerContent={(_props) => itemsDrawer({ ..._props }, { user, groupName, signOut, goHome })}
+            initialRouteName={group.group_name} drawerType="slide" drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group, signOut, goHome })}
         >
-            <Drawer.Screen name={groupName} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />
-            <Drawer.Screen name="Chat Room" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, groupName }} />
-            {groupName === 'Moodem' && <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, groupName, handleGroupName }} />}
+            <Drawer.Screen name={group.group_name} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, group, handleGroup }} />
+            <Drawer.Screen name="Chat Room" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, group }} />
+            {group.group_name === 'Moodem' && <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, group, handleGroup }} />}
             {props.children}
         </Drawer.Navigator>
     );

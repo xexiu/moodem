@@ -5,7 +5,6 @@ import NetInfo from '@react-native-community/netinfo';
 import { View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { CommonActions } from '@react-navigation/native';
 import './src/js/Utils/Helpers/services/sentry';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
@@ -30,7 +29,7 @@ export class App extends Component {
     isViewingLandPage: false,
     loading: true,
     user: null,
-    groupName: 'Moodem',
+    group: { group_name: 'Moodem' },
     connectionParams: {
       connectionType: 'wifi',
       connectionDetails: null
@@ -52,25 +51,15 @@ export class App extends Component {
     this.netInfo = null;
   }
 
-  handleGroupName = (groupName) => {
+  handleGroup = (group) => {
     this.setState({
-      groupName
+      group
     });
   }
 
   signOut = (navigation) => {
     firebase.auth().signOut().then(() => {
-      this.setState({ user: null, groupName: 'Moodem' });
-      CommonActions.reset({
-        index: 0,
-        key: null,
-        routes: [
-          {
-            name: 'Guest',
-            params: { user: null }
-          }
-        ]
-      });
+      this.setState({ user: null, group: { group_name: 'Moodem' } });
       navigation.navigate('Guest', {
         params: {
           user: null
@@ -80,21 +69,25 @@ export class App extends Component {
   }
 
   goHome = (navigation) => {
-    this.setState({ groupName: 'Moodem' });
+    this.setState({ group: { group_name: 'Moodem' } });
     navigation.navigate('Moodem');
   }
 
   SideBarDrawer = ({ route }) => {
     if (this.state.user) {
       return (
-        <CommonDrawerWrapper user={this.state.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName}>
-          <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
-          <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
+        <CommonDrawerWrapper user={this.state.user} group={this.state.group} signOut={this.signOut} goHome={this.goHome} handleGroup={this.handleGroup}>
+          <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, group: this.state.group }} />
+          {/*
+          // TODO: ROADMAP Settings screen?
+          <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, group: this.state.group }} /> */
+
+          }
         </CommonDrawerWrapper>
       );
     }
     return (
-      <CommonDrawerWrapper user={this.state.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName} />
+      <CommonDrawerWrapper user={this.state.user} group={this.state.group} signOut={this.signOut} goHome={this.goHome} handleGroup={this.handleGroup} />
     );
   }
 
@@ -152,7 +145,7 @@ export class App extends Component {
     if (user) {
       return (
         <CommonStackWrapper initialRouteName="Drawer">
-          <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
+          <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user: this.state.user }} />
           <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
         </CommonStackWrapper>
       );
@@ -161,7 +154,7 @@ export class App extends Component {
     return (
       <CommonStackWrapper initialRouteName="Guest">
         <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
-        <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user }} />
+        <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user: this.state.user }} />
       </CommonStackWrapper>
     );
   }

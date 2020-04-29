@@ -53,7 +53,7 @@ function getInvitedGroupsFromDatabase(ref) {
 
                                     return i === (data.length - 1) && resolve(groups);
                                 }
-                                return resolve(groups);
+                                //return resolve(groups);
                             });
                     }
                 }
@@ -65,7 +65,7 @@ export class Groups extends Component {
     static navigationOptions = ({ route }) => ({
         headerMode: 'none',
         headerShown: false,
-        title: getGroupName(route.params.groupName, 'Groups')
+        title: getGroupName(route.params.group.group_name, 'Groups')
     });
 
     constructor(props) {
@@ -181,84 +181,84 @@ export class Groups extends Component {
                     { cancelable: false }
                 )}
             />);
+        }
     }
-}
 
-renderItem(item, navigation, handleGroupName, user, removingGroupId) {
-    return (
-        <ListItem
-            containerStyle={{ backgroundColor: 'transparent', marginBottom: 0, position: 'relative' }}
-            disabled={!!item.group_category_name}
-            bottomDivider
-            Component={TouchableOpacity}
-            title={this.getGroupTitle(item)}
-            subtitle={item.invited ? <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Invited</Text> : <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Owned</Text>}
-            chevron={() => !item.group_category_name && this.renderRemoveGroupIcon(item, user, removingGroupId)}
-            checkmark={() => <Text style={{ position: 'absolute', right: 0, bottom: 13, marginRight: 20, fontSize: 12, fontStyle: 'italic' }}>{item.group_users_count} user(s)</Text>}
-            onPress={() => {
-                handleGroupName(item.group_name);
-                navigation.push('Drawer', {
-                    screen: 'Moodem',
-                    params: {
-                        groupName: item.group_name
+    renderItem(item, navigation, handleGroup, user, removingGroupId) {
+        return (
+            <ListItem
+                containerStyle={{ backgroundColor: 'transparent', marginBottom: 0, position: 'relative' }}
+                disabled={!!item.group_category_name}
+                bottomDivider
+                Component={TouchableOpacity}
+                title={this.getGroupTitle(item)}
+                subtitle={item.invited ? <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Invited</Text> : <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Owned</Text>}
+                chevron={() => !item.group_category_name && this.renderRemoveGroupIcon(item, user, removingGroupId)}
+                checkmark={() => <Text style={{ position: 'absolute', right: 0, bottom: 13, marginRight: 20, fontSize: 12, fontStyle: 'italic' }}>{item.group_users_count} user(s)</Text>}
+                onPress={() => {
+                    handleGroup(item);
+                    navigation.push('Drawer', {
+                        screen: 'Moodem',
+                        params: {
+                            groupName: item.group_name
+                        }
+                    });
+                }}
+            />
+        );
+    }
+
+    render() {
+        const handleGroup = this.props.route.params.handleGroup;
+        const user = this.props.route.params.user;
+        const {
+            groups,
+            loaded,
+            removingGroupId
+        } = this.state;
+        const {
+            navigation
+        } = this.props;
+
+        //console.log('Rendered groups', groups, 'loaded', loaded, 'and func');
+
+        if (!loaded) {
+            return (<PreLoader />);
+        }
+
+        if (isEmpty(groups)) {
+            return (
+                <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
+                    <BurgerMenuIcon action={() => navigation.openDrawer()} />
+                    {user ?
+                        <CreateGroup user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
+                        this.props.navigation.navigate('Guest')
                     }
-                });
-            }}
-        />
-    );
-}
+                    <GroupEmpty />
+                    <Toast
+                        position='top'
+                        ref={this.refToast}
+                    />
+                </View>);
+        }
 
-render() {
-    const handleGroupName = this.props.route.params.handleGroupName;
-    const user = this.props.route.params.user;
-    const {
-        groups,
-        loaded,
-        removingGroupId
-    } = this.state;
-    const {
-        navigation
-    } = this.props;
-
-    //console.log('Rendered groups', groups, 'loaded', loaded, 'and func');
-
-    if (!loaded) {
-        return (<PreLoader />);
-    }
-
-    if (isEmpty(groups)) {
         return (
             <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
                 <BurgerMenuIcon action={() => navigation.openDrawer()} />
-                {user ?
-                    <CreateGroup handleGroupName={handleGroupName} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
+                {this.props.route.params.user ?
+                    <CreateGroup handleGroup={handleGroup} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
                     this.props.navigation.navigate('Guest')
                 }
-                <GroupEmpty />
-                <Toast
-                    position='top'
-                    ref={this.refToast}
+
+                <FlatList
+                    windowSize={12}
+                    keyboardShouldPersistTaps="always"
+                    data={groups}
+                    renderItem={({ item }) => this.renderItem(item, navigation, handleGroup, user, removingGroupId)}
+                    keyExtractor={(item, index) => index.toString()}
                 />
-            </View>);
+            </View>
+        );
     }
-
-    return (
-        <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
-            <BurgerMenuIcon action={() => navigation.openDrawer()} />
-            {this.props.route.params.user ?
-                <CreateGroup handleGroupName={handleGroupName} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
-                this.props.navigation.navigate('Guest')
-            }
-
-            <FlatList
-                windowSize={12}
-                keyboardShouldPersistTaps="always"
-                data={groups}
-                renderItem={({ item }) => this.renderItem(item, navigation, handleGroupName, user, removingGroupId)}
-                keyExtractor={(item, index) => index.toString()}
-            />
-        </View>
-    );
-}
 }
 

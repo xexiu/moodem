@@ -53,8 +53,6 @@ export class CreateGroup extends Component {
         } = this.state;
 
         const {
-            handleGroupName,
-            navigation,
             user,
             handleNewCreateGroup
         } = this.props;
@@ -79,20 +77,12 @@ export class CreateGroup extends Component {
 
                                 if (validate) {
                                     this.setState({ isLoading: true });
-                                    const groupName = this.refForm.current.getComponent('group_name').refs.input._getText();
+                                    //const groupName = this.refForm.current.getComponent('group_name').refs.input._getText();
 
                                     createGroupHandler(validate, user)
                                     .then(data => {
                                         handleNewCreateGroup(data);
-                                        //handleGroupName(groupName);
                                         this.setState({ isLoading: false }); // after setting the groupName - promise - DB?
-
-                                        // navigation.push('Drawer', {
-                                        //     screen: 'Moodem',
-                                        //     params: {
-                                        //         groupName
-                                        //     }
-                                        // });
                                         this.onBackdropPressHandler();
                                     })
                                     .catch(err => {
