@@ -1,7 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import { ImageBackground, Dimensions } from 'react-native';
+import { View, ImageBackground, Dimensions } from 'react-native';
 
 const {
 	width
@@ -32,6 +31,6 @@ const defaultStyleLogo = {
 };
 
 BgImage.propTypes = {
-	source: PropTypes.number,
+	source: PropTypes.object,
 	children: PropTypes.object
 };

@@ -55,7 +55,8 @@ export class CreateGroup extends Component {
         const {
             handleGroupName,
             navigation,
-            user
+            user,
+            handleNewCreateGroup
         } = this.props;
 
         return (
@@ -82,16 +83,16 @@ export class CreateGroup extends Component {
 
                                     createGroupHandler(validate, user)
                                     .then(data => {
-                                        console.log('Dataaaaa', data);
-                                        handleGroupName(groupName);
+                                        handleNewCreateGroup(data);
+                                        //handleGroupName(groupName);
                                         this.setState({ isLoading: false }); // after setting the groupName - promise - DB?
 
-                                        navigation.push('Drawer', {
-                                            screen: 'Moodem',
-                                            params: {
-                                                groupName
-                                            }
-                                        });
+                                        // navigation.push('Drawer', {
+                                        //     screen: 'Moodem',
+                                        //     params: {
+                                        //         groupName
+                                        //     }
+                                        // });
                                         this.onBackdropPressHandler();
                                     })
                                     .catch(err => {

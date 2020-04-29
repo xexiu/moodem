@@ -128,10 +128,6 @@ export class App extends Component {
     }
   }
 
-  handleCredentials = () => {
-    console.log('Credentials');
-  }
-
   render() {
     console.log('Called render(), from App Component');
     const {
@@ -147,7 +143,7 @@ export class App extends Component {
     if (loading) {
       return (
         <View>
-          <BgImage source={require('./assets/images/logo_moodem.png')} />
+          <BgImage source={{ uri: './assets/images/logo_moodem.png' }} />
           <PreLoader containerStyle={{ justifyContent: 'center', alignItems: 'center' }} size={50} />
         </View>
       );

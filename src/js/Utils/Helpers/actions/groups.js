@@ -1,8 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-len */
 import firebase from '../services/firebase';
-
-// editGroupHandler
+import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
 
 function normalize(invitedEmails, ownerUserId, groupId) {
     const normalEmails = [];
@@ -12,7 +11,9 @@ function normalize(invitedEmails, ownerUserId, groupId) {
         emails.forEach(email => normalEmails.push({
             email: email.toLowerCase(),
             group_id: groupId,
-            owner_user_id: ownerUserId
+            owner_user_id: ownerUserId,
+            isAdmin: false,
+            isOwner: false
         }));
     }
 
@@ -32,7 +33,7 @@ function checkOwnerEmail(invitedUsers, user) {
 }
 
 function markInvitedUsers(invitedUsers, user, data, validate) {
-    if (invitedUsers) {
+    if (invitedUsers && invitedUsers.length) {
         data.ref.update({
             invited_users: normalize(validate.invited_emails, user.uid, data.key),
             group_id: data.key
@@ -46,7 +47,9 @@ function markInvitedUsers(invitedUsers, user, data, validate) {
                     if (userAttrs.email === invitedUser.email) {
                         firebase.database().ref(`Users/${s.key}/groups_invited/${data.key}`).set({
                             group_id: data.key,
-                            owner_user_id: user.uid
+                            owner_user_id: user.uid,
+                            isAdmin: false,
+                            isOwner: false
                         });
                     }
                 });
@@ -69,9 +72,11 @@ export const createGroupHandler = (validate, user) => new Promise((resolve, reje
                 group_password: validate.group_password,
                 isAdmin: true,
                 isOwner: true,
-                user_owner_id: user.uid
+                user_owner_id: user.uid,
+                group_avatar: DEFAULT_GROUP_AVATAR
             })
                 .then((data) => {
+                    data.ref.update({ group_id: data.key });
                     markInvitedUsers(invitedUsers, user, data, validate);
                     return resolve(data);
                 })

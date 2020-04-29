@@ -162,32 +162,13 @@ export class P2PLanding extends Component {
             isSearchingTracks,
             tracks = isSearchingTracks ? searchedTracksList : tracksList
         } = this.state;
-        const {
-            navigation
-        } = this.props;
 
         return (
 
             <ErrorBoundary>
                 <MainContainer>
                     <HeaderContainer>
-                        {this.props.route.params.groupName === 'Moodem' ?
-                            <BurgerMenuIcon action={() => this.props.navigation.openDrawer()} /> :
-                            <View style={{ flexDirection: 'row', position: 'absolute' }}>
-                                <Icon
-                                    raised
-                                    name='chevron-left'
-                                    type='entypo'
-                                    size={25}
-                                    iconStyle={{ fontSize: 35 }}
-                                    color={'#777'}
-                                    onPress={() => {
-                                        handleGroupName('Moodem');
-                                        navigation.goBack(null);
-                                    }}
-                                />
-                            </View>
-                        }
+                        <BurgerMenuIcon action={() => this.props.navigation.openDrawer()} />
                         <TopSearchBar fillTracksList={this.handlingOnPressSearch.bind(this)} />
                     </HeaderContainer>
                     <BodyContainer>
