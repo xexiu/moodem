@@ -43,7 +43,7 @@ export class GuestScreen extends Component {
 
         return (
             <View style={{ alignItems: 'center' }}>
-                <BgImage source={require('../../../assets/images/logo_moodem.png')} />
+                <BgImage />
 
                 <Login btnTitle="Login to Moodem" loginHandlerGuest={data => this.loginHandlerGuest(data, navigation)} />
                 <Register btnTitle="Become a Mooder" btnStyle={{ backgroundColor: '#00b7e0' }} navigation={navigation} />

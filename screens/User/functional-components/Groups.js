@@ -1,7 +1,8 @@
 /* eslint-disable max-len, global-require */
 import React, { Component } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
+import AbortController from 'abort-controller';
 import Toast from 'react-native-easy-toast';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
@@ -12,56 +13,51 @@ import { PreLoader } from '../../../components/common/functional-components/PreL
 import { BurgerMenuIcon } from '../../../components/common/BurgerMenuIcon';
 import { BgImage } from '../../../components/common/functional-components/BgImage';
 
-function getGroupsFromDatabase(ref) {
-    return new Promise(resolve => {
+const {
+    width
+} = Dimensions.get('window');
+
+function getOwnedGroupsFromDatabase(ref) {
+    return new Promise((resolve) => {
         ref.once('value')
-            .then(snapshot => resolve(snapshot.val() || []));
+            .then(snapshot => {
+                const groups = snapshot.val() || [];
+
+                return resolve(Object.values(groups));
+            });
     });
 }
 
 function getInvitedGroupsFromDatabase(ref) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         ref.once('value')
             .then(snapshot => {
-                const data = snapshot.val();
-                return resolve(data ? Object.values(data) : []);
+                if (snapshot.exists()) {
+                    const data = Object.values(snapshot.val()) || [];
+                    const groups = [];
+
+
+                    for (let i = 0; i < data.length; i++) {
+                        const groupAttr = data[i];
+                        const groupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
+
+                        groupRef.once('value')
+                            .then(groupSnapshot => {
+                                const group = groupSnapshot.val() || [];
+
+                                if (!isEmpty(group)) {
+                                    group.isAdmin = false;
+                                    group.isOwner = false;
+                                    group.invited = true;
+                                    groups.push(group);
+
+                                    return i === (data.length - 1) && resolve(groups);
+                                }
+                                return resolve(groups);
+                            });
+                    }
+                }
             });
-        // reference.on('value', snapshot => {
-        //     const invitedToGroups = [];
-
-        //     snapshot.forEach(s => {
-        //         const data = snapshot.child(s.key).val();
-
-        //         if (s.key === 'groups_invited') {
-        //             const groups = Object.values(data);
-
-        //             if (groups.length) {
-        //                 for (let i = 0; i < groups.length; i++) {
-        //                     const groupAttr = groups[i];
-        //                     const dbGroupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
-
-        //                     dbGroupRef.on('value', snapshotGroup => {
-        //                         const group = {};
-        //                         snapshotGroup.forEach(values => {
-        //                             group[values.key] = snapshotGroup.child(values.key).val();
-        //                         });
-        //                         invitedToGroups.push(group);
-
-        //                         if (i === (groups.length - 1)) {
-        //                             invitedToGroups.unshift({
-        //                                 group_category_name: 'Invited to Groups'
-        //                             });
-        //                             return resolve(invitedToGroups);
-        //                         }
-        //                     });
-        //                 }
-        //             } else {
-        //                 return resolve(invitedToGroups);
-        //             }
-        //         }
-        //     });
-        //     return resolve(invitedToGroups);
-        // });
     });
 }
 
@@ -77,7 +73,9 @@ export class Groups extends Component {
 
         this.refToast = React.createRef();
         this.refOwnedGroups = firebase.database().ref().child(`Groups/${props.route.params.user.uid}`);
-        this.refUsers = firebase.database().ref().child(`Users/${props.route.params.user.uid}`);
+        this.refInvitedUsers = firebase.database().ref().child(`Users/${props.route.params.user.uid}/groups_invited`);
+        this.controller = new AbortController();
+        this.signal = this.controller.signal;
         this.state = {
             removingGroupId: null,
             groups: [],
@@ -89,22 +87,21 @@ export class Groups extends Component {
         this.getGroups();
     }
 
+    componentWillUnmount() {
+        this.controller.abort();
+    }
+
     getGroups = () => {
-        getGroupsFromDatabase(this.refOwnedGroups)
+        getOwnedGroupsFromDatabase(this.refOwnedGroups)
             .then(groupsOwned => {
-                //console.log('Groups Owned', groupsOwned);
-                if (groupsOwned.length) {
-                    groupsOwned.unshift({
-                        group_category_name: 'Owned Groups'
-                    });
-                }
+                console.log('Groups Owned', groupsOwned);
                 this.setState({
                     groups: [...this.state.groups, ...groupsOwned]
                 });
 
-                getInvitedGroupsFromDatabase(this.refUsers)
+                getInvitedGroupsFromDatabase(this.refInvitedUsers)
                     .then(invitedToGroups => {
-                        //console.log('Invited Groups', invitedToGroups);
+                        console.log('Invited Groups', invitedToGroups);
                         this.setState({
                             groups: [...this.state.groups, ...invitedToGroups],
                             loaded: true
@@ -122,18 +119,13 @@ export class Groups extends Component {
     }
 
     getGroupTitle(item) {
-        if (item.group_category_name) {
-            return (
-                <Text style={{ fontSize: 20 }}>{item.group_category_name}</Text>
-            );
-        }
         return (
             <View style={{ position: 'relative' }}>
                 <View style={{ borderWidth: 1, borderColor: '#bbb', borderRadius: 50, width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
                     <BgImage source={{ uri: item.group_avatar }} bgImageStyle={{ height: 40, width: 40 }} />
                 </View>
                 <View style={{ position: 'absolute', marginLeft: 70, marginTop: 15 }}>
-                    <Text style={{ fontSize: 15, padding: 0, marginLeft: -12, color: '#444' }}>{item.group_name}</Text>
+                    <Text style={{ fontSize: 15, padding: 0, marginLeft: -12, color: '#444', width: width - 140 }} ellipsizeMode="tail" numberOfLines={1}>{item.group_name}</Text>
                 </View>
             </View>
         );
@@ -143,13 +135,6 @@ export class Groups extends Component {
         data.once('value')
             .then(snapshot => {
                 const group = snapshot.val();
-                if (!this.state.groups.length) {
-                    this.setState({
-                        groups: [{
-                            group_category_name: 'Owned Groups'
-                        }]
-                    });
-                }
                 this.setState({
                     groups: [...this.state.groups, group]
                 });
@@ -163,12 +148,7 @@ export class Groups extends Component {
         ref.once('value', snapshot => {
             snapshot.ref.remove().then(() => {
                 this.state.groups = this.state.groups.filter(group => group.group_id !== item.group_id);
-                if (this.state.groups.length === 1) {
-                    this.state.groups.shift();
-                    this.setState({ groups: [], isRemoving: false });
-                } else {
-                    this.setState({ groups: this.state.groups, isRemoving: false });
-                }
+                this.setState({ groups: this.state.groups, isRemoving: false });
             })
                 .catch(err => {
                     console.log('There was an error removing the group', err);
@@ -181,87 +161,104 @@ export class Groups extends Component {
             return (<Icon
                 name={removingGroupId === item.group_id ? 'sync' : 'remove'}
                 type={removingGroupId === item.group_id ? 'ant-desing' : 'font-awesome'}
-                color='#777'
+                color='#dd0031'
                 underlayColor='transparent'
-                onPress={() => this.removeGroup(item, user)}
+                onPress={() => Alert.alert(
+                    'Are you sure??',
+                    'Deleting the group will remove all users and files related!',
+                    [
+                        {
+                            text: 'Ask me later',
+                            onPress: () => console.log('Ask me later pressed')
+                        },
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel'
+                        },
+                        { text: 'OK', onPress: () => this.removeGroup(item, user) }
+                    ],
+                    { cancelable: false }
+                )}
             />);
-        }
     }
+}
 
-    renderItem(item, navigation, handleGroupName, user, removingGroupId) {
-        return (
-            <ListItem
-                containerStyle={{ backgroundColor: 'transparent', marginBottom: 0 }}
-                disabled={!!item.group_category_name}
-                bottomDivider
-                Component={TouchableOpacity}
-                title={this.getGroupTitle(item)}
-                chevron={() => !item.group_category_name && this.renderRemoveGroupIcon(item, user, removingGroupId)}
-                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                onPress={() => {
-                    handleGroupName(item.group_name);
-                    navigation.push('Drawer', {
-                        screen: 'Moodem',
-                        params: {
-                            groupName: item.group_name
-                        }
-                    });
-                }}
-            />
-        );
-    }
-
-    render() {
-        const handleGroupName = this.props.route.params.handleGroupName;
-        const user = this.props.route.params.user;
-        const {
-            groups,
-            loaded,
-            removingGroupId
-        } = this.state;
-        const {
-            navigation
-        } = this.props;
-
-        //console.log('Rendered groups', groups, 'loaded', loaded, 'and func');
-
-        if (!loaded) {
-            return (<PreLoader />);
-        }
-
-        if (isEmpty(groups)) {
-            return (
-                <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
-                    <BurgerMenuIcon action={() => navigation.openDrawer()} />
-                    {user ?
-                        <CreateGroup handleGroupName={handleGroupName} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
-                        this.props.navigation.navigate('Guest')
+renderItem(item, navigation, handleGroupName, user, removingGroupId) {
+    return (
+        <ListItem
+            containerStyle={{ backgroundColor: 'transparent', marginBottom: 0, position: 'relative' }}
+            disabled={!!item.group_category_name}
+            bottomDivider
+            Component={TouchableOpacity}
+            title={this.getGroupTitle(item)}
+            subtitle={item.invited ? <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Invited</Text> : <Text style={{ paddingTop: 4, fontSize: 12, fontStyle: 'italic' }}>Owned</Text>}
+            chevron={() => !item.group_category_name && this.renderRemoveGroupIcon(item, user, removingGroupId)}
+            checkmark={() => <Text style={{ position: 'absolute', right: 0, bottom: 13, marginRight: 20, fontSize: 12, fontStyle: 'italic' }}>{item.group_users_count} user(s)</Text>}
+            onPress={() => {
+                handleGroupName(item.group_name);
+                navigation.push('Drawer', {
+                    screen: 'Moodem',
+                    params: {
+                        groupName: item.group_name
                     }
-                    <GroupEmpty />
-                    <Toast
-                        position='top'
-                        ref={this.refToast}
-                    />
-                </View>);
-        }
+                });
+            }}
+        />
+    );
+}
 
+render() {
+    const handleGroupName = this.props.route.params.handleGroupName;
+    const user = this.props.route.params.user;
+    const {
+        groups,
+        loaded,
+        removingGroupId
+    } = this.state;
+    const {
+        navigation
+    } = this.props;
+
+    //console.log('Rendered groups', groups, 'loaded', loaded, 'and func');
+
+    if (!loaded) {
+        return (<PreLoader />);
+    }
+
+    if (isEmpty(groups)) {
         return (
             <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
                 <BurgerMenuIcon action={() => navigation.openDrawer()} />
-                {this.props.route.params.user ?
+                {user ?
                     <CreateGroup handleGroupName={handleGroupName} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
                     this.props.navigation.navigate('Guest')
                 }
-
-                <FlatList
-                    windowSize={12}
-                    keyboardShouldPersistTaps="always"
-                    data={groups}
-                    renderItem={({ item }) => this.renderItem(item, navigation, handleGroupName, user, removingGroupId)}
-                    keyExtractor={(item, index) => index.toString()}
+                <GroupEmpty />
+                <Toast
+                    position='top'
+                    ref={this.refToast}
                 />
-            </View>
-        );
+            </View>);
     }
+
+    return (
+        <View style={{ marginTop: 35, padding: 10, position: 'relative' }}>
+            <BurgerMenuIcon action={() => navigation.openDrawer()} />
+            {this.props.route.params.user ?
+                <CreateGroup handleGroupName={handleGroupName} navigation={navigation} user={user} handleNewCreateGroup={this.handleNewCreateGroup.bind(this)} /> :
+                this.props.navigation.navigate('Guest')
+            }
+
+            <FlatList
+                windowSize={12}
+                keyboardShouldPersistTaps="always"
+                data={groups}
+                renderItem={({ item }) => this.renderItem(item, navigation, handleGroupName, user, removingGroupId)}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
+    );
+}
 }
 

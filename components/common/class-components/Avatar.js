@@ -5,6 +5,7 @@ import { View, Text, TouchableHighlight } from 'react-native';
 import { BgImage } from '../functional-components/BgImage';
 import { btnShadow } from '../../../src/css/styles/common';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
+import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 
 function hangleUserNavigation(navigation, user, groupName) {
     if (user) {
@@ -24,14 +25,16 @@ export class Avatar extends Component {
             groupName
         } = this.props;
 
+        console.log('user displayname', user && user.displayName);
+
         return (
             <View style={avatarContainer}>
                 <TouchableHighlight underlayColor='#eee' onPress={hangleUserNavigation.bind(this, navigation, user, groupName)}>
-                    <BgImage source={{ uri: '../../../assets/images/avatars/avatar_moodem.png' }} bgImageStyle={[avatarImage, btnShadow]}>
+                    <BgImage source={{ uri: USER_AVATAR_DEFAULT }} bgImageStyle={[avatarImage, btnShadow]}>
                         {groupName !== 'Moodem' ?
-                            <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hello {groupName}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hi! {groupName}</Text>
                             :
-                            <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hello {user ? user.displayName : 'Guest'}</Text>}
+                            <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hi! {user ? user.displayName : 'Guest'}</Text>}
                     </BgImage>
                 </TouchableHighlight>
             </View>

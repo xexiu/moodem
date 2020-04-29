@@ -51,6 +51,8 @@ export const FORM_FIELDS_CREATE_GROUP = {
         secureTextEntry: true
     },
     invited_emails: {
+        multiline: true,
+        numberOfLines: 10,
         help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
         error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)'
     }

@@ -22,7 +22,7 @@ function normalize(invitedEmails, ownerUserId, groupId) {
 
 function checkOwnerEmail(invitedUsers, user) {
     return new Promise((resolve, reject) => {
-        [...invitedUsers].forEach(invitedUser => {
+        invitedUsers.forEach(invitedUser => {
             if (user.email === invitedUser.email) {
                 return reject('You can not invite yourself!');
             }
@@ -36,14 +36,14 @@ function markInvitedUsers(invitedUsers, user, data, validate) {
     if (invitedUsers && invitedUsers.length) {
         data.ref.update({
             invited_users: normalize(validate.invited_emails, user.uid, data.key),
-            group_id: data.key
+            group_users_count: invitedUsers.length + 1
         });
 
         firebase.database().ref('Users').on('value', snapshot => {
             snapshot.forEach(s => {
                 const userAttrs = snapshot.child(s.key).val();
 
-                [...invitedUsers].forEach(invitedUser => {
+                invitedUsers.forEach(invitedUser => {
                     if (userAttrs.email === invitedUser.email) {
                         firebase.database().ref(`Users/${s.key}/groups_invited/${data.key}`).set({
                             group_id: data.key,
@@ -73,7 +73,8 @@ export const createGroupHandler = (validate, user) => new Promise((resolve, reje
                 isAdmin: true,
                 isOwner: true,
                 user_owner_id: user.uid,
-                group_avatar: DEFAULT_GROUP_AVATAR
+                group_avatar: DEFAULT_GROUP_AVATAR,
+                group_users_count: invitedUsers.length + 1
             })
                 .then((data) => {
                     data.ref.update({ group_id: data.key });

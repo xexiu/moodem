@@ -13,7 +13,7 @@ import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups
 const Form = form.Form;
 
 export class CreateGroup extends Component {
-    static navigationOptions = ({ navigation, route }) => ({
+    static navigationOptions = () => ({
         headerMode: 'none',
         headerShown: false
     });

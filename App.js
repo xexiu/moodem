@@ -87,14 +87,14 @@ export class App extends Component {
   SideBarDrawer = ({ route }) => {
     if (this.state.user) {
       return (
-        <CommonDrawerWrapper user={route.params.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName}>
+        <CommonDrawerWrapper user={this.state.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName}>
           <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
           <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, groupName: this.state.groupName }} />
         </CommonDrawerWrapper>
       );
     }
     return (
-      <CommonDrawerWrapper user={route.params.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName} />
+      <CommonDrawerWrapper user={this.state.user} groupName={this.state.groupName} signOut={this.signOut} goHome={this.goHome} handleGroupName={this.handleGroupName} />
     );
   }
 
