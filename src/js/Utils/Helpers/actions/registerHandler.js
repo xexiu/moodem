@@ -15,11 +15,8 @@ export function registerHandler(validate) {
                 });
                 firebase.database().ref(`Users/${auth.user.uid}`).set({
                     user_id: auth.user.uid,
-                    name: validate.name,
                     email: validate.email,
-                    password: validate.password,
-                    user_owned_groups: null,
-                    user_is_invited_in_groups: null
+                    password: validate.password
                 }).then((data) => {
                     //success callback
                     console.log('Saved on database ', data);

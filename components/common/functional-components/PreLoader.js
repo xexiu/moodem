@@ -5,7 +5,7 @@ import * as Progress from 'react-native-progress';
 export const PreLoader = (props) => {
     const {
         size = 30,
-        containerStyle = { flex: 1, justifyContent: 'center', alignItems: 'center' }
+        containerStyle = { justifyContent: 'center', alignItems: 'center' }
     } = props;
 
     return (

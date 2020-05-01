@@ -11,7 +11,7 @@ export const OfflineNotice = () => (
             <Text style={offlineText}>No Internet Connection</Text>
         </View>
         <View style={{ marginTop: 30 }}>
-            <BgImage source={require('../../assets/images/logo_moodem.png')} />
+            <BgImage />
         </View>
     </View>
 );

@@ -33,6 +33,5 @@ const defaultStyleLogo = {
 };
 
 BgImage.propTypes = {
-	source: PropTypes.object,
-	children: PropTypes.object
+	source: PropTypes.object
 };

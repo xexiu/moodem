@@ -10,11 +10,13 @@ import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { GuestScreen } from './screens/Guest/class-components/GuestScreen';
 import { PreLoader } from './components/common/functional-components/PreLoader';
-import { Profile } from './components/User/class-components/Profile';
+import { Profile } from './components/User/functional-components/Profile';
 import { Settings } from './components/User/class-components/Settings';
 import { BgImage } from './components/common/functional-components/BgImage';
 import { CommonDrawerWrapper } from './components/common/functional-components/CommonDrawerWrapper';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
+import { UserContext } from './components/User/functional-components/UserContext';
+import { Avatars } from './screens/User/functional-components/Avatars';
 
 console.disableYellowBox = true;
 
@@ -28,7 +30,7 @@ export class App extends Component {
     hasInternetConnection: true,
     isViewingLandPage: false,
     loading: true,
-    user: null,
+    user: '',
     group: { group_name: 'Moodem' },
     connectionParams: {
       connectionType: 'wifi',
@@ -59,10 +61,10 @@ export class App extends Component {
 
   signOut = (navigation) => {
     firebase.auth().signOut().then(() => {
-      this.setState({ user: null, group: { group_name: 'Moodem' } });
+      this.setState({ user: '', group: { group_name: 'Moodem' } });
       navigation.navigate('Guest', {
         params: {
-          user: null
+          user: ''
         }
       });
     });
@@ -77,7 +79,7 @@ export class App extends Component {
     if (this.state.user) {
       return (
         <CommonDrawerWrapper user={this.state.user} group={this.state.group} signOut={this.signOut} goHome={this.goHome} handleGroup={this.handleGroup}>
-          <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ user: route.params.user, group: this.state.group }} />
+          <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ group: this.state.group }} />
           {/*
           // TODO: ROADMAP Settings screen?
           <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, group: this.state.group }} /> */
@@ -95,7 +97,7 @@ export class App extends Component {
     if (user) {
       this.setState({ user, loading: false });
     } else {
-      this.setState({ user: null, loading: false });
+      this.setState({ user: '', loading: false });
     }
   }
 
@@ -136,18 +138,21 @@ export class App extends Component {
     if (loading) {
       return (
         <View>
-          <BgImage source={{ uri: './assets/images/logo_moodem.png' }} />
-          <PreLoader containerStyle={{ justifyContent: 'center', alignItems: 'center' }} size={50} />
+          <BgImage />
+          <PreLoader size={50} />
         </View>
       );
     }
 
     if (user) {
       return (
-        <CommonStackWrapper initialRouteName="Drawer">
-          <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user: this.state.user }} />
-          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
-        </CommonStackWrapper>
+        <UserContext.Provider value={{ user: this.state.user, group: this.state.group }}>
+          <CommonStackWrapper initialRouteName="Drawer">
+            <Stack.Screen name="Drawer" component={this.SideBarDrawer} options={{ headerShown: false }} initialParams={{ user: this.state.user }} />
+            <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
+            <Stack.Screen name="Avatars" component={Avatars} options={Avatars.navigationOptions} />
+          </CommonStackWrapper>
+        </UserContext.Provider>
       );
     }
 

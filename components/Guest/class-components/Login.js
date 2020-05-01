@@ -80,7 +80,7 @@ export class Login extends Component {
                                     loginHandler(validate)
                                         .then(user => {
                                             this.setState({ isLoading: false, isLoginModalVisible: false, errorText: '' });
-                                            loginHandlerGuest(user);
+                                            doLater(() => loginHandlerGuest(user), 500);
                                         })
                                         .catch(err => {
                                             this.setState({ isLoading: false, errorText: err });

@@ -94,14 +94,14 @@ export class Groups extends Component {
     getGroups = () => {
         getOwnedGroupsFromDatabase(this.refOwnedGroups)
             .then(groupsOwned => {
-                console.log('Groups Owned', groupsOwned);
+                //console.log('Groups Owned', groupsOwned);
                 this.setState({
                     groups: [...this.state.groups, ...groupsOwned]
                 });
 
                 getInvitedGroupsFromDatabase(this.refInvitedUsers)
                     .then(invitedToGroups => {
-                        console.log('Invited Groups', invitedToGroups);
+                        //console.log('Invited Groups', invitedToGroups);
                         this.setState({
                             groups: [...this.state.groups, ...invitedToGroups],
                             loaded: true
@@ -220,7 +220,9 @@ export class Groups extends Component {
             navigation
         } = this.props;
 
-        //console.log('Rendered groups', groups, 'loaded', loaded, 'and func');
+        if (!user) {
+            navigation.navigate('Guest');
+        }
 
         if (!loaded) {
             return (<PreLoader />);

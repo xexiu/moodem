@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Logout } from '../../../components/User/functional-components/Logout';
 import { Home } from '../../../components/User/functional-components/Home';
-import { Avatar } from '../../../components/common/class-components/Avatar';
+import { AvatarSideBar } from '../../../components/common/functional-components/AvatarSideBar';
 
 export const SideBarTopHeader = (props) => {
     const {
@@ -18,7 +18,7 @@ export const SideBarTopHeader = (props) => {
         <View style={{ position: 'relative' }}>
             <Logout action={signOut.bind(this, navigation)} />
             {group.group_name !== 'Moodem' && <Home action={goHome.bind(this, navigation)} />}
-            <Avatar navigation={navigation} user={params.user} group={group} />
+            <AvatarSideBar navigation={navigation} user={params.user} group={group} />
         </View>
     );
 };

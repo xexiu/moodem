@@ -10,6 +10,7 @@ function defaultAction(evt) {
 
 export const CustomButton = (props) => {
 	const {
+		btnDisabled = false,
 		btnTitle = 'No button title provided!',
 		btnTitleStyle,
 		btnStyle = btnStyleDefault,
@@ -24,6 +25,7 @@ export const CustomButton = (props) => {
 
 	return (
 		<Button
+			disabled={btnDisabled}
 			icon={btnIcon}
 			loading={false}
 			title={btnTitle}
