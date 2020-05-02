@@ -10,15 +10,11 @@ const changeAvatar = (url, navigation, setLoading, user) => {
     user.updateProfile({
         photoURL: url
     }).then(() => {
-        // Profile updated successfully!
-        // "Jane Q. User"
         setLoading(false);
         navigation.navigate('Profile', {
             params: url
         });
-    }, (error) => {
-        // An error happened.
-    });
+    }, (err) => { });
 };
 const handleUserAvatar = (url, navigation, setLoading, user) => {
     Alert.alert(
@@ -41,7 +37,12 @@ const Avatars = (props) => {
 
     if (!route.params.avatarUrls.length || loading) {
         return (
-            <PreLoader />
+            <PreLoader
+                containerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }} size={50}
+            />
         );
     }
 

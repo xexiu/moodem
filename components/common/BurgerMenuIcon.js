@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 import { Icon } from 'react-native-elements';
 import { View } from 'react-native';
@@ -9,7 +10,7 @@ export const BurgerMenuIcon = props => {
     } = props;
 
     return (
-        <View style={{ position: 'absolute', top: -12, left: 0, width: 70, height: 70 }}>
+        <View style={{ position: 'absolute', top: -12, left: 0, width: 70, height: 70, zIndex: 1000 }}>
             <Icon
             iconStyle={{ fontSize: 30 }}
             Component={TouchableScale}

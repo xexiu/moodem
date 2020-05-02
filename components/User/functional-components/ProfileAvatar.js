@@ -55,8 +55,8 @@ export const ProfileAvatar = (props) => {
                         raised
                         iconStyle={{ paddingTop: 5 }}
                         Component={TouchableScale}
-                        name='pencil'
-                        type='entypo'
+                        name={loading ? 'sync' : 'pencil'}
+                        type={loading ? 'ant-desing' : 'entypo'}
                         color='#dd0031'
                         size={15}
                         onPress={() => handleEditAvatar(navigation, setLoading, user)}

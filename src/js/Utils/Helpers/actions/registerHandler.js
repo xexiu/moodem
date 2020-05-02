@@ -1,4 +1,5 @@
 import firebase from '../services/firebase';
+import { USER_AVATAR_DEFAULT } from '../../constants/users';
 
 export function registerHandler(validate) {
     return new Promise((resolve, reject) => {
@@ -7,7 +8,7 @@ export function registerHandler(validate) {
                 console.log('Auth user', auth.user);
                 auth.user.updateProfile({
                     displayName: validate.name,
-                    photoURL: 'https://example.com/jane-q-user/profile.jpg'
+                    photoURL: USER_AVATAR_DEFAULT
                 }).then(() => {
                     // Update successful.
                 }).catch((error) => {

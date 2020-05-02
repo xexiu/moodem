@@ -9,15 +9,13 @@ export const SideBarTopHeader = (props) => {
     const {
         navigation,
         params,
-        group,
-        signOut,
-        goHome
+        group
     } = props;
 
     return (
         <View style={{ position: 'relative' }}>
-            <Logout action={signOut.bind(this, navigation)} />
-            {group.group_name !== 'Moodem' && <Home action={goHome.bind(this, navigation)} />}
+            <Logout navigation={navigation} />
+            <Home navigation={navigation} />
             <AvatarSideBar navigation={navigation} user={params.user} group={group} />
         </View>
     );

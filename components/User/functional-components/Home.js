@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Icon } from 'react-native-elements';
 import { homeIcon } from '../../../src/css/styles/home';
+import { UserContext } from './UserContext';
+
+const handlerGoHome = (navigation, group) => {
+    Object.assign(group, {
+        ...group,
+        group_name: 'Moodem'
+    });
+
+    navigation.navigate('Moodem');
+};
 
 export const Home = (props) => {
     const {
-        action
+        navigation
     } = props;
+    const { group } = useContext(UserContext);
+
     return (
         <Icon
             iconStyle={homeIcon}
@@ -13,7 +25,7 @@ export const Home = (props) => {
             type='antdesign'
             color='#dd0031'
             size={25}
-            onPress={action}
+            onPress={() => handlerGoHome(navigation, group)}
         />
     );
 };

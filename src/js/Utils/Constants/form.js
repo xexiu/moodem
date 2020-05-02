@@ -41,8 +41,7 @@ export const FORM_FIELDS_REGISTER = {
 export const FORM_FIELDS_CREATE_GROUP = {
     group_name: {
         help: 'Enter a group name (letters/numbers and _- characters allwowed only!)',
-        error: 'Incorrect group name!',
-        autoCapitalize: 'none'
+        error: 'Incorrect group name!'
     },
     group_password: {
         help: 'Enter group password. (mininum length must be 4 or greater)',
@@ -54,6 +53,8 @@ export const FORM_FIELDS_CREATE_GROUP = {
         multiline: true,
         numberOfLines: 10,
         help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
-        error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)'
+        error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)',
+        autoCapitalize: 'none',
+        autoCorrect: false
     }
 };

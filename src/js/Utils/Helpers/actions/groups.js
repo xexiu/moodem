@@ -2,37 +2,47 @@
 /* eslint-disable max-len */
 import firebase from '../services/firebase';
 import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
+import { isEmpty } from '../../common';
 
-function normalize(invitedEmails, ownerUserId, groupId) {
+const normalize = (invitedEmails, ownerUserId, groupId) => {
     const normalEmails = [];
 
     if (invitedEmails) {
-        const emails = invitedEmails.split(',');
-        emails.forEach(email => normalEmails.push({
-            email: email.toLowerCase(),
-            group_id: groupId,
-            owner_user_id: ownerUserId,
-            isAdmin: false,
-            isOwner: false
-        }));
+        let cleanEmails = /\s/g.test(invitedEmails);
+
+        if (cleanEmails) {
+            cleanEmails = invitedEmails.replace(/\s/g, ',');
+        }
+        const emails = (cleanEmails || invitedEmails).split(',');
+        emails.forEach((email, index) => {
+            if (''.indexOf(email) >= 0) {
+                emails[index - 1] = '';
+            } else {
+                normalEmails.push({
+                    email: email.toLowerCase(),
+                    group_id: groupId,
+                    owner_user_id: ownerUserId,
+                    isAdmin: false,
+                    isOwner: false
+                });
+            }
+        });
     }
 
     return normalEmails;
-}
+};
 
-function checkOwnerEmail(invitedUsers, user) {
-    return new Promise((resolve, reject) => {
-        invitedUsers.forEach(invitedUser => {
-            if (user.email === invitedUser.email) {
-                return reject('You can not invite yourself!');
-            }
-            return resolve();
-        });
+const checkOwnerEmail = (invitedUsers, user) => new Promise((resolve, reject) => {
+    invitedUsers.forEach(invitedUser => {
+        if (user.email === invitedUser.email) {
+            return reject('You can not invite yourself!');
+        }
         return resolve();
     });
-}
+    return resolve();
+});
 
-function markInvitedUsers(invitedUsers, user, data, validate) {
+const markInvitedUsers = (invitedUsers, user, data, validate) => {
     if (invitedUsers && invitedUsers.length) {
         data.ref.update({
             invited_users: normalize(validate.invited_emails, user.uid, data.key),
@@ -58,7 +68,7 @@ function markInvitedUsers(invitedUsers, user, data, validate) {
     }
 
     return null;
-}
+};
 
 export const getGroupName = (groupName, screenName) => (groupName === 'Moodem' ? `My ${screenName}` : `${groupName} ${screenName}`);
 
@@ -85,3 +95,64 @@ export const createGroupHandler = (validate, user) => new Promise((resolve, reje
         })
         .catch(error => reject(error));
 });
+
+export const getOwnedGroupsFromDatabase = (ref) => new Promise((resolve) => {
+    ref.once('value')
+        .then(snapshot => {
+            const groups = snapshot.val() || [];
+
+            return resolve(Object.values(groups));
+        });
+});
+
+export const getInvitedGroupsFromDatabase = (ref) => new Promise((resolve) => {
+    ref.once('value')
+    .then(snapshot => {
+        if (snapshot.exists()) {
+            const data = Object.values(snapshot.val()) || [];
+            const groups = [];
+
+
+            for (let i = 0; i < data.length; i++) {
+                const groupAttr = data[i];
+                const groupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
+
+                groupRef.once('value')
+                .then(groupSnapshot => {
+                    const group = groupSnapshot.val() || [];
+
+                            if (!isEmpty(group)) {
+                                group.isAdmin = false;
+                                group.isOwner = false;
+                                group.invited = true;
+                                groups.push(group);
+
+                                return i === (data.length - 1) && resolve(groups);
+                            }
+                            return resolve(groups);
+                        });
+                }
+            }
+        });
+});
+
+export const getGroups = (user) => {
+    const allGroups = [];
+    const refOwnedGroups = firebase.database().ref().child(`Groups/${user.uid}`);
+    const refInvitedUsers = firebase.database().ref().child(`Users/${user.uid}/groups_invited`);
+
+    return new Promise((resolve, reject) => {
+        getOwnedGroupsFromDatabase(refOwnedGroups)
+        .then(groupsOwned => {
+            //console.log('Groups Owned', groupsOwned);
+            allGroups.push(...groupsOwned);
+            getInvitedGroupsFromDatabase(refInvitedUsers)
+                .then(invitedToGroups => {
+                    //console.log('Groups Invited', invitedToGroups);
+                    allGroups.push(...invitedToGroups);
+                    return resolve(allGroups);
+                });
+        })
+        .catch(err => reject(err));
+    });
+};
