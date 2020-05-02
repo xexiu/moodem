@@ -19,7 +19,6 @@ import { NewGroup } from './NewGroup';
 const {
     width
 } = Dimensions.get('window');
-
 const renderItem = (group) => (
     <CommonFlatListItem
         bottomDivider

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import 'react-native-gesture-handler';
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import { View, Text } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -22,11 +22,10 @@ import { SideBarDrawer } from './components/common/functional-components/SideBar
 
 console.disableYellowBox = true;
 
-/* eslint-disable global-require */
-
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const controller = new AbortController();
+
 const handleConnectivityChange = (connection, setInternetConnection) => {
   setInternetConnection({
     hasInternetConnection: connection.isConnected,
@@ -39,15 +38,15 @@ const handleConnectivityChange = (connection, setInternetConnection) => {
 
 const handleUserAuthFirebase = (user, setUser) => {
   if (user) {
-    setUser({ user, loading: false });
+    setUser({ user });
   } else {
-    setUser({ user: '', loading: false });
+    setUser({ user: '' });
   }
 };
 
 export default function Moodem() {
   const [{ hasInternetConnection, connectionParams }, setInternetConnection] = useState(true);
-  const [{ user, loading = true, group = { group_name: 'Moodem' } }, setUser] = useState({ user: '' });
+  const [{ user, group = { group_name: 'Moodem' } }, setUser] = useState({ user: '' });
 
   useEffect(() => {
     NetInfo.fetch().then(connection => handleConnectivityChange(connection, setInternetConnection))
@@ -58,13 +57,9 @@ export default function Moodem() {
     };
   }, [hasInternetConnection, user.uid, group.group_name]);
 
-  console.log('Connection Params', user);
-
   if (!hasInternetConnection) {
     return (<OfflineNotice />);
-  }
-
-  if (loading) {
+  } else if (!user) {
     return (
       <View>
         <BgImage />
@@ -76,9 +71,7 @@ export default function Moodem() {
         />
       </View>
     );
-  }
-
-  if (user) {
+  } else if (user) {
     return (
       <UserContext.Provider value={{ user, group }}>
         <CommonStackWrapper initialRouteName="Drawer">
