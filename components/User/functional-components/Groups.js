@@ -33,12 +33,15 @@ const Groups = (props) => {
     const { navigation } = props;
     const [groupId, setGroupId] = useState(null);
     const [showModal, setModal] = useState(false);
-    const [groups, setGroups] = useState([]);
+    const [{ groups = [], loaded = false }, setGroups] = useState({});
 
     useEffect(() => {
         getGroups(user)
-            .then((dbGroups) => setGroups(dbGroups))
-            .catch(err => console.log('Seomthing happened', err));
+            .then((dbGroups) => setGroups({
+                groups: dbGroups,
+                loaded: true
+            }))
+            .catch(err => console.log('Something happened', err));
 
         return () => {
             controller.abort();
@@ -58,7 +61,7 @@ const Groups = (props) => {
 
     if (!user) {
         navigation.navigate('Guest');
-    } else if (!groups.length) {
+    } else if (!loaded) {
         return (<PreLoader
             size={50}
             containerStyle={{

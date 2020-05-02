@@ -7,12 +7,6 @@ import { UserContext } from '../../User/functional-components/UserContext';
 
 const Drawer = createDrawerNavigator();
 
-//   handleGroup = (group) => {
-//     this.setState({
-//       group
-//     });
-//   }
-
 export const SideBarDrawer = (props) => {
     const { user, group } = useContext(UserContext);
 
@@ -29,7 +23,7 @@ export const SideBarDrawer = (props) => {
         );
     }
     return (
-        <CommonDrawerWrapper user={user} group={group} handleGroup={this.handleGroup} />
+        <CommonDrawerWrapper user={user} group={group} />
     );
 };
 
