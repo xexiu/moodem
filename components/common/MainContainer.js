@@ -4,9 +4,9 @@ import { View } from 'react-native';
 export class MainContainer extends Component {
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 {this.props.children}
             </View>
-        )
+        );
     }
 }

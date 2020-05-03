@@ -20,8 +20,6 @@ import { PreLoader } from './functional-components/PreLoader';
 const TRACK_DURATION_MASQUERADE = 217;
 const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
 
-const renderCalled = 0;
-
 export class Player extends Component {
     constructor(props) {
         super(props);
@@ -46,6 +44,42 @@ export class Player extends Component {
         };
     }
 
+    onPlayProgress = ({ currentTime }) => {
+        this.setState({
+            trackCurrentTime: currentTime
+        });
+    }
+
+    onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
+        this.setState({ trackCurrentTime: 0 });
+        const song = songIndex + 1;
+
+        if (shouldRepeat) {
+            return this.dispatchActionsPressedTrack(tracks[songIndex]);
+        } else if (shouldShuffle) {
+            const random = Math.floor((Math.random() * tracks.length) + 0);
+
+            if (tracks[random]) {
+                return this.dispatchActionsPressedTrack(tracks[random]);
+            }
+        } else if (!tracks[song]) {
+            this.setState({ isPlaying: !isPlaying });
+        } else {
+            return tracks[song] && this.dispatchActionsPressedTrack(tracks[song]);
+        }
+    }
+
+    onBuffer = (buffer) => {
+        if (!this.state.isBuffering) {
+            this.toastRef.current.show('Song Ready!');
+            this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
+        }
+    }
+
+    onAudioError = ({ error }) => {
+        this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
+    }
+
     getTracks() {
         return this.tracks;
     }
@@ -60,11 +94,6 @@ export class Player extends Component {
 
     setTrack(track) {
         this.track = track;
-    }
-
-    dispatchActionCurrentPlayingTrack = (track) => {
-        this.setState({ isPlaying: !this.state.isPlaying });
-        //delete track.isCurrentlyPlaying;
     }
 
     dispatchActionsSearchedTrack = (track) => {
@@ -106,15 +135,17 @@ export class Player extends Component {
     handleOnPressForward = (tracks, songIndex) => {
         if (tracks.length > 1) {
             this.setState({ trackCurrentTime: 0 });
+        } else if (tracks[songIndex + 1]) {
+            this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
         }
-        tracks[songIndex + 1] && this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
     }
 
     handleOnPressBackward = (tracks, songIndex) => {
         if (tracks.length > 1) {
             this.setState({ trackCurrentTime: 0 });
+        } else if (tracks[songIndex - 1]) {
+            this.dispatchActionsPressedTrack(tracks[songIndex - 1]);
         }
-        tracks[songIndex - 1] && this.dispatchActionsPressedTrack(tracks[songIndex - 1]);
     }
 
     hanleOnPressRepeat = (shouldRepeat) => {
@@ -131,42 +162,6 @@ export class Player extends Component {
 
     handleOnTouchMoveSliderSeek = (time) => {
         this.player.seek(time);
-    }
-
-    onPlayProgress = ({ currentTime }) => {
-        this.setState({
-            trackCurrentTime: currentTime
-        });
-    }
-
-    onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
-        this.setState({ trackCurrentTime: 0 });
-        const song = songIndex + 1;
-
-        if (shouldRepeat) {
-            return this.dispatchActionsPressedTrack(tracks[songIndex]);
-        } else if (shouldShuffle) {
-            const random = Math.floor((Math.random() * tracks.length) + 0);
-
-            if (tracks[random]) {
-                return this.dispatchActionsPressedTrack(tracks[random]);
-            }
-        } else if (!tracks[song]) {
-            this.setState({ isPlaying: !isPlaying });
-        } else {
-            return tracks[song] && this.dispatchActionsPressedTrack(tracks[song]);
-        }
-    }
-
-    onBuffer = (buffer) => {
-        if (!this.state.isBuffering) {
-            this.toastRef.current.show('Song Ready!');
-            this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
-        }
-    }
-
-    onAudioError = ({ error }) => {
-        this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     }
 
     render() {
