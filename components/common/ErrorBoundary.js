@@ -5,7 +5,7 @@ export class ErrorBoundary extends Component {
     state = { error: null, hasError: false }
 
     static getDerivedStateFromError(error) {
-        return { error, hasError: true }
+        return { error, hasError: true };
     }
 
     componentDidCatch(error, info) {
@@ -13,13 +13,13 @@ export class ErrorBoundary extends Component {
     }
 
     resetError = () => {
-        this.setState({ error: null, hasError: false })
+        this.setState({ error: null, hasError: false });
     }
 
     render() {
         if (this.state.hasError) {
-            return (<FallbackComponent error={this.state.error} reset={this.resetError} />)
+            return (<FallbackComponent error={this.state.error} reset={this.resetError} />);
         }
-        return this.props.children
+        return this.props.children;
     }
 }

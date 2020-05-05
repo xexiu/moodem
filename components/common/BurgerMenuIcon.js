@@ -10,13 +10,14 @@ export const BurgerMenuIcon = props => {
     } = props;
 
     return (
-        <View style={{ position: 'absolute', top: -12, left: 0, width: 70, height: 70, zIndex: 1000 }}>
+        <View style={{ position: 'absolute', top: 30, left: 0, width: 30, height: 30, zIndex: 1000 }}>
             <Icon
             iconStyle={{ fontSize: 30 }}
             Component={TouchableScale}
             name='menu'
             type='simple-line-icons'
             raised
+            size={20}
             color='#444'
             onPress={action}
             />

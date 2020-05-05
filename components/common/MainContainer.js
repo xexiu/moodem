@@ -4,7 +4,7 @@ import { View } from 'react-native';
 export class MainContainer extends Component {
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 40 }}>
                 {this.props.children}
             </View>
         );

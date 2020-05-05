@@ -1,162 +1,55 @@
 /* eslint-disable max-len */
 import io from 'socket.io-client';
 import Toast from 'react-native-easy-toast';
-import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useContext, useEffect } from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
-import { HeaderContainer } from '../common/HeaderContainer';
 import { BurgerMenuIcon } from '../common/BurgerMenuIcon';
-import { CommonTopSearchBar } from '../common/functional-components/CommonTopSearchBar';
-import { CommonFlatList } from '../common/functional-components/CommonFlatList';
-import { CommonFlatListItem } from '../common/functional-components/CommonFlatListItem';
-import { SongsListEmpty } from '../../screens/User/functional-components/SongsListEmpty';
-import { getSoundCloudData } from '../../src/js/SoundCloud/soundCloudFetchers';
-import { filterCleanData } from '../../src/js/Utils/Helpers/actions/songs';
-import { BodyContainer } from '../common/BodyContainer';
-import { PlayerContainer } from '../common/PlayerContainer';
-import { Player } from '../common/Player';
-import { TracksListContainer } from '../common/TracksListContainer';
-import { TrackListItems } from '../common/TrackListItems';
-import { Icon } from 'react-native-elements';
-import { View, Text, TouchableHighlight, Button } from 'react-native';
+import { Songs } from '../User/functional-components/Songs';
+import { Videos } from '../User/functional-components/Videos';
 import { UserContext } from '../User/functional-components/UserContext';
 
 const welcomeMsgMoodem = (toastRef) => data => toastRef.show(data, 1000);
-const messageFromServerWithTrack = (setTracksList) => tracksList => setTracksList([...tracksList]);
-
-const checkSearchedTrackIfAlreadyOnTrackList = (tracksList, searchedTracks) => {
-    tracksList.forEach(track => {
-        searchedTracks.forEach(searchedTrack => {
-            if (track.id === searchedTrack.id) {
-                Object.assign(searchedTrack, {
-                    isOnTracksList: true
-                });
-            }
-        });
-    });
-};
-
 
 const P2PLanding = (props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
-    const [searchedTracksList = [], setSearchedTracksList] = useState([]);
-    const [tracksList = [], setTracksList] = useState([]);
-    const [isSearchingTracks = false, setIsSearchingTracks] = useState(false);
-    const signal = axios.CancelToken.source();
-    const tracks = isSearchingTracks ? searchedTracksList : tracksList;
     const socket = io('http://192.168.10.12:3000', { // Mobile --> http://172.20.10.9:3000
         transports: ['websocket'],
         jsonp: false,
-        reconnectionAttempts: 'Infinity', //avoid having user reconnect manually in order to prevent dead clients after a server restart
-        timeout: 10000, //before connect_error and connect_timeout are emitted.
+        reconnectionAttempts: 'Infinity',
+        timeout: 10000,
         'force new connection': true
     });
-    const playerRef = React.createRef();
     const toastRef = React.createRef();
-
+    const Tab = createMaterialTopTabNavigator();
 
     useEffect(() => {
         console.log('Effect');
-        socket.on('server-send-message-PlayListMoodem', welcomeMsgMoodem(toastRef.current));
-        socket.on('server-send-message-track', messageFromServerWithTrack(setTracksList));
+        socket.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
         // socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
         // socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
-        socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
+        //socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
+        socket.emit('server-send-message-welcomeMsg', { displayName: user.displayName || 'Guest' });
         socket.emit('send-message-track');
 
         return () => {
             socket.off(welcomeMsgMoodem);
-            socket.off(messageFromServerWithTrack);
             // socket.off(this.messageFromServerWithVote);
             // socket.off(this.messageFromServerWithBoost);
             socket.close();
         };
-    }, [tracksList.length]);
-
-    const handlingOnPressSearch = (searchedTracks) => {
-        checkSearchedTrackIfAlreadyOnTrackList(tracksList, searchedTracks);
-        setSearchedTracksList(searchedTracks);
-        setIsSearchingTracks(!!searchedTracks.length);
-    };
-
-    const onEndEditingSearch = (text) => new Promise(resolve => {
-        getSoundCloudData(text, signal)
-            .then(data => {
-                handlingOnPressSearch(filterCleanData(data, user));
-                return resolve();
-            })
-            .catch(err => {
-                console.log('Error', err);
-            });
-    });
-
-    const sendSongToTrackList = (track) => {
-        setSearchedTracksList([]);
-        setIsSearchingTracks(false);
-
-        Object.assign(track, {
-            isOnTracksList: true,
-            index: tracksList.length
-        });
-
-        socket.emit('send-message-track', track);
-    };
-
-    const renderItem = (song) => (
-        <CommonFlatListItem
-            bottomDivider
-            title={song.title}
-            chevron={isSearchingTracks && !song.isOnTracksList && {
-                color: '#dd0031',
-                onPress: () => sendSongToTrackList(song),
-                size: 10,
-                raised: true,
-                iconStyle: { fontSize: 15, paddingLeft: 2 },
-                containerStyle: { marginRight: -10 }
-            }}
-            checkmark={isSearchingTracks && song.isOnTracksList}
-            action={() => console.log('Pressed', song)}
-        />
-    );
-
-    console.log('Tracks', tracks);
-
+    }, []);
 
     return (
         <ErrorBoundary>
             <MainContainer>
-                <HeaderContainer>
-                    <BurgerMenuIcon action={() => navigation.openDrawer()} />
-                    <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} />
-                </HeaderContainer>
-
-                <PlayerContainer>
-                    <Player ref={playerRef} tracks={tracks} />
-                    <Toast
-                        position='top'
-                        ref={toastRef}
-                    />
-                </PlayerContainer>
-
-
-                <TracksListContainer>
-
-                    <CommonFlatList
-                        emptyListComponent={SongsListEmpty}
-                        data={tracks}
-                        action={({ item }) => renderItem(item)}
-                    />
-
-                    {/* <TrackListItems
-                        isSearchingTracks={isSearchingTracks}
-                        data={tracks}
-
-                    /> */}
-                </TracksListContainer>
-
-
+                <BurgerMenuIcon action={() => navigation.openDrawer()} />
+                <Tab.Navigator>
+                    <Tab.Screen name="Songs" component={Songs} />
+                    <Tab.Screen name="Videos" component={Videos} />
+                </Tab.Navigator>
             </MainContainer>
             <Toast
                 position='top'

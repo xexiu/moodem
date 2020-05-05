@@ -28,9 +28,16 @@ io.on('connection', (socket) => {
     socket.join(data.chatRoom, () => {
       const userName = getUserName(data.displayName, socket.id);
       socket.username = userName;
-      console.log('Sending ....', userName);
       io.to('global-playList-moodem').emit('server-send-message-PlayListMoodem', `${userName} has joined!`);
     });
+  });
+
+  // Welcome Msg
+
+  socket.on('server-send-message-welcomeMsg', (data) => {
+    const userName = getUserName(data.displayName, socket.id);
+    socket.username = userName;
+    io.sockets.emit('server-send-message-welcomeMsg', `Welcome ${userName}!`);
   });
 
   // Track

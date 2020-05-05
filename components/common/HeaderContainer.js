@@ -18,7 +18,7 @@ export class HeaderContainer extends Component {
 const stylesTopHeader = {
     containerViewTopHeader: {
         position: 'relative',
-        height: 40,
+        height:150,
         marginTop: 35,
         flexDirection: 'row',
         alignItems: 'center'

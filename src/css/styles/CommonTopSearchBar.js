@@ -1,18 +1,18 @@
 import { Dimensions } from 'react-native';
 
-const MARGIN_RIGHT = 80;
 const {
     width
 } = Dimensions.get('window');
 
 export const CommonTopSeachBarContainer = {
-    width: width - MARGIN_RIGHT,
+    width,
     padding: 0,
     backgroundColor: '#fff',
     borderRadius: 25,
     borderColor: '#eee',
     borderWidth: 2,
-    marginLeft: 70
+    marginTop: 5,
+    marginBottom: 5
 };
 
 export const CommonTopSeachBarInputContainer = {
