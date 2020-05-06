@@ -7,6 +7,6 @@ export class TracksListContainer extends Component {
             <View style={[{ flex: 1, marginLeft: 12, marginRight: 12, position: 'relative' }]}>
                 {this.props.children}
             </View>
-        )
+        );
     }
 }

@@ -5,7 +5,6 @@ import Toast from 'react-native-easy-toast';
 import axios from 'axios';
 import { View, Text } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
-import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { getSoundCloudData } from '../../../src/js/SoundCloud/soundCloudFetchers';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import { Player } from '../../common/Player';
@@ -49,7 +48,6 @@ const Songs = (props) => {
     const playerRef = React.createRef();
 
     useEffect(() => {
-        console.log('Effect');
         socket.on('server-send-message-track', messageFromServerWithTrack(setTracksList));
         // socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
         // socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
@@ -126,21 +124,12 @@ const Songs = (props) => {
                     ref={toastRef}
                 />
             </PlayerContainer>
-
-
             <TracksListContainer>
-
                 <CommonFlatList
                     emptyListComponent={SongsListEmpty}
                     data={tracks}
                     action={({ item }) => renderItem(item)}
                 />
-
-                {/* <TrackListItems
-                        isSearchingTracks={isSearchingTracks}
-                        data={tracks}
-
-                    /> */}
             </TracksListContainer>
         </View>
     );

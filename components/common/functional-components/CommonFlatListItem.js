@@ -29,6 +29,8 @@ export const CommonFlatListItem = (props) => {
         rightIcon,
         leftAvatar,
         rightAvatar,
+        leftElement,
+        rightElement,
         buttonGroup,
         chevron,
         checkmark,
@@ -66,6 +68,8 @@ export const CommonFlatListItem = (props) => {
                 leftIcon={leftIcon}
                 leftAvatar={leftAvatar}
                 rightAvatar={rightAvatar}
+                leftElement={leftElement}
+                rightElement={rightElement}
                 buttonGroup={buttonGroup}
                 chevron={chevron}
                 checkmark={checkmark}

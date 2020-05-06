@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
     if (track) {
       tracksList.push(track);
     }
-    io.to('global-playList-moodem').emit('server-send-message-track', tracksList);
+    io.sockets.emit('server-send-message-track', tracksList);
   });
 
   // // Vote
