@@ -7,51 +7,36 @@ import { View, Text } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { getSoundCloudData } from '../../../src/js/SoundCloud/soundCloudFetchers';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
+import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/common';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { TracksListContainer } from '../../common/TracksListContainer';
-import { SongsListEmpty } from '../../../screens/User/functional-components/SongsListEmpty';
+import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import { UserContext } from '../../User/functional-components/UserContext';
+import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 
 const messageFromServerWithTrack = (setTracksList) => tracksList => setTracksList([...tracksList]);
 
-const checkSearchedTrackIfAlreadyOnTrackList = (tracksList, searchedTracks) => {
-    tracksList.forEach(track => {
-        searchedTracks.forEach(searchedTrack => {
-            if (track.id === searchedTrack.id) {
-                Object.assign(searchedTrack, {
-                    isOnTracksList: true
-                });
-            }
-        });
-    });
-};
-
-const Songs = (props) => {
+export const Songs = (props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
     const [searchedTracksList = [], setSearchedTracksList] = useState([]);
     const [tracksList = [], setTracksList] = useState([]);
     const [isSearchingTracks = false, setIsSearchingTracks] = useState(false);
     const tracks = isSearchingTracks ? searchedTracksList : tracksList;
+    const socket = io(IP, socketConf);
     const signal = axios.CancelToken.source();
-    const socket = io('http://192.168.10.12:3000', { // Mobile --> http://172.20.10.9:3000
-        transports: ['websocket'],
-        jsonp: false,
-        reconnectionAttempts: 'Infinity',
-        timeout: 10000,
-        'force new connection': true
-    });
     const toastRef = React.createRef();
     const playerRef = React.createRef();
 
     useEffect(() => {
+        console.log('useEffect Songs');
         socket.on('server-send-message-track', messageFromServerWithTrack(setTracksList));
         // socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
         // socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
-        socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
+        //socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
         socket.emit('send-message-track');
 
         return () => {
@@ -68,7 +53,7 @@ const Songs = (props) => {
         setIsSearchingTracks(false);
 
         Object.assign(track, {
-            isOnTracksList: true,
+            isMediaOnList: true,
             index: tracksList.length
         });
 
@@ -81,7 +66,7 @@ const Songs = (props) => {
             title={song.title}
             subtitle={song.user && song.user.username}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-            chevron={isSearchingTracks && !song.isOnTracksList && {
+            chevron={isSearchingTracks && !song.isMediaOnList && {
                 color: '#dd0031',
                 onPress: () => sendSongToTrackList(song),
                 size: 10,
@@ -89,30 +74,25 @@ const Songs = (props) => {
                 iconStyle: { fontSize: 15, paddingLeft: 2 },
                 containerStyle: { marginRight: -10 }
             }}
-            checkmark={isSearchingTracks && song.isOnTracksList}
+            checkmark={isSearchingTracks && song.isMediaOnList}
             action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
         />
     );
 
     const handlingOnPressSearch = (searchedTracks) => {
-        checkSearchedTrackIfAlreadyOnTrackList(tracksList, searchedTracks);
+        checkIfAlreadyOnList(tracksList, searchedTracks);
         setSearchedTracksList(searchedTracks);
         setIsSearchingTracks(!!searchedTracks.length);
     };
 
-    const onEndEditingSearch = (text) => new Promise(resolve => {
-        getSoundCloudData(text, signal)
-            .then(data => {
-                handlingOnPressSearch(filterCleanData(data, user));
-                return resolve();
-            })
-            .catch(err => {
-                if (axios.isCancel(err)) {
-                    console.log('post Request canceled');
-                }
-                console.log('Error', err);
-            });
-    });
+    const onEndEditingSearch = (text) => getSoundCloudData(text, signal)
+        .then(data => handlingOnPressSearch(filterCleanData(data, user)))
+        .catch(err => {
+            if (axios.isCancel(err)) {
+                console.log('post Request canceled');
+            }
+            console.log('Error', err);
+        });
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
@@ -126,19 +106,11 @@ const Songs = (props) => {
             </PlayerContainer>
             <TracksListContainer>
                 <CommonFlatList
-                    emptyListComponent={SongsListEmpty}
+                    emptyListComponent={MediaListEmpty}
                     data={tracks}
                     action={({ item }) => renderItem(item)}
                 />
             </TracksListContainer>
         </View>
     );
-};
-
-Songs.navigationOptions = ({ route }) => ({
-    drawerIcon: ''
-});
-
-export {
-    Songs
 };

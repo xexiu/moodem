@@ -9,6 +9,7 @@ app.get('/', (req, res) => {
 });
 
 const tracksList = [];
+const videos = [];
 const clients = [];
 const user_id = 0;
 
@@ -42,11 +43,19 @@ io.on('connection', (socket) => {
 
   // Track
   socket.on('send-message-track', (track) => {
-    //socket.broadcast.to(clients[0].id).emit('update', 'for your eyes only' + msg);
+    console.log('Captured song', track);
     if (track) {
       tracksList.push(track);
     }
     io.sockets.emit('server-send-message-track', tracksList);
+  });
+
+  // Video
+  socket.on('send-message-video', (video) => {
+    if (video) {
+      videos.push(video);
+    }
+    io.sockets.emit('server-send-message-video', videos);
   });
 
   // // Vote

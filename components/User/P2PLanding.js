@@ -1,43 +1,29 @@
 /* eslint-disable max-len */
 import io from 'socket.io-client';
 import Toast from 'react-native-easy-toast';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MainContainer } from '../common/MainContainer';
 import { BurgerMenuIcon } from '../common/BurgerMenuIcon';
 import { Songs } from '../User/functional-components/Songs';
 import { Videos } from '../User/functional-components/Videos';
-import { UserContext } from '../User/functional-components/UserContext';
+import { IP, socketConf } from '../../src/js/Utils/Helpers/services/socket';
 
 const welcomeMsgMoodem = (toastRef) => data => toastRef.show(data, 1000);
 
 const P2PLanding = (props) => {
     const { navigation } = props;
-    const { user } = useContext(UserContext);
-    const socket = io('http://192.168.10.12:3000', { // Mobile --> http://172.20.10.9:3000
-        transports: ['websocket'],
-        jsonp: false,
-        reconnectionAttempts: 'Infinity',
-        timeout: 10000,
-        'force new connection': true
-    });
+    const socket = io(IP, socketConf);
     const toastRef = React.createRef();
     const Tab = createMaterialTopTabNavigator();
 
     useEffect(() => {
-        console.log('Effect');
+        console.log('Effect P2PLanding');
         socket.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
-        // socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
-        // socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
-        //socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
-        socket.emit('server-send-message-welcomeMsg', { displayName: user.displayName || 'Guest' });
-        socket.emit('send-message-track');
 
         return () => {
             socket.off(welcomeMsgMoodem);
-            // socket.off(this.messageFromServerWithVote);
-            // socket.off(this.messageFromServerWithBoost);
             socket.close();
         };
     }, []);

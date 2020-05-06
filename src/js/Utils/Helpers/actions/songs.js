@@ -35,6 +35,7 @@ export const filterCleanData = (data, user) => {
                 votes_count: 0,
                 hasVoted: false,
                 hasBoosted: false,
+                hasLiked: false,
                 video_url: track.video_url,
                 download_url: track.download_url
             });
