@@ -10,7 +10,7 @@ export const BurgerMenuIcon = props => {
     } = props;
 
     return (
-        <View style={{ position: 'absolute', top: 30, left: 0, width: 30, height: 30, zIndex: 1000 }}>
+        <View style={{ position: 'absolute', top: 20, left: 0, width: 30, height: 30, zIndex: 1000 }}>
             <Icon
             iconStyle={{ fontSize: 30 }}
             Component={TouchableScale}
