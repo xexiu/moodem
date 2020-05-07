@@ -1,15 +1,15 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 import React, { useState, useEffect, useContext } from 'react';
-import io from 'socket.io-client';
-import Toast from 'react-native-easy-toast';
 import axios from 'axios';
-import { View, Text } from 'react-native';
-import { Icon } from 'react-native-elements';
-import MediaAbstractor from '../../common/class-components/MediaAbstractor';
+import { View } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
-import { checkIfAlreadyOnList, getData } from '../../../src/js/Utils/Helpers/actions/common';
+import {
+    checkIfAlreadyOnList,
+    getData,
+    MediaBuilder
+} from '../../../src/js/Utils/Helpers/actions/common';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
@@ -17,10 +17,9 @@ import { CommonFlatListItem } from '../../common/functional-components/CommonFla
 import { TracksListContainer } from '../../common/TracksListContainer';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import { UserContext } from '../../User/functional-components/UserContext';
-import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 import { MediaActions } from '../functional-components/MediaActions';
 
-const messageFromServerWithTrack = (setTracksList) => tracksList => setTracksList([...tracksList]);
+const setMediaList = (setTracksList) => tracksList => setTracksList([...tracksList]);
 
 export const Songs = (props) => {
     const { navigation } = props;
@@ -28,47 +27,43 @@ export const Songs = (props) => {
     const [searchedTracksList = [], setSearchedTracksList] = useState([]);
     const [tracksList = [], setTracksList] = useState([]);
     const [isSearchingTracks = false, setIsSearchingTracks] = useState(false);
-    const tracks = isSearchingTracks ? searchedTracksList : tracksList;
-    const socket = io(IP, socketConf);
+    const songsList = isSearchingTracks ? searchedTracksList : tracksList;
+    const media = new MediaBuilder();
+    const socket = media.socket();
     const signal = axios.CancelToken.source();
-    const mediaAbstractor = new MediaAbstractor('https://api.soundcloud.com/tracks/?limit=50&q=');
-    const toastRef = React.createRef();
-    const playerRef = React.createRef();
+    media.setApi('https://api.soundcloud.com/tracks/?limit=50&q=');
 
     useEffect(() => {
-        console.log('useEffect Songs');
-        socket.on('server-send-message-track', messageFromServerWithTrack(setTracksList));
-        socket.on('server-send-message-vote', messageFromServerWithTrack(setTracksList));
-        socket.on('server-send-message-boost', messageFromServerWithTrack(setTracksList));
-        //socket.emit('join-global-playList-moodem', { chatRoom: 'global-playList-moodem', displayName: user.displayName || 'Guest' });
-        socket.emit('send-message-track');
-
-        console.log('Songs', tracks);
-
+        console.log('On useEffect Songs');
+        media.msgFromServer(socket, setMediaList(setTracksList));
+        media.msgToServer(socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songsPlaylist' });
         return () => {
+            console.log('Off useEffect Songs');
             axios.Cancel();
-            socket.off(messageFromServerWithTrack);
+            socket.off(media.msgFromServer);
             socket.close();
         };
     }, [tracksList.length]);
 
-    const sendSongToTrackList = (track) => {
+    const sendSongToList = (song) => {
         setSearchedTracksList([]);
         setIsSearchingTracks(false);
 
-        Object.assign(track, {
+        Object.assign(song, {
             isMediaOnList: true,
             index: tracksList.length
         });
 
-        socket.emit('send-message-track', track);
+        media.msgToServer(socket, 'send-message-media', { song, chatRoom: 'global-moodem-songsPlaylist' });
     };
 
-    const handleSongActions = (song, songActionsCount, actionName) => {
+    const handleSongActions = (song, count, actionName) => {
         if (user && !song.hasVoted && actionName === 'vote') {
-            socket.emit(`send-message-${actionName}`, song.id, songActionsCount);
+            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id, count });
         } else if (user && !song.hasBoosted && actionName === 'boost') {
-            socket.emit(`send-message-${actionName}`, song.id, songActionsCount);
+            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id, count });
+        } else if (user && !song.hasBoosted && actionName === 'remove') {
+            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id });
         } else if (!user) {
             navigation.navigate('Guest');
         }
@@ -84,7 +79,7 @@ export const Songs = (props) => {
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             chevron={isSearchingTracks && !song.isMediaOnList && {
                 color: '#dd0031',
-                onPress: () => sendSongToTrackList(song),
+                onPress: () => sendSongToList(song),
                 size: 10,
                 raised: true,
                 iconStyle: { fontSize: 15, paddingLeft: 2 },
@@ -107,13 +102,13 @@ export const Songs = (props) => {
                         iconColor={'#00b7e0'}
                     />)
                 },
-                user && song.user.uid === user.uid ? {
+                user && !!song.user && song.user.uid === user.uid && {
                     element: () => (<MediaActions
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
                     />)
-                } : ''],
+                }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' },
                 onPress: (btnIndex) => {
@@ -123,12 +118,12 @@ export const Songs = (props) => {
                         case 1:
                             return handleSongActions(song, ++song.boosts_count, 'boost');
                         default:
-                            return console.log('Pressed Remove');
+                            return handleSongActions(song, null, 'remove');
                     }
                 }
             }}
             checkmark={isSearchingTracks && song.isMediaOnList}
-            action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
+            action={() => media.playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
         />
     );
 
@@ -138,7 +133,7 @@ export const Songs = (props) => {
         setIsSearchingTracks(!!searchedTracks.length);
     };
 
-    const onEndEditingSearch = (text) => getData(`${mediaAbstractor.getApiUrl()}${text}&client_id=`, 'soundcloud', signal.token)
+    const onEndEditingSearch = (text) => getData(`${media.getApi()}${text}&client_id=`, 'soundcloud', signal.token)
         .then(data => handlingOnPressSearch(filterCleanData(data, user)))
         .catch(err => {
             if (axios.isCancel(err)) {
@@ -151,16 +146,12 @@ export const Songs = (props) => {
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} />
             <PlayerContainer>
-                <Player ref={playerRef} tracks={tracks} />
-                <Toast
-                    position='top'
-                    ref={toastRef}
-                />
+                <Player ref={media.playerRef} tracks={songsList} />
             </PlayerContainer>
             <TracksListContainer>
                 <CommonFlatList
                     emptyListComponent={MediaListEmpty}
-                    data={tracks}
+                    data={songsList}
                     action={({ item }) => renderItem(item)}
                 />
             </TracksListContainer>

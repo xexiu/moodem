@@ -1,45 +1,45 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 import React, { useState, useEffect, useContext } from 'react';
-import io from 'socket.io-client';
 import axios from 'axios';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import MediaAbstractor from '../../common/class-components/MediaAbstractor';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import { TracksListContainer } from '../../common/TracksListContainer';
-import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 import { UserContext } from '../../User/functional-components/UserContext';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/videos';
-import { checkIfAlreadyOnList, getData } from '../../../src/js/Utils/Helpers/actions/common';
+import {
+    checkIfAlreadyOnList,
+    getData,
+    MediaBuilder
+} from '../../../src/js/Utils/Helpers/actions/common';
+import { MediaActions } from '../functional-components/MediaActions';
 
-const messageFromServerWithVideo = (setVideos) => videos => setVideos([...videos]);
+const setMediaList = (setVideos) => videos => setVideos([...videos]);
 
 export const Videos = (props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
-    const signal = axios.CancelToken.source();
     const [videos = [], setVideos] = useState([]);
     const [isSearchingVideos = false, setIsSearchingVideos] = useState(false);
     const [searchedVideosList = [], setSearchedVideosList] = useState([]);
     const videosList = isSearchingVideos ? searchedVideosList : videos;
-    const socket = io(IP, socketConf);
-    const mediaAbstractor = new MediaAbstractor('https://www.googleapis.com/youtube/v3/search?part=snippet&q=');
+    const media = new MediaBuilder();
+    const socket = media.socket();
+    const signal = axios.CancelToken.source();
+    media.setApi('https://www.googleapis.com/youtube/v3/search?part=snippet&q=');
 
     useEffect(() => {
         console.log('useEffect Videos');
-        socket.on('server-send-message-video', messageFromServerWithVideo(setVideos));
-        // socket.on('server-send-message-vote', this.messageFromServerWithVote.bind(this));
-        // socket.on('server-send-message-boost', this.messageFromServerWithBoost.bind(this));
-        socket.emit('send-message-video');
+        media.msgFromServer(socket, setMediaList(setVideos));
+        media.msgToServer(socket, 'send-message-media', { video: true, chatRoom: 'global-moodem-videosPlaylist' });
 
         return () => {
             axios.Cancel();
-            socket.off(messageFromServerWithVideo);
-            // socket.off(this.messageFromServerWithVote);
-            // socket.off(this.messageFromServerWithBoost);
+            socket.off(media.msgFromServer);
             socket.close();
         };
     }, [videos.length]);
@@ -50,7 +50,7 @@ export const Videos = (props) => {
         setIsSearchingVideos(!!searchedVideos.length);
     };
 
-    const onEndEditingSearch = (text) => getData(`${mediaAbstractor.getApiUrl()}${text}&maxResults=40&key=`, 'youtube', signal.token)
+    const onEndEditingSearch = (text) => getData(`${media.getApi()}${text}&maxResults=40&key=`, 'youtube', signal.token)
         .then(data => handlingOnPressSearch(filterCleanData(data.items, user)))
         .catch(err => {
             if (axios.isCancel(err)) {
@@ -68,7 +68,19 @@ export const Videos = (props) => {
             index: videos.length
         });
 
-        socket.emit('send-message-video', video);
+        socket.emit('send-message-media', { video, chatRoom: 'global-moodem-videosPlaylist' });
+    };
+
+    const handleVideoActions = (video, count, actionName) => {
+        if (user && !video.hasVoted && actionName === 'vote') {
+            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id, count });
+        } else if (user && !video.hasBoosted && actionName === 'boost') {
+            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id, count });
+        } else if (user && !video.hasBoosted && actionName === 'remove') {
+            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id });
+        } else if (!user) {
+            navigation.navigate('Guest');
+        }
     };
 
     const renderItem = (video) => (
@@ -93,6 +105,43 @@ export const Videos = (props) => {
                 raised: true,
                 iconStyle: { fontSize: 15, paddingLeft: 2 },
                 containerStyle: { marginRight: -10 }
+            }}
+            buttonGroup={!isSearchingVideos && {
+                buttons: [{
+                    element: () => (<MediaActions
+                        text={video.votes_count}
+                        iconName={'thumbs-up'}
+                        iconType={'entypo'}
+                        iconColor={'#90c520'}
+                    />)
+                },
+                {
+                    element: () => (<MediaActions
+                        text={video.boosts_count}
+                        iconName={'thunder-cloud'}
+                        iconType={'entypo'}
+                        iconColor={'#00b7e0'}
+                    />)
+                },
+                user && !!video.user && video.user.uid === user.uid && {
+                    element: () => (<MediaActions
+                        iconName={'remove'}
+                        iconType={'font-awesome'}
+                        iconColor={'#dd0031'}
+                    />)
+                }],
+                containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
+                innerBorderStyle: { color: 'transparent' },
+                onPress: (btnIndex) => {
+                    switch (btnIndex) {
+                        case 0:
+                            return handleVideoActions(video, ++video.votes_count, 'vote');
+                        case 1:
+                            return handleVideoActions(video, ++video.boosts_count, 'boost');
+                        default:
+                            return handleVideoActions(video, null, 'remove');
+                    }
+                }
             }}
             checkmark={isSearchingVideos && video.isMediaOnList}
         />
