@@ -135,7 +135,8 @@ export class Player extends Component {
     handleOnPressForward = (tracks, songIndex) => {
         if (tracks.length > 1) {
             this.setState({ trackCurrentTime: 0 });
-        } else if (tracks[songIndex + 1]) {
+        }
+        if (tracks[songIndex + 1]) {
             this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
         }
     }
@@ -143,7 +144,8 @@ export class Player extends Component {
     handleOnPressBackward = (tracks, songIndex) => {
         if (tracks.length > 1) {
             this.setState({ trackCurrentTime: 0 });
-        } else if (tracks[songIndex - 1]) {
+        }
+        if (tracks[songIndex - 1]) {
             this.dispatchActionsPressedTrack(tracks[songIndex - 1]);
         }
     }

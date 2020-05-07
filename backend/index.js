@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   socket.on('server-send-message-welcomeMsg', (data) => {
     const userName = getUserName(data.displayName, socket.id);
     socket.username = userName;
-    io.sockets.emit('server-send-message-welcomeMsg', `Welcome ${userName}!`);
+    socket.emit('server-send-message-welcomeMsg', `Welcome ${userName}!`);
   });
 
   // Track
@@ -58,26 +58,27 @@ io.on('connection', (socket) => {
     io.sockets.emit('server-send-message-video', videos);
   });
 
-  // // Vote
-  // socket.on('send-message-vote', (trackId, voteCount) => {
-  //   tracksList.forEach(track => {
-  //     if (track.id === trackId) {
-  //       track.hasVoted = true;
-  //       track.votes_count = voteCount;
-  //     }
-  //   });
-  //   io.sockets.emit('server-send-message-vote', tracksList);
-  // });
+  // Vote
+  socket.on('send-message-vote', (trackId, voteCount) => {
+    tracksList.forEach(track => {
+      if (track.id === trackId) {
+        track.hasVoted = true;
+        track.votes_count = voteCount;
+      }
+    });
+    io.sockets.emit('server-send-message-vote', tracksList);
+  });
 
-  // // Boost
-  // socket.on('send-message-boost', (trackId, boostCount) => {
-  //   tracksList.forEach(track => {
-  //     if (track.id === trackId) {
-  //       track.boosts_count = boostCount;
-  //     }
-  //   });
-  //   io.sockets.emit('server-send-message-boost', tracksList);
-  // });
+  // Boost
+  socket.on('send-message-boost', (trackId, boostCount) => {
+    tracksList.forEach(track => {
+      if (track.id === trackId) {
+        track.hasBoosted = true;
+        track.boosts_count = boostCount;
+      }
+    });
+    io.sockets.emit('server-send-message-boost', tracksList);
+  });
 
   // User has disconected
 

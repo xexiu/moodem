@@ -1,17 +1,3 @@
-import axios from 'axios';
-import { YOUTUBE_KEY } from '../../constants/Api/apiKeys';
-
-export const getYoutubeVideos = async (myCancelToken, query) => {
-    try {
-        const { data } = await axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&maxResults=40&key=${YOUTUBE_KEY}`, {
-            cancelToken: myCancelToken,
-        });
-        return data;
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const filterCleanData = (data, user) => {
     const filteredTracks = [];
 

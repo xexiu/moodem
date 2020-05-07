@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import { View, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
+import MediaAbstractor from '../../common/class-components/MediaAbstractor';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
@@ -11,8 +12,8 @@ import { MediaListEmpty } from '../../../screens/User/functional-components/Medi
 import { TracksListContainer } from '../../common/TracksListContainer';
 import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 import { UserContext } from '../../User/functional-components/UserContext';
-import { getYoutubeVideos, filterCleanData } from '../../../src/js/Utils/Helpers/actions/videos';
-import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/common';
+import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/videos';
+import { checkIfAlreadyOnList, getData } from '../../../src/js/Utils/Helpers/actions/common';
 
 const messageFromServerWithVideo = (setVideos) => videos => setVideos([...videos]);
 
@@ -25,6 +26,7 @@ export const Videos = (props) => {
     const [searchedVideosList = [], setSearchedVideosList] = useState([]);
     const videosList = isSearchingVideos ? searchedVideosList : videos;
     const socket = io(IP, socketConf);
+    const mediaAbstractor = new MediaAbstractor('https://www.googleapis.com/youtube/v3/search?part=snippet&q=');
 
     useEffect(() => {
         console.log('useEffect Videos');
@@ -48,16 +50,14 @@ export const Videos = (props) => {
         setIsSearchingVideos(!!searchedVideos.length);
     };
 
-    const onEndEditingSearch = async (query) => {
-        try {
-            const data = await getYoutubeVideos(signal.token, query);
-            handlingOnPressSearch(filterCleanData(data.items, user));
-        } catch (err) {
+    const onEndEditingSearch = (text) => getData(`${mediaAbstractor.getApiUrl()}${text}&maxResults=40&key=`, 'youtube', signal.token)
+        .then(data => handlingOnPressSearch(filterCleanData(data.items, user)))
+        .catch(err => {
             if (axios.isCancel(err)) {
-                console.log('Error: ', err.message);
+                console.log('post Request canceled');
             }
-        }
-    };
+            console.log('Error', err);
+        });
 
     const sendVideoToList = (video) => {
         setSearchedVideosList([]);
