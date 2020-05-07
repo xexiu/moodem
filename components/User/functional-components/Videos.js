@@ -115,14 +115,14 @@ export const Videos = (props) => {
                         iconColor={'#90c520'}
                     />)
                 },
-                {
-                    element: () => (<MediaActions
-                        text={video.boosts_count}
-                        iconName={'thunder-cloud'}
-                        iconType={'entypo'}
-                        iconColor={'#00b7e0'}
-                    />)
-                },
+                // {
+                //     element: () => (<MediaActions
+                //         text={video.boosts_count}
+                //         iconName={'thunder-cloud'}
+                //         iconType={'entypo'}
+                //         iconColor={'#00b7e0'}
+                //     />)
+                // },
                 user && !!video.user && video.user.uid === user.uid && {
                     element: () => (<MediaActions
                         iconName={'remove'}
@@ -136,8 +136,8 @@ export const Videos = (props) => {
                     switch (btnIndex) {
                         case 0:
                             return handleVideoActions(video, ++video.votes_count, 'vote');
-                        case 1:
-                            return handleVideoActions(video, ++video.boosts_count, 'boost');
+                        // case 1:
+                        //     return handleVideoActions(video, ++video.boosts_count, 'boost');
                         default:
                             return handleVideoActions(video, null, 'remove');
                     }

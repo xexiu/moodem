@@ -30,6 +30,7 @@ export const Songs = (props) => {
     const songsList = isSearchingTracks ? searchedTracksList : tracksList;
     const media = new MediaBuilder();
     const socket = media.socket();
+    const playerRef = media.playerRef();
     const signal = axios.CancelToken.source();
     media.setApi('https://api.soundcloud.com/tracks/?limit=50&q=');
 
@@ -37,6 +38,7 @@ export const Songs = (props) => {
         console.log('On useEffect Songs');
         media.msgFromServer(socket, setMediaList(setTracksList));
         media.msgToServer(socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songsPlaylist' });
+
         return () => {
             console.log('Off useEffect Songs');
             axios.Cancel();
@@ -94,14 +96,14 @@ export const Songs = (props) => {
                         iconColor={'#90c520'}
                     />)
                 },
-                {
-                    element: () => (<MediaActions
-                        text={song.boosts_count}
-                        iconName={'thunder-cloud'}
-                        iconType={'entypo'}
-                        iconColor={'#00b7e0'}
-                    />)
-                },
+                // {
+                //     element: () => (<MediaActions
+                //         text={song.boosts_count}
+                //         iconName={'thunder-cloud'}
+                //         iconType={'entypo'}
+                //         iconColor={'#00b7e0'}
+                //     />)
+                // },
                 user && !!song.user && song.user.uid === user.uid && {
                     element: () => (<MediaActions
                         iconName={'remove'}
@@ -115,15 +117,15 @@ export const Songs = (props) => {
                     switch (btnIndex) {
                         case 0:
                             return handleSongActions(song, ++song.votes_count, 'vote');
-                        case 1:
-                            return handleSongActions(song, ++song.boosts_count, 'boost');
+                        // case 1:
+                        //     return handleSongActions(song, ++song.boosts_count, 'boost');
                         default:
                             return handleSongActions(song, null, 'remove');
                     }
                 }
             }}
             checkmark={isSearchingTracks && song.isMediaOnList}
-            action={() => media.playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
+            action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
         />
     );
 
@@ -146,7 +148,7 @@ export const Songs = (props) => {
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} />
             <PlayerContainer>
-                <Player ref={media.playerRef} tracks={songsList} />
+                <Player ref={playerRef} tracks={songsList} />
             </PlayerContainer>
             <TracksListContainer>
                 <CommonFlatList

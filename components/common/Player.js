@@ -52,10 +52,10 @@ export class Player extends Component {
 
     onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
         this.setState({ trackCurrentTime: 0 });
-        const song = songIndex + 1;
+        const song = tracks.length ? 0 : songIndex + 1;
 
         if (shouldRepeat) {
-            return this.dispatchActionsPressedTrack(tracks[songIndex]);
+            return this.dispatchActionsPressedTrack(tracks[song]);
         } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
 

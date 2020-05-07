@@ -8,6 +8,29 @@ app.get('/', (req, res) => {
   res.sendfile('index.html');
 });
 
+function compareValues(key) {
+  return function innerSort(a, b) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+      // property doesn't exist on either object
+      return 0;
+    }
+
+    const varA = (typeof a[key] === 'string')
+      ? a[key].toUpperCase() : a[key];
+    const varB = (typeof b[key] === 'string')
+      ? b[key].toUpperCase() : b[key];
+
+    if (varA > varB) {
+      return -1;
+    } else if (varA < varB) {
+      return 1;
+    }
+
+    return 0;
+  };
+}
+
 const songsList = [];
 const videosList = [];
 
@@ -28,7 +51,6 @@ io.on('connection', (socket) => {
 
   // Media
   socket.on('send-message-media', (data) => {
-    console.log('Im data from client', data);
     socket.join(data.chatRoom, () => {
       const userName = getUserName(data.displayName, socket.id);
       socket.username = userName;
@@ -61,6 +83,8 @@ io.on('connection', (socket) => {
           song.votes_count = data.count;
         }
       });
+
+      songsList.sort(compareValues('votes_count'));
       io.to(data.chatRoom).emit('server-send-message-vote', songsList);
     } else if (data.video) {
       videosList.forEach(video => {
@@ -69,6 +93,7 @@ io.on('connection', (socket) => {
           video.votes_count = data.count;
         }
       });
+      videosList.sort(compareValues('votes_count'));
       io.to(data.chatRoom).emit('server-send-message-vote', videosList);
     }
   });
@@ -87,6 +112,7 @@ io.on('connection', (socket) => {
           song.boosts_count = data.count;
         }
       });
+      songsList.sort(compareValues('votes_count'));
       io.to(data.chatRoom).emit('server-send-message-boost', songsList);
     } else if (data.video) {
       videosList.forEach(video => {
@@ -95,6 +121,7 @@ io.on('connection', (socket) => {
           video.boosts_count = data.count;
         }
       });
+      videosList.sort(compareValues('votes_count'));
       io.to(data.chatRoom).emit('server-send-message-boost', videosList);
     }
   });
