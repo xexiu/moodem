@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { View, Alert, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { PreLoader } from '../../../components/common/functional-components/PreLoader';
 import { BgImage } from '../../../components/common/functional-components/BgImage';
@@ -31,7 +31,7 @@ const handleUserAvatar = (url, navigation, setLoading, user) => {
         { cancelable: false }
     );
 };
-const Avatars = (props) => {
+const Avatars = memo((props) => {
     const { route, navigation } = props;
     const [loading, setLoading] = useState(false);
 
@@ -66,7 +66,7 @@ const Avatars = (props) => {
             </ScrollView>
         </SafeAreaView>
     );
-};
+});
 
 Avatars.navigationOptions = () => ({
     unmountOnBlur: true,

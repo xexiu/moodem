@@ -2,7 +2,7 @@
 import React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { P2PLanding } from '../../../components/User/P2PLanding';
-import { ChatRoom } from '../../../screens/common/functional-components/ChatRoom';
+import { ChatRoom } from '../../User/class-components/ChatRoom';
 import { Groups } from '../../User/functional-components/Groups';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
@@ -22,8 +22,7 @@ function itemsDrawer(props, params) {
 export const CommonDrawerWrapper = (props) => {
     const {
         user,
-        group,
-        handleGroup
+        group
     } = props;
 
     return (
@@ -34,8 +33,8 @@ export const CommonDrawerWrapper = (props) => {
             }}
             initialRouteName={group.group_name} drawerType="slide" drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
         >
-            <Drawer.Screen name={group.group_name} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, group, handleGroup }} />
-            <Drawer.Screen name="Chat Room" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, group }} />
+            <Drawer.Screen name={group.group_name} component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, group }} />
+            <Drawer.Screen name="ChatRoom" component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, group }} />
             {group.group_name === 'Moodem' && <Drawer.Screen name="Groups" component={Groups} options={Groups.navigationOptions} initialParams={{ user, group }} />}
             {props.children}
         </Drawer.Navigator>

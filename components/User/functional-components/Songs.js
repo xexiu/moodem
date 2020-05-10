@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, memo } from 'react';
 import axios from 'axios';
 import { View } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
@@ -19,15 +19,15 @@ import { MediaListEmpty } from '../../../screens/User/functional-components/Medi
 import { UserContext } from '../../User/functional-components/UserContext';
 import { MediaActions } from '../functional-components/MediaActions';
 
-const setMediaList = (setTracksList) => tracksList => setTracksList([...tracksList]);
+const setMediaList = (setSongs) => songsList => setSongs([...songsList]);
 
-export const Songs = (props) => {
+export const Songs = memo((props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
+    const [songs = [], setSongs] = useState([]);
     const [searchedTracksList = [], setSearchedTracksList] = useState([]);
-    const [tracksList = [], setTracksList] = useState([]);
     const [isSearchingTracks = false, setIsSearchingTracks] = useState(false);
-    const songsList = isSearchingTracks ? searchedTracksList : tracksList;
+    const songsList = isSearchingTracks ? searchedTracksList : songs;
     const media = new MediaBuilder();
     const socket = media.socket();
     const playerRef = media.playerRef();
@@ -36,16 +36,22 @@ export const Songs = (props) => {
 
     useEffect(() => {
         console.log('On useEffect Songs');
-        media.msgFromServer(socket, setMediaList(setTracksList));
+        media.msgFromServer(socket, setMediaList(setSongs));
         media.msgToServer(socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songsPlaylist' });
 
         return () => {
             console.log('Off useEffect Songs');
             axios.Cancel();
+            socket.emit('disconnect');
             socket.off(media.msgFromServer);
             socket.close();
         };
-    }, [tracksList.length]);
+    }, [songs.length]);
+
+    const cancelSearch = () => {
+        setSearchedTracksList([]);
+        setIsSearchingTracks(false);
+    };
 
     const sendSongToList = (song) => {
         setSearchedTracksList([]);
@@ -53,7 +59,7 @@ export const Songs = (props) => {
 
         Object.assign(song, {
             isMediaOnList: true,
-            index: tracksList.length
+            index: songs.length
         });
 
         media.msgToServer(socket, 'send-message-media', { song, chatRoom: 'global-moodem-songsPlaylist' });
@@ -87,7 +93,7 @@ export const Songs = (props) => {
                 iconStyle: { fontSize: 15, paddingLeft: 2 },
                 containerStyle: { marginRight: -10 }
             }}
-            buttonGroup={!isSearchingTracks && {
+            buttonGroup={!isSearchingTracks ? {
                 buttons: [{
                     element: () => (<MediaActions
                         text={song.votes_count}
@@ -123,14 +129,14 @@ export const Songs = (props) => {
                             return handleSongActions(song, null, 'remove');
                     }
                 }
-            }}
+            } : null}
             checkmark={isSearchingTracks && song.isMediaOnList}
             action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
         />
     );
 
     const handlingOnPressSearch = (searchedTracks) => {
-        checkIfAlreadyOnList(tracksList, searchedTracks);
+        checkIfAlreadyOnList(songs, searchedTracks);
         setSearchedTracksList(searchedTracks);
         setIsSearchingTracks(!!searchedTracks.length);
     };
@@ -146,7 +152,7 @@ export const Songs = (props) => {
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
-            <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} />
+            <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} cancelSearch={cancelSearch} />
             <PlayerContainer>
                 <Player ref={playerRef} tracks={songsList} />
             </PlayerContainer>
@@ -159,4 +165,4 @@ export const Songs = (props) => {
             </TracksListContainer>
         </View>
     );
-};
+});

@@ -15,6 +15,7 @@ import { CommonStackWrapper } from './components/common/functional-components/Co
 import { UserContext } from './components/User/functional-components/UserContext';
 import { Avatars } from './screens/User/functional-components/Avatars';
 import { SideBarDrawer } from './components/common/functional-components/SideBarDrawer';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 console.disableYellowBox = true;
 
@@ -58,34 +59,40 @@ export default function Moodem() {
 
   if (loading) {
     return (
-      <View>
-        <BgImage />
-        <PreLoader
-          containerStyle={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }} size={50}
-        />
-      </View>
+      <ErrorBoundary>
+        <View>
+          <BgImage />
+          <PreLoader
+            containerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} size={50}
+          />
+        </View>
+      </ErrorBoundary>
     );
   } else if (user) {
     return (
-      <UserContext.Provider value={{ user, group }}>
-        <CommonStackWrapper initialRouteName="Drawer">
-          <Stack.Screen name="Drawer" component={SideBarDrawer} options={{ headerShown: false }} />
-          <Stack.Screen name="Avatars" component={Avatars} options={Avatars.navigationOptions} />
-          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
-        </CommonStackWrapper>
-      </UserContext.Provider>
+      <ErrorBoundary>
+        <UserContext.Provider value={{ user, group }}>
+          <CommonStackWrapper initialRouteName="Drawer">
+            <Stack.Screen name="Drawer" component={SideBarDrawer} options={{ headerShown: false }} />
+            <Stack.Screen name="Avatars" component={Avatars} options={Avatars.navigationOptions} />
+            <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
+          </CommonStackWrapper>
+        </UserContext.Provider>
+      </ErrorBoundary>
     );
   }
 
   return (
-    <UserContext.Provider value={{ user, group }}>
-      <CommonStackWrapper initialRouteName="Guest">
-        <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
-        <Stack.Screen name="Drawer" component={SideBarDrawer} options={{ headerShown: false }} />
-      </CommonStackWrapper>
-    </UserContext.Provider>
+    <ErrorBoundary>
+      <UserContext.Provider value={{ user, group }}>
+        <CommonStackWrapper initialRouteName="Guest">
+          <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
+          <Stack.Screen name="Drawer" component={SideBarDrawer} options={{ headerShown: false }} />
+        </CommonStackWrapper>
+      </UserContext.Provider>
+    </ErrorBoundary>
   );
 }

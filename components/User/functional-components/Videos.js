@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, memo } from 'react';
 import axios from 'axios';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -20,12 +20,12 @@ import { MediaActions } from '../functional-components/MediaActions';
 
 const setMediaList = (setVideos) => videos => setVideos([...videos]);
 
-export const Videos = (props) => {
+export const Videos = memo((props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
     const [videos = [], setVideos] = useState([]);
-    const [isSearchingVideos = false, setIsSearchingVideos] = useState(false);
     const [searchedVideosList = [], setSearchedVideosList] = useState([]);
+    const [isSearchingVideos = false, setIsSearchingVideos] = useState(false);
     const videosList = isSearchingVideos ? searchedVideosList : videos;
     const media = new MediaBuilder();
     const socket = media.socket();
@@ -159,4 +159,4 @@ export const Videos = (props) => {
             </TracksListContainer>
         </View>
     );
-};
+});

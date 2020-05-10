@@ -23,6 +23,7 @@ export class MediaBuilder {
         socket.on(`${DEFAULT_SUFFIX}${action}`, cb);
     })
     msgToServer = (socket, action, obj) => socket.emit(action, obj)
+    off = (socket) => socket.off();
 }
 
 export const checkIfAlreadyOnList = (medias, searchedMedias) => {
@@ -38,7 +39,6 @@ export const checkIfAlreadyOnList = (medias, searchedMedias) => {
 };
 
 export const getData = async (url, server, token) => {
-    debugger;
     try {
         const { data } = await axios.get(`${url}${serversKeysMap[server]}`, {
             cancelToken: token,

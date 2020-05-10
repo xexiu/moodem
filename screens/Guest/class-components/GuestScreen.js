@@ -8,7 +8,7 @@ import { Register } from '../../../components/Guest/class-components/Register';
 import { ResetPassword } from '../../../components/Guest/class-components/ResetPassword';
 
 export class GuestScreen extends Component {
-    static navigationOptions = screeenProps => ({
+    static navigationOptions = () => ({
         headerShown: false,
         unmountOnBlur: true
     });

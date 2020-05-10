@@ -1,38 +1,48 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { SearchBar } from 'react-native-elements';
 import {
-    CommonTopSeachBarContainer,
-    CommonTopSeachBarInputContainer
-} from '../../../src/css/styles/CommonTopSearchBar';
+    commonTopSeachBarContainer,
+    commonTopSeachBarInputContainer
+} from '../../../src/css/styles/commonTopSearchBar';
 
 export const CommonTopSearchBar = (props) => {
     const {
         placeholder,
-        onEndEditingSearch
+        onEndEditingSearch,
+        cancelSearch
     } = props;
     const [value = '', setValue] = useState('');
     const [showLoadingSpin = false, setShowLoadingSpin] = useState(false);
 
+    useEffect(() => () => {
+        axios.Cancel();
+    }, []);
+
     return (
         <SearchBar
             autoCorrect={false}
-            containerStyle={CommonTopSeachBarContainer}
-            inputContainerStyle={CommonTopSeachBarInputContainer}
+            containerStyle={commonTopSeachBarContainer}
+            inputContainerStyle={commonTopSeachBarInputContainer}
             lightTheme
-            clearIcon={showLoadingSpin}
+            clearIcon={{
+                onPress: () => setValue('')
+            }}
             placeholder={placeholder}
-            onChangeText={text => setValue(text)}
+            onChangeText={text => setValue(text) && setShowLoadingSpin(false)}
             value={value}
             onClear={() => setShowLoadingSpin(false)}
             showLoading={showLoadingSpin}
-            onCancel={() => setShowLoadingSpin(false)}
+            onCancel={() => cancelSearch()}
             onEndEditing={() => {
-                setShowLoadingSpin(true);
-                onEndEditingSearch(value)
-                    .then(() => {
-                        setShowLoadingSpin(false);
-                        setValue('');
-                    });
+                if (value) {
+                    setShowLoadingSpin(true);
+                    onEndEditingSearch(value)
+                        .then(() => {
+                            setShowLoadingSpin(false);
+                            setValue('');
+                        });
+                }
             }}
         />
     );

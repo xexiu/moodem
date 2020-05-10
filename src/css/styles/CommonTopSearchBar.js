@@ -4,7 +4,7 @@ const {
     width
 } = Dimensions.get('window');
 
-export const CommonTopSeachBarContainer = {
+export const commonTopSeachBarContainer = {
     width,
     padding: 0,
     backgroundColor: '#fff',
@@ -15,7 +15,7 @@ export const CommonTopSeachBarContainer = {
     marginBottom: 5
 };
 
-export const CommonTopSeachBarInputContainer = {
+export const commonTopSeachBarInputContainer = {
     borderRadius: 25,
     backgroundColor: '#fff',
     height: 35

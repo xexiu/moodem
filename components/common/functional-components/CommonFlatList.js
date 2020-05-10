@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React, { useRef } from 'react';
+import { FlatList } from 'react-native';
 
 export const CommonFlatList = (props) => {
     const {
+        inverted,
         emptyListComponent,
         headerComponent,
         headerStyle,
@@ -13,11 +14,18 @@ export const CommonFlatList = (props) => {
         horizontal = false,
         numColumns,
         data,
+        extraData,
+        keyExtractor = (item, index) => index.toString(),
         action = (item) => console.log('Item from CommonFlatList: ', item)
     } = props;
+    const flatListRef = useRef(null);
 
     return (
         <FlatList
+            ref={flatListRef}
+            onContentSizeChange={() => flatListRef.current.scrollToEnd()}
+            onLayout={() => { flatListRef.current.scrollToEnd({ animated: true }); }}
+            inverted={inverted}
             ListEmptyComponent={emptyListComponent}
             ListHeaderComponent={headerComponent}
             ListFooterComponentStyle={headerStyle}
@@ -27,8 +35,9 @@ export const CommonFlatList = (props) => {
             horizontal={horizontal}
             numColumns={numColumns}
             data={data}
+            extraData={extraData}
             renderItem={item => action(item)}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={keyExtractor}
             ListFooterComponent={footerComponent}
             ListFooterComponentStyle={footerStyle}
         />
