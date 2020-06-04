@@ -7,7 +7,7 @@ const DEFAULT_LENGTH = 300;
 export const CommonTextInput = memo(({ navigation, user, callback }) => {
     const [value, onChangeText] = useState('');
     const [maxCharacters, updateMaxCharacters] = useState(DEFAULT_LENGTH);
-    const inputRef = React.useRef();
+    const inputRef = useRef();
 
     return (
         <View style={{ position: 'relative' }}>

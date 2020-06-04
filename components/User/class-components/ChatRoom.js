@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Keyboard } from 'react-native';
 import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
@@ -90,20 +90,17 @@ export class ChatRoom extends Component {
                     }}
                 />
                 <HeaderChat headerTitle={this.headerTitle} usersConnected={usersConnected} />
-                <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss} accessible={false}>
-                    <View style={{ flex: 2, paddingBottom: 60 }}>
-                        <View style={{ position: 'absolute', bottom: 10, right: 0, left: 7, width: '96%', zIndex: 1 }}>
-                            <CommonTextInput navigation={navigation} user={this.user} callback={this.sendNewMsg} />
-                        </View>
-
-                        <CommonFlatList
-                            data={messages}
-                            keyExtractor={item => String(item.id)}
-                            inverted
-                            action={this.renderItem}
-                        />
+                <View style={{ flex: 2, paddingBottom: 60 }}>
+                    <View style={{ position: 'absolute', bottom: 10, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                        <CommonTextInput navigation={navigation} user={this.user} callback={this.sendNewMsg} />
                     </View>
-                </TouchableWithoutFeedback>
+                    <CommonFlatList
+                        data={messages}
+                        keyExtractor={item => String(item.id)}
+                        inverted
+                        action={this.renderItem}
+                    />
+                </View>
                 <KeyboardSpacer />
             </View>
         );
