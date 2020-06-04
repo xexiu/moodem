@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
@@ -82,22 +83,28 @@ export class ChatRoom extends Component {
 
         return (
             <View style={{ backgroundColor: '#fff', flex: 1, position: 'relative' }}>
-                <BurgerMenuIcon action={() => navigation.openDrawer()} />
+                <BurgerMenuIcon
+                    action={() => {
+                        navigation.openDrawer();
+                        Keyboard.dismiss();
+                    }}
+                />
                 <HeaderChat headerTitle={this.headerTitle} usersConnected={usersConnected} />
-                <View style={{ position: 'absolute', bottom: 10, right: 0, left: 7, width: '96%' }}>
-                    <CommonTextInput navigation={navigation} user={this.user} callback={this.sendNewMsg} />
-                </View>
+                <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss} accessible={false}>
+                    <View style={{ flex: 2, paddingBottom: 60 }}>
+                        <View style={{ position: 'absolute', bottom: 10, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                            <CommonTextInput navigation={navigation} user={this.user} callback={this.sendNewMsg} />
+                        </View>
 
-
-                <View style={{ flex: 2, paddingBottom: 60, zIndex: -1 }}>
-                    <CommonFlatList
-                        data={messages}
-                        keyExtractor={item => String(item.id)}
-                        inverted
-                        action={this.renderItem}
-                    />
-                </View>
-
+                        <CommonFlatList
+                            data={messages}
+                            keyExtractor={item => String(item.id)}
+                            inverted
+                            action={this.renderItem}
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
+                <KeyboardSpacer />
             </View>
         );
     }

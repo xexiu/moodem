@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useRef } from 'react';
 import { TextInput, View, Text } from 'react-native';
 
 const DEFAULT_LENGTH = 300;
@@ -7,11 +7,14 @@ const DEFAULT_LENGTH = 300;
 export const CommonTextInput = memo(({ navigation, user, callback }) => {
     const [value, onChangeText] = useState('');
     const [maxCharacters, updateMaxCharacters] = useState(DEFAULT_LENGTH);
+    const inputRef = React.useRef();
 
     return (
         <View style={{ position: 'relative' }}>
-            <Text style={{ width: 50, position: 'absolute', top: -20, zIndex: 1000 }}>{maxCharacters}</Text>
+            <Text style={{ width: 50, position: 'absolute', top: -20, zIndex: 1000, color: '#999', fontStyle: 'italic', fontSize: 12 }}>{maxCharacters}</Text>
             <TextInput
+                ref={inputRef}
+                onKeyPress={() => console.log('Presss')}
                 maxLength={DEFAULT_LENGTH}
                 placeholder={'Type something...'}
                 underlineColorAndroid="transparent"

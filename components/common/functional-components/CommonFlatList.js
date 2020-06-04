@@ -27,6 +27,8 @@ export class CommonFlatList extends Component {
 
         return (
             <FlatList
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="always"
                 initialNumToRender={7}
                 scrollEventThrottle={15}
                 ref={this.flatListRef}
