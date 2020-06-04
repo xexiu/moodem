@@ -58,7 +58,7 @@ export class ChatRoom extends Component {
 
     getMessage = (msg) => {
         this.setState({
-            messages: [...this.state.messages, msg]
+            messages: [msg, ...this.state.messages]
         });
     };
 
@@ -93,6 +93,7 @@ export class ChatRoom extends Component {
                     <CommonFlatList
                         data={messages}
                         keyExtractor={item => String(item.id)}
+                        inverted
                         action={this.renderItem}
                     />
                 </View>

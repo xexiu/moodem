@@ -168,7 +168,7 @@ io.on('connection', (socket) => {
       // eslint-disable-next-line no-unused-expressions
       data.msg.id && messagesList.push(data.msg);
       //socket.broadcast.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList);
-      io.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList);
+      io.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList.reverse());
     }
   });
 
