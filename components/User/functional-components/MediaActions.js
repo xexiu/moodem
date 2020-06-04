@@ -9,7 +9,8 @@ export const MediaActions = (props) => {
         iconName,
         iconType,
         iconSize = 15,
-        iconColor
+        iconColor,
+        disabled
     } = props;
 
     return (<View
@@ -21,13 +22,14 @@ export const MediaActions = (props) => {
         }}
     >
         <Icon
-            iconStyle={{ paddingTop: 10, paddingBottom: 10, paddingRight: 2 }}
+            disabled={disabled}
+            iconStyle={[{ paddingTop: 10, paddingBottom: 10, paddingRight: 2 }, disabled && { backgroundColor: '#fff' }]}
             name={iconName}
             type={iconType}
             size={iconSize}
-            color={iconColor}
+            color={disabled ? '#999' : iconColor}
             onPress={action}
         />
-        <Text>{text}</Text>
+        <Text style={disabled && { color: '#999' }}>{text}</Text>
     </View>);
 };

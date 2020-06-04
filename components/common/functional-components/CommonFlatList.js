@@ -15,7 +15,7 @@ export const CommonFlatList = (props) => {
         numColumns,
         data,
         extraData,
-        keyExtractor = (item, index) => index.toString(),
+        keyExtractor = (item, index) => String(index),
         action = (item) => console.log('Item from CommonFlatList: ', item)
     } = props;
     const flatListRef = useRef(null);

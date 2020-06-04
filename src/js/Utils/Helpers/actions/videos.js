@@ -17,9 +17,8 @@ export const filterCleanData = (data, user) => {
                 likes_count: 0,
                 boosts_count: 0,
                 votes_count: 0,
-                hasVoted: false,
-                hasBoosted: false,
-                hasLiked: false
+                voted_users: [],
+                boosted_users: []
             });
         }
     });

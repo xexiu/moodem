@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const app = require('express')();
@@ -79,10 +80,12 @@ io.on('connection', (socket) => {
     });
     socket.room = data.chatRoom;
 
+    console.log('Socket ID', socket.id);
+
     if (data.song) {
       songsList.forEach(song => {
         if (song.id === data.songId) {
-          song.hasVoted = true;
+          song.voted_users.push(data.user_id);
           song.votes_count = data.count;
         }
       });
@@ -92,7 +95,7 @@ io.on('connection', (socket) => {
     } else if (data.video) {
       videosList.forEach(video => {
         if (video.id === data.videoId) {
-          video.hasVoted = true;
+          video.boosted_users.push(data.user_id);
           video.votes_count = data.count;
         }
       });

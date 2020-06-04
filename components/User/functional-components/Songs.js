@@ -19,7 +19,10 @@ import { MediaListEmpty } from '../../../screens/User/functional-components/Medi
 import { UserContext } from '../../User/functional-components/UserContext';
 import { MediaActions } from '../functional-components/MediaActions';
 
-const setMediaList = (setSongs) => songsList => setSongs([...songsList]);
+const setMediaList = (setSongs) => songsList => {
+    console.log('Blkaaaa', songsList);
+    setSongs([...songsList]);
+};
 
 export const Songs = memo((props) => {
     const { navigation } = props;
@@ -66,8 +69,8 @@ export const Songs = memo((props) => {
     };
 
     const handleSongActions = (song, count, actionName) => {
-        if (user && !song.hasVoted && actionName === 'vote') {
-            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id, count });
+        if (user && actionName === 'vote') {
+            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', user_id: user.uid, songId: song.id, count });
         } else if (user && !song.hasBoosted && actionName === 'boost') {
             socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id, count });
         } else if (user && !song.hasBoosted && actionName === 'remove') {
@@ -96,10 +99,12 @@ export const Songs = memo((props) => {
             buttonGroup={!isSearchingTracks ? {
                 buttons: [{
                     element: () => (<MediaActions
+                        disabled={song.voted_users.some(id => id === user.uid)}
                         text={song.votes_count}
                         iconName={'thumbs-up'}
                         iconType={'entypo'}
                         iconColor={'#90c520'}
+                        action={() => handleSongActions(song, ++song.votes_count, 'vote')}
                     />)
                 },
                 // {
@@ -115,20 +120,11 @@ export const Songs = memo((props) => {
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
+                        action={() => handleSongActions(song, null, 'remove')}
                     />)
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
-                innerBorderStyle: { color: 'transparent' },
-                onPress: (btnIndex) => {
-                    switch (btnIndex) {
-                        case 0:
-                            return handleSongActions(song, ++song.votes_count, 'vote');
-                        // case 1:
-                        //     return handleSongActions(song, ++song.boosts_count, 'boost');
-                        default:
-                            return handleSongActions(song, null, 'remove');
-                    }
-                }
+                innerBorderStyle: { color: 'transparent' }
             } : null}
             checkmark={isSearchingTracks && song.isMediaOnList}
             action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}

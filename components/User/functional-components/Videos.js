@@ -72,8 +72,8 @@ export const Videos = memo((props) => {
     };
 
     const handleVideoActions = (video, count, actionName) => {
-        if (user && !video.hasVoted && actionName === 'vote') {
-            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id, count });
+        if (user && actionName === 'vote') {
+            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', user_id: user.uid, videoId: video.id, count });
         } else if (user && !video.hasBoosted && actionName === 'boost') {
             socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id, count });
         } else if (user && !video.hasBoosted && actionName === 'remove') {
@@ -109,10 +109,12 @@ export const Videos = memo((props) => {
             buttonGroup={!isSearchingVideos && {
                 buttons: [{
                     element: () => (<MediaActions
+                        disabled={video.boosted_users.some(id => id === user.uid)}
                         text={video.votes_count}
                         iconName={'thumbs-up'}
                         iconType={'entypo'}
                         iconColor={'#90c520'}
+                        action={() => handleVideoActions(video, ++video.votes_count, 'vote')}
                     />)
                 },
                 // {
@@ -128,20 +130,11 @@ export const Videos = memo((props) => {
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
+                        action={() => handleVideoActions(video, null, 'remove')}
                     />)
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
-                innerBorderStyle: { color: 'transparent' },
-                onPress: (btnIndex) => {
-                    switch (btnIndex) {
-                        case 0:
-                            return handleVideoActions(video, ++video.votes_count, 'vote');
-                        // case 1:
-                        //     return handleVideoActions(video, ++video.boosts_count, 'boost');
-                        default:
-                            return handleVideoActions(video, null, 'remove');
-                    }
-                }
+                innerBorderStyle: { color: 'transparent' }
             }}
             checkmark={isSearchingVideos && video.isMediaOnList}
         />
