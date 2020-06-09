@@ -4,5 +4,13 @@ export const socketConf = {
     jsonp: false,
     reconnectionAttempts: 'Infinity',
     timeout: 10000,
-    'force new connection': true
+    'force new connection': true,
+    agent: false,
+    perMessageDeflate: true,
+    pfx: '-',
+    cert: '-',
+    ca: '-',
+    ciphers: '-',
+    rejectUnauthorized: false
+    //forceNode: true // Supres YellowBox Warning --> Docs: https://socket.io/docs/client-api/#new-Manager-url-options
 };
