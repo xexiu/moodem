@@ -84,6 +84,7 @@ export class ChatRoom extends Component {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1, position: 'relative' }}>
                 <BurgerMenuIcon
+                    customStyle={{ top: 20, left: 0, width: 30, height: 30 }}
                     action={() => {
                         navigation.openDrawer();
                         Keyboard.dismiss();
