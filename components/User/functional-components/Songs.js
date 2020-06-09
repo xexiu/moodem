@@ -1,15 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext, memo } from 'react';
+import React, { useState, useEffect, useRef, useContext, memo } from 'react';
 import axios from 'axios';
-import { View } from 'react-native';
+import { View, Keyboard } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
-import {
-    checkIfAlreadyOnList,
-    getData,
-    MediaBuilder
-} from '../../../src/js/Utils/Helpers/actions/common';
+import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
@@ -17,29 +13,35 @@ import { CommonFlatListItem } from '../../common/functional-components/CommonFla
 import { TracksListContainer } from '../../common/TracksListContainer';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import { UserContext } from '../../User/functional-components/UserContext';
+import { SearchingList } from './SearchingList';
 import { MediaActions } from '../functional-components/MediaActions';
+import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 
-const setMediaList = (setSongs) => songsList => {
-    console.log('Blkaaaa', songsList);
-    setSongs([...songsList]);
+const setMediaIndex = (song, index) => {
+    Object.assign(song, {
+        index
+    });
 };
 
 export const Songs = memo((props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
     const [songs = [], setSongs] = useState([]);
-    const [searchedTracksList = [], setSearchedTracksList] = useState([]);
-    const [isSearchingTracks = false, setIsSearchingTracks] = useState(false);
-    const songsList = isSearchingTracks ? searchedTracksList : songs;
+    const [items = [], setItems] = useState([]);
+    const [isSearching = false, setIsSearching] = useState(false);
     const media = new MediaBuilder();
     const socket = media.socket();
     const playerRef = media.playerRef();
     const signal = axios.CancelToken.source();
+    const searchRef = useRef(null);
     media.setApi('https://api.soundcloud.com/tracks/?limit=50&q=');
 
     useEffect(() => {
         console.log('On useEffect Songs');
-        media.msgFromServer(socket, setMediaList(setSongs));
+        media.msgFromServer(socket, (_songs) => {
+            _songs.forEach(setMediaIndex);
+            setSongs([..._songs]);
+        });
         media.msgToServer(socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songsPlaylist' });
 
         return () => {
@@ -49,20 +51,14 @@ export const Songs = memo((props) => {
             socket.off(media.msgFromServer);
             socket.close();
         };
-    }, [songs.length]);
+    }, []);
 
-    const cancelSearch = () => {
-        setSearchedTracksList([]);
-        setIsSearchingTracks(false);
-    };
-
-    const sendSongToList = (song) => {
-        setSearchedTracksList([]);
-        setIsSearchingTracks(false);
+    const sendMediaToServer = (song) => {
+        setSongs([]);
+        setIsSearching(false);
 
         Object.assign(song, {
-            isMediaOnList: true,
-            index: songs.length
+            isMediaOnList: true
         });
 
         media.msgToServer(socket, 'send-message-media', { song, chatRoom: 'global-moodem-songsPlaylist' });
@@ -88,18 +84,10 @@ export const Songs = memo((props) => {
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
             subtitle={song.user && song.user.username}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-            chevron={isSearchingTracks && !song.isMediaOnList && {
-                color: '#dd0031',
-                onPress: () => sendSongToList(song),
-                size: 10,
-                raised: true,
-                iconStyle: { fontSize: 15, paddingLeft: 2 },
-                containerStyle: { marginRight: -10 }
-            }}
-            buttonGroup={!isSearchingTracks ? {
+            buttonGroup={{
                 buttons: [{
                     element: () => (<MediaActions
-                        disabled={song.voted_users.some(id => id === user.uid)}
+                        disabled={song.voted_users && song.voted_users.some(id => id === user.uid)}
                         text={song.votes_count}
                         iconName={'thumbs-up'}
                         iconType={'entypo'}
@@ -125,20 +113,19 @@ export const Songs = memo((props) => {
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' }
-            } : null}
-            checkmark={isSearchingTracks && song.isMediaOnList}
-            action={() => playerRef.current.handlingTrackedPressed(isSearchingTracks, song)}
+            }}
+            checkmark={isSearching && song.isMediaOnList}
+            action={() => playerRef.current.dispatchActionsPressedTrack(song)}
         />
     );
 
-    const handlingOnPressSearch = (searchedTracks) => {
-        checkIfAlreadyOnList(songs, searchedTracks);
-        setSearchedTracksList(searchedTracks);
-        setIsSearchingTracks(!!searchedTracks.length);
-    };
-
-    const onEndEditingSearch = (text) => getData(`${media.getApi()}${text}&client_id=`, 'soundcloud', signal.token)
-        .then(data => handlingOnPressSearch(filterCleanData(data, user)))
+    const onEndEditingSearch = (text) => media.getData(`${media.getApi()}${text}&client_id=`, 'soundcloud', signal.token)
+        .then(_items => {
+            const filteredSongs = filterCleanData(_items, user);
+            media.checkIfAlreadyOnList(songs, filteredSongs);
+            setIsSearching(!!filteredSongs.length);
+            setItems([...filteredSongs]);
+        })
         .catch(err => {
             if (axios.isCancel(err)) {
                 console.log('post Request canceled');
@@ -146,18 +133,41 @@ export const Songs = memo((props) => {
             console.log('Error', err);
         });
 
+    const resetSearch = () => {
+        searchRef.current.clear();
+        searchRef.current.blur();
+        setIsSearching(false);
+        Keyboard.dismiss();
+    };
+
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
-            <CommonTopSearchBar placeholder="Search song..." onEndEditingSearch={onEndEditingSearch} cancelSearch={cancelSearch} />
+        <View style={{ backgroundColor: '#fff', flex: 1 }} onStartShouldSetResponder={resetSearch}>
+            <BurgerMenuIcon
+                action={() => {
+                    resetSearch();
+                    navigation.openDrawer();
+                }}
+                customStyle={{ top: -5, left: 0, width: 30, height: 30 }}
+            />
+            <CommonTopSearchBar
+                placeholder="Search song..."
+                cancelSearch={() => setIsSearching(false)}
+                onEndEditingSearch={onEndEditingSearch}
+                searchRef={searchRef}
+                customStyleContainer={{ width: '85%', marginLeft: 55 }}
+            />
             <PlayerContainer>
-                <Player ref={playerRef} tracks={songsList} />
+                <Player ref={playerRef} tracks={songs} />
             </PlayerContainer>
             <TracksListContainer>
-                <CommonFlatList
-                    emptyListComponent={MediaListEmpty}
-                    data={songsList}
-                    action={({ item }) => renderItem(item)}
-                />
+                {isSearching ?
+                    <SearchingList player={playerRef} sendMediaToServer={sendMediaToServer} items={items} /> :
+                    <CommonFlatList
+                        emptyListComponent={MediaListEmpty}
+                        data={songs}
+                        action={({ item }) => renderItem(item)}
+                    />
+                }
             </TracksListContainer>
         </View>
     );

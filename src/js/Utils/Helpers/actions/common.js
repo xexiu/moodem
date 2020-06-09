@@ -24,30 +24,28 @@ export class MediaBuilder {
     })
     msgToServer = (socket, action, obj) => socket.emit(action, obj)
     off = (socket) => socket.off();
-}
-
-export const checkIfAlreadyOnList = (medias, searchedMedias) => {
-    medias.forEach(_media => {
-        searchedMedias.forEach(searchedMedia => {
-            if (_media.id === searchedMedia.id) {
-                Object.assign(searchedMedia, {
-                    isMediaOnList: true
-                });
+    getData = async (url, server, token) => {
+        try {
+            const { data } = await axios.get(`${url}${serversKeysMap[server]}`, {
+                cancelToken: token,
+            });
+            return Promise.resolve(data);
+        } catch (error) {
+            if (axios.isCancel(error)) {
+                console.log('Error: ', error.message);
             }
-        });
-    });
-};
-
-export const getData = async (url, server, token) => {
-    try {
-        const { data } = await axios.get(`${url}${serversKeysMap[server]}`, {
-            cancelToken: token,
-        });
-        return Promise.resolve(data);
-    } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log('Error: ', error.message);
+            throw error;
         }
-        throw error;
     }
-};
+    checkIfAlreadyOnList = (medias, searchedMedias) => {
+        medias.forEach(_media => {
+            searchedMedias.forEach(searchedMedia => {
+                if (_media.id === searchedMedia.id) {
+                    Object.assign(searchedMedia, {
+                        isMediaOnList: true
+                    });
+                }
+            });
+        });
+    }
+}

@@ -10,7 +10,9 @@ export const CommonTopSearchBar = (props) => {
     const {
         placeholder,
         onEndEditingSearch,
-        cancelSearch
+        cancelSearch,
+        searchRef,
+        customStyleContainer
     } = props;
     const [value = '', setValue] = useState('');
     const [showLoadingSpin = false, setShowLoadingSpin] = useState(false);
@@ -21,12 +23,13 @@ export const CommonTopSearchBar = (props) => {
 
     return (
         <SearchBar
+            ref={searchRef}
             autoCorrect={false}
-            containerStyle={commonTopSeachBarContainer}
+            containerStyle={[commonTopSeachBarContainer, customStyleContainer]}
             inputContainerStyle={commonTopSeachBarInputContainer}
             lightTheme
-            clearIcon={{
-                onPress: () => setValue('')
+            clearIcon={!!value && {
+                onPress: () => setValue('') && cancelSearch()
             }}
             placeholder={placeholder}
             onChangeText={text => setValue(text) && setShowLoadingSpin(false)}

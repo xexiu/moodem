@@ -6,11 +6,12 @@ import TouchableScale from 'react-native-touchable-scale';
 
 export const BurgerMenuIcon = props => {
     const {
-        action = () => console.log('Pressed Menu Icon')
+        action = () => console.log('Pressed Menu Icon'),
+        customStyle
     } = props;
 
     return (
-        <View style={{ position: 'absolute', top: 20, left: 0, width: 30, height: 30, zIndex: 1000 }}>
+        <View style={[{ position: 'absolute', zIndex: 1000 }, customStyle]}>
             <Icon
             iconStyle={{ fontSize: 30 }}
             Component={TouchableScale}

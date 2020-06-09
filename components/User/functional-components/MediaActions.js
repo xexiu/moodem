@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-export const MediaActions = (props) => {
+export const MediaActions = memo((props) => {
     const {
         text,
         action,
@@ -32,4 +32,4 @@ export const MediaActions = (props) => {
         />
         <Text style={disabled && { color: '#999' }}>{text}</Text>
     </View>);
-};
+});

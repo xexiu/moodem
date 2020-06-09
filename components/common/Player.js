@@ -26,7 +26,6 @@ export class Player extends Component {
 
         this.toastRef = React.createRef();
         this.tracks = [];
-        this.track = {};
         this.state = {
             songAlbumCover: 'https://i1.sndcdn.com/artworks-000084701264-i1px5r-large.jpg',
             songTitle: 'Final Masquerade',
@@ -80,34 +79,6 @@ export class Player extends Component {
         this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     }
 
-    getTracks() {
-        return this.tracks;
-    }
-
-    getTrack() {
-        return this.track;
-    }
-
-    setTracks(tracks) {
-        this.tracks = tracks;
-    }
-
-    setTrack(track) {
-        this.track = track;
-    }
-
-    dispatchActionsSearchedTrack = (track) => {
-        this.setState({
-            currentSong: track.stream_url,
-            songAlbumCover: track.artwork_url,
-            songTitle: track.title,
-            songArtist: track.user && track.user.username,
-            songIndex: track.index,
-            trackMaxDuration: track.duration,
-            isPlaying: true
-        });
-    }
-
     dispatchActionsPressedTrack = (track) => {
         this.setState({
             currentSong: track.stream_url,
@@ -118,14 +89,6 @@ export class Player extends Component {
             trackMaxDuration: track.duration,
             isPlaying: true
         });
-    }
-
-    handlingTrackedPressed = (isSearchingTracks, track) => {
-        if (isSearchingTracks) {
-            this.dispatchActionsSearchedTrack(track);
-        } else {
-            this.dispatchActionsPressedTrack(track);
-        }
     }
 
     handleOnPressPlayPause = (isPlaying) => {
@@ -181,12 +144,11 @@ export class Player extends Component {
             songIsReady
         } = this.state;
         const {
-            tracks,
-            playerRef
+            tracks
         } = this.props;
 
         return (
-            <View ref={playerRef}>
+            <View>
                 <Video
                     source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
                     ref={ref => {

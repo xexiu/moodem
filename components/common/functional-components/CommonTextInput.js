@@ -14,7 +14,6 @@ export const CommonTextInput = memo(({ navigation, user, callback }) => {
             <Text style={{ width: 50, position: 'absolute', top: -20, zIndex: 1000, color: '#999', fontStyle: 'italic', fontSize: 12 }}>{maxCharacters}</Text>
             <TextInput
                 ref={inputRef}
-                onKeyPress={() => console.log('Presss')}
                 maxLength={DEFAULT_LENGTH}
                 placeholder={'Type something...'}
                 underlineColorAndroid="transparent"

@@ -4,7 +4,6 @@ import Toast from 'react-native-easy-toast';
 import React, { useEffect, useContext, memo } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MainContainer } from '../common/MainContainer';
-import { BurgerMenuIcon } from '../common/BurgerMenuIcon';
 import { Songs } from '../User/functional-components/Songs';
 import { Videos } from '../User/functional-components/Videos';
 import { IP, socketConf } from '../../src/js/Utils/Helpers/services/socket';
@@ -12,8 +11,7 @@ import { UserContext } from '../User/functional-components/UserContext';
 
 const welcomeMsgMoodem = (toastRef) => data => toastRef.show(data, 1000);
 
-const P2PLanding = memo((props) => {
-    const { navigation } = props;
+const P2PLanding = memo(() => {
     const { user } = useContext(UserContext);
     const socket = io(IP, socketConf);
     const toastRef = React.createRef();
@@ -31,7 +29,6 @@ const P2PLanding = memo((props) => {
 
     return (
         <MainContainer>
-            <BurgerMenuIcon action={() => navigation.openDrawer()} />
             <Tab.Navigator>
                 <Tab.Screen name="Songs" component={Songs} />
                 <Tab.Screen name="Videos" component={Videos} />
