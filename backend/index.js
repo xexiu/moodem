@@ -5,34 +5,16 @@ const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const { getUserName } = require('./users');
-const { getConnectedInRoom } = require('./rooms');
+const { getConnectedInRoom, joinRoom } = require('./rooms');
+const {
+  voteMedia,
+  boostMedia,
+  removeMedia
+} = require('./utils');
 
 app.get('/', (req, res) => {
   res.sendfile('index.html');
 });
-
-function compareValues(key) {
-  return function innerSort(a, b) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-      // property doesn't exist on either object
-      return 0;
-    }
-
-    const varA = (typeof a[key] === 'string')
-      ? a[key].toUpperCase() : a[key];
-    const varB = (typeof b[key] === 'string')
-      ? b[key].toUpperCase() : b[key];
-
-    if (varA > varB) {
-      return -1;
-    } else if (varA < varB) {
-      return 1;
-    }
-
-    return 0;
-  };
-}
 
 const songsList = [];
 const videosList = [];
@@ -53,13 +35,7 @@ io.on('connection', (socket) => {
 
   // Media
   socket.on('send-message-media', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-      // io.to(data.chatRoom).emit('global-moodem-songsPlaylist', 'Test');
-      // io.sockets.emit('server-send-message-video', videos);
-    });
-    socket.room = data.chatRoom;
+    joinRoom(socket, data);
 
     if (data.song) {
       // eslint-disable-next-line no-unused-expressions
@@ -74,98 +50,42 @@ io.on('connection', (socket) => {
 
   // Vote
   socket.on('send-message-vote', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-    });
-    socket.room = data.chatRoom;
-
-    console.log('Socket ID', socket.id);
+    joinRoom(socket, data);
 
     if (data.song) {
-      songsList.forEach(song => {
-        if (song.id === data.songId) {
-          song.voted_users.push(data.user_id);
-          song.votes_count = data.count;
-        }
-      });
-
-      songsList.sort(compareValues('votes_count'));
-      io.to(data.chatRoom).emit('server-send-message-vote', songsList);
+      voteMedia(songsList, data, io, 'song');
     } else if (data.video) {
-      videosList.forEach(video => {
-        if (video.id === data.videoId) {
-          video.boosted_users.push(data.user_id);
-          video.votes_count = data.count;
-        }
-      });
-      videosList.sort(compareValues('votes_count'));
-      io.to(data.chatRoom).emit('server-send-message-vote', videosList);
+      voteMedia(videosList, data, io, 'video');
     }
   });
 
   // Boost
   socket.on('send-message-boost', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-    });
-    socket.room = data.chatRoom;
+    joinRoom(socket, data);
 
     if (data.song) {
-      songsList.forEach(song => {
-        if (song.id === data.songId) {
-          song.hasBoosted = true;
-          song.boosts_count = data.count;
-        }
-      });
-      songsList.sort(compareValues('votes_count'));
-      io.to(data.chatRoom).emit('server-send-message-boost', songsList);
+      boostMedia(songsList, data, io, 'song');
     } else if (data.video) {
-      videosList.forEach(video => {
-        if (video.id === data.videoId) {
-          video.hasBoosted = true;
-          video.boosts_count = data.count;
-        }
-      });
-      videosList.sort(compareValues('votes_count'));
-      io.to(data.chatRoom).emit('server-send-message-boost', videosList);
+      boostMedia(videosList, data, io, 'video');
     }
   });
 
   // Remove
   socket.on('send-message-remove', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-    });
-    socket.room = data.chatRoom;
+    joinRoom(socket, data);
 
     if (data.song) {
-      songsList.forEach((song, index) => {
-        if (song.id === data.songId) {
-          songsList.splice(index, 1);
-        }
-      });
-      io.to(data.chatRoom).emit('server-send-message-remove', songsList);
+      removeMedia(songsList, data, io, 'song');
     } else if (data.video) {
-      videosList.forEach((video, index) => {
-        if (video.id === data.videoId) {
-          videosList.splice(index, 1);
-        }
-      });
-      io.to(data.chatRoom).emit('server-send-message-remove', videosList);
+      removeMedia(videosList, data, io, 'video');
     }
   });
 
   // Joins moodem chat room
   socket.on('moodem-chat', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-      socket.room = data.chatRoom;
-      io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', getConnectedInRoom(io.sockets.adapter.rooms, socket.room));
-    });
+    joinRoom(socket, data);
+
+    io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', getConnectedInRoom(io.sockets.adapter.rooms, socket.room));
 
     if (data.msg) {
       // eslint-disable-next-line no-unused-expressions
@@ -176,11 +96,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat-messages', (data) => {
-    socket.join(data.chatRoom, () => {
-      const userName = getUserName(data.displayName, socket.id);
-      socket.username = userName;
-      socket.room = data.chatRoom;
-    });
+    joinRoom(socket, data);
 
     if (data.msg) {
       // eslint-disable-next-line no-unused-expressions

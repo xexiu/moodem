@@ -1,86 +1,64 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext, memo } from 'react';
-import axios from 'axios';
-import { View } from 'react-native';
+import React, { useState, useEffect, memo } from 'react';
+import { View, Keyboard } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import { TracksListContainer } from '../../common/TracksListContainer';
-import { UserContext } from '../../User/functional-components/UserContext';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/videos';
-import {
-    checkIfAlreadyOnList,
-    getData,
-    MediaBuilder
-} from '../../../src/js/Utils/Helpers/actions/common';
 import { MediaActions } from '../functional-components/MediaActions';
+import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
+import { SearchingList } from './SearchingList';
+import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 
+const YOTUBE_SEARCH_API = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=';
 const setMediaList = (setVideos) => videos => setVideos([...videos]);
 
 export const Videos = memo((props) => {
-    const { navigation } = props;
-    const { user } = useContext(UserContext);
     const [videos = [], setVideos] = useState([]);
-    const [searchedVideosList = [], setSearchedVideosList] = useState([]);
-    const [isSearchingVideos = false, setIsSearchingVideos] = useState(false);
-    const videosList = isSearchingVideos ? searchedVideosList : videos;
-    const media = new MediaBuilder();
-    const socket = media.socket();
-    const signal = axios.CancelToken.source();
-    media.setApi('https://www.googleapis.com/youtube/v3/search?part=snippet&q=');
+    const [items = [], setItems] = useState([]);
+    const [isSearching = false, setIsSearching] = useState(false);
+    const abstractMedia = new AbstractMedia(props, YOTUBE_SEARCH_API);
+    const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
-        console.log('useEffect Videos');
-        media.msgFromServer(socket, setMediaList(setVideos));
-        media.msgToServer(socket, 'send-message-media', { video: true, chatRoom: 'global-moodem-videosPlaylist' });
+        console.log('On useEffect Videos');
+        mediaBuilder.msgFromServer(abstractMedia.socket, setMediaList(setVideos));
+        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { video: true, chatRoom: 'global-moodem-videoPlaylist' });
 
         return () => {
-            axios.Cancel();
-            socket.off(media.msgFromServer);
-            socket.close();
+            console.log('Off useEffect Videos');
+            abstractMedia.destroy();
         };
-    }, [videos.length]);
+    }, []);
 
-    const handlingOnPressSearch = (searchedVideos) => {
-        checkIfAlreadyOnList(videos, searchedVideos);
-        setSearchedVideosList(searchedVideos);
-        setIsSearchingVideos(!!searchedVideos.length);
-    };
-
-    const onEndEditingSearch = (text) => getData(`${media.getApi()}${text}&maxResults=40&key=`, 'youtube', signal.token)
-        .then(data => handlingOnPressSearch(filterCleanData(data.items, user)))
+    const onEndEditingSearch = (text) => mediaBuilder.getData(`${mediaBuilder.getApi()}${text}&maxResults=40&key=`, 'youtube', abstractMedia.signal.token)
+        .then(_items => {
+            const filteredVideos = filterCleanData(_items.items, abstractMedia.user);
+            mediaBuilder.checkIfAlreadyOnList(videos, filteredVideos);
+            setIsSearching(!!filteredVideos.length);
+            setItems([...filteredVideos]);
+        })
         .catch(err => {
-            if (axios.isCancel(err)) {
-                console.log('post Request canceled');
+            if (abstractMedia.axios.isCancel(err)) {
+                console.log('Search Videos Request Canceled');
             }
             console.log('Error', err);
         });
 
-    const sendVideoToList = (video) => {
-        setSearchedVideosList([]);
-        setIsSearchingVideos(false);
+    const sendMediaToServer = (video) => {
+        setVideos([]);
+        setIsSearching(false);
 
         Object.assign(video, {
             isMediaOnList: true,
             index: videos.length
         });
 
-        socket.emit('send-message-media', { video, chatRoom: 'global-moodem-videosPlaylist' });
-    };
-
-    const handleVideoActions = (video, count, actionName) => {
-        if (user && actionName === 'vote') {
-            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', user_id: user.uid, videoId: video.id, count });
-        } else if (user && !video.hasBoosted && actionName === 'boost') {
-            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id, count });
-        } else if (user && !video.hasBoosted && actionName === 'remove') {
-            socket.emit(`send-message-${actionName}`, { video, chatRoom: 'global-moodem-videosPlaylist', videoId: video.id });
-        } else if (!user) {
-            navigation.navigate('Guest');
-        }
+        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { video, chatRoom: 'global-moodem-videoPlaylist' });
     };
 
     const renderItem = (video) => (
@@ -98,23 +76,15 @@ export const Videos = memo((props) => {
             titleProps={{ numberOfLines: 3 }}
             title={video.title}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-            chevron={isSearchingVideos && !video.isMediaOnList && {
-                color: '#dd0031',
-                onPress: () => sendVideoToList(video),
-                size: 10,
-                raised: true,
-                iconStyle: { fontSize: 15, paddingLeft: 2 },
-                containerStyle: { marginRight: -10 }
-            }}
-            buttonGroup={!isSearchingVideos && {
+            buttonGroup={!isSearching && {
                 buttons: [{
                     element: () => (<MediaActions
-                        disabled={video.boosted_users.some(id => id === user.uid)}
+                        disabled={video.voted_users.some(id => id === abstractMedia.user.uid)}
                         text={video.votes_count}
                         iconName={'thumbs-up'}
                         iconType={'entypo'}
                         iconColor={'#90c520'}
-                        action={() => handleVideoActions(video, ++video.votes_count, 'vote')}
+                        action={() => abstractMedia.handleMediaActions('send-message-vote', { video, chatRoom: 'global-moodem-videoPlaylist', user_id: abstractMedia.user.uid, count: ++video.votes_count })}
                     />)
                 },
                 // {
@@ -125,30 +95,53 @@ export const Videos = memo((props) => {
                 //         iconColor={'#00b7e0'}
                 //     />)
                 // },
-                user && !!video.user && video.user.uid === user.uid && {
+                abstractMedia.user && !!video.user && video.user.uid === abstractMedia.user.uid && {
                     element: () => (<MediaActions
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
-                        action={() => handleVideoActions(video, null, 'remove')}
+                        action={() => abstractMedia.handleMediaActions('send-message-remove', { video, chatRoom: 'global-moodem-videoPlaylist', user_id: abstractMedia.user.uid })}
                     />)
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' }
             }}
-            checkmark={isSearchingVideos && video.isMediaOnList}
+            checkmark={isSearching && video.isMediaOnList}
         />
     );
 
+    const resetSearch = () => {
+        abstractMedia.searchRef.current.clear();
+        abstractMedia.searchRef.current.blur();
+        setIsSearching(false);
+        Keyboard.dismiss();
+    };
+
     return (
-        <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <CommonTopSearchBar placeholder="Search video..." onEndEditingSearch={onEndEditingSearch} />
+        <View style={{ flex: 1, backgroundColor: '#fff' }} onStartShouldSetResponder={resetSearch}>
+            <BurgerMenuIcon
+                action={() => {
+                    resetSearch();
+                    abstractMedia.navigation.openDrawer();
+                }}
+                customStyle={{ top: -5, left: 0, width: 30, height: 30 }}
+            />
+            <CommonTopSearchBar
+                placeholder="Search video..."
+                cancelSearch={() => setIsSearching(false)}
+                onEndEditingSearch={onEndEditingSearch}
+                searchRef={abstractMedia.searchRef}
+                customStyleContainer={{ width: '85%', marginLeft: 55 }}
+            />
             <TracksListContainer>
-                <CommonFlatList
-                    emptyListComponent={MediaListEmpty}
-                    data={videosList}
-                    action={({ item }) => renderItem(item)}
-                />
+                {isSearching ?
+                    <SearchingList player={abstractMedia.playerRef} handler={sendMediaToServer} items={items} /> :
+                    <CommonFlatList
+                        emptyListComponent={MediaListEmpty}
+                        data={videos}
+                        action={({ item }) => renderItem(item)}
+                    />
+                }
             </TracksListContainer>
         </View>
     );

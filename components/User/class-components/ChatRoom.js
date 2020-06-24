@@ -51,7 +51,6 @@ export class ChatRoom extends Component {
     }
 
     getConnectedUsers = (usersConnected) => {
-        // eslint-disable-next-line no-unused-expressions
         if (usersConnected) {
             this.setState({ usersConnected });
         }

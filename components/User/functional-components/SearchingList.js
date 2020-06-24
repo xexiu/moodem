@@ -2,12 +2,11 @@ import React, { memo } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 
-
 export const SearchingList = memo((props) => {
     const {
         items,
         player,
-        sendMediaToServer
+        handler
     } = props;
 
     const renderItem = (item) => (
@@ -20,7 +19,7 @@ export const SearchingList = memo((props) => {
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             chevron={!item.isMediaOnList && {
                 color: '#dd0031',
-                onPress: () => sendMediaToServer(item),
+                onPress: () => handler(item),
                 size: 10,
                 raised: true,
                 iconStyle: { fontSize: 15, paddingLeft: 2 },

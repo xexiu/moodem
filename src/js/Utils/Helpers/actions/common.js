@@ -22,7 +22,7 @@ export class MediaBuilder {
     msgFromServer = (socket, cb, actions = DEFAULT_ACTIONS) => actions.forEach(action => {
         socket.on(`${DEFAULT_SUFFIX}${action}`, cb);
     })
-    msgToServer = (socket, action, obj) => socket.emit(action, obj)
+    msgToServer = (socket, msg, obj) => socket.emit(msg, obj)
     off = (socket) => socket.off();
     getData = async (url, server, token) => {
         try {

@@ -1,21 +1,21 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import React, { useState, useEffect, useRef, useContext, memo } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, memo } from 'react';
 import { View, Keyboard } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
-import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { TracksListContainer } from '../../common/TracksListContainer';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
-import { UserContext } from '../../User/functional-components/UserContext';
 import { SearchingList } from './SearchingList';
 import { MediaActions } from '../functional-components/MediaActions';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
+import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
+
+const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/?limit=50&q=';
 
 const setMediaIndex = (song, index) => {
     Object.assign(song, {
@@ -24,32 +24,23 @@ const setMediaIndex = (song, index) => {
 };
 
 export const Songs = memo((props) => {
-    const { navigation } = props;
-    const { user } = useContext(UserContext);
     const [songs = [], setSongs] = useState([]);
     const [items = [], setItems] = useState([]);
     const [isSearching = false, setIsSearching] = useState(false);
-    const media = new MediaBuilder();
-    const socket = media.socket();
-    const playerRef = media.playerRef();
-    const signal = axios.CancelToken.source();
-    const searchRef = useRef(null);
-    media.setApi('https://api.soundcloud.com/tracks/?limit=50&q=');
+    const abstractMedia = new AbstractMedia(props, SOUNDCLOUD_API);
+    const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
         console.log('On useEffect Songs');
-        media.msgFromServer(socket, (_songs) => {
+        mediaBuilder.msgFromServer(abstractMedia.socket, (_songs) => {
             _songs.forEach(setMediaIndex);
             setSongs([..._songs]);
         });
-        media.msgToServer(socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songsPlaylist' });
+        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songPlaylist' });
 
         return () => {
             console.log('Off useEffect Songs');
-            axios.Cancel();
-            socket.emit('disconnect');
-            socket.off(media.msgFromServer);
-            socket.close();
+            abstractMedia.destroy();
         };
     }, []);
 
@@ -61,19 +52,7 @@ export const Songs = memo((props) => {
             isMediaOnList: true
         });
 
-        media.msgToServer(socket, 'send-message-media', { song, chatRoom: 'global-moodem-songsPlaylist' });
-    };
-
-    const handleSongActions = (song, count, actionName) => {
-        if (user && actionName === 'vote') {
-            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', user_id: user.uid, songId: song.id, count });
-        } else if (user && !song.hasBoosted && actionName === 'boost') {
-            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id, count });
-        } else if (user && !song.hasBoosted && actionName === 'remove') {
-            socket.emit(`send-message-${actionName}`, { song, chatRoom: 'global-moodem-songsPlaylist', songId: song.id });
-        } else if (!user) {
-            navigation.navigate('Guest');
-        }
+        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song, chatRoom: 'global-moodem-songPlaylist' });
     };
 
     const renderItem = (song) => (
@@ -87,12 +66,12 @@ export const Songs = memo((props) => {
             buttonGroup={{
                 buttons: [{
                     element: () => (<MediaActions
-                        disabled={song.voted_users && song.voted_users.some(id => id === user.uid)}
+                        disabled={song.voted_users && song.voted_users.some(id => id === abstractMedia.user.uid)}
                         text={song.votes_count}
                         iconName={'thumbs-up'}
                         iconType={'entypo'}
                         iconColor={'#90c520'}
-                        action={() => handleSongActions(song, ++song.votes_count, 'vote')}
+                        action={() => abstractMedia.handleMediaActions('send-message-vote', { song, chatRoom: 'global-moodem-songPlaylist', user_id: abstractMedia.user.uid, count: ++song.votes_count })}
                     />)
                 },
                 // {
@@ -103,39 +82,39 @@ export const Songs = memo((props) => {
                 //         iconColor={'#00b7e0'}
                 //     />)
                 // },
-                user && !!song.user && song.user.uid === user.uid && {
+                abstractMedia.user && !!song.user && song.user.uid === abstractMedia.user.uid && {
                     element: () => (<MediaActions
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
-                        action={() => handleSongActions(song, null, 'remove')}
+                        action={() => abstractMedia.handleMediaActions('send-message-remove', { song, chatRoom: 'global-moodem-songPlaylist', user_id: abstractMedia.user.uid })}
                     />)
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' }
             }}
             checkmark={isSearching && song.isMediaOnList}
-            action={() => playerRef.current.dispatchActionsPressedTrack(song)}
+            action={() => abstractMedia.playerRef.current.dispatchActionsPressedTrack(song)}
         />
     );
 
-    const onEndEditingSearch = (text) => media.getData(`${media.getApi()}${text}&client_id=`, 'soundcloud', signal.token)
+    const onEndEditingSearch = (text) => mediaBuilder.getData(`${mediaBuilder.getApi()}${text}&client_id=`, 'soundcloud', abstractMedia.signal.token)
         .then(_items => {
-            const filteredSongs = filterCleanData(_items, user);
-            media.checkIfAlreadyOnList(songs, filteredSongs);
+            const filteredSongs = filterCleanData(_items, abstractMedia.user);
+            mediaBuilder.checkIfAlreadyOnList(songs, filteredSongs);
             setIsSearching(!!filteredSongs.length);
             setItems([...filteredSongs]);
         })
         .catch(err => {
-            if (axios.isCancel(err)) {
-                console.log('post Request canceled');
+            if (abstractMedia.axios.isCancel(err)) {
+                console.log('Search Songs Request Canceled');
             }
             console.log('Error', err);
         });
 
     const resetSearch = () => {
-        searchRef.current.clear();
-        searchRef.current.blur();
+        abstractMedia.searchRef.current.clear();
+        abstractMedia.searchRef.current.blur();
         setIsSearching(false);
         Keyboard.dismiss();
     };
@@ -145,7 +124,7 @@ export const Songs = memo((props) => {
             <BurgerMenuIcon
                 action={() => {
                     resetSearch();
-                    navigation.openDrawer();
+                    abstractMedia.navigation.openDrawer();
                 }}
                 customStyle={{ top: -5, left: 0, width: 30, height: 30 }}
             />
@@ -153,15 +132,15 @@ export const Songs = memo((props) => {
                 placeholder="Search song..."
                 cancelSearch={() => setIsSearching(false)}
                 onEndEditingSearch={onEndEditingSearch}
-                searchRef={searchRef}
+                searchRef={abstractMedia.searchRef}
                 customStyleContainer={{ width: '85%', marginLeft: 55 }}
             />
             <PlayerContainer>
-                <Player ref={playerRef} tracks={songs} />
+                <Player ref={abstractMedia.playerRef} tracks={songs} />
             </PlayerContainer>
             <TracksListContainer>
                 {isSearching ?
-                    <SearchingList player={playerRef} sendMediaToServer={sendMediaToServer} items={items} /> :
+                    <SearchingList player={abstractMedia.playerRef} handler={sendMediaToServer} items={items} /> :
                     <CommonFlatList
                         emptyListComponent={MediaListEmpty}
                         data={songs}
