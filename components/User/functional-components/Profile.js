@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import React, { useContext, useState } from 'react';
+import Toast from 'react-native-easy-toast';
+import React, { useContext, useState, useRef } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { UserContext } from './UserContext';
 import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
@@ -8,43 +9,55 @@ import { ProfileAvatar } from './ProfileAvatar';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { CustomButton } from '../../common/functional-components/CustomButton';
 
-const handleUserNameChange = (userNickName, user, setLoading, setUserNickName) => {
-    setLoading(true);
-    setUserNickName('');
-
-    user.updateProfile({
-        displayName: userNickName
-    }).then(() => {
-        // Profile updated successfully!
-        // "Jane Q. User"
-        setLoading(false);
-    }, (error) => {
-        // An error happened.
-    });
-};
-
-const handleUserPasswordChange = (userPassword, user, setLoading, setUserPassword) => {
-    setLoading(true);
-    setUserPassword('');
-
-    user.updatePassword(userPassword).then(() => {
-        // Password updated successfully!
-        console.log('Updated password');
-        setLoading(false);
-    }, (error) => {
-        // An error happened.
-    });
-};
-
 const Profile = (props) => {
     const [userNickName, setUserNickName] = useState('');
     const [userPassword, setUserPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const { navigation } = props;
     const { user } = useContext(UserContext);
+    const toastRef = useRef(null);
+
+    const handleUserNameChange = () => {
+        setLoading(true);
+
+        if (userNickName.length < 6) {
+            setLoading(false);
+            return toastRef.current.show('The NickName must be 6 characters long or more.', 2000);
+        }
+
+        user.updateProfile({
+            displayName: userNickName
+        }).then(() => {
+            setLoading(false);
+            setUserNickName('');
+            toastRef.current.show('NickName updated successfully!', 2000);
+        }, (error) => {
+            setLoading(false);
+            setUserNickName('');
+            toastRef.current.show(error.message, 2000);
+        });
+    };
+
+    const handleUserPasswordChange = () => {
+        setLoading(true);
+
+        user.updatePassword(userPassword).then(() => {
+            setLoading(false);
+            setUserPassword('');
+            toastRef.current.show('Password updated successfully!', 2000);
+        }, (error) => {
+            setLoading(false);
+            setUserPassword('');
+            toastRef.current.show(error.message, 2000);
+        });
+    };
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
+            <Toast
+                position='top'
+                ref={toastRef}
+            />
             <View style={{ marginTop: 30, padding: 10 }}>
                 <BurgerMenuIcon action={() => navigation.openDrawer()} />
                 <VerifyEmailMsg user={user} />

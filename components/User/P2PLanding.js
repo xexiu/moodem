@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import io from 'socket.io-client';
 import Toast from 'react-native-easy-toast';
-import React, { useEffect, useContext, memo } from 'react';
+import React, { useEffect, useRef, useContext, memo } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MainContainer } from '../common/MainContainer';
 import { Songs } from '../User/functional-components/Songs';
@@ -14,7 +14,7 @@ const welcomeMsgMoodem = (toastRef) => data => toastRef.show(data, 1000);
 const P2PLanding = memo(() => {
     const { user } = useContext(UserContext);
     const socket = io(IP, socketConf);
-    const toastRef = React.createRef();
+    const toastRef = useRef(null);
     const Tab = createMaterialTopTabNavigator();
 
     useEffect(() => {
