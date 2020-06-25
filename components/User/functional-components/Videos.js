@@ -20,6 +20,7 @@ const setMediaList = (setVideos) => videos => setVideos([...videos]);
 export const Videos = memo((props) => {
     const [videos = [], setVideos] = useState([]);
     const [items = [], setItems] = useState([]);
+    const [videoId = '', setVideoId] = useState('');
     const [isSearching = false, setIsSearching] = useState(false);
     const abstractMedia = new AbstractMedia(props, YOTUBE_SEARCH_API);
     const mediaBuilder = abstractMedia.mediaBuilder;
@@ -44,9 +45,9 @@ export const Videos = memo((props) => {
         })
         .catch(err => {
             if (abstractMedia.axios.isCancel(err)) {
-                console.log('Search Videos Request Canceled');
+                throw new Error('Search Videos Request Canceled Axios', err);
             }
-            console.log('Error', err);
+            throw new Error('Error Videos Search', err);
         });
 
     const sendMediaToServer = (video) => {
@@ -63,7 +64,6 @@ export const Videos = memo((props) => {
 
     const renderItem = (video) => (
         <CommonFlatListItem
-            disabled
             bottomDivider
             leftElement={() => (
                 <View style={{ height: 100, width: 100, alignContent: 'flex-start' }}>
@@ -100,13 +100,17 @@ export const Videos = memo((props) => {
                         iconName={'remove'}
                         iconType={'font-awesome'}
                         iconColor={'#dd0031'}
-                        action={() => abstractMedia.handleMediaActions('send-message-remove', { video, chatRoom: 'global-moodem-videoPlaylist', user_id: abstractMedia.user.uid })}
+                        action={() => {
+                            setVideoId('');
+                            abstractMedia.handleMediaActions('send-message-remove', { video, chatRoom: 'global-moodem-videoPlaylist', user_id: abstractMedia.user.uid });
+                        }}
                     />)
                 }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' }
             }}
             checkmark={isSearching && video.isMediaOnList}
+            action={() => setVideoId(video.id)}
         />
     );
 
@@ -133,9 +137,15 @@ export const Videos = memo((props) => {
                 searchRef={abstractMedia.searchRef}
                 customStyleContainer={{ width: '85%', marginLeft: 55 }}
             />
+            <View style={{ height: 200, width: 300, alignSelf: 'center' }}>
+                <WebView
+                    originWhitelist={['*']}
+                    source={{ html: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>` }}
+                />
+            </View>
             <TracksListContainer>
                 {isSearching ?
-                    <SearchingList player={abstractMedia.playerRef} handler={sendMediaToServer} items={items} /> :
+                    <SearchingList player={(video) => setVideoId(video.id)} handler={sendMediaToServer} items={items} /> :
                     <CommonFlatList
                         emptyListComponent={MediaListEmpty}
                         data={videos}

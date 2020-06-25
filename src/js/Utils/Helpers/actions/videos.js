@@ -18,7 +18,8 @@ export const filterCleanData = (data, user) => {
                 boosts_count: 0,
                 votes_count: 0,
                 voted_users: [],
-                boosted_users: []
+                boosted_users: [],
+                video: true
             });
         }
     });

@@ -107,9 +107,9 @@ export const Songs = memo((props) => {
         })
         .catch(err => {
             if (abstractMedia.axios.isCancel(err)) {
-                console.log('Search Songs Request Canceled');
+                throw new Error('Search Songs Request Canceled Axios', err);
             }
-            console.log('Error', err);
+            throw new Error('Error Songs Search', err);
         });
 
     const resetSearch = () => {

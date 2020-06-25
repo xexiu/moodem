@@ -36,7 +36,8 @@ export const filterCleanData = (data, user) => {
                 voted_users: [],
                 boosted_users: [],
                 video_url: track.video_url,
-                download_url: track.download_url
+                download_url: track.download_url,
+                song: true
             });
         }
     });

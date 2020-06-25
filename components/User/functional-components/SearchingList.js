@@ -26,7 +26,12 @@ export const SearchingList = memo((props) => {
                 containerStyle: { marginRight: -10 }
             }}
             checkmark={item.isMediaOnList}
-            action={() => player.current.dispatchActionsPressedTrack(item)}
+            action={() => {
+                if (item.video) {
+                    return player(item);
+                }
+                return player.current.dispatchActionsPressedTrack(item);
+            }}
             />
         );
 
