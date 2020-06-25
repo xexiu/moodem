@@ -51,20 +51,20 @@ export class Player extends Component {
 
     onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
         this.setState({ trackCurrentTime: 0 });
-        const song = tracks.length ? 0 : songIndex + 1;
+        const index = tracks.length ? songIndex + 1 : 0;
 
         if (shouldRepeat) {
-            return this.dispatchActionsPressedTrack(tracks[song]);
+            return this.dispatchActionsPressedTrack(tracks[index]);
         } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
 
             if (tracks[random]) {
                 return this.dispatchActionsPressedTrack(tracks[random]);
             }
-        } else if (!tracks[song]) {
+        } else if (!tracks[index]) {
             this.setState({ isPlaying: !isPlaying });
         } else {
-            return tracks[song] && this.dispatchActionsPressedTrack(tracks[song]);
+            return tracks[index] && this.dispatchActionsPressedTrack(tracks[index]);
         }
     }
 
