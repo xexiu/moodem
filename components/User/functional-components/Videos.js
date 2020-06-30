@@ -15,7 +15,13 @@ import { SearchingList } from './SearchingList';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 
 const YOTUBE_SEARCH_API = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=';
-const setMediaList = (setVideos) => videos => setVideos([...videos]);
+
+const setMediaIndex = (song, index) => {
+    Object.assign(song, {
+        index
+    });
+};
+
 
 export const Videos = memo((props) => {
     const [videos = [], setVideos] = useState([]);
@@ -27,7 +33,10 @@ export const Videos = memo((props) => {
 
     useEffect(() => {
         console.log('On useEffect Videos');
-        mediaBuilder.msgFromServer(abstractMedia.socket, setMediaList(setVideos));
+        mediaBuilder.msgFromServer(abstractMedia.socket, (_videos) => {
+            _videos.forEach(setMediaIndex);
+            setVideos([..._videos]);
+        });
         mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { video: true, chatRoom: 'global-moodem-videoPlaylist' });
 
         return () => {
@@ -55,8 +64,7 @@ export const Videos = memo((props) => {
         setIsSearching(false);
 
         Object.assign(video, {
-            isMediaOnList: true,
-            index: videos.length
+            isMediaOnList: true
         });
 
         mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { video, chatRoom: 'global-moodem-videoPlaylist' });
