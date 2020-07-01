@@ -48,7 +48,7 @@ export const ProfileAvatar = (props) => {
 
     return (
         <View style={[avatarContainer, { marginTop: 5, position: 'relative' }]}>
-            <BgImage source={{ uri: user.photoURL || USER_AVATAR_DEFAULT }} bgImageStyle={[avatarImage, btnShadow, { position: 'relative' }]}>
+            <BgImage source={{ uri: user.photoURL || USER_AVATAR_DEFAULT, cache: 'force-cache' }} bgImageStyle={[avatarImage, btnShadow, { position: 'relative' }]}>
                 <View style={{ position: 'absolute', right: -10, bottom: 20 }}>
                     <Icon
                         disabled={loading}

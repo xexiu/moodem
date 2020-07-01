@@ -10,7 +10,7 @@ const {
 
 export const BgImage = props => {
 	const {
-		source = { uri: DEFAULT_LOGO },
+		source = { uri: DEFAULT_LOGO, cache: 'force-cache' },
 		children,
 		bgImageStyle = defaultStyleLogo
 	} = props;

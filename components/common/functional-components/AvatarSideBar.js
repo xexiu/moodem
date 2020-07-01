@@ -27,7 +27,7 @@ export const AvatarSideBar = (props) => {
     return (
         <View style={avatarContainer}>
             <TouchableHighlight underlayColor='#eee' onPress={hangleUserNavigation.bind(this, navigation, user, group)}>
-                <BgImage source={{ uri: user.photoURL || USER_AVATAR_DEFAULT }} bgImageStyle={[avatarImage, btnShadow]}>
+                <BgImage source={{ uri: user.photoURL || USER_AVATAR_DEFAULT, cache: 'force-cache' }} bgImageStyle={[avatarImage, btnShadow]}>
                     {group.group_name !== 'Moodem' ?
                         <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hi! {group.group_name}</Text>
                         :

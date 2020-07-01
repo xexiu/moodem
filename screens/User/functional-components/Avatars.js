@@ -54,7 +54,7 @@ const Avatars = memo((props) => {
                         <TouchableOpacity key={key.toString()} onPress={() => handleUserAvatar(avatar.avatarUrl, navigation, setLoading, route.params.user)}>
                             <BgImage
                                 key={key.toString()}
-                                source={{ uri: avatar.avatarUrl }} bgImageStyle={[{
+                                source={{ uri: avatar.avatarUrl, cache: 'force-cache' }} bgImageStyle={[{
                                     width: 90,
                                     height: 90,
                                     borderColor: '#aaa',
