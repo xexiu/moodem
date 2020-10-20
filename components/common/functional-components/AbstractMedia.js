@@ -31,10 +31,6 @@ export class AbstractMedia {
         }
 
         return this.navigation.navigate('Guest');
-
-        // else if (this.user && !media.hasBoosted && actionName === 'boost') {
-        //     this.socket.emit(`send-message-${actionName}`, { media, chatRoom: 'global-moodem-songsPlaylist', user_id: this.user.uid, count });
-        // }
     }
 
     destroy = () => {

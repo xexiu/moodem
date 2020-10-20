@@ -52,7 +52,7 @@ export const Songs = memo((props) => {
             isMediaOnList: true
         });
 
-        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song, chatRoom: 'global-moodem-songPlaylist' });
+        abstractMedia.handleMediaActions('send-message-media', { song, chatRoom: 'global-moodem-songPlaylist' });
     };
 
     const renderItem = (song) => (

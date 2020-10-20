@@ -108,7 +108,7 @@ export const getOwnedGroupsFromDatabase = (ref) => new Promise((resolve) => {
 export const getInvitedGroupsFromDatabase = (ref) => new Promise((resolve) => {
     ref.once('value')
     .then(snapshot => {
-        if (snapshot.exists()) {
+        if (snapshot.val()) {
             const data = Object.values(snapshot.val()) || [];
             const groups = [];
 
@@ -132,6 +132,8 @@ export const getInvitedGroupsFromDatabase = (ref) => new Promise((resolve) => {
                             return resolve(groups);
                         });
                 }
+            } else {
+                resolve([]);
             }
         });
 });

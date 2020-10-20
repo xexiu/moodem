@@ -22,6 +22,8 @@ const createNewGroup = (data, handleNewGroup) => {
 const handleCreateGroup = (refGroupForm, setNewGroup, user, handleNewGroup, toggleModal, value) => {
     const validate = refGroupForm.current.getValue();
 
+    console.log('VALIdT', validate);
+
     if (validate) {
         setNewGroup({ isLoading: true, value });
         createGroupHandler(validate, user)

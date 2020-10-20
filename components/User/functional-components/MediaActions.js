@@ -23,7 +23,11 @@ export const MediaActions = memo((props) => {
     >
         <Icon
             disabled={disabled}
-            iconStyle={[{ paddingTop: 10, paddingBottom: 10, paddingRight: 2 }, disabled && { backgroundColor: '#fff' }]}
+            iconStyle={[{
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingRight: 2
+            }, disabled && { backgroundColor: '#fff' }]}
             name={iconName}
             type={iconType}
             size={iconSize}

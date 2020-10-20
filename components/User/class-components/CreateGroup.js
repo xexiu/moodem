@@ -18,8 +18,8 @@ export class CreateGroup extends Component {
         headerShown: false
     });
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = {
             isCreateGroupModalVisible: false,
