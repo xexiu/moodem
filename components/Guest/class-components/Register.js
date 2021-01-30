@@ -14,8 +14,8 @@ import { PreLoader } from '../../common/functional-components/PreLoader';
 const Form = form.Form;
 
 export class Register extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isRegisterModalVisible: false,
             isLoading: false,

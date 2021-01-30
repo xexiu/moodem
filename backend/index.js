@@ -16,31 +16,48 @@ app.get('/', (req, res) => {
   res.sendfile('index.html');
 });
 
-const songsList = [];
 const videosList = [];
-const messagesList = [];
+const chatRooms = {};
+const clients = {};
+let connectedUsers = 0;
+
+function setRoomMediaList(room, data, media) {
+  if (Object.keys(chatRooms).indexOf(room) >= 0) {
+    if (media === 'song' && data[media].id) {
+      chatRooms[room].songs.push(data[media]);
+    } if (media === 'msg' && data[media].id) {
+      chatRooms[room].messages.push(data[media]);
+    }
+  } else if (media === 'song') {
+    chatRooms[room] = { songs: [] };
+  } else if (media === 'msg') {
+    chatRooms[room] = { messages: [] };
+  }
+}
 
 // Socket.io doc ==> https://socket.io/docs/server-api/#socket-id
 
 io.on('connection', (socket) => {
-  //io.engine.generateId = (req) => {};
-  // console.log('Engine', req);
+  //io.engine.generateId = (req) => {
+  //console.log('Engine', req);
+  //};
+  clients[socket.id] = socket;
 
   // Welcome Msg
   socket.on('server-send-message-welcomeMsg', (data) => {
     const userName = getUserName(data.displayName, socket.id);
     socket.username = userName;
-    socket.emit('server-send-message-welcomeMsg', `Welcome ${userName}!`);
+    socket.emit('server-send-message-welcomeMsg', `Welcome ${userName} to ${data.chatRoom.replace(/(--.*)/g, '')} group!`);
   });
 
   // Media
   socket.on('send-message-media', (data) => {
     joinRoom(socket, data);
+    setRoomMediaList(data.chatRoom, data, 'song');
+    console.log('ROOOM', data.chatRoom);
 
     if (data.song) {
-      // eslint-disable-next-line no-unused-expressions
-      data.song.id && songsList.push(data.song);
-      io.to(data.chatRoom).emit('server-send-message-media', songsList);
+      io.to(data.chatRoom).emit('server-send-message-media', chatRooms[data.chatRoom].songs);
     } else if (data.video) {
       // eslint-disable-next-line no-unused-expressions
       data.video.id && videosList.push(data.video);
@@ -53,7 +70,7 @@ io.on('connection', (socket) => {
     joinRoom(socket, data);
 
     if (data.song) {
-      voteMedia(songsList, data, io, 'song');
+      voteMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
     } else if (data.video) {
       voteMedia(videosList, data, io, 'video');
     }
@@ -64,7 +81,7 @@ io.on('connection', (socket) => {
     joinRoom(socket, data);
 
     if (data.song) {
-      boostMedia(songsList, data, io, 'song');
+      boostMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
     } else if (data.video) {
       boostMedia(videosList, data, io, 'video');
     }
@@ -75,7 +92,7 @@ io.on('connection', (socket) => {
     joinRoom(socket, data);
 
     if (data.song) {
-      removeMedia(songsList, data, io, 'song');
+      removeMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
     } else if (data.video) {
       removeMedia(videosList, data, io, 'video');
     }
@@ -84,14 +101,15 @@ io.on('connection', (socket) => {
   // Joins moodem chat room
   socket.on('moodem-chat', (data) => {
     joinRoom(socket, data);
+    setRoomMediaList(data.chatRoom, data, 'msg');
 
-    io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', getConnectedInRoom(io.sockets.adapter.rooms, socket.room));
+    connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
 
-    if (data.msg) {
-      // eslint-disable-next-line no-unused-expressions
-      data.msg.id && messagesList.push(data.msg);
-      //socket.broadcast.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList);
-      io.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList.reverse());
+    console.log('DATTA MODEM CHAT', data.msg, 'AND CONNECTD', connectedUsers);
+
+    if (!data.msg.isChatting) {
+      io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', connectedUsers);
+      io.to(data.chatRoom).emit('server-send-message-moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
     }
   });
 
@@ -99,9 +117,8 @@ io.on('connection', (socket) => {
     joinRoom(socket, data);
 
     if (data.msg) {
-      // eslint-disable-next-line no-unused-expressions
-      data.msg.id && messagesList.push(data.msg);
-      //socket.broadcast.to(data.chatRoom).emit('server-send-message-moodem-chat', messagesList);
+      setRoomMediaList(data.chatRoom, data, 'msg');
+      console.log('SEND MESSAGE FROM SERVER');
       io.to(data.chatRoom).emit('server-send-message-chat-messages', data.msg);
     }
   });
@@ -124,12 +141,14 @@ io.on('connection', (socket) => {
     });
   */
 
-  socket.on('disconnect', (data) => {
-    const userName = getUserName(data.displayName, socket.id);
-    socket.username = userName;
-    const connectionMessage = `${socket.username} Disconnected from Socket ${socket.id}`;
-    io.to('moodem-chat-room').emit('server-send-message-users-connected-to-room', getConnectedInRoom(io.sockets.adapter.rooms, socket.room));
-    console.log(connectionMessage, 'and data is: ', socket.room);
+  socket.on('disconnect', () => {
+    connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
+    console.log('DICSCONNNECT', connectedUsers);
+    delete clients[socket.id];
+
+    //io.to('moodem-chat').emit('server-send-message-users-connected-to-room', connectedUsers);
+
+    //io.to(socket.room).emit('server-send-message-users-connected-to-room', `${socket.username} has left`);
   });
 });
 

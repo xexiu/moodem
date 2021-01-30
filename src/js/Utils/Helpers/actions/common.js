@@ -6,7 +6,7 @@ import { SC_KEY, YOUTUBE_KEY } from '../../constants/Api/apiKeys';
 import { IP, socketConf } from '../../Helpers/services/socket';
 
 const DEFAULT_SUFFIX = 'server-send-message-';
-const DEFAULT_ACTIONS = ['media', 'vote', 'boost', 'remove'];
+const DEFAULT_ACTIONS = ['media', 'vote', 'boost', 'remove', 'chat-messages'];
 const serversKeysMap = {
     soundcloud: SC_KEY,
     youtube: YOUTUBE_KEY

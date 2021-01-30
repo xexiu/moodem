@@ -2,15 +2,22 @@
 /* eslint-disable max-len */
 const { getUserName } = require('./users');
 
-const getConnectedInRoom = (sockets, roomName) => !!roomName && sockets[roomName] && sockets[roomName].length;
+const getConnectedInRoom = (rooms, roomName) => {
+    if (rooms[roomName]) {
+        console.log('ROOOM CIENTS', rooms[roomName]);
+        return rooms[roomName].length;
+    }
+};
 
 const joinRoom = (socket = {}, data = {}) => {
-    socket.join(data.chatRoom, () => {
-        const userName = getUserName(data.displayName, socket.id);
-        socket.username = userName;
-    });
+    socket.join(data.chatRoom);
 
-    socket.room = data.chatRoom; // This must be outside of the above method --> socket.join
+    //console.log('DATTA USER', data.user);
+
+    Object.assign(socket, {
+        username: getUserName(data.user ? data.user.displayName : 'Unknown', socket.id),
+        room: data.chatRoom // This must be outside of the above method --> socket.join
+    });
 };
 
 module.exports = { getConnectedInRoom, joinRoom };

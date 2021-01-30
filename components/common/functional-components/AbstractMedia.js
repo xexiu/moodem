@@ -4,8 +4,10 @@ import axios from 'axios';
 import { UserContext } from '../../User/functional-components/UserContext';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 
+const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/?limit=50&q=';
+
 export class AbstractMedia {
-    constructor(props, api) {
+    constructor(props, api = SOUNDCLOUD_API) {
         const { user } = useContext(UserContext);
         const { group } = useContext(UserContext);
         this.navigation = props.navigation;

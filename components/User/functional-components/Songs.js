@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 import React, { useState, useEffect, memo } from 'react';
-import { View, Keyboard } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { View, Keyboard, Text } from 'react-native';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import { Player } from '../../common/Player';
@@ -15,19 +16,30 @@ import { MediaActions } from '../functional-components/MediaActions';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 
-const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/?limit=50&q=';
-
-const setMediaIndex = (song, index) => {
+function setMediaIndex(song, index) {
     Object.assign(song, {
         index
     });
-};
+}
+
+function hasSongOrGroupOwner(abstractMediaUser, songUser, groupOwner) {
+    return ((abstractMediaUser && songUser.uid === abstractMediaUser.uid) ||
+        abstractMediaUser.uid === groupOwner);
+}
+
+function setChatRoomName(group) {
+    if (group.group_name && group.group_id) {
+        return `${group.group_name}-${group.group_id}`;
+    }
+    return 'Moodem';
+}
 
 export const Songs = memo((props) => {
+    const isFocused = useIsFocused();
     const [songs = [], setSongs] = useState([]);
     const [items = [], setItems] = useState([]);
     const [isSearching = false, setIsSearching] = useState(false);
-    const abstractMedia = new AbstractMedia(props, SOUNDCLOUD_API);
+    const abstractMedia = new AbstractMedia(props);
     const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
@@ -36,13 +48,12 @@ export const Songs = memo((props) => {
             _songs.forEach(setMediaIndex);
             setSongs([..._songs]);
         });
-        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song: true, chatRoom: 'global-moodem-songPlaylist' });
-
+        mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song: true, chatRoom: setChatRoomName(props.route.params.group) });
         return () => {
             console.log('Off useEffect Songs');
             abstractMedia.destroy();
         };
-    }, []);
+    }, [isFocused]);
 
     const sendMediaToServer = (song) => {
         setSongs([]);
@@ -52,7 +63,7 @@ export const Songs = memo((props) => {
             isMediaOnList: true
         });
 
-        abstractMedia.handleMediaActions('send-message-media', { song, chatRoom: 'global-moodem-songPlaylist' });
+        abstractMedia.handleMediaActions('send-message-media', { song, chatRoom: setChatRoomName(props.route.params.group) });
     };
 
     const renderItem = (song) => (
@@ -64,32 +75,33 @@ export const Songs = memo((props) => {
             subtitle={song.user && song.user.username}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             buttonGroup={{
-                buttons: [{
-                    element: () => (<MediaActions
-                        disabled={song.voted_users && song.voted_users.some(id => id === abstractMedia.user.uid)}
-                        text={song.votes_count}
-                        iconName={'thumbs-up'}
-                        iconType={'entypo'}
-                        iconColor={'#90c520'}
-                        action={() => abstractMedia.handleMediaActions('send-message-vote', { song, chatRoom: 'global-moodem-songPlaylist', user_id: abstractMedia.user.uid, count: ++song.votes_count })}
-                    />)
-                },
-                // {
-                //     element: () => (<MediaActions
-                //         text={song.boosts_count}
-                //         iconName={'thunder-cloud'}
-                //         iconType={'entypo'}
-                //         iconColor={'#00b7e0'}
-                //     />)
-                // },
-                abstractMedia.user && !!song.user && song.user.uid === abstractMedia.user.uid && {
-                    element: () => (<MediaActions
-                        iconName={'remove'}
-                        iconType={'font-awesome'}
-                        iconColor={'#dd0031'}
-                        action={() => abstractMedia.handleMediaActions('send-message-remove', { song, chatRoom: 'global-moodem-songPlaylist', user_id: abstractMedia.user.uid })}
-                    />)
-                }],
+                buttons: [
+                    {
+                        element: () => (<MediaActions
+                            disabled={song.voted_users && song.voted_users.some(id => id === abstractMedia.user.uid)}
+                            text={song.votes_count}
+                            iconName={'thumbs-up'}
+                            iconType={'entypo'}
+                            iconColor={'#90c520'}
+                            action={() => abstractMedia.handleMediaActions('send-message-vote', { song, chatRoom: setChatRoomName(props.route.params.group), user_id: abstractMedia.user.uid, count: ++song.votes_count })}
+                        />)
+                    },
+                    // {
+                    //     element: () => (<MediaActions
+                    //         text={song.boosts_count}
+                    //         iconName={'thunder-cloud'}
+                    //         iconType={'entypo'}
+                    //         iconColor={'#00b7e0'}
+                    //     />)
+                    // },
+                    hasSongOrGroupOwner(abstractMedia.user, song.user, props.route.params.group.user_owner_id) && {
+                        element: () => (<MediaActions
+                            iconName={'remove'}
+                            iconType={'font-awesome'}
+                            iconColor={'#dd0031'}
+                            action={() => abstractMedia.handleMediaActions('send-message-remove', { song, chatRoom: setChatRoomName(props.route.params.group), user_id: abstractMedia.user.uid })}
+                        />)
+                    }],
                 containerStyle: { position: 'absolute', borderWidth: 0, right: 0, bottom: 0 },
                 innerBorderStyle: { color: 'transparent' }
             }}

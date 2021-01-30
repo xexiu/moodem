@@ -18,8 +18,8 @@ export class CreateGroup extends Component {
         headerShown: false
     });
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             isCreateGroupModalVisible: false,
@@ -29,8 +29,7 @@ export class CreateGroup extends Component {
         this.refForm = React.createRef();
         this.group = struct({
             group_name: formValidationGroup.group_name,
-            group_password: formValidationGroup.group_password,
-            invited_emails: formValidationGroup.invited_emails
+            group_password: formValidationGroup.group_password
         });
         this.options = {
             fields: FORM_FIELDS_CREATE_GROUP
@@ -77,7 +76,6 @@ export class CreateGroup extends Component {
 
                                 if (validate) {
                                     this.setState({ isLoading: true });
-                                    //const groupName = this.refForm.current.getComponent('group_name').refs.input._getText();
 
                                     createGroupHandler(validate, user)
                                     .then(data => {

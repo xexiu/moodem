@@ -1,108 +1,91 @@
 /* eslint-disable max-len */
-import React, { Component } from 'react';
+import React, { useState, useEffect, useContext, memo } from 'react';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { useIsFocused } from '@react-navigation/native';
 import { View, Keyboard } from 'react-native';
-import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { MessagesListItem } from '../functional-components/MessagesListItem';
+import { NewMessageChat } from '../functional-components/NewMessageChat';
 import { HeaderChat } from '../functional-components/HeaderChat';
 import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
+import { UserContext } from '../functional-components/UserContext';
 
-const buildMsg = (value, user) => ({
-    id: `${user.uid}_${Math.random()}`,
-    text: value.replace(/^\s*\n/gm, ''),
-    user
+function setChatRoomName(group) {
+    if (group.group_name && group.group_id) {
+        return `${group.group_name}-ChatRoom${group.group_id}`;
+    }
+    return 'Moodem-ChatRoom';
+}
+
+const ChatRoom = memo((props) => {
+    const isFocused = useIsFocused();
+    const { user, group } = useContext(UserContext);
+    const { navigation } = props;
+    const [messages = [], setMessages] = useState([]);
+    const [usersConnected = 0, setUsersConnected] = useState(0);
+    const media = new MediaBuilder();
+    const socket = media.socket();
+    const headerTitle = `${props.route.params.group.group_name} Chat`; //this.props.route.params.group.group_name, 'Chat');
+
+    useEffect(() => {
+        //media.msgFromServer(socket, getMessage, ['chat-messages']);
+        media.msgFromServer(socket, setMessageList, ['moodem-chat']);
+        media.msgFromServer(socket, getConnectedUsers, ['users-connected-to-room']);
+        media.msgToServer(socket, 'moodem-chat', { chatRoom: setChatRoomName(props.route.params.group), msg: { isChatting: false }, user: user || { displayName: 'Guest' } });
+
+        console.log('EFFECT', messages);
+
+        return () => {
+            console.log('OFF EFFECT');
+            socket.emit('disconnect');
+            socket.off(media.msgFromServer);
+            socket.close();
+        };
+    }, [messages.length]);
+
+    const getConnectedUsers = (_usersConnected) => {
+        //const numConnectedUsers = messages.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).length;
+        if (_usersConnected) {
+            setUsersConnected(_usersConnected);
+        }
+    };
+
+    const setMessageList = (messagesList) => {
+        //console.log('MESSAGES  LIST', messagesList);
+        setMessages([...messagesList]);
+    };
+
+
+    return (
+        <View style={{ backgroundColor: '#fff', flex: 1, position: 'relative' }}>
+            <BurgerMenuIcon
+                customStyle={{ top: 20, left: 0, width: 30, height: 30 }}
+                action={() => {
+                    navigation.openDrawer();
+                    Keyboard.dismiss();
+                }}
+            />
+            <HeaderChat headerTitle={headerTitle} usersConnected={usersConnected} />
+            <View style={{ flex: 2, paddingBottom: 15 }}>
+                <NewMessageChat messagesList={messages} navigation={navigation} chatRoom={setChatRoomName(props.route.params.group)} />
+            </View>
+            <KeyboardSpacer />
+        </View>
+    );
 });
 
-export class ChatRoom extends Component {
-    static navigationOptions = ({ route }) => ({
+ChatRoom.navigationOptions = ({ route }) => {
+    console.log('CHat title bar', route);
+    return {
         unmountOnBlur: true,
         headerBackTitle: '',
-        title: getGroupName(route.params.group.group_name, 'Chat Room')
-    })
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            messages: [],
-            usersConnected: 0
-        };
-        this.messageRef = React.createRef();
-        this.media = new MediaBuilder();
-        this.socket = this.media.socket();
-        this.user = this.props.route.params.user;
-        this.headerTitle = getGroupName(this.props.route.params.group.group_name, 'Chat Room');
-    }
-
-    componentDidMount() {
-        this.media.msgFromServer(this.socket, this.getMessage, ['chat-messages']);
-        this.media.msgFromServer(this.socket, this.setMessageList, ['moodem-chat']);
-        this.media.msgFromServer(this.socket, this.getConnectedUsers, ['users-connected-to-room']);
-        this.media.msgToServer(this.socket, 'moodem-chat', { chatRoom: 'moodem-chat-room', msg: true, user: this.user || { displayName: 'Guest' } });
-    }
-
-    componentWillUnmount() {
-        this.socket.off(this.getMessage);
-        this.socket.off(this.setMessageList);
-        this.socket.close();
-        this.media.off(this.socket);
-    }
-
-    getConnectedUsers = (usersConnected) => {
-        if (usersConnected) {
-            this.setState({ usersConnected });
-        }
-    }
-
-    getMessage = (msg) => {
-        this.setState({
-            messages: [msg, ...this.state.messages]
-        });
+        title: `${route.params.group.group_name} Chat` //getGroupName(route.params.group.group_name, 'Chat')
     };
+};
 
-    setMessageList = (messagesList) => {
-        this.setState({
-            messages: [...messagesList]
-        });
-    };
+export {
+    ChatRoom
+};
 
-    sendNewMsg = (value) => {
-        this.media.msgToServer(this.socket, 'chat-messages', { chatRoom: 'moodem-chat-room', msg: buildMsg(value, this.user) });
-    }
-
-    renderItem = ({ item }) => (
-        <MessagesListItem msg={item} />
-    );
-
-    render() {
-        const { messages, usersConnected } = this.state;
-        const { navigation } = this.props;
-
-        return (
-            <View style={{ backgroundColor: '#fff', flex: 1, position: 'relative' }}>
-                <BurgerMenuIcon
-                    customStyle={{ top: 20, left: 0, width: 30, height: 30 }}
-                    action={() => {
-                        navigation.openDrawer();
-                        Keyboard.dismiss();
-                    }}
-                />
-                <HeaderChat headerTitle={this.headerTitle} usersConnected={usersConnected} />
-                <View style={{ flex: 2, paddingBottom: 60 }}>
-                    <View style={{ position: 'absolute', bottom: 10, right: 0, left: 7, width: '96%', zIndex: 1 }}>
-                        <CommonTextInput navigation={navigation} user={this.user} callback={this.sendNewMsg} />
-                    </View>
-                    <CommonFlatList
-                        data={messages}
-                        keyExtractor={item => String(item.id)}
-                        inverted
-                        action={this.renderItem}
-                    />
-                </View>
-                <KeyboardSpacer />
-            </View>
-        );
-    }
-}

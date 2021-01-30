@@ -14,8 +14,8 @@ import doLater from '../../../src/js/Utils/Helpers/actions/doLater';
 const Form = form.Form;
 
 export class Login extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isLoginModalVisible: false,
             isLoading: false,

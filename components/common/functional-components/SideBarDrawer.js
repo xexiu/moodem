@@ -14,6 +14,7 @@ export const SideBarDrawer = (props) => {
         return (
             <CommonDrawerWrapper user={user} group={group}>
                 <Drawer.Screen name="Profile" component={Profile} options={Profile.navigationOptions} initialParams={{ group }} />
+                {/* <Drawer.Screen name="UserGroup" component={UserGroupScreen} options={UserGroupScreen.navigationOptions} initialParams={{ group }} /> */}
                 {/*
               // TODO: ROADMAP Settings screen?
               <Drawer.Screen name="Settings" component={Settings} options={Settings.navigationOptions} initialParams={{ user: route.params.user, group: this.state.group }} /> */

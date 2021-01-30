@@ -14,8 +14,8 @@ export const SideBarTopHeader = (props) => {
 
     return (
         <View style={{ position: 'relative' }}>
-            <Logout navigation={navigation} />
-            <Home navigation={navigation} />
+            <Logout navigation={navigation} group={group} />
+            <Home {...props} />
             <AvatarSideBar navigation={navigation} user={params.user} group={group} />
         </View>
     );

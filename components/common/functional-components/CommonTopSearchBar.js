@@ -29,10 +29,17 @@ export const CommonTopSearchBar = (props) => {
             inputContainerStyle={commonTopSeachBarInputContainer}
             lightTheme
             clearIcon={!!value && {
-                onPress: () => setValue('') && cancelSearch()
+                onPress: () => {
+                    setValue('');
+                    cancelSearch();
+                }
             }}
             placeholder={placeholder}
-            onChangeText={text => setValue(text) && setShowLoadingSpin(false)}
+            onChangeText={text => {
+                setValue(text);
+                setShowLoadingSpin(false);
+                cancelSearch();
+            }}
             value={value}
             onClear={() => setShowLoadingSpin(false)}
             showLoading={showLoadingSpin}

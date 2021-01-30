@@ -146,7 +146,7 @@ const Profile = (props) => {
 Profile.navigationOptions = ({ route }) => ({
     headerMode: 'none',
     headerShown: false,
-    title: getGroupName(route.params.group.group_name, 'Profile')
+    title: 'My Profile' //getGroupName(route.params.group.group_name, 'Profile')
 });
 
 export {

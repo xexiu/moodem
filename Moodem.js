@@ -2,10 +2,10 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import { View } from 'react-native';
+import { View, LogBox } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
-import './src/js/Utils/Helpers/services/sentry';
+//import './src/js/Utils/Helpers/services/sentry';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { GuestScreen } from './screens/Guest/class-components/GuestScreen';
@@ -17,7 +17,7 @@ import { Avatars } from './screens/User/functional-components/Avatars';
 import { SideBarDrawer } from './components/common/functional-components/SideBarDrawer';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 const Stack = createStackNavigator();
 const controller = new AbortController();
@@ -42,9 +42,11 @@ const handleUserAuthFirebase = (user, setUser) => {
 
 export default function Moodem() {
   const [{ hasInternetConnection, connectionParams }, setInternetConnection] = useState(true);
-  const [{ user, loading = true, group = { group_name: 'Moodem' } }, setUser] = useState({ user: '' });
+  const [{ user, loading = true }, setUser] = useState({ user: '' });
+  const [{ group = { group_name: 'Moodem' } }, setGroup] = useState({ group: { group_name: 'Moodem' } });
 
   useEffect(() => {
+    console.log('Landing Moodem');
     NetInfo.fetch().then(connection => handleConnectivityChange(connection, setInternetConnection))
       .then(() => firebase.auth().onAuthStateChanged(_user => handleUserAuthFirebase(_user, setUser)));
 

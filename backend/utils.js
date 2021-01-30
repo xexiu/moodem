@@ -20,10 +20,10 @@ const compareValues = (key) => (a, b) => {
 };
 
 const voteMedia = (mediaList, data, io, media) => {
-    mediaList.forEach(_media => {
-        if (_media.id === data[media].id) {
-            _media.voted_users.push(data.user_id);
-            _media.votes_count = data.count;
+    mediaList.forEach(song => {
+        if (song.id === data[media].id) {
+            song.voted_users.push(data.user_id);
+            song.votes_count = data.count;
         }
     });
 

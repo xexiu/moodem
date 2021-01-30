@@ -13,8 +13,8 @@ import { PreLoader } from '../../common/functional-components/PreLoader';
 const Form = t.form.Form;
 
 export class ResetPassword extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isResetPasswordModalVisible: true,
             isLoading: false,

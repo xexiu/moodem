@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const FORM_FIELDS_LOGIN = {
     email: {
         help: 'Enter your email',
@@ -40,21 +41,22 @@ export const FORM_FIELDS_REGISTER = {
 
 export const FORM_FIELDS_CREATE_GROUP = {
     group_name: {
-        help: 'Enter a group name (letters/numbers and _- characters allwowed only!)',
+        help: 'Enter a group name (letters/numbers and _- characters allowed only!)',
         error: 'Incorrect group name!'
     },
     group_password: {
-        help: 'Enter group password. (mininum length must be 4 or greater)',
-        error: 'Bad password or not allowed! (mininum length must be 4 or greater)',
+        help: 'Enter group password. (mininum length must be 4 or greater and must contain a letter)',
+        error: 'Bad password or not allowed! (mininum length must be 4 or greater and must contain a letter)',
         password: true,
         secureTextEntry: true
-    },
-    invited_emails: {
-        multiline: true,
-        numberOfLines: 10,
-        help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
-        error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)',
-        autoCapitalize: 'none',
-        autoCorrect: false
     }
+    // ,
+    // invited_emails: {
+    //     multiline: true,
+    //     numberOfLines: 10,
+    //     help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
+    //     error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)',
+    //     autoCapitalize: 'none',
+    //     autoCorrect: false
+    // }
 };

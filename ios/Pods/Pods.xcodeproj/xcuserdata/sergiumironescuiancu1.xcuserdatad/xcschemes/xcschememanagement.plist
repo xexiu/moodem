@@ -9,7 +9,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>EXAppLoaderProvider.xcscheme</key>
+		<key>EXApplication.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -30,6 +30,11 @@
 			<false/>
 		</dict>
 		<key>EXFont.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>EXImageLoader.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -59,7 +64,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>EXWebBrowser.xcscheme</key>
+		<key>EXSecureStore.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -114,7 +119,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>RNSentry.xcscheme</key>
+		<key>React-Core-AccessibilityResources.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -174,6 +179,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>React-callinvoker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>React-cxxreact.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -209,7 +219,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Sentry.xcscheme</key>
+		<key>UMAppLoader.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

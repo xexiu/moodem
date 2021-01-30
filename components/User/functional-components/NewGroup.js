@@ -22,8 +22,6 @@ const createNewGroup = (data, handleNewGroup) => {
 const handleCreateGroup = (refGroupForm, setNewGroup, user, handleNewGroup, toggleModal, value) => {
     const validate = refGroupForm.current.getValue();
 
-    console.log('VALIdT', validate);
-
     if (validate) {
         setNewGroup({ isLoading: true, value });
         createGroupHandler(validate, user)
@@ -50,8 +48,7 @@ export const NewGroup = (props) => {
     const refGroupForm = React.createRef();
     const groupForm = struct({
         group_name: formValidationGroup.group_name,
-        group_password: formValidationGroup.group_password,
-        invited_emails: formValidationGroup.invited_emails
+        group_password: formValidationGroup.group_password
     });
     const GroupFormOptions = {
         fields: FORM_FIELDS_CREATE_GROUP
