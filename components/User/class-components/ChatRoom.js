@@ -30,16 +30,16 @@ const ChatRoom = memo((props) => {
     const headerTitle = `${props.route.params.group.group_name} Chat`; //this.props.route.params.group.group_name, 'Chat');
 
     useEffect(() => {
+        console.log('5. ChatRoom');
         //media.msgFromServer(socket, getMessage, ['chat-messages']);
         media.msgFromServer(socket, setMessageList, ['moodem-chat']);
         media.msgFromServer(socket, getConnectedUsers, ['users-connected-to-room']);
-        media.msgToServer(socket, 'moodem-chat', { chatRoom: setChatRoomName(props.route.params.group), msg: { isChatting: false }, user: user || { displayName: 'Guest' } });
-
-        console.log('EFFECT', messages);
+        media.msgToServer(socket, 'moodem-chat', { chatRoom: setChatRoomName(props.route.params.group), user: user || { displayName: 'Guest' } });
 
         return () => {
-            console.log('OFF EFFECT');
-            socket.emit('disconnect');
+            console.log('5. OFF EFFECT ChatRoom');
+            media.msgToServer(socket, 'moodem-chat', { leaveChatRoom: setChatRoomName(props.route.params.group) });
+            socket.disconnect();
             socket.off(media.msgFromServer);
             socket.close();
         };
@@ -77,7 +77,7 @@ const ChatRoom = memo((props) => {
 });
 
 ChatRoom.navigationOptions = ({ route }) => {
-    console.log('CHat title bar', route);
+    console.log('ChatRoom Navigation Options', route);
     return {
         unmountOnBlur: true,
         headerBackTitle: '',

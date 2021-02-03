@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useContext, memo } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MainContainer } from '../common/MainContainer';
 import { Songs } from '../User/functional-components/Songs';
-import { Videos } from '../User/functional-components/Videos';
 import { IP, socketConf } from '../../src/js/Utils/Helpers/services/socket';
 import { UserContext } from '../User/functional-components/UserContext';
 import { getGroupName } from '../../src/js/Utils/Helpers/actions/groups';
@@ -26,31 +25,22 @@ const P2PLanding = memo((props) => {
     const { user, group } = useContext(UserContext);
     const socket = io(IP, socketConf);
     const toastRef = useRef(null);
-    const Tab = createMaterialTopTabNavigator();
 
     useEffect(() => {
-        console.log('Effect P2PLanding', props);
+        console.log('3. P2PLanding');
         socket.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
         socket.emit('server-send-message-welcomeMsg', { chatRoom: setChatRoomName(props.route.params.group), displayName: user.displayName || 'Guest' });
 
         return () => {
+            socket.disconnect();
             socket.off(welcomeMsgMoodem);
             socket.close();
         };
-    }, [isFocused]);
+    }, []);
 
     return (
         <MainContainer>
             <Songs {...props} />
-            {
-            // TODO: ROADMAP TABS TO SONGS/VIDEOS
-            /* <Tab.Navigator>
-                <Tab.Screen name="Songs">
-                    {(props) => <Songs {...props} groupTitle={group.title} />}
-                </Tab.Screen>
-
-                <Tab.Screen name="Videos" component={Videos} />
-            </Tab.Navigator> */}
             <Toast
                 position='top'
                 ref={toastRef}
@@ -60,7 +50,7 @@ const P2PLanding = memo((props) => {
 });
 
 P2PLanding.navigationOptions = ({ route }) => {
-    console.log('P2PLanding Options', route);
+    console.log('P2PLanding Navigation Options', route);
     return {
         headerShown: false,
         title: getGroupName(route.params.group.group_name, 'Moodem')

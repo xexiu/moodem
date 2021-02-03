@@ -43,17 +43,17 @@ export const Songs = memo((props) => {
     const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
-        console.log('On useEffect Songs');
+        console.log('2. Songs');
         mediaBuilder.msgFromServer(abstractMedia.socket, (_songs) => {
             _songs.forEach(setMediaIndex);
             setSongs([..._songs]);
         });
         mediaBuilder.msgToServer(abstractMedia.socket, 'send-message-media', { song: true, chatRoom: setChatRoomName(props.route.params.group) });
         return () => {
-            console.log('Off useEffect Songs');
+            console.log('2. OFF EFFECT Songs');
             abstractMedia.destroy();
         };
-    }, [isFocused]);
+    }, []);
 
     const sendMediaToServer = (song) => {
         setSongs([]);

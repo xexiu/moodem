@@ -3,10 +3,13 @@
 const { getUserName } = require('./users');
 
 const getConnectedInRoom = (rooms, roomName) => {
-    if (rooms[roomName]) {
-        console.log('ROOOM CIENTS', rooms[roomName]);
-        return rooms[roomName].length;
+    const clients = rooms.get(roomName);
+
+    if (clients) {
+        return Array.from(clients).length;
     }
+
+    return 0;
 };
 
 const joinRoom = (socket = {}, data = {}) => {

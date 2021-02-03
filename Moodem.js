@@ -5,7 +5,6 @@ import NetInfo from '@react-native-community/netinfo';
 import { View, LogBox } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
-//import './src/js/Utils/Helpers/services/sentry';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { GuestScreen } from './screens/Guest/class-components/GuestScreen';
@@ -18,6 +17,10 @@ import { SideBarDrawer } from './components/common/functional-components/SideBar
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 LogBox.ignoreAllLogs();
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+  'Constants.manifest is null because the embedded app.config could not be read.'
+]);
 
 const Stack = createStackNavigator();
 const controller = new AbortController();
@@ -41,19 +44,20 @@ const handleUserAuthFirebase = (user, setUser) => {
 };
 
 export default function Moodem() {
-  const [{ hasInternetConnection, connectionParams }, setInternetConnection] = useState(true);
+  const [{ hasInternetConnection }, setInternetConnection] = useState(true);
   const [{ user, loading = true }, setUser] = useState({ user: '' });
-  const [{ group = { group_name: 'Moodem' } }, setGroup] = useState({ group: { group_name: 'Moodem' } });
+  const [{ group = { group_name: 'Moodem' } }] = useState({ group: { group_name: 'Moodem' } });
 
   useEffect(() => {
-    console.log('Landing Moodem');
+    console.log('1. Landing Moodem');
     NetInfo.fetch().then(connection => handleConnectivityChange(connection, setInternetConnection))
       .then(() => firebase.auth().onAuthStateChanged(_user => handleUserAuthFirebase(_user, setUser)));
 
     return () => {
+      console.log('4. OFF EFFECT Moodem');
       controller.abort();
     };
-  }, [hasInternetConnection, user.uid, group.group_name]);
+  }, []);
 
   if (!hasInternetConnection) {
     return (<OfflineNotice />);

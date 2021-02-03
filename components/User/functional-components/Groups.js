@@ -45,6 +45,7 @@ const Groups = memo((props) => {
     const [isSearching = false, setIsSearching] = useState(false);
 
     useEffect(() => {
+        console.log('3. Groups');
         getGroups(user)
             .then((dbGroups) => setGroups({
                 groups: dbGroups,
@@ -216,10 +217,12 @@ const Groups = memo((props) => {
     );
 });
 
-Groups.navigationOptions = ({ route }) => ({
-    title: 'My Groups'
-});
-
+Groups.navigationOptions = ({ route }) => {
+    //console.log('Groups Navigation Options', route);
+    return {
+        title: 'My Groups'
+    };
+};
 export {
     Groups
 };

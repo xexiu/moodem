@@ -37,7 +37,7 @@ export class AbstractMedia {
 
     destroy = () => {
         this.axios.Cancel();
-        this.socket.emit('disconnect');
+        console.log('GROUP NAME ABSTRACT MEDIA', this.group);
         this.socket.off(this.mediaBuilder.msgFromServer);
         this.socket.close();
     }

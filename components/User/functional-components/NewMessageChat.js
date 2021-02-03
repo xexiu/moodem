@@ -25,12 +25,12 @@ export const NewMessageChat = memo((props) => {
     const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
+        console.log('4. NewMessageChat');
         mediaBuilder.msgFromServer(abstractMedia.socket, getMessage);
         mediaBuilder.msgToServer(abstractMedia.socket, 'chat-messages', { chatRoom, msg: null });
 
-        console.log('EFFECT NEW MSG', messages);
         return () => {
-            console.log('Off EFFECT NEW MSG');
+            console.log('4. OFF EFFECT NewMessageChat');
             abstractMedia.destroy();
         };
     }, [messages.length]);

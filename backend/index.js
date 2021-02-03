@@ -20,6 +20,7 @@ const videosList = [];
 const chatRooms = {};
 const clients = {};
 let connectedUsers = 0;
+const connections = new Set();
 
 function setRoomMediaList(room, data, media) {
   if (Object.keys(chatRooms).indexOf(room) >= 0) {
@@ -42,86 +43,91 @@ io.on('connection', (socket) => {
   //console.log('Engine', req);
   //};
   clients[socket.id] = socket;
+  connections.add(socket);
 
   // Welcome Msg
   socket.on('server-send-message-welcomeMsg', (data) => {
     const userName = getUserName(data.displayName, socket.id);
     socket.username = userName;
     socket.emit('server-send-message-welcomeMsg', `Welcome ${userName} to ${data.chatRoom.replace(/(--.*)/g, '')} group!`);
+    console.log('Welcome MSG');
   });
 
-  // Media
-  socket.on('send-message-media', (data) => {
-    joinRoom(socket, data);
-    setRoomMediaList(data.chatRoom, data, 'song');
-    console.log('ROOOM', data.chatRoom);
+  // // Media
+  // socket.on('send-message-media', (data) => {
+  //   joinRoom(socket, data);
+  //   setRoomMediaList(data.chatRoom, data, 'song');
+  //   console.log('ROOOM', data.chatRoom);
 
-    if (data.song) {
-      io.to(data.chatRoom).emit('server-send-message-media', chatRooms[data.chatRoom].songs);
-    } else if (data.video) {
-      // eslint-disable-next-line no-unused-expressions
-      data.video.id && videosList.push(data.video);
-      io.to(data.chatRoom).emit('server-send-message-media', videosList);
-    }
-  });
+  //   if (data.song) {
+  //     io.to(data.chatRoom).emit('server-send-message-media', chatRooms[data.chatRoom].songs);
+  //   } else if (data.video) {
+  //     // eslint-disable-next-line no-unused-expressions
+  //     data.video.id && videosList.push(data.video);
+  //     io.to(data.chatRoom).emit('server-send-message-media', videosList);
+  //   }
+  // });
 
-  // Vote
-  socket.on('send-message-vote', (data) => {
-    joinRoom(socket, data);
+  // // Vote
+  // socket.on('send-message-vote', (data) => {
+  //   joinRoom(socket, data);
 
-    if (data.song) {
-      voteMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
-    } else if (data.video) {
-      voteMedia(videosList, data, io, 'video');
-    }
-  });
+  //   if (data.song) {
+  //     voteMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
+  //   } else if (data.video) {
+  //     voteMedia(videosList, data, io, 'video');
+  //   }
+  // });
 
-  // Boost
-  socket.on('send-message-boost', (data) => {
-    joinRoom(socket, data);
+  // // Boost
+  // socket.on('send-message-boost', (data) => {
+  //   joinRoom(socket, data);
 
-    if (data.song) {
-      boostMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
-    } else if (data.video) {
-      boostMedia(videosList, data, io, 'video');
-    }
-  });
+  //   if (data.song) {
+  //     boostMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
+  //   } else if (data.video) {
+  //     boostMedia(videosList, data, io, 'video');
+  //   }
+  // });
 
-  // Remove
-  socket.on('send-message-remove', (data) => {
-    joinRoom(socket, data);
+  // // Remove
+  // socket.on('send-message-remove', (data) => {
+  //   joinRoom(socket, data);
 
-    if (data.song) {
-      removeMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
-    } else if (data.video) {
-      removeMedia(videosList, data, io, 'video');
-    }
-  });
+  //   if (data.song) {
+  //     removeMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
+  //   } else if (data.video) {
+  //     removeMedia(videosList, data, io, 'video');
+  //   }
+  // });
 
   // Joins moodem chat room
   socket.on('moodem-chat', (data) => {
     joinRoom(socket, data);
-    setRoomMediaList(data.chatRoom, data, 'msg');
+    //setRoomMediaList(data.chatRoom, data, 'msg');
 
     connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
 
-    console.log('DATTA MODEM CHAT', data.msg, 'AND CONNECTD', connectedUsers);
+    console.log('CHAT', data.msg, 'AND CONNECTD', data.chatRoom);
+    console.log('SOCKET ROOM CHAT', socket.room);
 
-    if (!data.msg.isChatting) {
-      io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', connectedUsers);
-      io.to(data.chatRoom).emit('server-send-message-moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
+    if (data.leaveChatRoom) {
+      socket.leave(data.leaveChatRoom);
     }
+
+    io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', connectedUsers);
+    // io.to(data.chatRoom).emit('server-send-message-moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
   });
 
-  socket.on('chat-messages', (data) => {
-    joinRoom(socket, data);
+  // socket.on('chat-messages', (data) => {
+  //   joinRoom(socket, data);
 
-    if (data.msg) {
-      setRoomMediaList(data.chatRoom, data, 'msg');
-      console.log('SEND MESSAGE FROM SERVER');
-      io.to(data.chatRoom).emit('server-send-message-chat-messages', data.msg);
-    }
-  });
+  //   if (data.msg) {
+  //     setRoomMediaList(data.chatRoom, data, 'msg');
+  //     console.log('SEND MESSAGE FROM SERVER');
+  //     io.to(data.chatRoom).emit('server-send-message-chat-messages', data.msg);
+  //   }
+  // });
 
   // User has disconected
 
@@ -141,15 +147,20 @@ io.on('connection', (socket) => {
     });
   */
 
-  socket.on('disconnect', () => {
-    connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
-    console.log('DICSCONNNECT', connectedUsers);
-    delete clients[socket.id];
+  // socket.on('disconnect', () => {
+  //   connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
+  //   console.log('DICSCONNNECT', socket.room);
+  //   console.log('DICSCONNNECT 2', io.sockets.adapter.rooms);
+  //   // socket.removeAllListeners('send message');
+  //   // socket.removeAllListeners('disconnect');
+  //   // io.removeAllListeners('connection');
+  //   delete clients[socket.id];
+  //   connections.delete(socket);
 
-    //io.to('moodem-chat').emit('server-send-message-users-connected-to-room', connectedUsers);
+  //   //io.to('moodem-chat').emit('server-send-message-users-connected-to-room', connectedUsers);
 
-    //io.to(socket.room).emit('server-send-message-users-connected-to-room', `${socket.username} has left`);
-  });
+  //   //io.to(socket.room).emit('server-send-message-users-connected-to-room', `${socket.username} has left`);
+  // });
 });
 
 server.listen(3000, () => { // Digital Ocean Open Port
