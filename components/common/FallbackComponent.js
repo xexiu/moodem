@@ -19,6 +19,6 @@ export class FallbackComponent extends Component {
                     <Text>{'Try again'}</Text>
                 </TouchableOpacity>
             </View>
-        )
+        );
     }
 }

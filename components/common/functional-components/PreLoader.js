@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { defaultPreLoaderStyles } from '../../../src/css/styles/preLoader';
 
-export const PreLoader = (props) => {
+export const PreLoader = memo((props) => {
     const {
         size = 30,
         containerStyle
@@ -14,4 +14,4 @@ export const PreLoader = (props) => {
             <Progress.Circle size={size} indeterminate color={'#dd0031'} />
         </View>
     );
-};
+});

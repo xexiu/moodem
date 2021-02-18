@@ -11,11 +11,11 @@ export const CommonTextInput = memo(({ navigation, user, callback }) => {
 
     return (
         <View style={{ position: 'relative' }}>
-            <Text style={{ width: 50, position: 'absolute', top: -20, zIndex: 1000, color: '#999', fontStyle: 'italic', fontSize: 12 }}>{maxCharacters}</Text>
+            <Text style={{ width: 50, position: 'absolute', top: 0, right: -20, zIndex: 1000, color: '#999', fontStyle: 'italic', fontSize: 12 }}>{maxCharacters}</Text>
             <TextInput
                 ref={inputRef}
                 maxLength={DEFAULT_LENGTH}
-                placeholder={'Type something...'}
+                placeholder={'Escribe algo...'}
                 underlineColorAndroid="transparent"
                 // multiline
                 // numberOfLines={20}

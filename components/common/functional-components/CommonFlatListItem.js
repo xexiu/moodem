@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import React, { memo, useMemo } from 'react';
+import FastImage from 'react-native-fast-image';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-export const CommonFlatListItem = (props) => {
+export const CommonFlatListItem = memo((props) => {
     const {
         disabled,
         disabledStyle,
         withBadgeIcon,
-        bottomDivider,
+        bottomDivider = true,
         topDivider,
         containerStyle,
         contentContainerStyle,
@@ -40,43 +41,24 @@ export const CommonFlatListItem = (props) => {
         pad
     } = props;
 
+    const myAvatar = useMemo(() => (<FastImage
+        style={{ width: 30, height: 30, borderRadius: 10, borderColor: '#ddd', borderWidth: 1 }}
+        title={leftAvatar.title}
+        source={{
+            uri: leftAvatar.source.uri,
+            priority: FastImage.priority.high
+        }}
+    />));
+
     return (
         <View style={{ position: 'relative' }}>
-            <ListItem
-                disabled={disabled}
-                disabledStyle={disabledStyle}
-                badge={withBadgeIcon}
-                bottomDivider={bottomDivider}
-                topDivider={topDivider}
-                Component={component}
-                containerStyle={containerStyle}
-                contentContainerStyle={contentContainerStyle}
-                rightContentContainerStyle={rightContentContainerStyle}
-                title={title}
-                titleStyle={titleStyle}
-                titleProps={titleProps}
-                subtitle={subtitle}
-                subtitleStyle={subtitleStyle}
-                subtitleProps={subtitleProps}
-                rightTitle={rightTitle}
-                rightTitleStyle={rightTitleStyle}
-                rightTitleProps={rightTitleProps}
-                rightSubtitle={rightSubtitle}
-                rightSubtitleStyle={rightSubtitleStyle}
-                rightSubtitleProps={rightSubtitleProps}
-                rightIcon={rightIcon}
-                leftIcon={leftIcon}
-                leftAvatar={leftAvatar}
-                rightAvatar={rightAvatar}
-                leftElement={leftElement}
-                rightElement={rightElement}
-                buttonGroup={buttonGroup}
-                chevron={chevron}
-                checkmark={checkmark}
-                checkBox={checkBox}
-                onPress={action}
-                pad={pad}
-            />
+            <ListItem topDivider>
+                {myAvatar}
+                <ListItem.Content>
+                    <ListItem.Title style={titleStyle}>{title}</ListItem.Title>
+                    <ListItem.Subtitle style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
+                </ListItem.Content>
+            </ListItem>
         </View>
     );
-};
+});

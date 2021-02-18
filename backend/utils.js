@@ -52,9 +52,14 @@ const removeMedia = (mediaList, data, io, media) => {
     io.to(data.chatRoom).emit('server-send-message-remove', mediaList);
 };
 
+function isEmpty(x) {
+	return !x || (x.constructor !== Number && Object.keys(x).length === 0);
+}
+
 module.exports = {
     compareValues,
     voteMedia,
     boostMedia,
-    removeMedia
+    removeMedia,
+    isEmpty
 };

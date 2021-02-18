@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Button } from 'react-native-elements';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { btnShadow } from '../../../src/css/styles/common';
@@ -8,7 +8,7 @@ function defaultAction(evt) {
 	return console.log('Button Pressed CustomButton: ', this.props);
 }
 
-export const CustomButton = (props) => {
+export const CustomButton = memo(props => {
 	const {
 		btnDisabled = false,
 		btnTitle = 'No button title provided!',
@@ -37,4 +37,4 @@ export const CustomButton = (props) => {
 			ViewComponent={btnViewComponent}
 		/>
 	);
-};
+});

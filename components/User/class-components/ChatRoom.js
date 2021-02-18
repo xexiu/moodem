@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext, memo } from 'react';
+import React, { useState, useEffect, useContext, useCallback, memo } from 'react';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { useIsFocused } from '@react-navigation/native';
 import { View, Keyboard } from 'react-native';
@@ -19,6 +19,13 @@ function setChatRoomName(group) {
     return 'Moodem-ChatRoom';
 }
 
+const buildMsg = (value, user) => ({
+    id: Object.keys(user || {}).length ? `${user.uid}_${Math.random(10000)}` : Math.random(10000),
+    text: value ? value.replace(/^\s*\n/gm, '') : '',
+    user
+});
+
+
 const ChatRoom = memo((props) => {
     const isFocused = useIsFocused();
     const { user, group } = useContext(UserContext);
@@ -28,33 +35,42 @@ const ChatRoom = memo((props) => {
     const media = new MediaBuilder();
     const socket = media.socket();
     const headerTitle = `${props.route.params.group.group_name} Chat`; //this.props.route.params.group.group_name, 'Chat');
+    const forceUpdate = useCallback((param) => setUsersConnected(param), []);
 
     useEffect(() => {
-        console.log('5. ChatRoom');
-        //media.msgFromServer(socket, getMessage, ['chat-messages']);
+        console.log('6. ChatRoom');
+        media.msgFromServer(socket, getMessage, ['chat-messages']);
         media.msgFromServer(socket, setMessageList, ['moodem-chat']);
-        media.msgFromServer(socket, getConnectedUsers, ['users-connected-to-room']);
+        //media.msgFromServer(socket, getConnectedUsers, ['users-connected-to-room']);
         media.msgToServer(socket, 'moodem-chat', { chatRoom: setChatRoomName(props.route.params.group), user: user || { displayName: 'Guest' } });
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
-            media.msgToServer(socket, 'moodem-chat', { leaveChatRoom: setChatRoomName(props.route.params.group) });
             socket.disconnect();
             socket.off(media.msgFromServer);
             socket.close();
         };
     }, [messages.length]);
 
-    const getConnectedUsers = (_usersConnected) => {
-        //const numConnectedUsers = messages.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).length;
-        if (_usersConnected) {
-            setUsersConnected(_usersConnected);
+    const getMessage = (msg) => {
+        if (msg) {
+            setMessages([msg, ...messages]);
+            console.log('MESSSAGEssss', messages);
         }
     };
 
     const setMessageList = (messagesList) => {
-        //console.log('MESSAGES  LIST', messagesList);
+        console.log('MESSAGES  LIST', messagesList);
         setMessages([...messagesList]);
+    };
+
+    const renderItem = ({ item }) => (
+        <MessagesListItem msg={item} />
+    );
+
+    const sendNewMsg = (value) => {
+        console.log('SENND NEW MSG', value);
+        media.msgToServer(socket, 'chat-messages', { chatRoom: setChatRoomName(props.route.params.group), msg: buildMsg(value, user), user: user || { displayName: 'Guest' } });
     };
 
 
@@ -67,23 +83,33 @@ const ChatRoom = memo((props) => {
                     Keyboard.dismiss();
                 }}
             />
-            <HeaderChat headerTitle={headerTitle} usersConnected={usersConnected} />
+            <HeaderChat props={props} chatRoom={setChatRoomName(props.route.params.group)} />
             <View style={{ flex: 2, paddingBottom: 15 }}>
-                <NewMessageChat messagesList={messages} navigation={navigation} chatRoom={setChatRoomName(props.route.params.group)} />
+                <CommonFlatList
+                    data={messages}
+                    extraData={messages}
+                    keyExtractor={item => String(item.id)}
+                    inverted
+                    action={renderItem}
+                />
+                <View style={{ height: 50 }}>
+                    <View style={{ position: 'absolute', bottom: 0, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                        <CommonTextInput navigation={navigation} user={user} callback={sendNewMsg} />
+                    </View>
+                </View>
             </View>
             <KeyboardSpacer />
         </View>
     );
 });
 
-ChatRoom.navigationOptions = ({ route }) => {
-    console.log('ChatRoom Navigation Options', route);
-    return {
-        unmountOnBlur: true,
-        headerBackTitle: '',
-        title: `${route.params.group.group_name} Chat` //getGroupName(route.params.group.group_name, 'Chat')
-    };
-};
+ChatRoom.navigationOptions = ({ route }) =>
+//console.log('ChatRoom Navigation Options', route);
+({
+    unmountOnBlur: true,
+    headerBackTitle: '',
+    title: `${route.params.group.group_name} Chat` //getGroupName(route.params.group.group_name, 'Chat')
+});
 
 export {
     ChatRoom

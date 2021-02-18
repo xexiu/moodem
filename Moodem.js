@@ -7,7 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { OfflineNotice } from './components/common/OfflineNotice';
-import { GuestScreen } from './screens/Guest/class-components/GuestScreen';
+import { GuestScreen } from './screens/Guest/functional-components/GuestScreen';
 import { PreLoader } from './components/common/functional-components/PreLoader';
 import { BgImage } from './components/common/functional-components/BgImage';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
@@ -78,13 +78,13 @@ export default function Moodem() {
       </ErrorBoundary>
     );
   } else if (user) {
+    console.log('USEER', user);
     return (
       <ErrorBoundary>
         <UserContext.Provider value={{ user, group }}>
           <CommonStackWrapper initialRouteName="Drawer">
             <Stack.Screen name="Drawer" component={SideBarDrawer} options={{ headerShown: false }} />
             <Stack.Screen name="Avatars" component={Avatars} options={Avatars.navigationOptions} />
-            <Stack.Screen name="Guest" component={GuestScreen} options={GuestScreen.navigationOptions} />
           </CommonStackWrapper>
         </UserContext.Provider>
       </ErrorBoundary>

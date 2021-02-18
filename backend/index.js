@@ -4,8 +4,6 @@
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const { getUserName } = require('./users');
-const { getConnectedInRoom, joinRoom } = require('./rooms');
 const {
   voteMedia,
   boostMedia,
@@ -17,40 +15,51 @@ app.get('/', (req, res) => {
 });
 
 const videosList = [];
-const chatRooms = {};
+const chatRooms = {
+  songs: [],
+  messages: [],
+  connectedUsers: 0
+};
 const clients = {};
-let connectedUsers = 0;
 const connections = new Set();
 
-function setRoomMediaList(room, data, media) {
-  if (Object.keys(chatRooms).indexOf(room) >= 0) {
-    if (media === 'song' && data[media].id) {
-      chatRooms[room].songs.push(data[media]);
-    } if (media === 'msg' && data[media].id) {
-      chatRooms[room].messages.push(data[media]);
-    }
-  } else if (media === 'song') {
-    chatRooms[room] = { songs: [] };
-  } else if (media === 'msg') {
-    chatRooms[room] = { messages: [] };
-  }
+function buildMedia(data) {
+  chatRooms[data.chatRoom] = {};
+
+  Object.assign(chatRooms[data.chatRoom], {
+    songs: [],
+    messages: [],
+    uids: new Set([])
+  });
 }
+
+// function setRoomMediaList(room, data, media) {
+//   console.log('HEYYYYY', chatRooms, 'ROOM:', room);
+//   if (chatRooms[room]) {
+//     if (media === 'song' && data[media].id) {
+//       chatRooms[room].songs.push(data[media]);
+//     } if (media === 'msg' && data[media].id) {
+//       chatRooms[room].messages.push(data[media]);
+//     }
+//   }
+
+//   console.log('FINALLL', chatRooms[room]);
+// }
 
 // Socket.io doc ==> https://socket.io/docs/server-api/#socket-id
 
-io.on('connection', (socket) => {
-  //io.engine.generateId = (req) => {
-  //console.log('Engine', req);
-  //};
-  clients[socket.id] = socket;
-  connections.add(socket);
+io.use((socket, next) => {
+  socket.uid = socket.handshake.query.uid;
+  socket.displayName = socket.handshake.query.displayName;
+  next(null, true);
+});
 
+io.on('connection', (socket) => {
   // Welcome Msg
+  console.log('CONNECTION ID', socket.id, 'SOCKET UID', socket.uid);
   socket.on('server-send-message-welcomeMsg', (data) => {
-    const userName = getUserName(data.displayName, socket.id);
-    socket.username = userName;
-    socket.emit('server-send-message-welcomeMsg', `Welcome ${userName} to ${data.chatRoom.replace(/(--.*)/g, '')} group!`);
-    console.log('Welcome MSG');
+    socket.emit('server-send-message-welcomeMsg', `Welcome ${socket.displayName} to ${data.chatRoom.replace(/(--.*)/g, '')} group!`);
+    socket.disconnect(true);
   });
 
   // // Media
@@ -102,32 +111,41 @@ io.on('connection', (socket) => {
   // });
 
   // Joins moodem chat room
-  socket.on('moodem-chat', (data) => {
-    joinRoom(socket, data);
-    //setRoomMediaList(data.chatRoom, data, 'msg');
-
-    connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
-
-    console.log('CHAT', data.msg, 'AND CONNECTD', data.chatRoom);
-    console.log('SOCKET ROOM CHAT', socket.room);
-
+  socket.on('get-connected-users', async (data) => {
+    console.log('CONNECTED USERS', data);
     if (data.leaveChatRoom) {
-      socket.leave(data.leaveChatRoom);
+      await socket.leave(data.leaveChatRoom);
+      chatRooms[data.chatRoom].uids.delete(socket.uid);
+      socket.disconnect(true);
+      io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', chatRooms[data.chatRoom].uids.size);
+    } else {
+      await socket.join(data.chatRoom);
+      chatRooms[data.chatRoom].uids.add(socket.uid);
+      io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', chatRooms[data.chatRoom].uids.size);
     }
-
-    io.to(data.chatRoom).emit('server-send-message-users-connected-to-room', connectedUsers);
-    // io.to(data.chatRoom).emit('server-send-message-moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
   });
 
-  // socket.on('chat-messages', (data) => {
-  //   joinRoom(socket, data);
+  socket.on('moodem-chat', async (data) => {
+    await socket.join(data.chatRoom);
 
-  //   if (data.msg) {
-  //     setRoomMediaList(data.chatRoom, data, 'msg');
-  //     console.log('SEND MESSAGE FROM SERVER');
-  //     io.to(data.chatRoom).emit('server-send-message-chat-messages', data.msg);
-  //   }
-  // });
+    if (!chatRooms[data.chatRoom]) {
+      buildMedia(data);
+      chatRooms[data.chatRoom].uids.add(socket.uid);
+    } else {
+      chatRooms[data.chatRoom].uids.add(socket.uid);
+    }
+
+    io.to(data.chatRoom).emit('server-send-message-moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
+  });
+
+  socket.on('chat-messages', (data) => {
+    console.log('CHAT MESSAGES', chatRooms[data.chatRoom]);
+
+    if (data.msg) {
+      chatRooms[data.chatRoom].messages.push(data.msg);
+      io.to(data.chatRoom).emit('server-send-message-chat-messages', data.msg);
+    }
+  });
 
   // User has disconected
 
@@ -148,7 +166,6 @@ io.on('connection', (socket) => {
   */
 
   // socket.on('disconnect', () => {
-  //   connectedUsers = getConnectedInRoom(io.sockets.adapter.rooms, socket.room);
   //   console.log('DICSCONNNECT', socket.room);
   //   console.log('DICSCONNNECT 2', io.sockets.adapter.rooms);
   //   // socket.removeAllListeners('send message');
@@ -161,6 +178,11 @@ io.on('connection', (socket) => {
 
   //   //io.to(socket.room).emit('server-send-message-users-connected-to-room', `${socket.username} has left`);
   // });
+
+  socket.on('disconnect', () => {
+    console.log('DISCONNNECT', socket.id);
+    socket.removeAllListeners();
+  });
 });
 
 server.listen(3000, () => { // Digital Ocean Open Port

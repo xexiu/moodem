@@ -1,12 +1,12 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { SearchBar } from 'react-native-elements';
 import {
     commonTopSeachBarContainer,
     commonTopSeachBarInputContainer
 } from '../../../src/css/styles/commonTopSearchBar';
 
-export const CommonTopSearchBar = (props) => {
+export const CommonTopSearchBar = memo((props) => {
     const {
         placeholder,
         onEndEditingSearch,
@@ -56,4 +56,4 @@ export const CommonTopSearchBar = (props) => {
             }}
         />
     );
-};
+});

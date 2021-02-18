@@ -3,7 +3,6 @@ import Toast from 'react-native-easy-toast';
 import React, { useContext, useState, useRef } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { UserContext } from './UserContext';
-import { getGroupName } from '../../../src/js/Utils/Helpers/actions/groups';
 import { VerifyEmailMsg } from './VerifyEmailMsg';
 import { ProfileAvatar } from './ProfileAvatar';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';

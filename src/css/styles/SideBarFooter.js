@@ -10,5 +10,6 @@ export const sideBarFooterContainer = {
     right: 0,
     borderTopColor: '#eee',
     borderTopWidth: 1,
-    paddingTop: 5
+    paddingTop: 5,
+    height: 40
 };

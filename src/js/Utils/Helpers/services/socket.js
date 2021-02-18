@@ -1,4 +1,4 @@
-export const IP = '192.168.20.26:3000'; // Mobile --> http://172.20.10.9:3000 Wifi home --> 192.168.20.26:3000
+export const IP = 'http://192.168.20.26:3000'; // Mobile --> http://172.20.10.9:3000 Wifi home --> 192.168.20.26:3000
 export const socketConf = {
     transports: ['websocket'],
     jsonp: false,

@@ -4,7 +4,7 @@ const w = window,
 	w.webkitRequestAnimationFrame ||
 	w.mozRequestAnimationFrame ||
 	w.msRequestAnimationFrame ||
-	(cb => windo.setTimeout(cb, 1000 / 60));
+	(cb => window.setTimeout(cb, 1000 / 60));
 
 export default function doLater(cb, timeToWait) {
 	if (timeToWait) {

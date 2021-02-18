@@ -8,10 +8,9 @@ import { CommonFlatList } from '../../common/functional-components/CommonFlatLis
 import { MessagesListItem } from '../functional-components/MessagesListItem';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 
-const buildMsg = (value, user, isChatting = false) => ({
+const buildMsg = (value, user) => ({
     id: Object.keys(user || {}).length ? `${user.uid}_${Math.random(10000)}` : Math.random(10000),
     text: value ? value.replace(/^\s*\n/gm, '') : '',
-    isChatting,
     user
 });
 
@@ -25,15 +24,15 @@ export const NewMessageChat = memo((props) => {
     const mediaBuilder = abstractMedia.mediaBuilder;
 
     useEffect(() => {
-        console.log('4. NewMessageChat');
+        console.log('5. NewMessageChat', messages);
         mediaBuilder.msgFromServer(abstractMedia.socket, getMessage);
         mediaBuilder.msgToServer(abstractMedia.socket, 'chat-messages', { chatRoom, msg: null });
 
         return () => {
             console.log('4. OFF EFFECT NewMessageChat');
-            abstractMedia.destroy();
+            //abstractMedia.destroy();
         };
-    }, [messages.length]);
+    }, []);
 
     const getMessage = (msg) => {
         if (msg) {
@@ -44,7 +43,7 @@ export const NewMessageChat = memo((props) => {
 
     const sendNewMsg = (value) => {
         console.log('SENND NEW MSG', value);
-        abstractMedia.handleMediaActions('chat-messages', { chatRoom, msg: buildMsg(value, user, true), user: user || { displayName: 'Guest' } });
+        abstractMedia.handleMediaActions('chat-messages', { chatRoom, msg: buildMsg(value, user), user: user || { displayName: 'Guest' } });
     };
 
     const renderItem = ({ item }) => (
@@ -53,9 +52,9 @@ export const NewMessageChat = memo((props) => {
 
 
     return (
-        <View style={{ flex: 1, height: 40, paddingBottom: 60 }}>
+        <View style={{ flex: 1, height: 200, paddingBottom: 60 }}>
             <View style={{ position: 'absolute', bottom: 0, right: 0, left: 7, width: '96%', zIndex: 1 }}>
-    <Text>HELLO: {demo}</Text>
+    <Text>HELLO: {messages[0]}</Text>
                 <CommonTextInput navigation={navigation} user={user} callback={sendNewMsg} />
             </View>
             <CommonFlatList

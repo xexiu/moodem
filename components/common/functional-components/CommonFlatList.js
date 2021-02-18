@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React, { useRef } from 'react';
+import React, { useRef, memo } from 'react';
 import { FlatList } from 'react-native';
 
-export const CommonFlatList = (props) => {
+export const CommonFlatList = memo((props) => {
     const {
         inverted,
         emptyListComponent,
@@ -24,7 +24,7 @@ export const CommonFlatList = (props) => {
         <FlatList
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="always"
-            initialNumToRender={7}
+            initialNumToRender={12}
             scrollEventThrottle={15}
             ref={flatListRef}
             inverted={inverted}
@@ -44,4 +44,4 @@ export const CommonFlatList = (props) => {
             ListFooterComponentStyle={footerStyle}
         />
     );
-};
+});

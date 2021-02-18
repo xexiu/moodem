@@ -12,13 +12,22 @@ export function loginHandler(validate) {
 
 				if (errorCode === 'auth/wrong-password') {
 					console.warn('auth/wrong-password: ', `Code: ${errorCode} and message: ${errorMessage}`);
-					return reject(errorMessage);
+					reject({
+						code: errorCode,
+						message: errorMessage
+					});
 				} else if (errorCode === 'auth/network-request-failed') {
 					console.warn('error network: ', `Code: ${errorCode} and message: ${errorMessage}`);
-					return reject(errorMessage);
+					reject({
+						code: errorCode,
+						message: errorMessage
+					});
 				}
 				console.warn('error auth: ', `Code: ${errorCode} and message: ${errorMessage}`);
-				return reject(errorMessage);
+				reject({
+					code: errorCode,
+					message: errorMessage
+				});
 			});
 	});
 }

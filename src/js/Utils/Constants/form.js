@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 export const FORM_FIELDS_LOGIN = {
     email: {
-        help: 'Enter your email',
-        error: 'Incorrect email or bad format!',
+        help: 'Ingresa tu e-mail',
+        error: 'E-mail incorrecto o inválido!',
         autoCapitalize: 'none'
     },
     password: {
-        help: 'Enter your password',
-        error: 'Bad password or not allowed!',
+        help: 'Ingresa tu contraseña',
+        error: 'Contraseña incorrecta!',
         password: true,
         secureTextEntry: true
     }
@@ -15,25 +15,25 @@ export const FORM_FIELDS_LOGIN = {
 
 export const FORM_FIELDS_REGISTER = {
     name: {
-        help: 'Enter a nick name! 15 characters max',
-        error: 'Bad characters. Allowed: Letters, numbers'
+        help: 'Ingresa un nickname! 30 carácteres max',
+        error: 'Carácteres incorectos. Permitidos: Letras, números'
     },
     email: {
-        help: 'Enter your email!',
-        error: 'Incorrect email or bad format!',
+        help: 'Ingresa tu e-mail!',
+        error: 'E-mail incorrecto o inválido!',
         autoCapitalize: 'none'
     },
 
     password: {
-        help: 'Enter your password',
-        error: 'Bad password or not allowed!',
+        help: 'Ingresa tu contraseña! (min. 6 charácteres)',
+        error: 'Contraseña incorrecta!',
         password: true,
         secureTextEntry: true
     },
 
-    password_confirmation: {
-        help: 'Repeat your password ',
-        error: 'The parameters doesn\'t match',
+    confirmar_password: {
+        help: 'Repite tu contraseña ',
+        error: 'Las contraseñas no coinciden',
         password: true,
         secureTextEntry: true
     }
@@ -41,12 +41,12 @@ export const FORM_FIELDS_REGISTER = {
 
 export const FORM_FIELDS_CREATE_GROUP = {
     group_name: {
-        help: 'Enter a group name (letters/numbers and _- characters allowed only!)',
-        error: 'Incorrect group name!'
+        help: 'Ingresar un nombre de grupo (Permitidos: letras y/o números o carácteres _-!)',
+        error: 'Nombre del grupo incorrecto o no permitido!'
     },
     group_password: {
-        help: 'Enter group password. (mininum length must be 4 or greater and must contain a letter)',
-        error: 'Bad password or not allowed! (mininum length must be 4 or greater and must contain a letter)',
+        help: 'Ingresa una contraseña para tú grupo. (contraseña mínima de 4 carácteres y ha de contener una letra)',
+        error: 'Contraseña no permitida! (contraseña mínima de 4 carácteres y ha de contener una letra)',
         password: true,
         secureTextEntry: true
     }
