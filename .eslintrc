@@ -1,0 +1,10 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "eslint-config-rallycoding"
+    ],
+    "rules": {
+        "react/require-extension": "off"
+    }
+}
