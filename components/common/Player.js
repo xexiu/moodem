@@ -3,7 +3,7 @@ import Video from 'react-native-video';
 import React, { Component } from 'react';
 import Toast from 'react-native-easy-toast';
 import { View } from 'react-native';
-import { SC_KEY } from '../../src/js/Utils/constants/Api/apiKeys';
+import { SC_KEY } from '../../src/js/Utils/constants/api/apiKeys';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
 import { SongInfoAlbumCover } from '../common/SongInfoAlbumCover';

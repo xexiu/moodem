@@ -1,4 +1,4 @@
-import { FIREBASE_API_KEY } from './Api/apiKeys';
+import { FIREBASE_API_KEY } from './api/apiKeys';
 
 export const firebaseConfig = {
 	apiKey: FIREBASE_API_KEY, // apiKey: 'sdfsdvsd33344tdvcdf'

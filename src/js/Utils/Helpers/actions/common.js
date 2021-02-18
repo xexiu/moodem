@@ -2,7 +2,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { SC_KEY, YOUTUBE_KEY } from '../../constants/Api/apiKeys';
+import { SC_KEY, YOUTUBE_KEY } from '../../constants/api/apiKeys';
 import { IP, socketConf } from '../../Helpers/services/socket';
 
 const DEFAULT_SUFFIX = 'server-send-message-';
