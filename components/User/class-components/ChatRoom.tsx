@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
@@ -34,8 +33,8 @@ const ChatRoom = (props: any) => {
         console.log('6. ChatRoom');
         media.msgFromServer(socket, getMessage, ['chat-messages']);
         media.msgFromServer(socket, setMessageList, ['moodem-chat']);
-        // media.msgFromServer(socket, getConnectedUsers, ['users-connected-to-room']);
-        media.msgToServer(socket, 'moodem-chat', { chatRoom: setChatRoomName(props.route.params.group), user: user || { displayName: 'Guest' } });
+        media.msgToServer(socket, 'moodem-chat',
+            { chatRoom: setChatRoomName(props.route.params.group), user });
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
@@ -63,7 +62,8 @@ const ChatRoom = (props: any) => {
 
     const sendNewMsg = (value: string) => {
         console.log('SENND NEW MSG', value);
-        media.msgToServer(socket, 'chat-messages', { chatRoom: setChatRoomName(props.route.params.group), msg: buildMsg(value, user), user: user || { displayName: 'Guest' } });
+        media.msgToServer(socket, 'chat-messages',
+            { chatRoom: setChatRoomName(props.route.params.group), msg: buildMsg(value, user), user  });
     };
 
     return (
@@ -98,7 +98,7 @@ ChatRoom.navigationOptions = ({ route }: any) =>
 ({
     unmountOnBlur: true,
     headerBackTitle: '',
-    title: `${route.params.group.group_name} Chat` // getGroupName(route.params.group.group_name, 'Chat')
+    title: `${route.params.group.group_name} Chat`
 });
 
 ChatRoom.propTypes = {

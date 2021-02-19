@@ -56,7 +56,6 @@ const P2PLanding = (props: any) => {
 };
 
 P2PLanding.navigationOptions = ({ route }: any) =>
-// console.log('P2PLanding Navigation Options', route);
 ({
     headerShown: false,
     title: getGroupName(route.params.group.group_name, 'Moodem')
