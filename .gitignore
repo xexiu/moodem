@@ -1,5 +1,10 @@
 node_modules/**/*
 .expo/*
+.expo-shared
+.vscode
+.phothosop
+.quokka
+.RoadMap
 npm-debug.*
 *.jks
 *.p8
