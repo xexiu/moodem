@@ -60,7 +60,9 @@ const Login = (props: any) => {
                     setIsLoading(false);
                     setIsLoginModalVisible(false);
                     setErrorText('');
-                    navigation.navigate('Moodem', {
+                    sethasForgotPassword(false);
+                    navigation.navigate('Drawer', {
+                        screen: 'Moodem',
                         params: {
                             user
                         }

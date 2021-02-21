@@ -1,9 +1,9 @@
 import { AppRegistry, Platform } from 'react-native';
-import Moodem from './Moodem';
+import App from './App';
 
-AppRegistry.registerComponent('moodem', () => Moodem);
+AppRegistry.registerComponent('moodem', () => App);
 
 if (Platform.OS === 'web') {
     const rootTag = document.getElementById('root') || document.getElementById('main');
-    AppRegistry.runApplication('moodem', { rootTag });
+    AppRegistry.runApplication('app', { rootTag });
 }

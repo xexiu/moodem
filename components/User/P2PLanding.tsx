@@ -6,7 +6,7 @@ import { getGroupName } from '../../src/js/Utils/Helpers/actions/groups';
 import { IP, socketConf } from '../../src/js/Utils/Helpers/services/socket';
 import { MainContainer } from '../common/MainContainer';
 import { Songs } from '../User/functional-components/Songs';
-import { UserContext } from '../User/functional-components/UserContext';
+import { AppContext } from './functional-components/AppContext';
 
 const welcomeMsgMoodem = (toastRef: any) => (data: any) => toastRef.show(data, 3000);
 
@@ -28,7 +28,7 @@ function getUserUidAndName(user: any) {
 }
 
 const P2PLanding = (props: any) => {
-    const { user }: any = useContext(UserContext);
+    const { group, user }: any = useContext(AppContext);
     const socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
     const toastRef = useRef(null);
 

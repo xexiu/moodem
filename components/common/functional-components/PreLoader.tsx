@@ -4,12 +4,12 @@ import { View } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { defaultPreLoaderStyles } from '../../../src/css/styles/preLoader';
 
-type AppProps = {
+type Props = {
     size?: number;
     containerStyle?: object
 };
 
-const PreLoader = ({ size = 30, containerStyle }: AppProps) => {
+const PreLoader = ({ size = 30, containerStyle }: Props) => {
 
     return (
         <View style={[defaultPreLoaderStyles, containerStyle]}>

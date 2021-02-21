@@ -5,9 +5,9 @@ import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
+import { AppContext } from '../functional-components/AppContext';
 import { HeaderChat } from '../functional-components/HeaderChat';
 import { MessagesListItem } from '../functional-components/MessagesListItem';
-import { UserContext } from '../functional-components/UserContext';
 
 function setChatRoomName(group: any) {
     if (group.group_name && group.group_id) {
@@ -23,7 +23,7 @@ const buildMsg = (value: string, user: any) => ({
 });
 
 const ChatRoom = (props: any) => {
-    const { user }: any = useContext(UserContext);
+    const { user }: any = useContext(AppContext);
     const { navigation } = props;
     const [messages = [], setMessages] = useState([]);
     const media = new MediaBuilder();

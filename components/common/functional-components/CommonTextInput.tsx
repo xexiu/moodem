@@ -20,7 +20,14 @@ const CommonTextInput = ({ navigation, user, callback }: any) => {
                 underlineColorAndroid='transparent'
                 // multiline
                 // numberOfLines={20}
-                style={{ height: 40, borderWidth: 1, borderColor: '#ddd', textAlignVertical: 'top', borderRadius: 5, padding: 5 }}
+                style={{
+                    height: 40,
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    textAlignVertical: 'top',
+                    borderRadius: 5,
+                    padding: 5
+                }}
                 onChangeText={text => {
                     onChangeText(text);
                     updateMaxCharacters(DEFAULT_LENGTH - text.length);
@@ -29,7 +36,7 @@ const CommonTextInput = ({ navigation, user, callback }: any) => {
                 autoCorrect={false}
                 blurOnSubmit={false}
                 onSubmitEditing={() => {
-                    if (!user.uid) {
+                    if (!user) {
                         navigation.navigate('Guest');
                     } else if (value) {
                         onChangeText('');

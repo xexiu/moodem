@@ -8,9 +8,9 @@ import { SideBarFooter } from '../../../components/User/functional-components/Si
 import { P2PLanding } from '../../../components/User/P2PLanding';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import { ChatRoom } from '../../User/class-components/ChatRoom';
+import { AppContext } from '../../User/functional-components/AppContext';
 import { Groups } from '../../User/functional-components/Groups';
 import { Profile } from '../../User/functional-components/Profile';
-import { UserContext } from '../../User/functional-components/UserContext';
 
 const Drawer = createDrawerNavigator();
 
@@ -36,7 +36,7 @@ function itemsDrawer(props: any, params: any) {
 }
 
 const SideBarDrawer = (props: any) => {
-    const { user, group }: any = useContext(UserContext);
+    const { user, group }: any = useContext(AppContext);
 
     if (user) {
         return (
@@ -49,10 +49,30 @@ const SideBarDrawer = (props: any) => {
                 drawerType='slide'
                 drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
             >
-                <Drawer.Screen name='Moodem' component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, group }} />
-                <Drawer.Screen name='ChatRoom' component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, group }} />
-                <Drawer.Screen name='Groups' component={Groups} options={Groups.navigationOptions} initialParams={{ user, group }} />
-                <Drawer.Screen name='Profile' component={Profile} options={Profile.navigationOptions} initialParams={{ group }} />
+                <Drawer.Screen
+                    name='Moodem'
+                    component={P2PLanding}
+                    options={P2PLanding.navigationOptions}
+                    initialParams={{ user, group }}
+                />
+                <Drawer.Screen
+                    name='ChatRoom'
+                    component={ChatRoom}
+                    options={ChatRoom.navigationOptions}
+                    initialParams={{ user, group }}
+                />
+                <Drawer.Screen
+                    name='Groups'
+                    component={Groups}
+                    options={Groups.navigationOptions}
+                    initialParams={{ user, group }}
+                />
+                <Drawer.Screen
+                    name='Profile'
+                    component={Profile}
+                    options={Profile.navigationOptions}
+                    initialParams={{ group }}
+                />
                 {props.children}
             </Drawer.Navigator>
         );
@@ -67,9 +87,24 @@ const SideBarDrawer = (props: any) => {
             drawerType='slide'
             drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
         >
-            <Drawer.Screen name='Moodem' component={P2PLanding} options={P2PLanding.navigationOptions} initialParams={{ user, group }} />
-            <Drawer.Screen name='ChatRoom' component={ChatRoom} options={ChatRoom.navigationOptions} initialParams={{ user, group }} />
-            <Drawer.Screen name='Groups' component={Groups} options={Groups.navigationOptions} initialParams={{ user, group }} />
+            <Drawer.Screen
+                name='Moodem'
+                component={P2PLanding}
+                options={P2PLanding.navigationOptions}
+                initialParams={{ user, group }}
+            />
+            <Drawer.Screen
+                name='ChatRoom'
+                component={ChatRoom}
+                options={ChatRoom.navigationOptions}
+                initialParams={{ user, group }}
+            />
+            <Drawer.Screen
+                name='Groups'
+                component={Groups}
+                options={Groups.navigationOptions}
+                initialParams={{ user, group }}
+            />
             {props.children}
         </Drawer.Navigator>
     );

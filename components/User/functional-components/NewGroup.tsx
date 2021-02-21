@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
-import { form, struct, } from 'tcomb-form-native';
-import { View, Text } from 'react-native';
-import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
+import { Text, View } from 'react-native';
+import { form, struct } from 'tcomb-form-native';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
+import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
+import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import { CustomButton } from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import { PreLoader } from '../../common/functional-components/PreLoader';
-import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
 
 const Form = form.Form;
 
@@ -19,30 +19,13 @@ const createNewGroup = (data, handleNewGroup) => {
         });
 };
 
-const handleCreateGroup = (refGroupForm, setNewGroup, user, handleNewGroup, toggleModal, value) => {
-    const validate = refGroupForm.current.getValue();
-
-    if (validate) {
-        setNewGroup({ isLoading: true, value });
-        createGroupHandler(validate, user)
-            .then(data => {
-                createNewGroup(data, handleNewGroup);
-                setNewGroup({ isLoading: false, value: '' });
-                toggleModal(false);
-            })
-            .catch(err => {
-                setNewGroup({ isLoading: false, errorText: err, value });
-                toggleModal(true);
-            });
-    }
-};
-
-export const NewGroup = (props) => {
+export const NewGroup = (props: any) => {
     const {
         toggleModal,
         showModal,
         user,
-        handleNewGroup
+        handleNewGroup,
+        navigation
     } = props;
     const [{ isLoading = false, errorText = '', value = '' }, setFormValues] = useState({});
     const refGroupForm = React.createRef();
@@ -52,6 +35,27 @@ export const NewGroup = (props) => {
     });
     const GroupFormOptions = {
         fields: FORM_FIELDS_CREATE_GROUP
+    };
+
+    const handleCreateGroup = () => {
+        const validate = refGroupForm.current.getValue();
+
+        if (!user) {
+            toggleModal(false);
+            navigation.navigate('Guest');
+        } else if (validate) {
+            // setNewGroup({ isLoading: true, value });
+            createGroupHandler(validate, user)
+                .then(data => {
+                    createNewGroup(data, handleNewGroup);
+                    // setNewGroup({ isLoading: false, value: '' });
+                    toggleModal(false);
+                })
+                .catch(err => {
+                    // setNewGroup({ isLoading: false, errorText: err, value });
+                    toggleModal(true);
+                });
+        }
     };
 
     return (
@@ -70,8 +74,8 @@ export const NewGroup = (props) => {
                 {isLoading ?
                     <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                     <CustomButton
-                        btnTitle="Create"
-                        action={() => handleCreateGroup(refGroupForm, setFormValues, user, handleNewGroup, toggleModal, value)}
+                        btnTitle='Create'
+                        action={() => handleCreateGroup()}
                     />
                 }
                 {

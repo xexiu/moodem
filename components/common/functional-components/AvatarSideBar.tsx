@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-/* eslint-disable global-require */
+import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
-import { BgImage } from './BgImage';
-import { btnShadow } from '../../../src/css/styles/common';
+import { Text, TouchableHighlight, View } from 'react-native';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
+import { btnShadow } from '../../../src/css/styles/common';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
+import { BgImage } from './BgImage';
 
-export const AvatarSideBar = memo((props) => {
+const AvatarSideBar = (props: any) => {
     const {
         navigation,
         user,
@@ -27,10 +27,30 @@ export const AvatarSideBar = memo((props) => {
     return (
         <View style={avatarContainer}>
             <TouchableHighlight underlayColor='#eee' onPress={hangleUserNavigation}>
-                <BgImage source={{ uri: user.photoURL || USER_AVATAR_DEFAULT, cache: 'force-cache' }} bgImageStyle={[avatarImage, btnShadow]}>
-                    <Text style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hi! {user ? user.displayName : 'Guest'}</Text>
+                <BgImage
+                    source={{ uri: user && user.photoURL || USER_AVATAR_DEFAULT, cache: 'force-cache' }}
+                    bgImageStyle={[avatarImage, btnShadow]}
+                >
+                    <Text
+                        style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }}
+                        ellipsizeMode='tail'
+                        numberOfLines={1}
+                    >Hi! {user ? user.displayName : 'Guest'}
+                    </Text>
                 </BgImage>
             </TouchableHighlight>
         </View>
     );
-});
+};
+
+AvatarSideBar.propTypes = {
+    navigation: PropTypes.object,
+    user: PropTypes.object,
+    group: PropTypes.object
+};
+
+memo(AvatarSideBar);
+
+export {
+    AvatarSideBar
+};

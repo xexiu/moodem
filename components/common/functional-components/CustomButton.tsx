@@ -42,7 +42,10 @@ const CustomButton = (props: any) => {
 
 CustomButton.propTypes = {
     btnTitle: PropTypes.string,
-    btnStyle: PropTypes.object,
+    btnStyle: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.object
+    ]),
     btnTitleStyle: PropTypes.object,
     btnRaised: PropTypes.bool,
     shadow: PropTypes.object,

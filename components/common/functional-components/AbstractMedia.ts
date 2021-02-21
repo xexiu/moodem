@@ -1,24 +1,23 @@
 /* eslint-disable max-len */
-import React, { useContext } from 'react';
 import axios from 'axios';
-import { UserContext } from '../../User/functional-components/UserContext';
+import React, { useContext } from 'react';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
+import { AppContext } from '../../User/functional-components/AppContext';
 
 const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/?limit=50&q=';
 export class AbstractMedia {
-	public navigation: any;
-	public user: any;
-	public group: any;
-	public mediaBuilder: any;
-	public socket: any;
-	public playerRef: any;
-	public searchRef: any;
-	public signal: any;
-	public axios: any;
+    public navigation: any;
+    public user: any;
+    public group: any;
+    public mediaBuilder: any;
+    public socket: any;
+    public playerRef: any;
+    public searchRef: any;
+    public signal: any;
+    public axios: any;
 
     constructor(props, api = SOUNDCLOUD_API) {
-        const { user } = useContext(UserContext);
-        const { group } = useContext(UserContext);
+        const { user, group } = useContext(AppContext);
         this.navigation = props.navigation;
         this.user = user;
         this.group = group;
@@ -34,7 +33,7 @@ export class AbstractMedia {
 
     setApi = (api, mediaBuilder) => {
         mediaBuilder.setApi(api);
-    }
+    };
 
     handleMediaActions = (msg, obj) => {
         if (this.user) {
@@ -42,12 +41,12 @@ export class AbstractMedia {
         }
 
         return this.navigation.navigate('Guest');
-    }
+    };
 
     destroy = () => {
         this.axios.Cancel();
         console.log('GROUP NAME ABSTRACT MEDIA', this.group);
         this.socket.off(this.mediaBuilder.msgFromServer);
         this.socket.close();
-    }
+    };
 }

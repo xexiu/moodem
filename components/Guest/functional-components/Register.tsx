@@ -8,10 +8,12 @@ import * as yup from 'yup';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { registerText } from '../../../src/css/styles/register';
 import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
-import { registerHandler } from '../../../src/js/Utils/Helpers/actions/registerHandler';
+import { registerNewUser, saveNewUserOnDB, updateProfile } from '../../../src/js/Utils/Helpers/actions/registerHandler';
 import { CustomButton } from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import { PreLoader } from '../../common/functional-components/PreLoader';
+
+const controller = new AbortController();
 
 const commonInputStyles = {
     height: 30,
@@ -43,6 +45,10 @@ const Register = (props: any) => {
         register('email');
         register('password');
         register('confirm_password');
+
+        return () => {
+            controller.abort();
+        };
     }, [register]);
 
     function onBackdropPressHandler() {
@@ -57,19 +63,31 @@ const Register = (props: any) => {
         setIsLoading(true);
 
         if (dataInput) {
-            registerHandler(dataInput)
-                .then((data: any) => {
-                    setIsLoading(false);
-                    setIsRegisterModalVisible(false);
-                    setErrorText('');
-                    navigation.navigate('Drawer', {
-                        screen: 'Moodem',
-                        params: {
-                            user: data.user
-                        }
-                    });
+            return registerNewUser(dataInput)
+                .then((auth: any) => {
+                    if (auth && auth.message) {
+                        setIsLoading(false);
+                        setErrorText(auth.message);
+                    } else {
+                        return updateProfile(auth, dataInput)
+                            .then((user: any) => {
+                                setIsLoading(false);
+                                setIsRegisterModalVisible(false);
+                                setErrorText('');
+                                saveNewUserOnDB(auth, dataInput);
+                                navigation.navigate('Drawer', {
+                                    screen: 'Moodem',
+                                    params: {
+                                        user
+                                    }
+                                });
+                            }).catch((err: any) => {
+                                setIsLoading(false);
+                                setErrorText(err);
+                            });
+                    }
                 })
-                .catch(err => {
+                .catch((err: any) => {
                     setIsLoading(false);
                     setErrorText(err);
                 });
@@ -90,9 +108,19 @@ const Register = (props: any) => {
                 <CustomModal isModalVisible={isRegisterModalVisible} onBackdropPress={onBackdropPressHandler}>
                     <View>
                         <Text style={registerText}>Knock Knock!!</Text>
-                        <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Nombre (max. 30 carácteres)</Text>
+                        <Text
+                            style={{
+                                marginTop: 5,
+                                fontSize: 15,
+                                fontWeight: '500'
+                            }}
+                        >Nombre (max. 30 carácteres)
+                        </Text>
                         <TextInput
-                            style={[errors.name && errors.name.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
+                            style={[
+                                errors.name && errors.name.message ?
+                                    [commonInputStyles, { borderColor: '#D84A05' }] :
+                                    [commonInputStyles]]}
                             onChangeText={text => {
                                 setValue('name', text);
                             }}
@@ -101,10 +129,18 @@ const Register = (props: any) => {
                             maxLength={30}
                             placeholder={FORM_FIELDS_REGISTER.name.help}
                         />
-                        <Text style={{ color: '#D84A05', marginTop: 5, marginBottom: 5 }}>{errors.name && errors.name.message}</Text>
+                        <Text
+                            style={{
+                                color: '#D84A05',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>{errors.name && errors.name.message}
+                        </Text>
                         <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>E-Mail</Text>
                         <TextInput
-                            style={[errors.email && errors.email.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
+                            style={[errors.email && errors.email.message ?
+                                [commonInputStyles, { borderColor: '#D84A05' }] :
+                                [commonInputStyles]]}
                             onChangeText={text => {
                                 setValue('email', text);
                             }}
@@ -112,7 +148,13 @@ const Register = (props: any) => {
                             autoCapitalize={'none'}
                             placeholder={FORM_FIELDS_REGISTER.email.help}
                         />
-                        <Text style={{ color: '#D84A05', marginTop: 5, marginBottom: 5 }}>{errors.email && errors.email.message}</Text>
+                        <Text
+                            style={{
+                                color: '#D84A05',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>{errors.email && errors.email.message}
+                        </Text>
                         <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña</Text>
                         <TextInput
                             style={[errors.password && errors.password.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
@@ -123,17 +165,31 @@ const Register = (props: any) => {
                             secureTextEntry
                             placeholder={FORM_FIELDS_REGISTER.password.help}
                         />
-                        <Text style={{ color: '#D84A05', marginTop: 5, marginBottom: 5 }}>{errors.password && errors.password.message}</Text>
+                        <Text
+                            style={{
+                                color: '#D84A05',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>{errors.password && errors.password.message}
+                        </Text>
                         <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Confirmar Contraseña</Text>
                         <TextInput
-                            style={[errors.confirm_password && errors.confirm_password.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
+                            style={[errors.confirm_password && errors.confirm_password.message ?
+                                [commonInputStyles, { borderColor: '#D84A05' }] :
+                                [commonInputStyles]]}
                             onChangeText={text => {
                                 setValue('confirm_password', text);
                             }}
                             autoCorrect={false}
                             secureTextEntry
                         />
-                        <Text style={{ color: '#D84A05', marginTop: 5, marginBottom: 5 }}>{errors.confirm_password && errors.confirm_password.message}</Text>
+                        <Text
+                            style={{
+                                color: '#D84A05',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>{errors.confirm_password && errors.confirm_password.message}
+                        </Text>
                     </View>
 
                     {isLoading ?

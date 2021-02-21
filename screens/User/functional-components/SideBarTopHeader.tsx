@@ -6,7 +6,7 @@ import TouchableScale from 'react-native-touchable-scale';
 import { AvatarSideBar } from '../../../components/common/functional-components/AvatarSideBar';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 
-export const SideBarTopHeader = (props) => {
+export const SideBarTopHeader = (props: any) => {
     const {
         navigation,
         params
@@ -21,22 +21,18 @@ export const SideBarTopHeader = (props) => {
     };
 
     const handleLogOut = () => {
-        firebase.auth().signOut().then(() => {
+        return firebase.auth().signOut().then(() => {
             Object.assign(params.group, {
                 group_name: 'Moodem',
                 group_id: null
             });
-            const drawerClosed = new Promise(resolve => {
-                navigation.closeDrawer();
-                resolve();
-            });
-            drawerClosed.then(() => navigation.navigate('Guest'));
+            navigation.navigate('Guest');
         });
     };
 
     return (
         <View style={{ position: 'relative' }}>
-            <View style={{ position: 'absolute' }}>
+            {params.user && <View style={{ position: 'absolute' }}>
                 <Icon
                     Component={TouchableScale}
                     raised
@@ -44,9 +40,9 @@ export const SideBarTopHeader = (props) => {
                     type={'AntDesign'}
                     size={15}
                     color='#dd0031'
-                    onPress={() => handleLogOut(props.navigation)}
+                    onPress={() => handleLogOut()}
                 />
-            </View>
+            </View>}
             <View style={{ position: 'absolute', right: 0 }}>
                 <Icon
                     Component={TouchableScale}
@@ -55,7 +51,7 @@ export const SideBarTopHeader = (props) => {
                     type={'AntDesign'}
                     size={15}
                     color='#dd0031'
-                    onPress={() => handlerGoHome(params, navigation)}
+                    onPress={() => handlerGoHome()}
                 />
             </View>
             <AvatarSideBar navigation={navigation} user={params.user} group={params.group} />

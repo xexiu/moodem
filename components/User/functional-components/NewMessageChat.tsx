@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect, useContext, memo } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { View, Text } from 'react-native';
-import { UserContext } from '../functional-components/UserContext';
-import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
-import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
-import { MessagesListItem } from '../functional-components/MessagesListItem';
+import React, { memo, useContext, useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
+import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
+import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
+import { MessagesListItem } from '../functional-components/MessagesListItem';
+import { AppContext } from './AppContext';
 
 const buildMsg = (value, user) => ({
     id: Object.keys(user || {}).length ? `${user.uid}_${Math.random(10000)}` : Math.random(10000),
@@ -16,7 +16,7 @@ const buildMsg = (value, user) => ({
 
 export const NewMessageChat = memo((props) => {
     const isFocused = useIsFocused();
-    const { user, group } = useContext(UserContext);
+    const { user, group } = useContext(AppContext);
     const { navigation, messagesList, chatRoom } = props;
     const [messages = [], setMessages] = useState([...messagesList]);
     const [demo = '', setDemo] = useState([]);
@@ -30,7 +30,7 @@ export const NewMessageChat = memo((props) => {
 
         return () => {
             console.log('4. OFF EFFECT NewMessageChat');
-            //abstractMedia.destroy();
+            // abstractMedia.destroy();
         };
     }, []);
 
@@ -49,7 +49,6 @@ export const NewMessageChat = memo((props) => {
     const renderItem = ({ item }) => (
         <MessagesListItem msg={item} />
     );
-
 
     return (
         <View style={{ flex: 1, height: 200, paddingBottom: 60 }}>

@@ -1,27 +1,61 @@
-import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { memo } from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export class FallbackComponent extends Component {
-    public props: any;
-    public error: any;
-
-    constructor(props) {
-        super(props);
+const styles: any = StyleSheet.create({
+    container: {
+        backgroundColor: '#fafafa',
+        flex: 1,
+        justifyContent: 'center'
+    },
+    content: {
+        marginHorizontal: 16
+    },
+    title: {
+        fontSize: 48,
+        fontWeight: '300',
+        paddingBottom: 16
+    },
+    subtitle: {
+        fontSize: 32,
+        fontWeight: '800'
+    },
+    error: {
+        paddingVertical: 16
+    },
+    button: {
+        backgroundColor: '#2196f3',
+        borderRadius: 50,
+        padding: 16
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: '600',
+        textAlign: 'center'
     }
+});
 
-    render() {
-        const {
-            error,
-        } = this.props;
+export type Props = { error: Error, resetError: Function };
 
-        return (
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Text>Something happened!</Text>
-                <Text>Error: {error.toString()}</Text>
-                <TouchableOpacity onPress={this.props.reset}>
-                    <Text>{'Try again'}</Text>
+const FallbackComponent = (props: Props) => {
+    const {
+        error,
+        resetError
+    } = props;
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
+                <Text style={styles.title}>Oops!</Text>
+                <Text style={styles.subtitle}>{'There\'s an error'}</Text>
+                <Text style={styles.error}>{error.toString()}</Text>
+                <TouchableOpacity style={styles.button} onPress={() => resetError()}>
+                    <Text style={styles.buttonText}>Try again</Text>
                 </TouchableOpacity>
             </View>
-        );
-    }
-}
+        </SafeAreaView>
+    );
+};
+
+memo(FallbackComponent);
+
+export { FallbackComponent };

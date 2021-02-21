@@ -26,7 +26,8 @@ const Groups = (props: any) => {
     const [userGroup = null, setUserGroup] = useState(null);
     const [showPasswordModal, setPasswordModal] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
-    const [{ groups, loaded }, setGroups] = useState({groups: [], loaded: false});
+    const [ isLoading, setIsLoading] = useState(true);
+    const [{ groups }, setGroups] = useState({groups: [] });
     const [{ searchedGroups }, setSearchedGroups] = useState({searchedGroups: []});
     const [{ value }, setPasswordFormValue] = useState({ value: ''});
     const refPassWordForm = React.createRef();
@@ -34,12 +35,18 @@ const Groups = (props: any) => {
 
     useEffect(() => {
         console.log('3. Groups');
-        getGroups(user)
-            .then((dbGroups) => setGroups({
-                groups: dbGroups as never[],
-                loaded: true
-            }))
+        if (user) {
+            getGroups(user)
+            .then((dbGroups) => {
+                setGroups({
+                    groups: dbGroups as never[]
+                });
+                setIsLoading(false);
+            })
             .catch(err => console.log('Something happened', err));
+        } else {
+            setIsLoading(false);
+        }
 
         return () => {
             controller.abort();
@@ -70,25 +77,15 @@ const Groups = (props: any) => {
 
     const handleNewGroup = (newGroup: never) => {
         setGroups({
-            groups: [...groups, newGroup],
-            loaded: true
+            groups: [...groups, newGroup]
         });
+        setIsLoading(false);
     };
 
-    if (!user) {
-        navigation.navigate('Guest');
-    } else if (!loaded) {
-        return (<PreLoader
-            size={50}
-            containerStyle={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
-        />);
-    }
-
     const searchGroups = (text: string) => getAllGroups().then((data: any) => {
+        if (!user) {
+            navigation.navigate('Guest');
+        }
         for (const _group of data) {
             if (_group.group_name.indexOf(text) >= 0) {
                 if (user.uid !== _group.user_owner_id && _group.group_users_count.users.indexOf(user.uid) < 0) {
@@ -101,6 +98,17 @@ const Groups = (props: any) => {
             }
         }
     });
+
+    if (isLoading) {
+        return (<PreLoader
+            size={50}
+            containerStyle={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}
+        />);
+    }
 
     return (
         <View style={{ marginTop: 35, padding: 10, position: 'relative', flex: 1, backgroundColor: 'transparent' }}>
@@ -126,9 +134,9 @@ const Groups = (props: any) => {
 
                                 if (isSearching) {
                                     setGroups({
-                                        groups: [...groups, userGroup] as never,
-                                        loaded: true
+                                        groups: [...groups, userGroup] as never
                                     });
+                                    setIsLoading(false);
                                     setIsSearching(false);
                                 } else {
                                     Object.assign(props.route.params.group, {
@@ -159,6 +167,7 @@ const Groups = (props: any) => {
                         action={() => {
                             setIsSearching(false);
                             togglePasswordModal(false);
+                            setIsLoading(false);
                             setErrorPassword('');
                         }}
                     />
@@ -172,15 +181,17 @@ const Groups = (props: any) => {
                         navigation.openDrawer();
                         Keyboard.dismiss();
                         setIsSearching(false);
+                        setIsLoading(false);
                     }
                     }
                 />
-                <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} />
+                <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} />
                 <CommonTopSearchBar
                     placeholder='Search group...'
                     cancelSearch={() => {
                         setIsSearching(false);
                         setSearchedGroups([] as never);
+                        setIsLoading(false);
                     }}
                     onEndEditingSearch={searchGroups}
                     customStyleContainer={{ width: '85%', marginLeft: 55 }}

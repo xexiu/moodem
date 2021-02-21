@@ -1,27 +1,41 @@
-import React, { Component } from 'react';
-import { FallbackComponent } from '../common/FallbackComponent';
+import React, { Component, ComponentType } from 'react';
+import { FallbackComponent, Props as FallbackComponentProps } from '../common/FallbackComponent';
 
-export class ErrorBoundary extends Component {
-	public setState: any;
-	public props: any;
-    state = { error: null, hasError: false }
+type Props = {
+    children: Node,
+    FallbackComponent: ComponentType<FallbackComponentProps>,
+    onError?: Function
+};
 
-    static getDerivedStateFromError(error) {
-        return { error, hasError: true };
+type State = { error: Error | null };
+
+export class ErrorBoundary extends Component<Props, State> {
+    public setState: any;
+    public props: any;
+    state: State = { error: null };
+
+    static defaultProps: { FallbackComponent: ComponentType<FallbackComponentProps> } = {
+        FallbackComponent
+    };
+
+    static getDerivedStateFromError(error: any) {
+        return { error };
     }
 
     componentDidCatch(error, info) {
-        //logErrorToService(error, info.componentStack) ---> https://sentry.io/
+        // logErrorToService(error, info.componentStack) ---> https://sentry.io/
     }
 
     resetError = () => {
-        this.setState({ error: null, hasError: false });
-    }
+        this.setState({ error: null });
+    };
 
     render() {
-        if (this.state.hasError) {
-            return (<FallbackComponent error={this.state.error} reset={this.resetError} />);
-        }
-        return this.props.children;
+        return this.state.error
+            ? <FallbackComponent
+                error={this.state.error}
+                resetError={this.resetError}
+            />
+            : this.props.children;
     }
 }
