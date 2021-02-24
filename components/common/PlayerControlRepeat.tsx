@@ -1,9 +1,9 @@
 import React from 'react';
-import { Icon } from 'react-native-elements';
 import { View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 
-export const PlayerControlRepeat = (props) => {
+export const PlayerControlRepeat = (props: any) => {
     const {
         shouldRepeat,
         onPressRepeat

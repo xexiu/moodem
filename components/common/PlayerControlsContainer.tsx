@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
-export class PlayerControlsContainer extends Component {
-	public props: any;
+const PlayerControlsContainer = (props: any) => {
+    return (
+        <View style={{ height: 120, justifyContent: 'center', flexDirection: 'row' }}>
+            {props.children}
+        </View>
+    );
+};
 
-    render() {
-        return (
-            <View style={{ height: 120, justifyContent: 'center', flexDirection: 'row' }}>
-                {this.props.children}
-            </View>
-        )
-    }
-}
+export { PlayerControlsContainer };

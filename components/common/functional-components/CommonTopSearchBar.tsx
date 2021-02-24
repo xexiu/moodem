@@ -1,4 +1,3 @@
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';
@@ -6,6 +5,8 @@ import {
     commonTopSeachBarContainer,
     commonTopSeachBarInputContainer
 } from '../../../src/css/styles/commonTopSearchBar';
+
+const controller = new AbortController();
 
 const CommonTopSearchBar = (props: any) => {
     const {
@@ -19,7 +20,7 @@ const CommonTopSearchBar = (props: any) => {
     const [showLoadingSpin, setShowLoadingSpin] = useState(false);
 
     useEffect(() => () => {
-        axios.Cancel();
+        controller.abort();
     }, []);
 
     return (

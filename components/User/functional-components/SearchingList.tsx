@@ -2,38 +2,41 @@ import React, { memo } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 
-export const SearchingList = memo((props) => {
+
+const SearchingList = (props: any) => {
     const {
         items,
         player,
         handler
     } = props;
 
-    const renderItem = (item) => (
-            <CommonFlatListItem
+    const renderItem = (item: any) => (
+        <CommonFlatListItem
             contentContainerStyle={{ position: 'relative' }}
-            bottomDivider
+            topDivider={false}
+            bottomDivider={true}
             title={item.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
             subtitle={item.user && item.user.username}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
+            leftAvatar={{
+                source: { uri: item.artwork_url }
+            }}
             chevron={!item.isMediaOnList && {
+                name: 'arrow-right',
+                type: 'AntDesign',
                 color: '#dd0031',
                 onPress: () => handler(item),
                 size: 10,
                 raised: true,
-                iconStyle: { fontSize: 15, paddingLeft: 2 },
-                containerStyle: { marginRight: -10 }
+                iconStyle: { fontSize: 27, alignSelf: 'center' },
+                containerStyle: { marginLeft: 0 }
             }}
-            checkmark={item.isMediaOnList}
             action={() => {
-                if (item.video) {
-                    return player(item);
-                }
                 return player.current.dispatchActionsPressedTrack(item);
             }}
-            />
-        );
+        />
+    );
 
     return (
         <CommonFlatList
@@ -41,4 +44,8 @@ export const SearchingList = memo((props) => {
             action={({ item }) => renderItem(item)}
         />
     );
-});
+};
+
+memo(SearchingList);
+
+export { SearchingList };

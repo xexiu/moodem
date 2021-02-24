@@ -1,7 +1,9 @@
 export const convertToTimeDuration = duration => {
     let totalDuration;
 
-    if (String(duration).length === 5) {
+    if (String(duration).length < 5) {
+        totalDuration = String(duration).substr(0, 1);
+    } else if (String(duration).length === 5) {
         totalDuration = String(duration).substr(0, 2);
     } else if (String(duration).length > 5) {
         totalDuration = String(duration).substr(0, 3);

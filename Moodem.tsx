@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
-import React, { memo, useContext, useEffect } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import 'react-native-gesture-handler';
+import { BgImage } from './components/common/functional-components/BgImage';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
+import { PreLoader } from './components/common/functional-components/PreLoader';
 import { SideBarDrawer } from './components/common/functional-components/SideBarDrawer';
 import { AppContext } from './components/User/functional-components/AppContext';
 import { GuestScreen } from './screens/Guest/functional-components/GuestScreen';
@@ -15,33 +18,50 @@ const controller = new AbortController();
 
 const App = function Moodem() {
     const { setContext, user }: any = useContext(AppContext);
+    const [isLoading, setIsloading] = useState(true);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
-        firebase.auth().onAuthStateChanged((_user: any) => setContext({ user: _user }));
+        firebase.auth().onAuthStateChanged((_user: any) => {
+            setContext({ user: _user });
+            setIsloading(false);
+        });
 
         return () => {
             console.log('2. OFF EFFECT Moodem');
             controller.abort();
         };
-    }, [setContext]);
+    }, []);
 
-    if (user) {
+    if (isLoading) {
         return (
-          <CommonStackWrapper>
-            <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-            <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
-            <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
-          </CommonStackWrapper>
+          <View>
+              <BgImage />
+              <PreLoader
+                  containerStyle={{
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                  }}
+                  size={50}
+              />
+          </View>
+        );
+    }else if (user) {
+        return (
+      <CommonStackWrapper>
+        <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
+        <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
+        <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
+      </CommonStackWrapper>
         );
     }
 
     return (
-      <CommonStackWrapper>
-        <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
-        <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-      </CommonStackWrapper>
+    <CommonStackWrapper>
+      <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
+      <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
+    </CommonStackWrapper>
     );
 };
 

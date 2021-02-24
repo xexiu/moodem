@@ -7,9 +7,9 @@ import { CommonTopSearchBar } from '../../common/functional-components/CommonTop
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
-import { TracksListContainer } from '../../common/TracksListContainer';
+import { TracksListContainer } from '../../common/functional-components/TracksListContainer';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/videos';
-import { MediaActions } from '../functional-components/MediaActions';
+import { MediaActions } from './ButtonsMedia';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { SearchingList } from './SearchingList';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';

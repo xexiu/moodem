@@ -1,10 +1,27 @@
 /* eslint-disable max-len */
 import axios from 'axios';
-import React, { useContext } from 'react';
+import { useContext, useRef } from 'react';
+import io from 'socket.io-client';
+import { SC_KEY } from '../../../src/js/Utils/constants/api/apiKeys';
 import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
+import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 import { AppContext } from '../../User/functional-components/AppContext';
 
-const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/?limit=50&q=';
+const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/';
+const clientKeysMap = {
+    soundcloud_api: SOUNDCLOUD_API,
+    soundcloud_key: `&client_id=${SC_KEY}`
+} as any;
+
+function getUserUidAndName(user: any) {
+    let guid = Number(Math.random() * 36);
+
+    if (user) {
+        return `uid=${user.uid}&displayName=${user.displayName}`;
+    }
+
+    return `uid=${Date.now().toString(36) + (guid++ % 36).toString(36) + Math.random().toString(36).slice(2, 4)}&displayName=Guest`;
+}
 export class AbstractMedia {
     public navigation: any;
     public user: any;
@@ -16,37 +33,77 @@ export class AbstractMedia {
     public signal: any;
     public axios: any;
 
-    constructor(props, api = SOUNDCLOUD_API) {
+    constructor(props: any, api = SOUNDCLOUD_API) {
         const { user, group } = useContext(AppContext);
         this.navigation = props.navigation;
         this.user = user;
         this.group = group;
         this.mediaBuilder = new MediaBuilder();
-        this.socket = this.mediaBuilder.socket();
+        this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
         this.playerRef = this.mediaBuilder.playerRef();
-        this.searchRef = React.createRef(null);
+        this.searchRef = useRef();
         this.signal = axios.CancelToken.source();
         this.axios = axios;
 
-        this.setApi(api, this.mediaBuilder);
+        this.setApi(api);
     }
 
-    setApi = (api, mediaBuilder) => {
-        mediaBuilder.setApi(api);
+    on(msgToServer: string, cb: Function) {
+        if (this.user) {
+            return this.socket.on(msgToServer, cb);
+        }
+        return this.navigation.navigate('Guest');
+    }
+
+    emit(msgToServer: string, data: object) {
+        if (this.user) {
+            return this.socket.emit(msgToServer, data);
+        }
+        return this.navigation.navigate('Guest');
+    }
+
+    setApi = (api: string) => {
+        this.mediaBuilder.setApi(api);
     };
 
-    handleMediaActions = (msg, obj) => {
-        if (this.user) {
-            return this.mediaBuilder.msgToServer(this.socket, msg, obj);
-        }
+    async getSongData(options = {} as any, server: string, key: string) {
+        let url = clientKeysMap[server];
 
-        return this.navigation.navigate('Guest');
+        Object.keys(options).map((k: string) => {
+            url += (url.split('?')[1] ? '&' : '?') + `${k}=${options[k]}`;
+        });
+
+        try {
+            const { data } = await axios.get(`${url}${clientKeysMap[key] || ''}`, {
+                cancelToken: this.signal.token
+            });
+            return Promise.resolve(data);
+        } catch (error) {
+            if (axios.isCancel(error)) {
+                console.log('Error: ', error.message);
+                Promise.reject(error);
+            } else {
+                Promise.reject(error);
+            }
+        }
+    }
+
+    checkIfAlreadyOnList = (medias: string[], searchedMedias: string[]) => {
+        medias.forEach((media: any) => {
+            searchedMedias.forEach((searchedMedia: any) => {
+                if (media.id === searchedMedia.id) {
+                    Object.assign(searchedMedia, {
+                        isMediaOnList: true
+                    });
+                }
+            });
+        });
     };
 
     destroy = () => {
         this.axios.Cancel();
         console.log('GROUP NAME ABSTRACT MEDIA', this.group);
-        this.socket.off(this.mediaBuilder.msgFromServer);
+        this.socket.off(this.on);
         this.socket.close();
     };
 }

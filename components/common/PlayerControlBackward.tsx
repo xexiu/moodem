@@ -1,32 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 
-export class PlayerControlBackward extends Component {
-	public props: any;
-	public onPressBackward: any;
+export const PlayerControlBackward = (props: any) => {
+    const {
+        onPressBackward
+    } = props;
 
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const {
-            onPressBackward
-        } = this.props;
-
-        return (
-            <Icon
-                Component={TouchableScale}
-                raised
-                name='step-backward'
-                type='font-awesome'
-                color='#777'
-                size={18}
-                onPress={() => {
-                    onPressBackward();
-                }}
-            />
-        );
-    }
-}
+    return (
+        <Icon
+            Component={TouchableScale}
+            raised
+            name='step-backward'
+            type='font-awesome'
+            color='#777'
+            size={18}
+            onPress={() => {
+                onPressBackward();
+            }}
+        />
+    );
+};

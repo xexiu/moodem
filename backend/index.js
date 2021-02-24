@@ -7,7 +7,7 @@ const io = require('socket.io')(server);
 const {
   voteMedia,
   boostMedia,
-  removeMedia
+  removeMedia,
 } = require('./utils');
 
 app.get('/', (req, res) => {
@@ -18,7 +18,7 @@ const videosList = [];
 const chatRooms = {
   songs: [],
   messages: [],
-  connectedUsers: 0
+  connectedUsers: 0,
 };
 const clients = {};
 const connections = new Set();
@@ -27,24 +27,24 @@ function buildMedia(data) {
   chatRooms[data.chatRoom] = {};
 
   Object.assign(chatRooms[data.chatRoom], {
-    songs: [],
-    messages: [],
-    uids: new Set([])
+    songs: new Set([]),
+    messages: new Set([]),
+    uids: new Set([]),
   });
 }
 
-// function setRoomMediaList(room, data, media) {
-//   console.log('HEYYYYY', chatRooms, 'ROOM:', room);
-//   if (chatRooms[room]) {
-//     if (media === 'song' && data[media].id) {
-//       chatRooms[room].songs.push(data[media]);
-//     } if (media === 'msg' && data[media].id) {
-//       chatRooms[room].messages.push(data[media]);
-//     }
-//   }
+function setRoomMediaList(room, data, media) {
+  console.log('HEYYYYY', chatRooms, 'ROOM:', room);
+  if (chatRooms[room]) {
+    if (media === 'song' && data[media].id) {
+      chatRooms[room].songs.push(data[media]);
+    } if (media === 'msg' && data[media].id) {
+      chatRooms[room].messages.push(data[media]);
+    }
+  }
 
-//   console.log('FINALLL', chatRooms[room]);
-// }
+  console.log('FINALLL', chatRooms[room]);
+}
 
 // Socket.io doc ==> https://socket.io/docs/server-api/#socket-id
 
@@ -62,30 +62,45 @@ io.on('connection', (socket) => {
     socket.disconnect(true);
   });
 
-  // // Media
-  // socket.on('send-message-media', (data) => {
-  //   joinRoom(socket, data);
-  //   setRoomMediaList(data.chatRoom, data, 'song');
-  //   console.log('ROOOM', data.chatRoom);
+  // Media
+  socket.on('send-message-media', async (data) => {
+    await socket.join(data.chatRoom);
+    // setRoomMediaList(data.chatRoom, data, 'song');
 
-  //   if (data.song) {
-  //     io.to(data.chatRoom).emit('server-send-message-media', chatRooms[data.chatRoom].songs);
-  //   } else if (data.video) {
-  //     // eslint-disable-next-line no-unused-expressions
-  //     data.video.id && videosList.push(data.video);
-  //     io.to(data.chatRoom).emit('server-send-message-media', videosList);
-  //   }
-  // });
+    console.log('ROOOM', data);
+    if (data.song) {
+      if (!chatRooms[data.chatRoom]) {
+        buildMedia(data);
+        chatRooms[data.chatRoom].songs.add(data.song);
+      } else {
+        chatRooms[data.chatRoom].songs.add(data.song);
+      }
+      io.to(data.chatRoom).emit('send-message-media', Array.from(chatRooms[data.chatRoom].songs));
+    }
+  });
 
   // // Vote
-  // socket.on('send-message-vote', (data) => {
-  //   joinRoom(socket, data);
+  // socket.on('send-message-vote', async (data) => {
+  //   await socket.join(data.chatRoom);
+  //   console.log('VOTEES', data);
+  //   console.log('VOTES 2', chatRooms[data.chatRoom]);
+  //   Array.from(chatRooms[data.chatRoom].songs)
+  //     .forEach((song) => {
+  //       const userHasVoted = song.voted_users.some((id) => id === data.user_id);
 
-  //   if (data.song) {
-  //     voteMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
-  //   } else if (data.video) {
-  //     voteMedia(videosList, data, io, 'video');
-  //   }
+  //       if (song.id === data.song.id && !userHasVoted) {
+  //         song.voted_users.push(data.user_id);
+  //         song.votes_count = data.count;
+  //         console.log('VOTED SONG', song);
+  //       }
+  //     });
+  //   // joinRoom(socket, data);
+
+  //   // if (data.song) {
+  //   //   voteMedia(chatRooms[data.chatRoom].songs, data, io, 'song');
+  //   // } else if (data.video) {
+  //   //   voteMedia(videosList, data, io, 'video');
+  //   // }
   // });
 
   // // Boost
@@ -148,7 +163,6 @@ io.on('connection', (socket) => {
   });
 
   // User has disconected
-
 
   /* CAN JOIN MULTIPLE ROOMS
   ##########################

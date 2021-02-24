@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Video from 'react-native-video';
@@ -15,12 +15,11 @@ import { SongInfoAlbumCover } from '../common/SongInfoAlbumCover';
 import { SongInfoArtist } from '../common/SongInfoArtist';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { SongInfoTitle } from '../common/SongInfoTitle';
-import { PreLoader } from './functional-components/PreLoader';
 
 const TRACK_DURATION_MASQUERADE = 217;
 const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
 
-export class Player extends Component {
+class Player extends Component {
     public toastRef: any;
     public tracks: any;
     public state: any;
@@ -32,14 +31,14 @@ export class Player extends Component {
     public songArtist: any;
     public songIndex: any;
     public currentSong: any;
-    public isPlaying: any;
+    public paused: any;
     public shouldRepeat: any;
     public shouldShuffle: any;
     public trackCurrentTime: any;
     public trackMaxDuration: any;
     public songIsReady: any;
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);
 
         this.toastRef = React.createRef();
@@ -49,55 +48,51 @@ export class Player extends Component {
             songTitle: 'Final Masquerade',
             songArtist: 'Linkin Park',
             songIndex: 0,
-            isPlaying: false,
+            paused: true,
             currentSong: MASQUERADE_SONG,
             isBuffering: true,
             shouldRepeat: false,
             shouldShuffle: false,
             songIsReady: false,
             trackCurrentTime: 0,
-            isSongLoading: true,
-            trackMaxDuration: TRACK_DURATION_MASQUERADE,
+            trackMaxDuration: TRACK_DURATION_MASQUERADE
         };
     }
 
-    onPlayProgress = ({ currentTime }) => {
+    onPlayProgress = ({ currentTime }: any) => {
         this.setState({
-            trackCurrentTime: currentTime,
+            trackCurrentTime: currentTime
         });
     };
 
-    onPlayEnd = (tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying) => {
-        this.setState({ trackCurrentTime: 0 });
-        const index = tracks.length ? songIndex + 1 : 0;
-
+    onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
         if (shouldRepeat) {
-            return this.dispatchActionsPressedTrack(tracks[index]);
+            this.dispatchActionsPressedTrack(tracks[songIndex]);
+            this.player.seek(0);
         } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
 
             if (tracks[random]) {
-                return this.dispatchActionsPressedTrack(tracks[random]);
+                this.dispatchActionsPressedTrack(tracks[random]);
             }
-        } else if (!tracks[index]) {
-            this.setState({ isPlaying: !isPlaying });
         } else {
-            return tracks[index] && this.dispatchActionsPressedTrack(tracks[index]);
+            // next track
+            if (tracks[songIndex + 1]) {
+                this.player.seek(0);
+                return this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
+            }
         }
     };
 
-    onBuffer = (buffer) => {
-        if (!this.state.isBuffering) {
-            this.toastRef.current.show('Song Ready!');
-            this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
-        }
+    onBuffer = (buffer: any) => {
+        this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
     };
 
-    onAudioError = ({ error }) => {
+    onAudioError = ({ error }: any) => {
         this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     };
 
-    dispatchActionsPressedTrack = (track) => {
+    dispatchActionsPressedTrack = (track: any) => {
         this.setState({
             currentSong: track.stream_url,
             songAlbumCover: track.artwork_url,
@@ -105,46 +100,55 @@ export class Player extends Component {
             songArtist: track.user && track.user.username,
             songIndex: track.index,
             trackMaxDuration: track.duration,
-            isPlaying: true,
+            paused: track.index === this.state.songIndex ? ! this.state.paused : false
         });
     };
 
-    handleOnPressPlayPause = (isPlaying) => {
-        this.setState({ isPlaying: !isPlaying });
+    handleOnPressPlayPause = (paused: boolean) => {
+        this.setState({ paused: !paused });
     };
 
-    handleOnPressForward = (tracks, songIndex) => {
-        if (tracks.length > 1) {
-            this.setState({ trackCurrentTime: 0 });
-        }
+    handleOnPressForward = (tracks: any, songIndex: number) => {
         if (tracks[songIndex + 1]) {
             this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
         }
     };
 
-    handleOnPressBackward = (tracks, songIndex) => {
+    handleOnPressBackward = (tracks: any, songIndex: number) => {
         if (tracks.length > 1) {
             this.setState({ trackCurrentTime: 0 });
         }
         if (tracks[songIndex - 1]) {
-            this.dispatchActionsPressedTrack(tracks[songIndex - 1]);
+            this.dispatchActionsPressedTrack(tracks[this.state.songIndex - 1]);
         }
     };
 
-    hanleOnPressRepeat = (shouldRepeat) => {
+    hanleOnPressRepeat = () => {
         this.setState({
-            shouldRepeat: !shouldRepeat,
+            shouldRepeat: !this.state.shouldRepeat
         });
     };
 
-    hanleOnPressShuffle = (shouldShuffle) => {
+    hanleOnPressShuffle = () => {
         this.setState({
-            shouldShuffle: !shouldShuffle,
+            shouldShuffle: !this.state.shouldShuffle
         });
     };
 
-    handleOnTouchMoveSliderSeek = (time) => {
+    handleOnTouchMoveSliderSeek = (time: any) => {
         this.player.seek(time);
+    };
+
+    resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
+        let groupLength = tracks.length;
+
+        while (groupLength--) {
+            if (groupLength === 0) {
+                this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
+                this.player.seek(0);
+                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
+            }
+        }
     };
 
     render() {
@@ -154,15 +158,15 @@ export class Player extends Component {
             songArtist,
             songIndex,
             currentSong,
-            isPlaying,
+            paused,
             shouldRepeat,
             shouldShuffle,
             trackCurrentTime,
             trackMaxDuration,
-            songIsReady,
+            songIsReady
         } = this.state;
         const {
-            tracks,
+            tracks
         } = this.props;
 
         return (
@@ -178,13 +182,34 @@ export class Player extends Component {
                     playInBackground
                     playWhenInactive
                     ignoreSilentSwitch={'ignore'}
-                    onBuffer={this.onBuffer}
-                    onError={this.onAudioError}
-                    paused={!isPlaying}
-                    onLoad={() => this.setState({ isBuffering: false, songIsReady: false })}
-                    onLoadStart={() => this.setState({ trackCurrentTime: 0, isBuffering: true, songIsReady: false })}
+                    onBuffer={(buffer) => this.onBuffer(buffer)}
+                    onError={(error) => this.onAudioError(error)}
+                    paused={paused}
+                    onLoad={() => {
+                        this.setState({ trackCurrentTime: 0, isBuffering: false });
+                    }}
+                    onLoadStart={() => {
+                        this.tracks = tracks;
+                        this.setState({ trackCurrentTime: 0, isBuffering: false });
+                    }
+                    }
                     onProgress={this.onPlayProgress}
-                    onEnd={this.onPlayEnd.bind(this, tracks, songIndex, shouldShuffle, shouldRepeat, isPlaying)}
+                    onEnd={() => {
+                        const songEnded = setTimeout(() => {
+                            this.resetPlayLastSong(tracks, songIndex, shouldShuffle, shouldRepeat);
+
+                            if (!shouldRepeat) {
+                                this.setState({ trackCurrentTime: 0, paused: true });
+                                this.player.seek(0);
+                                clearTimeout(songEnded);
+                                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
+                            } else {
+                                this.setState({ trackCurrentTime: 0, paused: true });
+                                clearTimeout(songEnded);
+                                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
+                            }
+                        }, 100);
+                    }}
                     repeat={shouldRepeat}
                 />
 
@@ -194,15 +219,31 @@ export class Player extends Component {
                     <SongInfoArtist songArtist={songArtist} />
                 </SongInfoContainer>
                 <PlayerControlsContainer>
-                    <PlayerControlShuffle shouldShuffle={shouldShuffle} onPressShuffle={this.hanleOnPressShuffle.bind(this)} />
-                    <PlayerControlBackward onPressBackward={this.handleOnPressBackward.bind(this, tracks, songIndex)} />
-                    {!songIsReady ?
-                        <PreLoader size={58} containerStyle={{}} /> :
-                        <PlayerControlPlayPause isPlaying={isPlaying} onPressPlayPause={this.handleOnPressPlayPause.bind(this)} />
-                    }
-                    <PlayerControlForward onPressForward={this.handleOnPressForward.bind(this, tracks, songIndex)} />
-                    <PlayerControlRepeat shouldRepeat={shouldRepeat} onPressRepeat={this.hanleOnPressRepeat.bind(this)} />
-                    <PlayerControlTimeSeek trackLength={trackMaxDuration} currentPosition={trackCurrentTime} onTouchMove={this.handleOnTouchMoveSliderSeek.bind(this)} />
+                    <PlayerControlShuffle
+                        shouldShuffle={shouldShuffle}
+                        onPressShuffle={this.hanleOnPressShuffle}
+                    />
+                    <PlayerControlBackward
+                        onPressBackward={() => this.handleOnPressBackward(tracks, songIndex)}
+                    />
+                    <PlayerControlPlayPause
+                        paused={paused}
+                        onPressPlayPause={this.handleOnPressPlayPause}
+                        songIsReady={songIsReady}
+                    />
+                    <PlayerControlForward
+                        onPressForward={() => this.handleOnPressForward(tracks, songIndex)}
+                    />
+                    <PlayerControlRepeat
+                        shouldRepeat={shouldRepeat}
+                        onPressRepeat={this.hanleOnPressRepeat}
+                    />
+                    <PlayerControlTimeSeek
+                        trackLength={trackMaxDuration}
+                        currentPosition={trackCurrentTime}
+                        songIsReady={songIsReady}
+                        onTouchMove={(time: any) => this.handleOnTouchMoveSliderSeek(time)}
+                    />
                 </PlayerControlsContainer>
                 <Toast
                     position='top'
@@ -212,3 +253,7 @@ export class Player extends Component {
         );
     }
 }
+
+memo(Player);
+
+export { Player };

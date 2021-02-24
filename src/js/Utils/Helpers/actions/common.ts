@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
+import axios from 'axios';
 import React from 'react';
 import io from 'socket.io-client';
-import axios from 'axios';
 import { SC_KEY, YOUTUBE_KEY } from '../../constants/api/apiKeys';
 import { IP, socketConf } from '../../Helpers/services/socket';
 
@@ -13,23 +13,23 @@ const serversKeysMap = {
 };
 
 export class MediaBuilder {
-	public apiUrl: any;
-	public data: any;
-    socket = () => io(IP, socketConf)
+    public apiUrl: any;
+    public data: any;
+    socket = () => io(IP, socketConf);
     setApi = (apiUrl) => {
         this.apiUrl = apiUrl;
-    }
-    getApi = () => this.apiUrl
-    playerRef = () => React.createRef()
+    };
+    getApi = () => this.apiUrl;
+    playerRef = () => React.createRef();
     msgFromServer = (socket, cb, actions = DEFAULT_ACTIONS) => actions.forEach(action => {
         socket.on(`${DEFAULT_SUFFIX}${action}`, cb);
-    })
-    msgToServer = (socket, msg, obj) => socket.emit(msg, obj)
+    });
+    msgToServer = (socket, msg, obj) => socket.emit(msg, obj);
     off = (socket) => socket.off();
     getData = async (url, server, token) => {
         try {
             const { data } = await axios.get(`${url}${serversKeysMap[server]}`, {
-                cancelToken: token,
+                cancelToken: token
             });
             return Promise.resolve(data);
         } catch (error) {
@@ -38,7 +38,7 @@ export class MediaBuilder {
             }
             throw error;
         }
-    }
+    };
     checkIfAlreadyOnList = (medias, searchedMedias) => {
         medias.forEach(_media => {
             searchedMedias.forEach(searchedMedia => {
@@ -49,5 +49,5 @@ export class MediaBuilder {
                 }
             });
         });
-    }
+    };
 }

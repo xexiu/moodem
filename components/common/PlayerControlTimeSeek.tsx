@@ -1,78 +1,63 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+/* tslint:disable:no-bitwise */
 import Slider from '@react-native-community/slider';
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 
-function timeFormat(time) {
+function timeFormat(time: number) {
     // Hours, minutes and seconds
     const hrs = ~~(time / 3600);
     const mins = ~~((time % 3600) / 60);
     const secs = ~~time % 60;
 
     // Output like "1:01" or "4:03:59" or "123:03:59"
-    let ret = "";
+    let ret = '';
 
     if (hrs > 0) {
-        ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+        ret += `${hrs}:${(mins < 10 ? '0' : '')}`;
     }
 
-    ret += "" + mins + ":" + (secs < 10 ? "0" : "");
-    ret += "" + secs;
+    ret += `${mins}:${(secs < 10 ? '0' : '')}`;
+    ret += '' + secs;
     return ret;
 }
-export class PlayerControlTimeSeek extends Component {
-	public state: any;
-	public props: any;
-	public setState: any;
-	public trackLength: any;
-	public currentPosition: any;
-	public onTouchMove: any;
-	public value: any;
+export const PlayerControlTimeSeek = (props: any) => {
+    const {
+        trackLength,
+        currentPosition,
+        onTouchMove,
+        songIsReady
+    } = props;
+    const [value, setValue] = useState(0);
 
-    constructor(props) {
-        super(props);
+    useEffect(() => {
+        setValue(props.currentPosition);
+    }, []);
 
-        this.state = {
-            value: this.props.currentPosition
-        }
-    }
-    render() {
-        const {
-            trackLength,
-            currentPosition,
-            onTouchMove
-        } = this.props;
-        const {
-            value
-        } = this.state;
-
-        return (
-            <View style={styles.container}>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={[styles.text, { width: 40 }]}>
-                        {timeFormat(currentPosition)}
-                    </Text>
-                    <View style={{ flex: 1 }} />
-                    <Text style={styles.text}>
-                        {timeFormat(trackLength - currentPosition)}
-                    </Text>
-                </View>
-                <Slider
-                    onTouchMove={() => {
-                        onTouchMove(value);
-                    }}
-                    maximumValue={Math.max(trackLength, 1, currentPosition + 1)}
-                    minimumValue={0}
-                    value={currentPosition}
-                    onValueChange={value => this.setState({ value: value })}
-                    style={styles.slider}
-                    minimumTrackTintColor='#dd0031'
-                    maximumTrackTintColor='#ccc'
-                    thumbStyle={styles.thumb}
-                    trackStyle={styles.track} />
+    return (
+        <View style={styles.container}>
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={[styles.text, { width: 40 }]}>
+                    {timeFormat(currentPosition)}
+                </Text>
+                <View style={{ flex: 1 }} />
+                <Text style={styles.text}>
+                    {timeFormat(trackLength - currentPosition)}
+                </Text>
             </View>
-        );
-    }
-}
+            <Slider
+                disabled={!songIsReady}
+                onTouchMove={() => onTouchMove(value)}
+                maximumValue={Math.max(trackLength, 1, currentPosition + 1)}
+                minimumValue={0}
+                value={currentPosition}
+                onValueChange={setValue}
+                style={styles.slider}
+                minimumTrackTintColor='#dd0031'
+                maximumTrackTintColor='#ccc'
+            />
+        </View>
+    );
+};
 
 const styles = {
     container: {
@@ -97,4 +82,4 @@ const styles = {
         color: 'blue',
         backgroundColor: '#dd0031'
     }
-};
+} as any;

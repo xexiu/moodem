@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { Icon } from 'react-native-elements';
 import { View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 
-export const PlayerControlShuffle = props => {
+export const PlayerControlShuffle = (props: any) => {
     const {
         shouldShuffle,
         onPressShuffle

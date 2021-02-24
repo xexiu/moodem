@@ -1,9 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
-import React, { memo, useEffect, useState } from 'react';
+import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
-import { BgImage } from './components/common/functional-components/BgImage';
-import { PreLoader } from './components/common/functional-components/PreLoader';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { AppContextProvider } from './components/User/functional-components/AppContext';
 import Moodem from './Moodem';
@@ -15,57 +13,61 @@ LogBox.ignoreLogs([
     'Constants.manifest is null because the embedded app.config could not be read.'
 ]);
 
-const App = () => {
-    const [{ hasInternetConnection }, setInternetConnection] = useState({ hasInternetConnection: true });
-    const [connectionParams, setConnectionParams] = useState(null);
-    const [isLoading, setIsloading] = useState(true);
+interface App {
+    netinfoUnsubscribe: any;
+    handleConnectivityChange: (param: any) => void;
+    hasInternetConnection: boolean;
+}
 
-    useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(connection => handleConnectivityChange(connection));
+interface State {
+    hasInternetConnection: boolean;
+}
 
-        return () => {
-            unsubscribe();
-            controller.abort();
+class App extends PureComponent<App, State> {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            hasInternetConnection: true
         };
-    }, [hasInternetConnection]);
+    }
 
-    const handleConnectivityChange = (connection: any) => {
-        setInternetConnection({
+    handleConnectivityChange = (connection: any) => {
+        this.setState({
             hasInternetConnection: connection.isConnected
         });
-        setConnectionParams({
-            connectionParams: {
-                connectionType: connection.type,
-                connectionDetails: connection.details
-            }
-        });
-        setIsloading(false);
     };
 
-    if (!hasInternetConnection) {
-        return (<OfflineNotice />);
-    } else if (isLoading) {
+    componentDidMount() {
+        this.netinfoUnsubscribe = NetInfo.addEventListener(this.handleConnectivityChange);
+    }
+
+    componentWillUnmount() {
+        controller.abort();
+        if (this.netinfoUnsubscribe) {
+            this.netinfoUnsubscribe();
+            this.netinfoUnsubscribe = null;
+        }
+    }
+
+    render() {
+        const {
+            hasInternetConnection
+        } = this.state;
+
+        if (!hasInternetConnection) {
+            return (
+                (<OfflineNotice />)
+            );
+        }
+
         return (
             <ErrorBoundary>
-                <BgImage />
-                <PreLoader
-                    containerStyle={{
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                    size={50}
-                />
+                <AppContextProvider>
+                    <Moodem />
+                </AppContextProvider>
             </ErrorBoundary>
         );
     }
-
-    return (
-        <ErrorBoundary>
-            <AppContextProvider>
-                <Moodem />
-            </AppContextProvider>
-        </ErrorBoundary>
-    );
-};
+}
 
 export default App;

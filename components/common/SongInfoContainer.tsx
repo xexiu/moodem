@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
-export class SongInfoContainer extends Component {
-	public props: any;
-
-    render() {
-        return (
+const SongInfoContainer = (props: any) => {
+    return (
             <View style={{ height: 160 }}>
-                {this.props.children}
+                {props.children}
             </View>
-        )
-    }
-}
+    );
+};
+
+export { SongInfoContainer };

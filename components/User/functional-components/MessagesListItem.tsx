@@ -9,6 +9,8 @@ const MessagesListItem = ({ msg }: any) => (
             title: msg.user && msg.user.displayName[0],
             source: { uri: msg.user && msg.user.photoURL }
         }}
+        avatarStyle={{ width: 30, height: 30, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 }}
+        topDivider={true}
         title={msg.user && msg.user.displayName}
         titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
         subtitle={msg.text}
