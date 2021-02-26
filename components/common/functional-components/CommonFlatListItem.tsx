@@ -48,9 +48,18 @@ const CommonFlatListItem = (props: any) => {
                     <ListItem.Subtitle style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
                 </ListItem.Content>
                 {buttonGroup && <ListItem.ButtonGroup
+                    innerBorderStyle={{ width: 0 }}
                     buttons={buttonGroup}
                     onPress={buttonGroup.action}
-                    containerStyle={{ borderWidth: 0, backgroundColor: '#eee', width: 120, height: 30, position: 'absolute', bottom: 0, right: 0 }}
+                    containerStyle={{
+                        borderWidth: 0,
+                        height: 40,
+                        position: 'absolute',
+                        bottom: -4,
+                        right: 0,
+                        paddingRight: 10,
+                        backgroundColor: 'transparent'
+                    }}
                 >
                 </ListItem.ButtonGroup>
                 }

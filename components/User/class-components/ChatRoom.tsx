@@ -1,20 +1,16 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
-import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
+import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
 import { AppContext } from '../functional-components/AppContext';
 import { HeaderChat } from '../functional-components/HeaderChat';
+import { HeaderChatTitle } from '../functional-components/HeaderChatTitle';
+import { HeaderChatUsers } from '../functional-components/HeaderChatUsers';
 import { MessagesListItem } from '../functional-components/MessagesListItem';
-
-function setChatRoomName(group: any) {
-    if (group.group_name && group.group_id) {
-        return `${group.group_name}-ChatRoom${group.group_id}`;
-    }
-    return 'Moodem-ChatRoom';
-}
 
 const buildMsg = (value: string, user: any) => ({
     id: Object.keys(user || {}).length ? `${user.uid}_${Math.random()}` : Math.random(),
@@ -23,36 +19,32 @@ const buildMsg = (value: string, user: any) => ({
 });
 
 const ChatRoom = (props: any) => {
-    const { user }: any = useContext(AppContext);
+    const { user, group }: any = useContext(AppContext);
+    const isFocused = useIsFocused();
     const { navigation } = props;
     const [messages = [], setMessages] = useState([]);
-    const media = new MediaBuilder();
-    const socket = media.socket();
+    const media = new AbstractMedia();
 
     useEffect(() => {
         console.log('6. ChatRoom');
-        media.msgFromServer(socket, getMessage, ['chat-messages']);
-        media.msgFromServer(socket, setMessageList, ['moodem-chat']);
-        media.msgToServer(socket, 'moodem-chat',
-            { chatRoom: setChatRoomName(props.route.params.group), user });
+        media.on('chat-messages', getMessage);
+        media.on('moodem-chat', setMessageList);
+        media.emit('moodem-chat',
+            { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, user });
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
-            socket.disconnect();
-            socket.off(media.msgFromServer);
-            socket.close();
+            media.destroy();
         };
-    }, [messages.length]);
+    }, [messages.length, isFocused]);
 
     const getMessage = (msg: never) => {
         if (msg) {
             setMessages([msg, ...messages]);
-            console.log('MESSSAGEssss', messages);
         }
     };
 
     const setMessageList = (messagesList: never[]) => {
-        console.log('MESSAGES  LIST', messagesList);
         setMessages([...messagesList]);
     };
 
@@ -61,9 +53,8 @@ const ChatRoom = (props: any) => {
     );
 
     const sendNewMsg = (value: string) => {
-        console.log('SENND NEW MSG', value);
-        media.msgToServer(socket, 'chat-messages',
-            { chatRoom: setChatRoomName(props.route.params.group), msg: buildMsg(value, user), user  });
+        media.emit('chat-messages',
+            { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, msg: buildMsg(value, user), user });
     };
 
     return (
@@ -75,7 +66,10 @@ const ChatRoom = (props: any) => {
                     Keyboard.dismiss();
                 }}
             />
-            <HeaderChat props={props} chatRoom={setChatRoomName(props.route.params.group)} />
+            <HeaderChat>
+                <HeaderChatTitle group={props.route.params.group} />
+                <HeaderChatUsers chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`} />
+            </HeaderChat>
             <View style={{ flex: 2, paddingBottom: 15 }}>
                 <CommonFlatList
                     data={messages}
@@ -93,13 +87,6 @@ const ChatRoom = (props: any) => {
         </View>
     );
 };
-
-ChatRoom.navigationOptions = ({ route }: any) =>
-({
-    unmountOnBlur: true,
-    headerBackTitle: '',
-    title: `${route.params.group.group_name} Chat`
-});
 
 ChatRoom.propTypes = {
     navigation: PropTypes.object

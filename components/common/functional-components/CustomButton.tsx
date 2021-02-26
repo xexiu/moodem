@@ -49,7 +49,9 @@ CustomButton.propTypes = {
     btnTitleStyle: PropTypes.object,
     btnRaised: PropTypes.bool,
     shadow: PropTypes.object,
-    action: PropTypes.func
+    action: PropTypes.func,
+    btnDisabled: PropTypes.bool,
+    btnIcon: PropTypes.element
 };
 
 memo(CustomButton);

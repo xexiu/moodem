@@ -16,9 +16,6 @@ import { SongInfoArtist } from '../common/SongInfoArtist';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { SongInfoTitle } from '../common/SongInfoTitle';
 
-const TRACK_DURATION_MASQUERADE = 217;
-const MASQUERADE_SONG = 'https://api.soundcloud.com/tracks/157980361/stream';
-
 class Player extends Component {
     public toastRef: any;
     public tracks: any;
@@ -44,18 +41,18 @@ class Player extends Component {
         this.toastRef = React.createRef();
         this.tracks = [];
         this.state = {
-            songAlbumCover: 'https://i1.sndcdn.com/artworks-000084701264-i1px5r-large.jpg',
-            songTitle: 'Final Masquerade',
-            songArtist: 'Linkin Park',
+            songAlbumCover: props.tracks[0].artwork_url,
+            songTitle: props.tracks[0].title,
+            songArtist: props.tracks[0].user && props.tracks[0].user.username,
             songIndex: 0,
             paused: true,
-            currentSong: MASQUERADE_SONG,
+            currentSong: props.tracks[0].stream_url,
             isBuffering: true,
             shouldRepeat: false,
             shouldShuffle: false,
             songIsReady: false,
             trackCurrentTime: 0,
-            trackMaxDuration: TRACK_DURATION_MASQUERADE
+            trackMaxDuration: props.tracks[0].duration
         };
     }
 
@@ -100,7 +97,7 @@ class Player extends Component {
             songArtist: track.user && track.user.username,
             songIndex: track.index,
             trackMaxDuration: track.duration,
-            paused: track.index === this.state.songIndex ? ! this.state.paused : false
+            paused: track.index === this.state.songIndex ? !this.state.paused : false
         });
     };
 
@@ -172,7 +169,7 @@ class Player extends Component {
         return (
             <View>
                 <Video
-                    source={{ uri: `${currentSong}?client_id=${SC_KEY}` }}
+                    source={currentSong && { uri: `${currentSong}?client_id=${SC_KEY}` }}
                     ref={ref => {
                         this.player = ref;
                     }}

@@ -17,26 +17,23 @@ const ButtonsMedia = (props: any) => {
         action,
         iconName,
         iconType,
-        iconSize = 15,
+        iconSize = 12,
         iconColor,
         disabled,
         containerStyle
     } = props;
 
     return (
-        <TouchableOpacity onPress={action}>
+        <TouchableOpacity onPress={action} disabled={disabled}>
             <View
                 style={{
                     position: 'relative',
                     flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    width: 50,
-                    height: 30
+                    alignItems: 'center'
                 }}
             >
                 <Icon
+                    reverse
                     containerStyle={containerStyle}
                     disabled={disabled}
                     name={iconName}
@@ -52,7 +49,8 @@ const ButtonsMedia = (props: any) => {
 };
 
 ButtonsMedia.propTypes = {
-    containerStyle: PropTypes.object
+    containerStyle: PropTypes.object,
+    disabled: PropTypes.bool
 };
 
 memo(ButtonsMedia);

@@ -62,7 +62,7 @@ export const ProfileAvatar = (props) => {
                         onPress={() => handleEditAvatar(navigation, setLoading, user)}
                     />
                 </View>
-                <Text style={{ marginTop: 10, fontSize: 15, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hi! {user.displayName}</Text>
+                <Text style={{ marginTop: 10, fontSize: 15, color: '#777', textAlign: 'center', width: 145 }} ellipsizeMode='tail' numberOfLines={1}>Hola {user.displayName}!</Text>
             </BgImage>
         </View>
     );

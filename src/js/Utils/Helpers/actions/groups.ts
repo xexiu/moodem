@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-len */
-import firebase from '../services/firebase';
-import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
 import { isEmpty } from '../../common';
+import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
+import firebase from '../services/firebase';
 
 const normalize = (invitedEmails, ownerUserId, groupId) => {
     const normalEmails = [];
@@ -174,10 +174,16 @@ export const getAllGroups = () => new Promise(resolve => {
         .then(snapshot => {
             if (snapshot.val()) {
                 const data = Object.values(snapshot.val()) || [];
+                const groups = [];
 
-                for (let i = 0; i < data.length; i++) {
-                    if (i === (data.length - 1)) {
-                        resolve(...data);
+                data.forEach((group) => {
+                    const groupObj = Object.values(group)[0];
+                    groups.push(groupObj);
+                });
+
+                for (let i = 0; i < groups.length; i++) {
+                    if (i === (groups.length - 1)) {
+                        resolve(groups);
                     }
                 }
             } else {

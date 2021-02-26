@@ -1,4 +1,4 @@
-export const convertToTimeDuration = duration => {
+export const convertToTimeDuration = (duration: number) => {
     let totalDuration;
 
     if (String(duration).length < 5) {
@@ -12,10 +12,10 @@ export const convertToTimeDuration = duration => {
     return Number(totalDuration);
 };
 
-export const filterCleanData = (data, user) => {
-    const filteredTracks = [];
+export const filterCleanData = (data: any, user: any) => {
+    const filteredTracks = [] as any;
 
-    data.forEach((track, index) => {
+    data.forEach((track: any, index: number) => {
         if (track.kind === 'track' && track.streamable) {
             filteredTracks.push({
                 index,

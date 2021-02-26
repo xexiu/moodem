@@ -1,53 +1,58 @@
 /* eslint-disable max-len */
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
+import { Icon } from 'react-native-elements';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { CustomButton } from '../../common/functional-components/CustomButton';
 import { AppContext } from './AppContext';
 import { ProfileAvatar } from './ProfileAvatar';
 import { VerifyEmailMsg } from './VerifyEmailMsg';
 
-const Profile = (props) => {
+const Profile = (props: any) => {
     const [userNickName, setUserNickName] = useState('');
     const [userPassword, setUserPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const { navigation } = props;
-    const { user } = useContext(AppContext);
+    const { user } = useContext(AppContext) as any;
     const toastRef = useRef(null);
+
+    useEffect(() => {
+        console.log('PROFILE');
+    }, [loading]);
 
     const handleUserNameChange = () => {
         setLoading(true);
 
-        if (userNickName.length < 6) {
+        if (userNickName.length < 4) {
             setLoading(false);
-            return toastRef.current.show('The NickName must be 6 characters long or more.', 2000);
+            return toastRef.current.show('Ha de ser 4 carácteres o más', 3000);
         }
 
-        user.updateProfile({
+        return user.updateProfile({
             displayName: userNickName
         }).then(() => {
             setLoading(false);
             setUserNickName('');
-            toastRef.current.show('NickName updated successfully!', 2000);
-        }, (error) => {
+            Promise.resolve(toastRef.current.show('Actualizado!', 2000));
+        }, (error: any) => {
             setLoading(false);
             setUserNickName('');
-            toastRef.current.show(error.message, 2000);
+            Promise.reject(toastRef.current.show(error.message, 2000));
         });
     };
 
     const handleUserPasswordChange = () => {
         setLoading(true);
 
-        user.updatePassword(userPassword).then(() => {
+        return user.updatePassword(userPassword).then(() => {
             setLoading(false);
             setUserPassword('');
-            toastRef.current.show('Password updated successfully!', 2000);
-        }, (error) => {
+            Promise.resolve(toastRef.current.show('Actualizado!', 2000));
+        }, (error: any) => {
             setLoading(false);
             setUserPassword('');
-            toastRef.current.show(error.message, 2000);
+            Promise.reject(toastRef.current.show(error.message, 2000));
         });
     };
 
@@ -64,31 +69,56 @@ const Profile = (props) => {
 
                 <View style={{ position: 'relative', flexDirection: 'row', marginBottom: 10 }}>
                     <TextInput
-                        style={{ borderWidth: 1, fontStyle: 'italic', padding: 5, borderColor: '#eee', borderRadius: 5, width: '80%' }}
+                        style={{
+                            borderWidth: 1,
+                            fontStyle: 'italic',
+                            padding: 5,
+                            borderColor: '#eee',
+                            borderRadius: 5,
+                            width: '80%'
+                        }}
                         underlineColorAndroid='transparent'
-                        placeholder='Change NickName'
+                        placeholder='Cambiar nickname'
                         placeholderTextColor='#777'
                         autoCapitalize='none'
                         autoCorrect={false}
                         clearTextOnFocus
                         editable={!loading}
                         value={userNickName}
-                        onChangeText={(text) => setUserNickName(text)}
+                        onChangeText={setUserNickName}
                     />
                     <CustomButton
                         btnDisabled={loading}
-                        btnTitle='Save'
+                        btnTitle= ''
+                        btnIcon={
+                            (
+                                <Icon
+                                    iconStyle={{ backgroundColor: 'transparent' }}
+                                    name={loading ? 'circle' : 'check'}
+                                    type='entypo'
+                                    color='white'
+                                    size={22}
+                                />
+                            )
+                        }
                         btnStyle={{ width: 50, height: 30, padding: 0, marginLeft: 10 }}
-                        btnTitleStyle={{ fontSize: 15 }} ç
-                        action={() => handleUserNameChange(userNickName, user, setLoading, setUserNickName)}
+                        btnTitleStyle={{ fontSize: 15 }}
+                        action={handleUserNameChange}
                     />
                 </View>
 
                 <View style={{ position: 'relative', flexDirection: 'row', marginBottom: 10 }}>
                     <TextInput
-                        style={{ borderWidth: 1, fontStyle: 'italic', padding: 5, borderColor: '#eee', borderRadius: 5, width: '80%' }}
+                        style={{
+                            borderWidth: 1,
+                            fontStyle: 'italic',
+                            padding: 5,
+                            borderColor: '#eee',
+                            borderRadius: 5,
+                            width: '80%'
+                        }}
                         underlineColorAndroid='transparent'
-                        placeholder='Change Email'
+                        placeholder='Cambiar Email'
                         placeholderTextColor='#777'
                         autoCapitalize='none'
                         editable={false}
@@ -96,7 +126,18 @@ const Profile = (props) => {
                     />
                     <CustomButton
                         btnDisabled={!user.emailVerified}
-                        btnTitle='Save'
+                        btnTitle=''
+                        btnIcon={
+                            (
+                                <Icon
+                                    iconStyle={{ backgroundColor: 'transparent' }}
+                                    name={user.emailVerified ? 'check' : 'lock'}
+                                    type='entypo'
+                                    color='white'
+                                    size={22}
+                                />
+                            )
+                        }
                         btnStyle={{ width: 50, height: 30, padding: 0, marginLeft: 10 }}
                         btnTitleStyle={{ fontSize: 15 }}
                     />
@@ -104,9 +145,16 @@ const Profile = (props) => {
 
                 <View style={{ position: 'relative', flexDirection: 'row', marginBottom: 10 }}>
                     <TextInput
-                        style={{ borderWidth: 1, fontStyle: 'italic', padding: 5, borderColor: '#eee', borderRadius: 5, width: '80%' }}
+                        style={{
+                            borderWidth: 1,
+                            fontStyle: 'italic',
+                            padding: 5,
+                            borderColor: '#eee',
+                            borderRadius: 5,
+                            width: '80%'
+                        }}
                         underlineColorAndroid='transparent'
-                        placeholder='Change Password'
+                        placeholder='Cambiar contraseña'
                         placeholderTextColor='#777'
                         autoCapitalize='none'
                         secureTextEntry
@@ -114,14 +162,25 @@ const Profile = (props) => {
                         clearTextOnFocus
                         editable={!loading}
                         value={userPassword}
-                        onChangeText={(text) => setUserPassword(text)}
+                        onChangeText={setUserPassword}
                     />
                     <CustomButton
                         btnDisabled={loading}
-                        btnTitle='Save'
+                        btnTitle=''
+                        btnIcon={
+                            (
+                                <Icon
+                                    iconStyle={{ backgroundColor: 'transparent' }}
+                                    name='check'
+                                    type='entypo'
+                                    color='white'
+                                    size={22}
+                                />
+                            )
+                        }
                         btnStyle={{ width: 50, height: 30, padding: 0, marginLeft: 10 }}
                         btnTitleStyle={{ fontSize: 15 }}
-                        action={() => handleUserPasswordChange(userPassword, user, setLoading, setUserPassword)}
+                        action={handleUserPasswordChange}
                     />
                 </View>
 
@@ -129,13 +188,27 @@ const Profile = (props) => {
                 TODO: Fetch Owned/Invited Groups and list them
                 */}
 
-                <View style={{ position: 'relative', marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 4 }}>
-                    <Text style={{ fontSize: 18 }}>Owned Groups</Text>
-                    <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Working...</Text>
+                <View
+                    style={{
+                        position: 'relative',
+                        marginTop: 10,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        paddingBottom: 4
+                    }}>
+                    <Text style={{ fontSize: 18 }}>Mis Grupos Administrados</Text>
+                    <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Próximamente...</Text>
                 </View>
-                <View style={{ position: 'relative', marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 4 }}>
-                    <Text style={{ fontSize: 18 }}>Invited Groups</Text>
-                    <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Working...</Text>
+                <View
+                    style={{
+                        position: 'relative',
+                        marginTop: 10,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        paddingBottom: 4
+                    }}>
+                    <Text style={{ fontSize: 18 }}>Grupos Externos</Text>
+                    <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Próximamente...</Text>
                 </View>
             </View>
         </View>
@@ -145,7 +218,7 @@ const Profile = (props) => {
 Profile.navigationOptions = ({ route }) => ({
     headerMode: 'none',
     headerShown: false,
-    title: 'My Profile' // getGroupName(route.params.group.group_name, 'Profile')
+    title: 'Mi Perfil'
 });
 
 export {

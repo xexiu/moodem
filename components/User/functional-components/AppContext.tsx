@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, useState } from 'react';
+import React, { createContext, useReducer } from 'react';
 
 type Props = {
     children: React.ReactNode;
@@ -7,28 +7,32 @@ type Props = {
 type Context = {
     user: null;
     group: object;
-    setContext: Dispatch<Context>;
 };
 
 const initialContext: Context = {
     user: null,
     group: {
         group_name: 'Moodem'
-    },
-    setContext: (): void => {
-
     }
 };
 
-const controller = new AbortController();
+const reducer = (state: any, action: any) => {
+    if (action.type === 'reset') {
+        return initialContext;
+    }
+
+    const result = { ...state };
+    result[action.type] = action.value;
+    return result;
+};
+
 const AppContext = createContext<Context>(initialContext);
 
 const AppContextProvider = ({ children }: Props): JSX.Element => {
-    const [contextState, setContext] = useState(initialContext);
-    console.log('INITITAL STATE', contextState);
+    const [state, dispatch] = useReducer(reducer, initialContext);
 
     return (
-        <AppContext.Provider value={{ ...initialContext, ...contextState, setContext }}>
+        <AppContext.Provider value={{ ...initialContext, ...state, dispatch }}>
             {children}
         </AppContext.Provider>
     );

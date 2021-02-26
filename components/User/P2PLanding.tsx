@@ -1,65 +1,46 @@
 /* eslint-disable max-len */
+import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useRef } from 'react';
 import Toast from 'react-native-easy-toast';
-import io from 'socket.io-client';
-import { getGroupName } from '../../src/js/Utils/Helpers/actions/groups';
-import { IP, socketConf } from '../../src/js/Utils/Helpers/services/socket';
+import { AbstractMedia } from '../common/functional-components/AbstractMedia';
+import { BodyContainer } from '../common/functional-components/BodyContainer';
 import { MainContainer } from '../common/MainContainer';
 import { Songs } from '../User/functional-components/Songs';
 import { AppContext } from './functional-components/AppContext';
 
 const welcomeMsgMoodem = (toastRef: any) => (data: any) => toastRef.show(data, 3000);
 
-function setChatRoomName(group: any) {
-    if (group.group_name && group.group_id) {
-        return `${group.group_name}-${group.group_id}`;
-    }
-    return 'Moodem';
-}
-
-function getUserUidAndName(user: any) {
-    let guid = Number(Math.random() * 36);
-
-    if (user) {
-        return `uid=${user.uid}&displayName=${user.displayName}`;
-    }
-
-    return `uid=${Date.now().toString(36) + (guid++ % 36).toString(36) + Math.random().toString(36).slice(2, 4)}&displayName=Guest`;
-}
-
 const P2PLanding = (props: any) => {
-    const { group, user }: any = useContext(AppContext);
-    const socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
+    const { group }: any = useContext(AppContext);
+    const isFocused = useIsFocused();
     const toastRef = useRef(null);
+    const media = new AbstractMedia();
 
     useEffect(() => {
-        console.log('3. P2PLanding');
-        socket.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
-        socket.emit('server-send-message-welcomeMsg', { chatRoom: setChatRoomName(props.route.params.group) });
+        console.log('3. ON P2PLanding', isFocused);
+        if (isFocused) {
+            media.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
+            media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
+        }
 
         return () => {
-            socket.disconnect();
-            socket.off('server-send-message-welcomeMsg', welcomeMsgMoodem);
-            socket.close();
+            console.log('3. OFF P2PLanding');
+            media.destroy();
         };
-    }, []);
+    }, [isFocused]);
 
     return (
         <MainContainer>
-            <Songs {...props} />
-            <Toast
-                position='top'
-                ref={toastRef}
-            />
+            <BodyContainer>
+                <Songs {...props} />
+                <Toast
+                    position='top'
+                    ref={toastRef}
+                />
+            </BodyContainer>
         </MainContainer>
     );
 };
-
-P2PLanding.navigationOptions = ({ route }: any) =>
-({
-    headerShown: false,
-    title: getGroupName(route.params.group.group_name, 'Moodem')
-});
 
 memo(P2PLanding);
 

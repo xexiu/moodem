@@ -50,16 +50,14 @@ const SideBarDrawer = (props: any) => {
                 drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
             >
                 <Drawer.Screen
-                    name='Moodem'
+                    name={group.group_name}
                     component={P2PLanding}
-                    options={P2PLanding.navigationOptions}
                     initialParams={{ user, group }}
                 />
                 <Drawer.Screen
-                    name='ChatRoom'
+                    name={`${group.group_name} Chat`}
                     component={ChatRoom}
-                    options={ChatRoom.navigationOptions}
-                    initialParams={{ user, group }}
+                    initialParams={({ user, group })}
                 />
                 <Drawer.Screen
                     name='Groups'

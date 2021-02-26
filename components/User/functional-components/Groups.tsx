@@ -1,7 +1,7 @@
 /* eslint-disable max-len, global-require */
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, Text, View } from 'react-native';
 import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
@@ -14,13 +14,14 @@ import { CommonTopSearchBar } from '../../common/functional-components/CommonTop
 import { CustomButton } from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import { PreLoader } from '../../common/functional-components/PreLoader';
+import { AppContext } from '../../User/functional-components/AppContext';
 import { NewGroup } from './NewGroup';
 
 const Form = form.Form;
 
 const Groups = (props: any) => {
     const controller = new AbortController();
-    const { user, group } = props.route.params;
+    const { user, group, dispatch } = useContext(AppContext) as any;
     const { navigation } = props;
     const [showModal, setModal] = useState(false);
     const [userGroup = null, setUserGroup] = useState(null);
@@ -83,16 +84,17 @@ const Groups = (props: any) => {
     };
 
     const searchGroups = (text: string) => getAllGroups().then((data: any) => {
+        const testGroups = [] as any;
         if (!user) {
             navigation.navigate('Guest');
         }
         for (const _group of data) {
             if (_group.group_name.indexOf(text) >= 0) {
                 if (user.uid !== _group.user_owner_id && _group.group_users_count.users.indexOf(user.uid) < 0) {
-                    searchedGroups.push(_group as never);
+                    testGroups.push(_group as never);
                     setIsSearching(true);
                     setSearchedGroups({
-                        searchedGroups: [...searchedGroups]
+                        searchedGroups: [...testGroups]
                     });
                 }
             }
@@ -109,6 +111,8 @@ const Groups = (props: any) => {
             }}
         />);
     }
+
+    console.log('HEYYYYY', user);
 
     return (
         <View style={{ marginTop: 35, padding: 10, position: 'relative', flex: 1, backgroundColor: 'transparent' }}>
@@ -212,13 +216,9 @@ const Groups = (props: any) => {
                             subtitle={item.group_id}
                             rightTitle={item.user_owner_id === user.uid ? 'Owner' : 'Invited'}
                             action={() => {
+                                dispatch({type: 'group', value: item });
                                 setUserGroup(item);
-                                Object.assign(props.route.params.group, item);
-                                navigation.navigate('Moodem', {
-                                    group: {
-                                        ...item
-                                    }
-                                });
+                                navigation.navigate(group.group_name);
                             }}
                         />)}
                     />
@@ -231,7 +231,7 @@ const Groups = (props: any) => {
 Groups.navigationOptions = ({ route }) => {
     // console.log('Groups Navigation Options', route);
     return {
-        title: 'My Groups'
+        title: 'Mis Grupos'
     };
 };
 

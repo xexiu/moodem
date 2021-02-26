@@ -17,14 +17,14 @@ const Stack = createStackNavigator();
 const controller = new AbortController();
 
 const App = function Moodem() {
-    const { setContext, user }: any = useContext(AppContext);
+    const { dispatch, user }: any = useContext(AppContext);
     const [isLoading, setIsloading] = useState(true);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
         firebase.auth().onAuthStateChanged((_user: any) => {
-            setContext({ user: _user });
+            dispatch({ type: 'user', value: _user });
             setIsloading(false);
         });
 
@@ -36,32 +36,31 @@ const App = function Moodem() {
 
     if (isLoading) {
         return (
-          <View>
-              <BgImage />
-              <PreLoader
-                  containerStyle={{
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                  }}
-                  size={50}
-              />
-          </View>
+            <View>
+                <BgImage />
+                <PreLoader
+                    containerStyle={{
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+            </View>
         );
-    }else if (user) {
+    } else if (user) {
         return (
-      <CommonStackWrapper>
-        <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-        <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
-        <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
-      </CommonStackWrapper>
+            <CommonStackWrapper>
+                <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
+                <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
+            </CommonStackWrapper>
         );
     }
 
     return (
-    <CommonStackWrapper>
-      <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
-      <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-    </CommonStackWrapper>
+        <CommonStackWrapper>
+            <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
+            <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
+        </CommonStackWrapper>
     );
 };
 

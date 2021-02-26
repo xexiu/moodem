@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { View } from 'react-native';
@@ -7,23 +6,23 @@ type Props = {
     children: React.ReactNode;
 };
 
-const MainContainer = (props: Props) => {
+const BodyContainer = (props: Props) => {
     return (
-        <View style={{ flex: 1, backgroundColor: '#fff', position: 'relative' }}>
+        <View style={{ flex: 1, backgroundColor: '#fff', marginTop: 30 }}>
             {props.children}
         </View>
     );
 };
 
-MainContainer.propTypes = {
+BodyContainer.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
     ]).isRequired
 };
 
-memo(MainContainer);
+memo(BodyContainer);
 
 export {
-    MainContainer
+    BodyContainer
 };

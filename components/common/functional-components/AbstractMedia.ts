@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useContext, useRef } from 'react';
 import io from 'socket.io-client';
 import { SC_KEY } from '../../../src/js/Utils/constants/api/apiKeys';
-import { MediaBuilder } from '../../../src/js/Utils/Helpers/actions/common';
 import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
 import { AppContext } from '../../User/functional-components/AppContext';
 
@@ -26,45 +25,30 @@ export class AbstractMedia {
     public navigation: any;
     public user: any;
     public group: any;
-    public mediaBuilder: any;
     public socket: any;
     public playerRef: any;
     public searchRef: any;
     public signal: any;
     public axios: any;
 
-    constructor(props: any, api = SOUNDCLOUD_API) {
+    constructor() {
         const { user, group } = useContext(AppContext);
-        this.navigation = props.navigation;
         this.user = user;
         this.group = group;
-        this.mediaBuilder = new MediaBuilder();
         this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
-        this.playerRef = this.mediaBuilder.playerRef();
+        this.playerRef = useRef();
         this.searchRef = useRef();
         this.signal = axios.CancelToken.source();
         this.axios = axios;
-
-        this.setApi(api);
     }
 
     on(msgToServer: string, cb: Function) {
-        if (this.user) {
-            return this.socket.on(msgToServer, cb);
-        }
-        return this.navigation.navigate('Guest');
+        return this.socket.on(msgToServer, cb);
     }
 
     emit(msgToServer: string, data: object) {
-        if (this.user) {
-            return this.socket.emit(msgToServer, data);
-        }
-        return this.navigation.navigate('Guest');
+        return this.socket.emit(msgToServer, data);
     }
-
-    setApi = (api: string) => {
-        this.mediaBuilder.setApi(api);
-    };
 
     async getSongData(options = {} as any, server: string, key: string) {
         let url = clientKeysMap[server];
@@ -102,7 +86,7 @@ export class AbstractMedia {
 
     destroy = () => {
         this.axios.Cancel();
-        console.log('GROUP NAME ABSTRACT MEDIA', this.group);
+        this.socket.disconnect();
         this.socket.off(this.on);
         this.socket.close();
     };

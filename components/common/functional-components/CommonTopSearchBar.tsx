@@ -25,6 +25,7 @@ const CommonTopSearchBar = (props: any) => {
 
     return (
         <SearchBar
+            placeholderTextColor={'#ccc' }
             ref={searchRef}
             autoCorrect={false}
             containerStyle={[commonTopSeachBarContainer, customStyleContainer]}

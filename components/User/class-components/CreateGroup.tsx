@@ -1,29 +1,29 @@
 /* eslint-disable max-len */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import { form, struct, } from 'tcomb-form-native';
-import { CustomButton } from '../../common/functional-components/CustomButton';
+import { Text, View } from 'react-native';
+import { form, struct } from 'tcomb-form-native';
 import { CustomModal } from '../../../components/common/functional-components/CustomModal';
-import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
-import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
 import { PreLoader } from '../../../components/common/functional-components/PreLoader';
+import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
 import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
+import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
+import { CustomButton } from '../../common/functional-components/CustomButton';
 
 const Form = form.Form;
 
 export class CreateGroup extends Component {
-	public state: any;
-	public refForm: any;
-	public group: any;
-	public options: any;
-	public setState: any;
-	public props: any;
-	public isCreateGroupModalVisible: any;
-	public isLoading: any;
-	public errorText: any;
-	public user: any;
-	public handleNewCreateGroup: any;
+    public state: any;
+    public refForm: any;
+    public group: any;
+    public options: any;
+    public setState: any;
+    public props: any;
+    public isCreateGroupModalVisible: any;
+    public isLoading: any;
+    public errorText: any;
+    public user: any;
+    public handleNewCreateGroup: any;
     static navigationOptions = () => ({
         headerMode: 'none',
         headerShown: false
@@ -49,17 +49,17 @@ export class CreateGroup extends Component {
 
     onBackdropPressHandler = () => {
         this.setState({ isCreateGroupModalVisible: false });
-    }
+    };
 
     toggleModal = () => {
         this.setState({ isCreateGroupModalVisible: !this.state.isCreateGroupModalVisible });
-    }
+    };
 
     render() {
         const {
             isCreateGroupModalVisible,
             isLoading,
-            errorText,
+            errorText
         } = this.state;
 
         const {
@@ -69,7 +69,7 @@ export class CreateGroup extends Component {
 
         return (
             <View style={{ alignSelf: 'center', padding: 5 }}>
-                <CustomButton btnTitle="Create Group" action={this.toggleModal} style={{ alignItems: 'flex-end' }} />
+                <CustomButton btnTitle='Create Group' action={this.toggleModal} style={{ alignItems: 'flex-end' }} />
 
                 <CustomModal isModalVisible={isCreateGroupModalVisible} onBackdropPress={this.onBackdropPressHandler}>
                     <Form
@@ -81,7 +81,7 @@ export class CreateGroup extends Component {
                     {isLoading ?
                         <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                         <CustomButton
-                            btnTitle="Create"
+                            btnTitle='Create'
                             action={() => {
                                 const validate = this.refForm.current.getValue();
 
