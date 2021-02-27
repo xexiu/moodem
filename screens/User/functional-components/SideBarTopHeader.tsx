@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import { CommonActions } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { Icon } from 'react-native-elements';

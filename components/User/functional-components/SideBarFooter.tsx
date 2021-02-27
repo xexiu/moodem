@@ -1,12 +1,12 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Copyright } from './Copyright';
-import { Privacy } from './Privacy';
-import { FAQ } from './FAQ';
+import { sideBarFooterContainer } from '../../../src/css/styles/sideBarFooter';
 import { About } from './About';
-import { sideBarFooterContainer } from '../../../src/css/styles/SideBarFooter';
+import { Copyright } from './Copyright';
+import { FAQ } from './FAQ';
+import { Privacy } from './Privacy';
 
-export const SideBarFooter = (props) => {
+export const SideBarFooter = (props: any) => {
     const {
         navigation
     } = props;

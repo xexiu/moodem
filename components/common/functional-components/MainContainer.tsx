@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView } from 'react-native';
+import { mainContainer } from '../../../src/css/styles/mainContainer';
 
 type Props = {
     children: React.ReactNode;
@@ -9,9 +10,9 @@ type Props = {
 
 const MainContainer = (props: Props) => {
     return (
-        <View style={{ flex: 1, backgroundColor: '#fff', position: 'relative' }}>
+        <SafeAreaView style={mainContainer}>
             {props.children}
-        </View>
+        </SafeAreaView>
     );
 };
 

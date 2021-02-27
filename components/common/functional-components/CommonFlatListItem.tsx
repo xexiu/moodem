@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import { isEmpty } from '../../../src/js/Utils/common/checkers';
 
-const DEFAULT_AVATAR_STYLE = { width: 80, height: 80, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 };
+const DEFAULT_AVATAR_STYLE = { width: 50, height: 50, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 };
 
 const CommonFlatListItem = (props: any) => {
     const {
@@ -35,49 +34,47 @@ const CommonFlatListItem = (props: any) => {
     />);
 
     return (
-        <View style={{ position: 'relative' }}>
-            <ListItem
-                containerStyle={contentContainerStyle}
-                topDivider={topDivider}
-                bottomDivider={bottomDivider}
-                onPress={action}
+        <ListItem
+            containerStyle={contentContainerStyle}
+            topDivider={topDivider}
+            bottomDivider={bottomDivider}
+            onPress={action}
+        >
+            {leftAvatar && myAvatar}
+            <ListItem.Content>
+                <ListItem.Title style={titleStyle}>{title}</ListItem.Title>
+                <ListItem.Subtitle style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
+            </ListItem.Content>
+            {buttonGroup && <ListItem.ButtonGroup
+                innerBorderStyle={{ width: 0 }}
+                buttons={buttonGroup}
+                onPress={buttonGroup.action}
+                containerStyle={{
+                    borderWidth: 0,
+                    height: 40,
+                    position: 'absolute',
+                    bottom: -4,
+                    right: 0,
+                    paddingRight: 0,
+                    backgroundColor: 'transparent'
+                }}
             >
-                {leftAvatar && myAvatar}
-                <ListItem.Content>
-                    <ListItem.Title style={titleStyle}>{title}</ListItem.Title>
-                    <ListItem.Subtitle style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
-                </ListItem.Content>
-                {buttonGroup && <ListItem.ButtonGroup
-                    innerBorderStyle={{ width: 0 }}
-                    buttons={buttonGroup}
-                    onPress={buttonGroup.action}
-                    containerStyle={{
-                        borderWidth: 0,
-                        height: 40,
-                        position: 'absolute',
-                        bottom: -4,
-                        right: 0,
-                        paddingRight: 10,
-                        backgroundColor: 'transparent'
-                    }}
-                >
-                </ListItem.ButtonGroup>
-                }
-                {!isEmpty(chevron) &&
-                    <ListItem.Chevron
-                        name={chevron.name ? chevron.name : 'check'}
-                        type={chevron.type ? chevron.type : 'AntDesign'}
-                        disabled={chevron.disabled}
-                        disabledStyle={chevron.disabledStyle}
-                        onPress={() => chevron.onPress()}
-                        iconStyle={chevron.iconStyle}
-                        size={chevron.size}
-                        color={chevron.color}
-                        containerStyle={chevron.containerStyle}
-                        raised={chevron.raised}
-                    />}
-            </ListItem>
-        </View>
+            </ListItem.ButtonGroup>
+            }
+            {!isEmpty(chevron) &&
+                <ListItem.Chevron
+                    name={chevron.name ? chevron.name : 'check'}
+                    type={chevron.type ? chevron.type : 'AntDesign'}
+                    disabled={chevron.disabled}
+                    disabledStyle={chevron.disabledStyle}
+                    onPress={() => chevron.onPress()}
+                    iconStyle={chevron.iconStyle}
+                    size={chevron.size}
+                    color={chevron.color}
+                    containerStyle={chevron.containerStyle}
+                    raised={chevron.raised}
+                />}
+        </ListItem>
     );
 };
 

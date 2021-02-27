@@ -79,6 +79,7 @@ io.on('connection', (socket) => {
   // Vote
   socket.on('send-message-vote-up', async (data) => {
     await socket.join(data.chatRoom);
+    buildMedia(data);
 
     Array.from(chatRooms[data.chatRoom].songs)
       .forEach((song) => {

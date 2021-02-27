@@ -2,6 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { MainContainer } from './components/common/functional-components/MainContainer';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { AppContextProvider } from './components/User/functional-components/AppContext';
 import Moodem from './Moodem';
@@ -61,11 +62,13 @@ class App extends PureComponent<App, State> {
         }
 
         return (
-            <ErrorBoundary>
-                <AppContextProvider>
-                    <Moodem />
-                </AppContextProvider>
-            </ErrorBoundary>
+            <MainContainer>
+                <ErrorBoundary>
+                    <AppContextProvider>
+                        <Moodem />
+                    </AppContextProvider>
+                </ErrorBoundary>
+            </MainContainer>
         );
     }
 }

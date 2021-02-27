@@ -1,28 +1,31 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
-import { AppContext } from '../../User/functional-components/AppContext';
-import { ButtonsMedia } from './ButtonsMedia';
-
-function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
-    return ((mediaUser && songUser.uid === mediaUser.uid) ||
-        mediaUser.uid === groupOwner);
-}
+import { MediaButtons } from './MediaButtons';
 
 const SongsList = (props: any) => {
-    const { group } = useContext(AppContext) as any;
     const {
-        items,
         media,
         handler,
-        isSearching
+        group,
+        items,
+        isSearching,
+        player
     } = props;
 
-    const renderItemWithSongs = (song: any) => (
+    console.log('4. SongsList');
+
+    const renderItem = (song: any) => (
         <CommonFlatListItem
-            contentContainerStyle={{ position: 'relative' }}
+            contentContainerStyle={{
+                position: 'relative',
+                paddingTop: 5,
+                paddingBottom: 20,
+                paddingLeft: 0,
+                paddingRight: 0
+            }}
             bottomDivider
             title={song.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
@@ -31,83 +34,19 @@ const SongsList = (props: any) => {
             leftAvatar={{
                 source: { uri: song.artwork_url }
             }}
-            buttonGroup={
-            [
-                {
-                    element: () => (
-                            <ButtonsMedia
-                                containerStyle={{ paddingRight: 2 }}
-                                disabled={
-                                    song.voted_users && song.voted_users.some((id: number) => id === media.user.uid
-                                    )}
-                                text={song.votes_count}
-                                iconName={'thumbs-up'}
-                                iconType={'entypo'}
-                                iconColor={'#90c520'}
-                                action={() => {
-                                    console.log('PRESSED VOTE');
-                                    media.emit('send-message-vote-up',
-                                        {
-                                            song,
-                                            chatRoom: group.group_name,
-                                            user_id: media.user.uid,
-                                            count: ++song.votes_count
-                                        });
-                                }}
-                            />
-                        )
-                },
-                hasSongOrGroupOwner(media.user, song.user, group.user_owner_id) && {
-                    element: () => (
-                            <ButtonsMedia
-                                containerStyle={{ position: 'relative', paddingRight: 2, marginLeft: 10 }}
-                                iconName={'remove'}
-                                iconType={'font-awesome'}
-                                iconColor={'#dd0031'}
-                                action={() => {
-                                    console.log('PRESSED REMOVE');
-                                    media.emit('send-message-remove-song',
-                                        {
-                                            song,
-                                            chatRoom: group.group_name,
-                                            user_id: media.user.uid
-                                        });
-                                }}
-                            />
-                        )
-                }]
-            }
-            checkmark={isSearching && song.isMediaOnList}
-            action={() => {
-                return media.playerRef.current.dispatchActionsPressedTrack(song);
-            }}
-        />
-    );
-
-    const renderItem = (item: any) => (
-        <CommonFlatListItem
-            contentContainerStyle={{ position: 'relative' }}
-            topDivider={false}
-            bottomDivider={true}
-            title={item.title}
-            titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={item.user && item.user.username}
-            subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-            leftAvatar={{
-                source: { uri: item.artwork_url }
-            }}
-            chevron={!item.isMediaOnList && {
+            buttonGroup={isSearching ? [] : MediaButtons(song, media, group, ['votes', 'remove'])}
+            chevron={!song.isMediaOnList && {
                 name: 'arrow-right',
                 type: 'AntDesign',
                 color: '#dd0031',
-                onPress: () => handler(item),
+                onPress: () => handler(song),
                 size: 10,
                 raised: true,
                 iconStyle: { fontSize: 27, alignSelf: 'center' },
                 containerStyle: { marginLeft: 0 }
             }}
             action={() => {
-                return media.playerRef.current.dispatchActionsPressedTrack(item);
+                return player.current.dispatchActionsPressedTrack(song);
             }}
         />
     );
@@ -117,7 +56,7 @@ const SongsList = (props: any) => {
             <CommonFlatList
                 headerComponent={(
                     <PlayerContainer items={items}>
-                        <Player ref={media.playerRef} tracks={items} />
+                        <Player ref={player} tracks={items} />
                     </PlayerContainer>
                 )}
                 data={items}
@@ -131,12 +70,12 @@ const SongsList = (props: any) => {
         <CommonFlatList
             headerComponent={(
                 <PlayerContainer items={items}>
-                    <Player ref={media.playerRef} tracks={items} />
+                    <Player ref={player} tracks={items} />
                 </PlayerContainer>
             )}
             data={items}
             extraData={items}
-            action={({ item }) => renderItemWithSongs(item)}
+            action={({ item }) => renderItem(item)}
         />
     );
 };

@@ -5,7 +5,10 @@ import { Keyboard, View } from 'react-native';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
+import { BgImage } from '../../common/functional-components/BgImage';
+import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import { CommonTopSearchBar } from '../../common/functional-components/CommonTopSearchBar';
+import { PreLoader } from '../../common/functional-components/PreLoader';
 import { AppContext } from '../../User/functional-components/AppContext';
 import { SongsList } from './SongsList';
 
@@ -19,15 +22,16 @@ export const Songs = memo((props: any) => {
     const { group } = useContext(AppContext) as any;
     const [songs, setSongs] = useState([]);
     const [items, setItems] = useState([]);
+    const [isLoading, setIsloading] = useState(true);
     const [isSearching, setIsSearching] = useState(false);
     const media = new AbstractMedia();
 
     useEffect(() => {
-        console.log('2. Songs');
-        console.log('Songs group', group);
+        console.log('3. Songs');
         media.on('send-message-media', (_songs: any) => {
             _songs.forEach(setMediaIndex);
             setSongs([..._songs]);
+            setIsloading(false);
         });
         media.emit('send-message-media', { chatRoom: group.group_name });
         return () => {
@@ -39,6 +43,11 @@ export const Songs = memo((props: any) => {
     const sendMediaToServer = (song: object) => {
         setSongs([]);
         setIsSearching(false);
+
+        Object.assign(song, {
+            isMediaOnList: true,
+            index: songs.length
+        });
 
         media.emit('send-message-media',
             { song, chatRoom: group.group_name });
@@ -66,8 +75,25 @@ export const Songs = memo((props: any) => {
         return true;
     };
 
+    if (isLoading) {
+        return (
+            <View>
+                <BgImage />
+                <PreLoader
+                    containerStyle={{
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+            </View>
+        );
+    }
+
+    console.log('Rendering Songs...');
+
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+        <BodyContainer>
             <BurgerMenuIcon
                 action={() => {
                     resetSearch();
@@ -84,13 +110,14 @@ export const Songs = memo((props: any) => {
             />
             <View style={{ backgroundColor: '#fff', flex: 1 }} onStartShouldSetResponder={resetSearch}>
                 <SongsList
+                    player={media.playerRef}
                     media={media}
                     handler={sendMediaToServer}
                     items={isSearching ? items : songs}
                     isSearching={isSearching}
-                    routeGroup={props.route.params.group}
+                    group={group}
                 />
             </View>
-        </View>
+        </BodyContainer>
     );
 });

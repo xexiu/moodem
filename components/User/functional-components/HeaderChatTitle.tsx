@@ -13,7 +13,7 @@ const HeaderChatTitle = (props: any) => {
 
 HeaderChatTitle.propTypes = {
     props: PropTypes.any,
-    group: PropTypes.string
+    group: PropTypes.any
 };
 
 memo(HeaderChatTitle);

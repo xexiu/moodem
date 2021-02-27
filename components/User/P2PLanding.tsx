@@ -1,10 +1,12 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
-import React, { memo, useContext, useEffect, useRef } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { AbstractMedia } from '../common/functional-components/AbstractMedia';
+import { BgImage } from '../common/functional-components/BgImage';
 import { BodyContainer } from '../common/functional-components/BodyContainer';
-import { MainContainer } from '../common/MainContainer';
+import { PreLoader } from '../common/functional-components/PreLoader';
 import { Songs } from '../User/functional-components/Songs';
 import { AppContext } from './functional-components/AppContext';
 
@@ -12,15 +14,17 @@ const welcomeMsgMoodem = (toastRef: any) => (data: any) => toastRef.show(data, 3
 
 const P2PLanding = (props: any) => {
     const { group }: any = useContext(AppContext);
+    const [isLoading, setIsloading] = useState(true);
     const isFocused = useIsFocused();
     const toastRef = useRef(null);
     const media = new AbstractMedia();
 
     useEffect(() => {
-        console.log('3. ON P2PLanding', isFocused);
+        console.log('2. ON P2PLanding', isFocused);
         if (isFocused) {
-            media.on('server-send-message-welcomeMsg', welcomeMsgMoodem(toastRef.current));
+            media.on('server-send-message-welcomeMsg', () => welcomeMsgMoodem(toastRef.current));
             media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
+            setIsloading(false);
         }
 
         return () => {
@@ -29,16 +33,29 @@ const P2PLanding = (props: any) => {
         };
     }, [isFocused]);
 
-    return (
-        <MainContainer>
-            <BodyContainer>
-                <Songs {...props} />
-                <Toast
-                    position='top'
-                    ref={toastRef}
+    if (isLoading) {
+        return (
+            <View>
+                <BgImage />
+                <PreLoader
+                    containerStyle={{
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
                 />
-            </BodyContainer>
-        </MainContainer>
+            </View>
+        );
+    }
+
+    return (
+        <BodyContainer>
+            <Songs {...props} />
+            <Toast
+                position='top'
+                ref={toastRef}
+            />
+        </BodyContainer>
     );
 };
 
