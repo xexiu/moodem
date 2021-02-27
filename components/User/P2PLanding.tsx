@@ -21,7 +21,7 @@ const P2PLanding = (props: any) => {
     const media = new AbstractMedia();
 
     useEffect(() => {
-        console.log('2. ON P2PLanding', isFocused);
+        console.log('2. ON P2PLanding');
         if (isFocused) {
             media.on('server-send-message-welcomeMsg', () => welcomeMsgMoodem(toastRef.current));
             media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
@@ -32,7 +32,7 @@ const P2PLanding = (props: any) => {
             console.log('3. OFF P2PLanding');
             media.destroy();
         };
-    }, [isFocused]);
+    }, []);
 
     if (isLoading) {
         return (

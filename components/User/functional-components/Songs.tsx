@@ -93,8 +93,6 @@ export const Songs = memo((props: any) => {
         );
     }
 
-    console.log('Songs');
-
     return (
         <BodyContainer>
             <CommonTopSearchBar
