@@ -15,57 +15,58 @@ const SongsList = (props: any) => {
 
     console.log('4. SongsList');
 
-    const renderItem = (song: any) => (
-        <CommonFlatListItem
-            contentContainerStyle={{
-                position: 'relative',
-                paddingTop: 5,
-                paddingBottom: 20,
-                paddingLeft: 0,
-                paddingRight: 0
-            }}
-            bottomDivider
-            title={song.title}
-            titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={song.user && song.user.username}
-            subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-            leftAvatar={{
-                source: { uri: song.artwork_url }
-            }}
-            buttonGroup={isSearching ? [] : MediaButtons(song, media, group, ['votes', 'remove'])}
-            chevron={!song.isMediaOnList && {
-                name: 'arrow-right',
-                type: 'AntDesign',
-                color: '#dd0031',
-                onPress: () => handler(song),
-                size: 10,
-                raised: true,
-                iconStyle: { fontSize: 27, alignSelf: 'center' },
-                containerStyle: { marginLeft: 0 }
-            }}
-            action={() => {
-                return player.current.dispatchActionsPressedTrack(song);
-            }}
-        />
-    );
-
-    if (isSearching) {
+    function renderList() {
         return (
             <CommonFlatList
                 data={items}
                 extraData={items}
+                keyExtractor={item => String(item.id)}
                 action={({ item }) => renderItem(item)}
             />
         );
     }
 
-    return (
-        <CommonFlatList
-            data={items}
-            extraData={items}
-            action={({ item }) => renderItem(item)}
-        />
-    );
+    function renderItem(song: any) {
+        return (
+            <CommonFlatListItem
+                contentContainerStyle={{
+                    position: 'relative',
+                    paddingTop: 5,
+                    paddingBottom: 20,
+                    paddingLeft: 0,
+                    paddingRight: 0
+                }}
+                bottomDivider
+                title={song.title}
+                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+                subtitle={song.user && song.user.username}
+                subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
+                leftAvatar={{
+                    source: { uri: song.artwork_url }
+                }}
+                buttonGroup={isSearching ? [] : MediaButtons(song, media, group, ['votes', 'remove'])}
+                chevron={!song.isMediaOnList && {
+                    name: 'arrow-right',
+                    type: 'AntDesign',
+                    color: '#dd0031',
+                    onPress: () => handler(song),
+                    size: 10,
+                    raised: true,
+                    iconStyle: { fontSize: 27, alignSelf: 'center' },
+                    containerStyle: { marginLeft: 0 }
+                }}
+                action={() => {
+                    return player.current.dispatchActionsPressedTrack(song);
+                }}
+            />
+        );
+    }
+
+    if (isSearching) {
+        return renderList();
+    }
+
+    return renderList();
 };
 
 memo(SongsList);

@@ -5,10 +5,18 @@ import { Text, TextInput, View } from 'react-native';
 
 const DEFAULT_LENGTH = 300;
 
-const CommonTextInput = ({ navigation, user, callback }: any) => {
+const CommonTextInput = ({ navigation, user, group, media }: any) => {
     const [value, onChangeText] = useState('');
     const [maxCharacters, updateMaxCharacters] = useState(DEFAULT_LENGTH);
     const inputRef = useRef(null);
+
+    function buildMsg() {
+        return {
+            id: Object.keys(user || {}).length ? `${user.uid}_${Math.random()}` : Math.random(),
+            text: value ? value.replace(/^\s*\n/gm, '') : '',
+            user
+        };
+    }
 
     return (
         <View style={{ position: 'relative' }}>
@@ -41,7 +49,12 @@ const CommonTextInput = ({ navigation, user, callback }: any) => {
                     } else if (value) {
                         onChangeText('');
                         updateMaxCharacters(DEFAULT_LENGTH);
-                        callback(value);
+                        media.emit('chat-messages',
+                            {
+                                chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`,
+                                msg: buildMsg(),
+                                user
+                            });
                     }
                 }}
             />
@@ -52,7 +65,8 @@ const CommonTextInput = ({ navigation, user, callback }: any) => {
 CommonTextInput.propTypes = {
     navigation: PropTypes.object,
     user: PropTypes.any,
-    callback: PropTypes.func
+    group: PropTypes.any,
+    media: PropTypes.any
 };
 
 memo(CommonTextInput);

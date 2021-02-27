@@ -2,7 +2,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
-import { AppState, Text, View } from 'react-native';
+import { AppState, Text } from 'react-native';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 
 const HeaderChatUsers = (props: any) => {

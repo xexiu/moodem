@@ -5,19 +5,12 @@ import { Keyboard, View } from 'react-native';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
-import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
 import { AppContext } from '../functional-components/AppContext';
 import { HeaderChat } from '../functional-components/HeaderChat';
 import { HeaderChatTitle } from '../functional-components/HeaderChatTitle';
 import { HeaderChatUsers } from '../functional-components/HeaderChatUsers';
-import { MessagesListItem } from '../functional-components/MessagesListItem';
-
-const buildMsg = (value: string, user: any) => ({
-    id: Object.keys(user || {}).length ? `${user.uid}_${Math.random()}` : Math.random(),
-    text: value ? value.replace(/^\s*\n/gm, '') : '',
-    user
-});
+import { MessagesList } from '../functional-components/MessagesList';
 
 const ChatRoom = (props: any) => {
     const { user, group }: any = useContext(AppContext);
@@ -49,15 +42,6 @@ const ChatRoom = (props: any) => {
         setMessages([...messagesList]);
     };
 
-    const renderItem = ({ item }: any) => (
-        <MessagesListItem msg={item} />
-    );
-
-    const sendNewMsg = (value: string) => {
-        media.emit('chat-messages',
-            { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, msg: buildMsg(value, user), user });
-    };
-
     return (
         <BodyContainer>
             <BurgerMenuIcon
@@ -68,20 +52,19 @@ const ChatRoom = (props: any) => {
             />
             <HeaderChat>
                 <HeaderChatTitle group={group} />
-                <HeaderChatUsers chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`} />
-            </HeaderChat>
-            <View style={{ flex: 2, paddingBottom: 15 }}>
-                <CommonFlatList
-                    data={messages}
-                    extraData={messages}
-                    keyExtractor={item => String(item.id)}
-                    inverted
-                    action={renderItem}
+                <HeaderChatUsers
+                    chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`}
                 />
-                <View style={{ height: 50 }}>
-                    <View style={{ position: 'absolute', bottom: 0, right: 0, left: 7, width: '96%', zIndex: 1 }}>
-                        <CommonTextInput navigation={navigation} user={user} callback={sendNewMsg} />
-                    </View>
+            </HeaderChat>
+            <MessagesList messages={messages} />
+            <View style={{ height: 50 }}>
+                <View style={{ position: 'absolute', bottom: 2, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                    <CommonTextInput
+                        navigation={navigation}
+                        user={user}
+                        group={group}
+                        media={media}
+                    />
                 </View>
             </View>
         </BodyContainer>
