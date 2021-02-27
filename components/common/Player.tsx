@@ -39,20 +39,25 @@ class Player extends Component {
         super(props);
 
         this.toastRef = React.createRef();
+
+        props.tracks && props.tracks.length ?
+        this.tracks = props.tracks :
         this.tracks = [];
+
         this.state = {
-            songAlbumCover: props.tracks[0].artwork_url,
-            songTitle: props.tracks[0].title,
-            songArtist: props.tracks[0].user && props.tracks[0].user.username,
+            tracks: [],
+            songAlbumCover: this.tracks.length ? this.tracks[0].artwork_url : '',
+            songTitle: this.tracks.length ? this.tracks[0].title : '',
+            songArtist: this.tracks.length ? this.tracks[0].user && this.tracks[0].user.username : '',
             songIndex: 0,
             paused: true,
-            currentSong: props.tracks[0].stream_url,
+            currentSong: this.tracks.length ? this.tracks[0].stream_url : '',
             isBuffering: true,
             shouldRepeat: false,
             shouldShuffle: false,
             songIsReady: false,
             trackCurrentTime: 0,
-            trackMaxDuration: props.tracks[0].duration
+            trackMaxDuration: this.tracks.length ? this.tracks[0].duration : 0
         };
     }
 

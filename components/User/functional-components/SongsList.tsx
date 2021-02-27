@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
-import { Player } from '../../common/Player';
-import { PlayerContainer } from '../../common/PlayerContainer';
 import { MediaButtons } from './MediaButtons';
 
 const SongsList = (props: any) => {
@@ -54,11 +52,6 @@ const SongsList = (props: any) => {
     if (isSearching) {
         return (
             <CommonFlatList
-                headerComponent={(
-                    <PlayerContainer items={items}>
-                        <Player ref={player} tracks={items} />
-                    </PlayerContainer>
-                )}
                 data={items}
                 extraData={items}
                 action={({ item }) => renderItem(item)}
@@ -68,11 +61,6 @@ const SongsList = (props: any) => {
 
     return (
         <CommonFlatList
-            headerComponent={(
-                <PlayerContainer items={items}>
-                    <Player ref={player} tracks={items} />
-                </PlayerContainer>
-            )}
             data={items}
             extraData={items}
             action={({ item }) => renderItem(item)}

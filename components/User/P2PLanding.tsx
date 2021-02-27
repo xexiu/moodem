@@ -3,6 +3,7 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
+import { BurgerMenuIcon } from '../common/BurgerMenuIcon';
 import { AbstractMedia } from '../common/functional-components/AbstractMedia';
 import { BgImage } from '../common/functional-components/BgImage';
 import { BodyContainer } from '../common/functional-components/BodyContainer';
@@ -50,6 +51,12 @@ const P2PLanding = (props: any) => {
 
     return (
         <BodyContainer>
+            <BurgerMenuIcon
+                action={() => {
+                    props.navigation.openDrawer();
+                }}
+                customStyle={{ top: -5, left: 0, width: 30, height: 30 }}
+            />
             <Songs {...props} />
             <Toast
                 position='top'

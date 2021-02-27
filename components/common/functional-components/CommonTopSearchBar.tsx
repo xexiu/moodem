@@ -41,7 +41,6 @@ const CommonTopSearchBar = (props: any) => {
             onChangeText={text => {
                 setValue(text);
                 setShowLoadingSpin(false);
-                cancelSearch();
             }}
             value={value}
             onClear={() => setShowLoadingSpin(false)}
