@@ -55,7 +55,6 @@ const P2PLanding = (props: any) => {
                 action={() => {
                     props.navigation.openDrawer();
                 }}
-                customStyle={{ top: -5, left: 0, width: 30, height: 30 }}
             />
             <Songs {...props} />
             <Toast

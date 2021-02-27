@@ -49,6 +49,8 @@ export const Songs = memo((props: any) => {
             index: allValues.songs.length
         });
 
+        console.log('SENND MEDIA');
+
         media.emit('send-message-media',
             { song, chatRoom: group.group_name });
     };

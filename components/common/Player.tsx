@@ -70,7 +70,6 @@ class Player extends Component {
     onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
         if (shouldRepeat) {
             this.dispatchActionsPressedTrack(tracks[songIndex]);
-            this.player.seek(0);
         } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
 
@@ -198,7 +197,7 @@ class Player extends Component {
                     onProgress={this.onPlayProgress}
                     onEnd={() => {
                         const songEnded = setTimeout(() => {
-                            this.resetPlayLastSong(tracks, songIndex, shouldShuffle, shouldRepeat);
+                            !shouldRepeat && this.resetPlayLastSong(tracks, songIndex, shouldShuffle, shouldRepeat);
 
                             if (!shouldRepeat) {
                                 this.setState({ trackCurrentTime: 0, paused: true });
@@ -223,7 +222,12 @@ class Player extends Component {
                 <PlayerControlsContainer>
                     <PlayerControlShuffle
                         shouldShuffle={shouldShuffle}
-                        onPressShuffle={this.hanleOnPressShuffle}
+                        onPressShuffle={() => {
+                            this.setState({
+                                shouldRepeat: false
+                            });
+                            this.hanleOnPressShuffle();
+                        }}
                     />
                     <PlayerControlBackward
                         onPressBackward={() => this.handleOnPressBackward(tracks, songIndex)}
@@ -238,7 +242,12 @@ class Player extends Component {
                     />
                     <PlayerControlRepeat
                         shouldRepeat={shouldRepeat}
-                        onPressRepeat={this.hanleOnPressRepeat}
+                        onPressRepeat={() => {
+                            this.setState({
+                                shouldShuffle: false
+                            });
+                            this.hanleOnPressRepeat();
+                        }}
                     />
                     <PlayerControlTimeSeek
                         trackLength={trackMaxDuration}

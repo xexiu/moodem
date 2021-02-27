@@ -4,6 +4,7 @@ import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
+import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
 import { AppContext } from '../functional-components/AppContext';
@@ -26,7 +27,7 @@ const ChatRoom = (props: any) => {
     const media = new AbstractMedia();
 
     useEffect(() => {
-        console.log('6. ChatRoom');
+        console.log('5. ChatRoom');
         media.on('chat-messages', getMessage);
         media.on('moodem-chat', setMessageList);
         media.emit('moodem-chat',
@@ -36,7 +37,7 @@ const ChatRoom = (props: any) => {
             console.log('5. OFF EFFECT ChatRoom');
             media.destroy();
         };
-    }, [messages.length, isFocused]);
+    }, [messages.length, isFocused, group]);
 
     const getMessage = (msg: never) => {
         if (msg) {
@@ -58,16 +59,15 @@ const ChatRoom = (props: any) => {
     };
 
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1, position: 'relative' }}>
+        <BodyContainer>
             <BurgerMenuIcon
-                customStyle={{ top: 20, left: 0, width: 30, height: 30 }}
                 action={() => {
                     navigation.openDrawer();
                     Keyboard.dismiss();
                 }}
             />
             <HeaderChat>
-                <HeaderChatTitle group={props.route.params.group} />
+                <HeaderChatTitle group={group} />
                 <HeaderChatUsers chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`} />
             </HeaderChat>
             <View style={{ flex: 2, paddingBottom: 15 }}>
@@ -84,7 +84,7 @@ const ChatRoom = (props: any) => {
                     </View>
                 </View>
             </View>
-        </View>
+        </BodyContainer>
     );
 };
 

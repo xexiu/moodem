@@ -19,7 +19,7 @@ export const SideBarTopHeader = (props: any) => {
             dispatch({
                 type: 'group', value: {
                     group_name: 'Moodem',
-                    group_id: null
+                    group_id: 0
                 }
             });
             resolve(true);

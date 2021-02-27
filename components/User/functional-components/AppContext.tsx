@@ -12,7 +12,8 @@ type Context = {
 const initialContext: Context = {
     user: null,
     group: {
-        group_name: 'Moodem'
+        group_name: 'Moodem',
+        group_id: 0
     }
 };
 

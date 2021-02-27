@@ -7,12 +7,10 @@ const HeaderChat = (props: any) => {
     return (
         <View
             style={{
-                marginTop: 35,
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderBottomWidth: 1,
-                borderBottomColor: '#eee',
-                paddingBottom: 10
+                borderBottomColor: '#eee'
             }}
         >
             {props.children}

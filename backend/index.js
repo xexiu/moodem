@@ -53,7 +53,6 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   // Welcome Msg
-  console.log('CONNECTION ID', socket.id, 'SOCKET UID', socket.uid);
   socket.on('server-send-message-welcomeMsg', (data) => {
     buildMedia(data);
     socket.emit('server-send-message-welcomeMsg', `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`);
@@ -63,7 +62,6 @@ io.on('connection', (socket) => {
   // Media
   socket.on('send-message-media', async (data) => {
     await socket.join(data.chatRoom);
-    console.log('Chat Room', data.chatRoom);
     buildMedia(data);
 
     if (data.song) {
@@ -71,7 +69,6 @@ io.on('connection', (socket) => {
     }
     const songs = Array.from(chatRooms[data.chatRoom].songs);
     songs.sort(compareValues('votes_count'));
-    console.log('SONGS IN Chat Room', songs);
 
     io.to(data.chatRoom).emit('send-message-media', songs);
   });
@@ -117,7 +114,6 @@ io.on('connection', (socket) => {
     if (data.leaveChatRoom) {
       await socket.leave(data.leaveChatRoom);
       chatRooms[data.chatRoom].uids.delete(socket.uid);
-      socket.disconnect(true);
       io.to(data.chatRoom).emit('users-connected-to-room', chatRooms[data.chatRoom].uids.size);
     } else {
       await socket.join(data.chatRoom);
@@ -130,8 +126,6 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
 
     buildMedia(data);
-
-    chatRooms[data.chatRoom].uids.add(socket.uid);
 
     if (Array.from(chatRooms[data.chatRoom].messages).length) {
       io.to(data.chatRoom).emit('moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());

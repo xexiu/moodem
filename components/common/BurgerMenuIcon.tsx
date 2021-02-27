@@ -12,7 +12,16 @@ const BurgerMenuIcon = (props: any) => {
 
     return (
       <Icon
-          containerStyle={[{ position: 'absolute', zIndex: 1000 }, customStyle]}
+          containerStyle={[
+              {
+                  position: 'absolute',
+                  zIndex: 1000,
+                  top: -5,
+                  left: 0,
+                  width: 30,
+                  height: 30
+              }
+            , customStyle]}
           iconStyle={{ fontSize: 30 }}
           Component={TouchableScale}
           name='menu'
