@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { PreLoader } from '../../common/functional-components/PreLoader';
 import { Song } from './Song';
@@ -14,7 +14,6 @@ const SongsList = (props: any) => {
     } = props;
     const flatListRef = useRef(null);
     const [isLoading, setIsloading] = useState(true);
-    const [isPlaying, setIsPlaying] = useState(0);
     const [, updateState] = useState();
     const forceUpdate = useCallback(() => updateState({} as any), []);
 
@@ -31,21 +30,17 @@ const SongsList = (props: any) => {
             group={group}
             handler={handler}
             player={player}
-            isPlaying={isPlaying}
             pressItemHandler={(_song: any, isSongPlaying: boolean) => {
                 items.forEach((_item: any) => {
                     _item.isPlaying = false;
                 });
                 song.isPlaying = isSongPlaying;
-                setIsPlaying(song.id);
-                // forceUpdate();
+                forceUpdate();
             }}
         />);
     };
 
     const keyExtractor = useCallback((item: any) => item.index.toString(), [items]);
-
-    console.log('UPDATING');
 
     function renderList() {
         return (

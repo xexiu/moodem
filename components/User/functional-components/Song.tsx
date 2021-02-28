@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
+import { PreLoader } from '../../common/functional-components/PreLoader';
 import { MediaButtons } from './MediaButtons';
 
 const Song = (props: any) => {
@@ -10,23 +11,22 @@ const Song = (props: any) => {
         handler,
         player,
         isSearching,
-        isPlaying,
         pressItemHandler
     } = props;
+    const [isLoading, setIsloading] = useState(true);
 
-    console.log('5. Song');
+    useEffect(() => {
+        console.log('5. Song');
+        setIsloading(false);
+    }, []);
 
     const isPlayerPlaying = () => !player.current.state.paused;
-
-    // isPlayerPaused -> false (song is playing)
-    // song1 is playing -> false
-    // song2 is playing -> true
 
     const setSource = () => {
         if (isPlayerPlaying() && song.isPlaying) {
             return {
                 source: {
-                    uri: require('../../assets/play_pause.png')
+                    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU'
                 }
             };
         }
@@ -36,8 +36,6 @@ const Song = (props: any) => {
     };
 
     function renderItem() {
-        // console.log('PAUSED', song.isPlaying);
-
         return (
             <CommonFlatListItem
                 contentContainerStyle={{
@@ -89,6 +87,18 @@ const Song = (props: any) => {
                             return pressItemHandler(song, playing);
                         });
                 }}
+            />
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <PreLoader
+                containerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+                size={50}
             />
         );
     }
