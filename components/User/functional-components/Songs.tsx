@@ -47,8 +47,7 @@ export const Songs = memo((props: any) => {
 
     const sendMediaToServer = (song: object) => {
         Object.assign(song, {
-            isMediaOnList: true,
-            index: allValues.songs.length
+            isMediaOnList: true
         });
 
         console.log('SENND MEDIA');

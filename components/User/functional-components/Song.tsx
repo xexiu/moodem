@@ -23,7 +23,6 @@ const Song = (props: any) => {
                     marginLeft: 10,
                     marginRight: 10,
                     marginBottom: 10,
-                    paddingBottom: 20,
                     paddingLeft: 10,
                     paddingRight: 0,
                     shadowColor: '#000',
@@ -44,7 +43,10 @@ const Song = (props: any) => {
                 leftAvatar={{
                     source: { uri: song.artwork_url }
                 }}
-                buttonGroup={isSearching ? [] : MediaButtons(song, media, group, ['votes', 'remove'])}
+                buttonGroup={
+                    isSearching ? [] :
+                        MediaButtons(song, media, group, ['votes', 'remove'])
+                }
                 chevron={!song.isMediaOnList && {
                     name: 'arrow-right',
                     type: 'AntDesign',
@@ -52,8 +54,7 @@ const Song = (props: any) => {
                     onPress: () => handler(song),
                     size: 10,
                     raised: true,
-                    iconStyle: { fontSize: 27, alignSelf: 'center' },
-                    containerStyle: { marginLeft: 0 }
+                    iconStyle: { fontSize: 27, alignSelf: 'center' }
                 }}
                 action={() => {
                     return player.current.dispatchActionsPressedTrack(song);

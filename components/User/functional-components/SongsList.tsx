@@ -33,6 +33,9 @@ const SongsList = (props: any) => {
     function renderList() {
         return (
             <CommonFlatList
+                onContentSizeChange={() => {
+                    console.log('SIZE CHANGED');
+                }}
                 reference={flatListRef}
                 data={items}
                 keyExtractor={keyExtractor}

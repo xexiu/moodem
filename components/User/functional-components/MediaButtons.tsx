@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Button } from './Button';
 
 function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
@@ -15,6 +16,7 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
             iconName: 'thumbs-up',
             iconType: 'entypo',
             iconColor: '#90c520',
+            iconSize: 9,
             action: () => {
                 media.emit('send-message-vote-up',
                     {
@@ -30,6 +32,7 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
             iconName: 'remove',
             iconType: 'font-awesome',
             iconColor: '#dd0031',
+            iconSize: 9,
             action: () => {
                 media.emit('send-message-remove-song',
                     {
@@ -57,6 +60,8 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
             return mediaMap[action].iconType;
         case 'iconColor':
             return mediaMap[action].iconColor;
+        case 'iconSize':
+            return mediaMap[action].iconSize;
         case 'action':
             return mediaMap[action].action;
         default:
@@ -78,15 +83,18 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
     function createButton(action: string) {
         return {
             element: () => (
-                <Button
-                    containerStyle={getAction(action, 'containerStyle')}
-                    disabled={getAction(action, 'disabled')}
-                    text={getAction(action, 'text')}
-                    iconName={getAction(action, 'iconName')}
-                    iconType={getAction(action, 'iconType')}
-                    iconColor={getAction(action, 'iconColor')}
-                    action={getAction(action, 'action')}
-                />
+                <View style={{marginBottom: 5 }}>
+                    <Button
+                        containerStyle={getAction(action, 'containerStyle')}
+                        disabled={getAction(action, 'disabled')}
+                        text={getAction(action, 'text')}
+                        iconName={getAction(action, 'iconName')}
+                        iconType={getAction(action, 'iconType')}
+                        iconColor={getAction(action, 'iconColor')}
+                        iconSize={getAction(action, 'iconSize')}
+                        action={getAction(action, 'action')}
+                    />
+                </View>
             )
         };
     }

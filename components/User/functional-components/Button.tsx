@@ -58,6 +58,7 @@ Button.propTypes = {
     iconName: PropTypes.string.isRequired,
     iconType: PropTypes.string,
     iconColor: PropTypes.string,
+    iconSize: PropTypes.number,
     action: PropTypes.func
 };
 
