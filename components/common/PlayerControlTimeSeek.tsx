@@ -71,6 +71,7 @@ const styles = {
         textAlign: 'center'
     },
     slider: {
+        height: 50
     },
     thumb: {
         borderWidth: 1,

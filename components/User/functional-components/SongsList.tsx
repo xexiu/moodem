@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
 import { MediaButtons } from './MediaButtons';
@@ -12,12 +12,18 @@ const SongsList = (props: any) => {
         isSearching,
         player
     } = props;
+    const flatListRef = useRef(null);
 
     console.log('4. SongsList');
 
     function renderList() {
         return (
             <CommonFlatList
+                reference={flatListRef}
+                onContentSizeChange={() => {
+                    console.log('CHANGEDD CONTENT', flatListRef);
+                    flatListRef?.current?.scrollToEnd({ animated: true, index: 0 });
+                }}
                 data={items}
                 extraData={items}
                 keyExtractor={item => String(item.id)}
@@ -32,6 +38,8 @@ const SongsList = (props: any) => {
                 contentContainerStyle={{
                     position: 'relative',
                     paddingTop: 5,
+                    marginLeft: 10,
+                    marginRight: 10,
                     paddingBottom: 20,
                     paddingLeft: 0,
                     paddingRight: 0

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Dimensions, ImageBackground, View, ViewStyle } from 'react-native';
+import { Dimensions, ImageBackground, View } from 'react-native';
 
 interface Props {
     source?: object;

@@ -9,7 +9,7 @@ function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
 export const MediaButtons = (song: any, media: any, group: any, actions: string[]) => {
     const mediaMap = {
         votes: {
-            containerStyle: { paddingRight: 2 },
+            containerStyle: {},
             votes_count: song.votes_count,
             voted_users: song.voted_users,
             iconName: 'thumbs-up',
@@ -26,7 +26,7 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
             }
         },
         remove: {
-            containerStyle: { paddingRight: 2, marginLeft: 10 },
+            containerStyle: {},
             iconName: 'remove',
             iconType: 'font-awesome',
             iconColor: '#dd0031',

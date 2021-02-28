@@ -19,10 +19,11 @@ const BurgerMenuIcon = (props: any) => {
                   top: -5,
                   left: 0,
                   width: 30,
-                  height: 30
+                  height: 30,
+                  alignItems: 'center'
               }
             , customStyle]}
-          iconStyle={{ fontSize: 30 }}
+          iconStyle={{ fontSize: 25 }}
           Component={TouchableScale}
           name='menu'
           type='simple-line-icons'

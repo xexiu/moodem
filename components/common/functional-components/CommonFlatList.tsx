@@ -4,6 +4,7 @@ import React, { memo, useRef } from 'react';
 import { FlatList } from 'react-native';
 
 const CommonFlatList = (props: any) => {
+    const flatListRef = useRef(null);
     const {
         inverted,
         emptyListComponent,
@@ -13,21 +14,24 @@ const CommonFlatList = (props: any) => {
         footerStyle,
         itemSeparatorComponent,
         horizontal = false,
+        onContentSizeChange,
         numColumns,
+        reference = flatListRef,
         data,
         extraData,
         keyExtractor = (item, index: number) => String(index),
         action = (item: any) => console.log('Item from CommonFlatList: ', item)
     } = props;
-    const flatListRef = useRef(null);
 
     return (
         <FlatList
+            onContentSizeChange={onContentSizeChange}
+            bounces={true}
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
             initialNumToRender={12}
             scrollEventThrottle={15}
-            ref={flatListRef}
+            ref={reference}
             inverted={inverted}
             ListEmptyComponent={emptyListComponent}
             ListHeaderComponent={headerComponent}
@@ -54,7 +58,10 @@ CommonFlatList.propTypes = {
     keyExtractor: PropTypes.func,
     action: PropTypes.func,
     emptyListComponent: PropTypes.any,
-    headerComponent: PropTypes.any
+    headerComponent: PropTypes.any,
+    ref: PropTypes.any,
+    onContentSizeChange: PropTypes.func,
+    reference: PropTypes.any
 };
 
 memo(CommonFlatList);

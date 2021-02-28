@@ -5,8 +5,8 @@ const {
 } = Dimensions.get('window');
 
 export const commonTopSeachBarContainer = {
-    width: width - 60,
-    marginLeft: 40,
+    width: width - 50,
+    marginLeft: 45,
     padding: 0,
     backgroundColor: '#fff',
     borderRadius: 25,

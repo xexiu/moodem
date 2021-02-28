@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { ListItem } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
+import TouchableScale from 'react-native-touchable-scale';
 import { isEmpty } from '../../../src/js/Utils/common/checkers';
 
 const DEFAULT_AVATAR_STYLE = { width: 50, height: 50, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 };
@@ -22,7 +23,9 @@ const CommonFlatListItem = (props: any) => {
         chevron,
         action,
         avatarStyle = DEFAULT_AVATAR_STYLE,
-        buttonGroup
+        buttonGroup,
+        friction = 90,
+        tension = 100
     } = props;
 
     const myAvatar = (<FastImage
@@ -35,6 +38,9 @@ const CommonFlatListItem = (props: any) => {
 
     return (
         <ListItem
+            Component={TouchableScale}
+            friction={friction}
+            tension={tension}
             containerStyle={contentContainerStyle}
             topDivider={topDivider}
             bottomDivider={bottomDivider}
@@ -92,7 +98,9 @@ CommonFlatListItem.propTypes = {
     contentContainerStyle: PropTypes.object,
     chevron: PropTypes.any,
     avatarStyle: PropTypes.object,
-    buttonGroup: PropTypes.any
+    buttonGroup: PropTypes.any,
+    friction: PropTypes.number,
+    tension: PropTypes.number
 };
 
 memo(CommonFlatListItem);

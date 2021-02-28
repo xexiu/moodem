@@ -43,7 +43,7 @@ const Button = (props: any) => {
                 color={disabled ? '#999' : iconColor}
                 onPress={action}
             />
-            <Text>{formatCash(text)}</Text>
+            <Text style={{marginRight: 4, marginLeft: 4, fontWeight: '600' }}>{formatCash(text)}</Text>
         </TouchableOpacity>
     );
 };
