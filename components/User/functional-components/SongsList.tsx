@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
 import { PreLoader } from '../../common/functional-components/PreLoader';
 import { Song } from './Song';
@@ -14,21 +14,38 @@ const SongsList = (props: any) => {
     } = props;
     const flatListRef = useRef(null);
     const [isLoading, setIsloading] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(0);
+    const [, updateState] = useState();
+    const forceUpdate = useCallback(() => updateState({} as any), []);
 
     useEffect(() => {
         console.log('4. SongsList');
         setIsloading(false);
-    }, []);
+    }, [forceUpdate]);
 
-    const renderItem = useCallback(({ item, index }) => <Song
-        isSearching={isSearching}
-        song={item}
-        media={media}
-        group={group}
-        handler={handler}
-        player={player}
-    />, [items]);
+    const renderItem = (song: any) => {
+        return (<Song
+            isSearching={isSearching}
+            song={song}
+            media={media}
+            group={group}
+            handler={handler}
+            player={player}
+            isPlaying={isPlaying}
+            pressItemHandler={(_song: any, isSongPlaying: boolean) => {
+                items.forEach((_item: any) => {
+                    _item.isPlaying = false;
+                });
+                song.isPlaying = isSongPlaying;
+                setIsPlaying(song.id);
+                // forceUpdate();
+            }}
+        />);
+    };
+
     const keyExtractor = useCallback((item: any) => item.index.toString(), [items]);
+
+    console.log('UPDATING');
 
     function renderList() {
         return (
@@ -39,7 +56,7 @@ const SongsList = (props: any) => {
                 reference={flatListRef}
                 data={items}
                 keyExtractor={keyExtractor}
-                action={renderItem}
+                action={({ item }) => renderItem(item)}
             />
         );
     }

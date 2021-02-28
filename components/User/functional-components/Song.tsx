@@ -9,12 +9,35 @@ const Song = (props: any) => {
         group,
         handler,
         player,
-        isSearching
+        isSearching,
+        isPlaying,
+        pressItemHandler
     } = props;
 
     console.log('5. Song');
 
+    const isPlayerPlaying = () => !player.current.state.paused;
+
+    // isPlayerPaused -> false (song is playing)
+    // song1 is playing -> false
+    // song2 is playing -> true
+
+    const setSource = () => {
+        if (isPlayerPlaying() && song.isPlaying) {
+            return {
+                source: {
+                    uri: require('../../assets/play_pause.png')
+                }
+            };
+        }
+        return {
+            source: { uri: song.artwork_url }
+        };
+    };
+
     function renderItem() {
+        // console.log('PAUSED', song.isPlaying);
+
         return (
             <CommonFlatListItem
                 contentContainerStyle={{
@@ -40,9 +63,7 @@ const Song = (props: any) => {
                 titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitle={song.user && song.user.username}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                leftAvatar={{
-                    source: { uri: song.artwork_url }
-                }}
+                leftAvatar={setSource()}
                 buttonGroup={
                     isSearching ? [] :
                         MediaButtons(song, media, group, ['votes', 'remove'])
@@ -57,7 +78,16 @@ const Song = (props: any) => {
                     iconStyle: { fontSize: 27, alignSelf: 'center' }
                 }}
                 action={() => {
-                    return player.current.dispatchActionsPressedTrack(song);
+                    player.current.dispatchActionsPressedTrack(song);
+                    const isCurrentSongPlaying = new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(!player.current.state.paused);
+                        }, 100);
+                    });
+                    isCurrentSongPlaying
+                        .then(playing => {
+                            return pressItemHandler(song, playing);
+                        });
                 }}
             />
         );

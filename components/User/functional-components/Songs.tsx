@@ -15,7 +15,8 @@ import { SongsList } from './SongsList';
 
 function setMediaIndex(song: any, index: number) {
     Object.assign(song, {
-        index
+        index,
+        isPlaying: false
     });
 }
 

@@ -34,6 +34,7 @@ const CommonFlatList = (props: any) => {
             keyboardShouldPersistTaps='always'
             initialNumToRender={12}
             scrollEventThrottle={15}
+            maxToRenderPerBatch={10}
             ref={reference}
             inverted={inverted}
             ListEmptyComponent={emptyListComponent}

@@ -36,6 +36,8 @@ const CommonFlatListItem = (props: any) => {
         }}
     />);
 
+    console.log('FLATLIST', leftAvatar);
+
     return (
         <ListItem
             Component={TouchableScale}
