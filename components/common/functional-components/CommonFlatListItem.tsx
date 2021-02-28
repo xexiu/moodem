@@ -95,7 +95,10 @@ CommonFlatListItem.propTypes = {
     action: PropTypes.func,
     topDivider: PropTypes.bool,
     titleProps: PropTypes.object,
-    contentContainerStyle: PropTypes.object,
+    contentContainerStyle: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.object
+    ]),
     chevron: PropTypes.any,
     avatarStyle: PropTypes.object,
     buttonGroup: PropTypes.any,

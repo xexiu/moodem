@@ -7,7 +7,7 @@ import { btnShadow } from '../../../src/css/styles/common';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import { BgImage } from './BgImage';
 
-const AvatarSideBar = (props: any) => {
+const SideBarTopAvatar = (props: any) => {
     const {
         navigation,
         user,
@@ -43,14 +43,14 @@ const AvatarSideBar = (props: any) => {
     );
 };
 
-AvatarSideBar.propTypes = {
+SideBarTopAvatar.propTypes = {
     navigation: PropTypes.object,
     user: PropTypes.object,
     group: PropTypes.object
 };
 
-memo(AvatarSideBar);
+memo(SideBarTopAvatar);
 
 export {
-    AvatarSideBar
+    SideBarTopAvatar
 };

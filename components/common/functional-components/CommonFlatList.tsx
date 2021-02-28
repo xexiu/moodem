@@ -20,13 +20,16 @@ const CommonFlatList = (props: any) => {
         data,
         extraData,
         keyExtractor = (item, index: number) => String(index),
-        action = (item: any) => console.log('Item from CommonFlatList: ', item)
+        action = (item: any) => console.log('Item from CommonFlatList: ', item),
+        viewabilityConfig,
+        onViewableItemsChanged
     } = props;
 
     return (
         <FlatList
+            viewabilityConfig={viewabilityConfig}
+            onViewableItemsChanged={onViewableItemsChanged}
             onContentSizeChange={onContentSizeChange}
-            bounces={true}
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
             initialNumToRender={12}
@@ -61,7 +64,9 @@ CommonFlatList.propTypes = {
     headerComponent: PropTypes.any,
     ref: PropTypes.any,
     onContentSizeChange: PropTypes.func,
-    reference: PropTypes.any
+    reference: PropTypes.any,
+    viewabilityConfig: PropTypes.object,
+    onViewableItemsChanged: PropTypes.func
 };
 
 memo(CommonFlatList);

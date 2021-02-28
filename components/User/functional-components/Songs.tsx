@@ -27,9 +27,11 @@ export const Songs = memo((props: any) => {
         isLoading: true
     });
     const media = new AbstractMedia();
+    const playerRef = media.playerRef;
 
     useEffect(() => {
         console.log('3. Songs');
+
         media.on('send-message-media', (_songs: any) => {
             _songs.forEach(setMediaIndex);
             setAllValues(prev => {
@@ -108,11 +110,11 @@ export const Songs = memo((props: any) => {
                 searchRef={media.searchRef}
             />
             <PlayerContainer items={allValues.songs}>
-                <Player ref={media.playerRef} tracks={allValues.songs} />
+                <Player ref={playerRef} tracks={allValues.songs} />
             </PlayerContainer>
             <View style={{ backgroundColor: '#fff', flex: 1 }} onStartShouldSetResponder={resetSearch}>
                 <SongsList
-                    player={media.playerRef}
+                    player={playerRef}
                     media={media}
                     handler={sendMediaToServer}
                     items={allValues.songs}

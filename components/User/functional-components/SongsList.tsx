@@ -1,7 +1,7 @@
-import React, { memo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
-import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
-import { MediaButtons } from './MediaButtons';
+import { PreLoader } from '../../common/functional-components/PreLoader';
+import { Song } from './Song';
 
 const SongsList = (props: any) => {
     const {
@@ -13,65 +13,44 @@ const SongsList = (props: any) => {
         player
     } = props;
     const flatListRef = useRef(null);
+    const [isLoading, setIsloading] = useState(true);
 
-    console.log('4. SongsList');
+    useEffect(() => {
+        console.log('4. SongsList');
+        setIsloading(false);
+    }, []);
+
+    const renderItem = useCallback(({ item, index }) => <Song
+        isSearching={isSearching}
+        song={item}
+        media={media}
+        group={group}
+        handler={handler}
+        player={player}
+    />, [items]);
+    const keyExtractor = useCallback((item: any) => item.index.toString(), [items]);
 
     function renderList() {
         return (
             <CommonFlatList
                 reference={flatListRef}
-                onContentSizeChange={() => {
-                    console.log('CHANGEDD CONTENT', flatListRef);
-                    flatListRef?.current?.scrollToEnd({ animated: true, index: 0 });
-                }}
                 data={items}
-                extraData={items}
-                keyExtractor={item => String(item.id)}
-                action={({ item }) => renderItem(item)}
+                keyExtractor={keyExtractor}
+                action={renderItem}
             />
         );
     }
 
-    function renderItem(song: any) {
+    if (isLoading) {
         return (
-            <CommonFlatListItem
-                contentContainerStyle={{
-                    position: 'relative',
-                    paddingTop: 5,
-                    marginLeft: 10,
-                    marginRight: 10,
-                    paddingBottom: 20,
-                    paddingLeft: 0,
-                    paddingRight: 0
+            <PreLoader
+                containerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
                 }}
-                bottomDivider
-                title={song.title}
-                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                subtitle={song.user && song.user.username}
-                subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                leftAvatar={{
-                    source: { uri: song.artwork_url }
-                }}
-                buttonGroup={isSearching ? [] : MediaButtons(song, media, group, ['votes', 'remove'])}
-                chevron={!song.isMediaOnList && {
-                    name: 'arrow-right',
-                    type: 'AntDesign',
-                    color: '#dd0031',
-                    onPress: () => handler(song),
-                    size: 10,
-                    raised: true,
-                    iconStyle: { fontSize: 27, alignSelf: 'center' },
-                    containerStyle: { marginLeft: 0 }
-                }}
-                action={() => {
-                    return player.current.dispatchActionsPressedTrack(song);
-                }}
+                size={50}
             />
         );
-    }
-
-    if (isSearching) {
-        return renderList();
     }
 
     return renderList();

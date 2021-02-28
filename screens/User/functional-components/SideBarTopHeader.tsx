@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
-import { AvatarSideBar } from '../../../components/common/functional-components/AvatarSideBar';
+import { SideBarTopAvatar } from '../../../components/common/functional-components/SideBarTopAvatar';
 import { AppContext } from '../../../components/User/functional-components/AppContext';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 
@@ -66,7 +66,7 @@ export const SideBarTopHeader = (props: any) => {
                     onPress={handlerGoHome}
                 />
             </View>
-            <AvatarSideBar navigation={navigation} user={params.user} group={params.group} />
+            <SideBarTopAvatar navigation={navigation} user={params.user} group={params.group} />
         </View>
     );
 };
