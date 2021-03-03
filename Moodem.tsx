@@ -64,6 +64,4 @@ const App = function Moodem() {
     );
 };
 
-memo(App);
-
-export default App;
+export default memo(App);

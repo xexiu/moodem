@@ -40,8 +40,4 @@ BurgerMenuIcon.propTypes = {
     customStyle: PropTypes.object
 };
 
-memo(BurgerMenuIcon);
-
-export {
-  BurgerMenuIcon
-};
+export default memo(BurgerMenuIcon);

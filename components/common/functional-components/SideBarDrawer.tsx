@@ -5,7 +5,7 @@ import React, { memo, useContext } from 'react';
 import { Login } from '../../../components/Guest/class-components/Login';
 import { Register } from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
-import { P2PLanding } from '../../../components/User/P2PLanding';
+import MediaItems from '../../../components/User/MediaItems';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import { ChatRoom } from '../../User/class-components/ChatRoom';
 import { AppContext } from '../../User/functional-components/AppContext';
@@ -51,7 +51,7 @@ const SideBarDrawer = (props: any) => {
             >
                 <Drawer.Screen
                     name={group.group_name}
-                    component={P2PLanding}
+                    component={MediaItems}
                     initialParams={{ user, group }}
                 />
                 <Drawer.Screen
@@ -88,13 +88,11 @@ const SideBarDrawer = (props: any) => {
             <Drawer.Screen
                 name='Moodem'
                 component={P2PLanding}
-                options={P2PLanding.navigationOptions}
                 initialParams={{ user, group }}
             />
             <Drawer.Screen
                 name='ChatRoom'
                 component={ChatRoom}
-                options={ChatRoom.navigationOptions}
                 initialParams={{ user, group }}
             />
             <Drawer.Screen

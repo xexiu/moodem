@@ -7,6 +7,24 @@ import TouchableScale from 'react-native-touchable-scale';
 import { isEmpty } from '../../../src/js/Utils/common/checkers';
 
 const DEFAULT_AVATAR_STYLE = { width: 50, height: 50, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 };
+const DEFAULT_CONTAINER_STYLE = {
+    position: 'relative',
+    paddingTop: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 0,
+    shadowColor: '#000',
+    shadowOffset: {
+        width: 0,
+        height: 1
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2
+};
 
 const CommonFlatListItem = (props: any) => {
     const {
@@ -17,7 +35,7 @@ const CommonFlatListItem = (props: any) => {
         subtitleStyle,
         topDivider,
         rightTitle,
-        contentContainerStyle,
+        contentContainerStyle = DEFAULT_CONTAINER_STYLE,
         leftAvatar,
         bottomDivider,
         chevron,
@@ -35,8 +53,6 @@ const CommonFlatListItem = (props: any) => {
             priority: FastImage.priority.high
         }}
     />);
-
-    console.log('FLATLIST', leftAvatar);
 
     return (
         <ListItem

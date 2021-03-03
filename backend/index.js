@@ -68,6 +68,12 @@ io.on('connection', (socket) => {
       chatRooms[data.chatRoom].songs.add(data.song);
     }
     const songs = Array.from(chatRooms[data.chatRoom].songs);
+    songs.forEach((song, index) => {
+      Object.assign(song, {
+        index,
+        isPlaying: false,
+      });
+    });
     songs.sort(compareValues('votes_count'));
 
     io.to(data.chatRoom).emit('send-message-media', songs);

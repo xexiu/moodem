@@ -29,6 +29,8 @@ export class AbstractMedia {
     public searchRef: any;
     public signal: any;
     public axios: any;
+    public flatListRef: any;
+    public toastRef: any;
 
     constructor() {
         const { user, group } = useContext(AppContext);
@@ -37,6 +39,8 @@ export class AbstractMedia {
         this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
         this.playerRef = useRef();
         this.searchRef = useRef();
+        this.flatListRef = useRef();
+        this.toastRef = useRef();
         this.signal = axios.CancelToken.source();
         this.axios = axios;
     }

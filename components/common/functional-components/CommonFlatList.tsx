@@ -27,6 +27,7 @@ const CommonFlatList = (props: any) => {
 
     return (
         <FlatList
+            removeClippedSubviews={true}
             viewabilityConfig={viewabilityConfig}
             onViewableItemsChanged={onViewableItemsChanged}
             onContentSizeChange={onContentSizeChange}
@@ -34,7 +35,6 @@ const CommonFlatList = (props: any) => {
             keyboardShouldPersistTaps='always'
             initialNumToRender={12}
             scrollEventThrottle={15}
-            maxToRenderPerBatch={10}
             ref={reference}
             inverted={inverted}
             ListEmptyComponent={emptyListComponent}

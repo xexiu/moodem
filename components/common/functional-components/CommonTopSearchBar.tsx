@@ -68,8 +68,4 @@ CommonTopSearchBar.propTypes = {
     customStyleContainer: PropTypes.object
 };
 
-memo(CommonTopSearchBar);
-
-export {
-    CommonTopSearchBar
-};
+export default memo(CommonTopSearchBar);
