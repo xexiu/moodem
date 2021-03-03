@@ -11,6 +11,7 @@ import { SideBarDrawer } from './components/common/functional-components/SideBar
 import { AppContext } from './components/User/functional-components/AppContext';
 import { GuestScreen } from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
+import { getGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 
 const Stack = createStackNavigator();
@@ -18,14 +19,23 @@ const controller = new AbortController();
 
 const App = function Moodem() {
     const { dispatch, user }: any = useContext(AppContext);
-    const [isLoading, setIsloading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
         firebase.auth().onAuthStateChanged((_user: any) => {
-            dispatch({ type: 'user', value: _user });
-            setIsloading(false);
+            if (_user) {
+                getGroups(_user)
+                    .then((dbGroups) => {
+                        setIsLoading(false);
+                        dispatch({ type: 'groups', value: dbGroups as string[] });
+                    })
+                    .catch(err => console.log('Something happened', err));
+                dispatch({ type: 'user', value: _user });
+            } else {
+                setIsLoading(false);
+            }
         });
 
         return () => {

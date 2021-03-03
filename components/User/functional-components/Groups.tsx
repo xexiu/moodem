@@ -1,11 +1,12 @@
 /* eslint-disable max-len, global-require */
+import { useIsFocused } from '@react-navigation/native';
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, Text, View } from 'react-native';
 import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
-import { createInvitedGroup, getAllGroups, getGroups } from '../../../src/js/Utils/Helpers/actions/groups';
+import { createInvitedGroup, getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
@@ -21,31 +22,22 @@ const Form = form.Form;
 
 const Groups = (props: any) => {
     const controller = new AbortController();
-    const { user, group, dispatch } = useContext(AppContext) as any;
+    const { user, group, groups, dispatch } = useContext(AppContext) as any;
     const { navigation } = props;
     const [showModal, setModal] = useState(false);
     const [userGroup = null, setUserGroup] = useState(null);
     const [showPasswordModal, setPasswordModal] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
     const [ isLoading, setIsLoading] = useState(true);
-    const [{ groups }, setGroups] = useState({groups: [] });
     const [{ searchedGroups }, setSearchedGroups] = useState({searchedGroups: []});
     const [{ value }, setPasswordFormValue] = useState({ value: ''});
     const refPassWordForm = React.createRef();
     const [isSearching, setIsSearching] = useState(false);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         console.log('3. Groups');
-        if (user) {
-            getGroups(user)
-            .then((dbGroups) => {
-                setGroups({
-                    groups: dbGroups as never[]
-                });
-                setIsLoading(false);
-            })
-            .catch(err => console.log('Something happened', err));
-        } else {
+        if (isFocused) {
             setIsLoading(false);
         }
 
@@ -77,9 +69,7 @@ const Groups = (props: any) => {
     };
 
     const handleNewGroup = (newGroup: never) => {
-        setGroups({
-            groups: [...groups, newGroup]
-        });
+        console.log('Creating group...');
         setIsLoading(false);
     };
 

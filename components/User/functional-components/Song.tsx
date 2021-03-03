@@ -14,12 +14,12 @@ const Song = (props: any) => {
         group,
         handlePressSong
     } = props;
-    const [isLoading, setIsloading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
 
     useEffect(() => {
         if (isFocused) {
-            setIsloading(false);
+            setIsLoading(false);
         }
     }, []);
 

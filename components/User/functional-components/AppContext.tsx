@@ -6,11 +6,13 @@ type Props = {
 
 type Context = {
     user: null;
+    groups: string[];
     group: object;
 };
 
 const initialContext: Context = {
     user: null,
+    groups: [],
     group: {
         group_name: 'Moodem',
         group_id: 0

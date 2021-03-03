@@ -13,7 +13,7 @@ import Songs from './functional-components/Songs';
 
 const MediaItems = (props: any) => {
     const { group }: any = useContext(AppContext);
-    const [isLoading, setIsloading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
     const media = new AbstractMedia();
 
@@ -23,7 +23,7 @@ const MediaItems = (props: any) => {
         if (isFocused) {
             media.on('server-send-message-welcomeMsg', (data: any) => media.toastRef.current.show(data, 3000));
             media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
-            setIsloading(false);
+            setIsLoading(false);
         }
 
         return () => {
