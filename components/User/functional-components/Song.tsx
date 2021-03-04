@@ -14,7 +14,6 @@ const Song = (props: any) => {
         media,
         isSearching,
         group,
-        user,
         handlePressSong
     } = props;
     const [isLoading, setIsLoading] = useState(true);

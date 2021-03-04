@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { Dimensions, Keyboard, View } from 'react-native';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import BgImage from '../../common/functional-components/BgImage';
@@ -16,6 +16,8 @@ import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
 const LIMIT_RESULT_SEARCHED_SONGS = 20;
+const currentSizeHeight = Dimensions.get('window').height;
+let firstLanding = false;
 
 const Songs = (props: any) => {
     const { media, navigation } = props;
@@ -162,6 +164,15 @@ const Songs = (props: any) => {
                     extraData={allValues.searchedSongs}
                     keyExtractor={keyExtractor}
                     action={renderItem}
+                    onContentSizeChange={(w, h) => {
+                        if ((h > currentSizeHeight - 350 && firstLanding)) {
+                            media.flatListRef.current.scrollToEnd({
+                                animated: true
+                            });
+                        } else {
+                            firstLanding = true;
+                        }
+                    }}
                 />
             </View>
         </BodyContainer>
