@@ -20,9 +20,7 @@ const CommonTopSearchBar = (props: any) => {
     const [showLoadingSpin, setShowLoadingSpin] = useState(false);
 
     useEffect(() => {
-        console.log('ON EFFECT SEARCH BAR');
         return () => {
-            console.log('OFF EFFECT SEARCH BAR');
             controller.abort();
         };
     }, []);
