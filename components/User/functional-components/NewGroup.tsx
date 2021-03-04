@@ -5,9 +5,9 @@ import { form, struct } from 'tcomb-form-native';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
 import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
-import { CustomButton } from '../../common/functional-components/CustomButton';
+import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
-import { PreLoader } from '../../common/functional-components/PreLoader';
+import PreLoader from '../../common/functional-components/PreLoader';
 
 const Form = form.Form;
 

@@ -9,9 +9,9 @@ import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { registerText } from '../../../src/css/styles/register';
 import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
 import { registerNewUser, saveNewUserOnDB, updateProfile } from '../../../src/js/Utils/Helpers/actions/registerHandler';
-import { CustomButton } from '../../common/functional-components/CustomButton';
+import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
-import { PreLoader } from '../../common/functional-components/PreLoader';
+import PreLoader from '../../common/functional-components/PreLoader';
 
 const controller = new AbortController();
 
@@ -218,8 +218,4 @@ Register.propTypes = {
     navigation: PropTypes.object
 };
 
-memo(Register);
-
-export {
-    Register
-};
+export default memo(Register);

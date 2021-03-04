@@ -5,9 +5,9 @@ import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import * as yup from 'yup';
-import { CustomButton } from '../../../components/common/functional-components/CustomButton';
+import CustomButton from '../../../components/common/functional-components/CustomButton';
 import { CustomModal } from '../../../components/common/functional-components/CustomModal';
-import { PreLoader } from '../../../components/common/functional-components/PreLoader';
+import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { ResetPassword } from '../../../components/Guest/class-components/ResetPassword';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
@@ -161,8 +161,4 @@ Login.propTypes = {
     navigation: PropTypes.object
 };
 
-memo(Login);
-
-export {
-    Login
-};
+export default memo(Login);

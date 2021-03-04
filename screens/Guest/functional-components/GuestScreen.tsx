@@ -2,10 +2,10 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { View } from 'react-native';
-import { BgImage } from '../../../components/common/functional-components/BgImage';
-import { CustomButton } from '../../../components/common/functional-components/CustomButton';
-import { Login } from '../../../components/Guest/class-components/Login';
-import { Register } from '../../../components/Guest/functional-components/Register';
+import BgImage from '../../../components/common/functional-components/BgImage';
+import CustomButton from '../../../components/common/functional-components/CustomButton';
+import Login from '../../../components/Guest/class-components/Login';
+import Register from '../../../components/Guest/functional-components/Register';
 
 const GuestScreen = (props: any) => {
     const { navigation } = props;

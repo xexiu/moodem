@@ -6,7 +6,7 @@ import { btnStyleDefault } from '../../../src/css/styles/customButton';
 
 function defaultAction(evt) {
     // eslint-disable-next-line
-    return console.log('Button Pressed CustomButton: ', this.props);
+    return console.log('Button Pressed CustomButton');
 }
 
 const CustomButton = (props: any) => {
@@ -51,11 +51,8 @@ CustomButton.propTypes = {
     shadow: PropTypes.object,
     action: PropTypes.func,
     btnDisabled: PropTypes.bool,
-    btnIcon: PropTypes.element
+    btnIcon: PropTypes.element,
+    btnViewComponent: PropTypes.elementType
 };
 
-memo(CustomButton);
-
-export {
-    CustomButton
-};
+export default memo(CustomButton);

@@ -1,28 +1,30 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
-import { BgImage } from '../../common/functional-components/BgImage';
-import { BodyContainer } from '../../common/functional-components/BodyContainer';
-import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
+import BurgerMenuIcon from '../../common/BurgerMenuIcon';
+import BgImage from '../../common/functional-components/BgImage';
+import BodyContainer from '../../common/functional-components/BodyContainer';
+import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
-import { PreLoader } from '../../common/functional-components/PreLoader';
+import PreLoader from '../../common/functional-components/PreLoader';
 import { Player } from '../../common/Player';
 import { PlayerContainer } from '../../common/PlayerContainer';
 import { AppContext } from '../../User/functional-components/AppContext';
+import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
 const Songs = (props: any) => {
-    const { media } = props;
+    const { media, navigation } = props;
     const { group } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
+        searchedSongs: [],
+        playingSongs: [],
         isSearching: false,
         isLoading: true
     });
-    const [playingSongs, setPlayingSongs] = useState([]);
 
     useEffect(() => {
         console.log('3. Songs');
@@ -42,22 +44,21 @@ const Songs = (props: any) => {
 
     const onEndEditingSearch = (text: string) => {
         return media.getSongData({
-            limit: 50,
+            limit: 3,
             q: text
         }, 'soundcloud_api', 'soundcloud_key')
             .then((data: any) => {
                 const filteredSongs = filterCleanData(data, media.user);
                 media.checkIfAlreadyOnList(allValues.songs, filteredSongs);
                 setAllValues(prev => {
-                    return { ...prev, songs: [...filteredSongs], isSearching: !!filteredSongs.length };
+                    return { ...prev, searchedSongs: [...filteredSongs], isSearching: !!filteredSongs.length };
                 });
+                Promise.resolve();
             })
             .catch((err: any) => { });
     };
 
     const resetSearch = () => {
-        media.searchRef.current.clear();
-        media.searchRef.current.blur();
         setAllValues(prev => {
             return { ...prev, isSearching: false };
         });
@@ -68,11 +69,12 @@ const Songs = (props: any) => {
     const keyExtractor = (item: any) => item.index.toString();
 
     const onClickUseCallBack = useCallback((song, isPlaying) => {
-        return setPlayingSongs(prevSongs => {
-            const isCurrentSong = prevSongs.includes(song.id);
+        return setAllValues(prevSongs => {
+            const { playingSongs } = prevSongs;
+            const isCurrentSong = playingSongs.includes(song.id);
 
-            if (prevSongs.length) {
-                prevSongs.forEach(_song => {
+            if (playingSongs.length) {
+                playingSongs.forEach(_song => {
                     _song.currentSong && delete _song.currentSong;
                     _song.isPrevSong && delete _song.isPrevSong;
 
@@ -89,9 +91,19 @@ const Songs = (props: any) => {
                     currentSong: true
                 });
             }
-            return [song, ...playingSongs];
+            return { ...prevSongs, playingSongs: [song, ...playingSongs] };
         });
     }, []);
+
+    const renderItem = ({ item }: any) => {
+        return (<Song
+            song={item}
+            media={media}
+            isSearching={allValues.isSearching}
+            group={group}
+            handlePressSong={(song: any, isPlaying: boolean) => onClickUseCallBack(song, isPlaying)}
+        />);
+    };
 
     if (allValues.isLoading) {
         return (
@@ -106,20 +118,24 @@ const Songs = (props: any) => {
                 />
             </View>
         );
+    } else if (allValues.isSearching) {
+        return (
+            <SearchedSongsList
+                renderItem={renderItem}
+                media={media}
+                resetSearch={resetSearch}
+                searchedSongs={allValues.searchedSongs}
+            />
+        );
     }
-
-    const renderItem = ({ item }: any) => {
-        return (<Song
-            song={item}
-            media={media}
-            isSearching={allValues.isSearching}
-            group={group}
-            handlePressSong={(song: any, isPlaying: boolean) => onClickUseCallBack(song, isPlaying)}
-        />);
-    };
 
     return (
         <BodyContainer>
+            <BurgerMenuIcon
+                action={() => {
+                    navigation.openDrawer();
+                }}
+            />
             <CommonTopSearchBar
                 placeholder='Encuentra una canción...'
                 cancelSearch={() => {
@@ -131,13 +147,16 @@ const Songs = (props: any) => {
                 searchRef={media.searchRef}
             />
             <PlayerContainer items={allValues.songs}>
-                <Player ref={media.playerRef} tracks={allValues.songs} />
+                <Player
+                    ref={media.playerRef}
+                    tracks={allValues.songs}
+                />
             </PlayerContainer>
-            <View style={{ backgroundColor: '#fff', flex: 1 }} onStartShouldSetResponder={resetSearch}>
+            <View style={{ backgroundColor: '#fff', flex: 1 }}>
                 <CommonFlatList
                     reference={media.flatListRef}
                     data={allValues.songs}
-                    extraData={playingSongs}
+                    extraData={allValues.searchedSongs}
                     keyExtractor={keyExtractor}
                     action={renderItem}
                 />
@@ -147,7 +166,8 @@ const Songs = (props: any) => {
 };
 
 Songs.propTypes = {
-    media: PropTypes.any
+    media: PropTypes.any,
+    navigation: PropTypes.any
 };
 
 export default memo(Songs);

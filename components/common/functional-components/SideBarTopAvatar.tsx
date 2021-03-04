@@ -5,7 +5,7 @@ import { Text, TouchableHighlight, View } from 'react-native';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
 import { btnShadow } from '../../../src/css/styles/common';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
-import { BgImage } from './BgImage';
+import BgImage from './BgImage';
 
 const SideBarTopAvatar = (props: any) => {
     const {

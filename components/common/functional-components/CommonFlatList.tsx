@@ -70,8 +70,4 @@ CommonFlatList.propTypes = {
     onViewableItemsChanged: PropTypes.func
 };
 
-memo(CommonFlatList);
-
-export {
-    CommonFlatList
-};
+export default memo(CommonFlatList);

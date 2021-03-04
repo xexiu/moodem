@@ -1,9 +1,9 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { BgImage } from '../../common/functional-components/BgImage';
-import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
-import { PreLoader } from '../../common/functional-components/PreLoader';
+import BgImage from '../../common/functional-components/BgImage';
+import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
+import PreLoader from '../../common/functional-components/PreLoader';
 import { MediaButtons } from './MediaButtons';
 
 const Song = (props: any) => {
@@ -18,9 +18,14 @@ const Song = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
+        console.log('ON EFFECT SONG');
         if (isFocused) {
             setIsLoading(false);
         }
+
+        return() => {
+            console.log('OFF EFFECT SONG');
+        };
     }, []);
 
     const isPlayerPlaying = () => !media.playerRef.current.state.paused;
@@ -87,6 +92,7 @@ const Song = (props: any) => {
                 const isCurrentSongPlaying = new Promise(resolve => {
                     setTimeout(() => {
                         resolve(!media.playerRef.current.state.paused);
+                        clearTimeout(50);
                     }, 50);
                 });
                 isCurrentSongPlaying
@@ -98,11 +104,9 @@ const Song = (props: any) => {
     );
 };
 
-const areEqual = (nextProps: any, prevProps: any) => {
-    if (nextProps.song.currentSong || nextProps.song.isPrevSong) {
-        nextProps.song.isPrevSong && delete nextProps.song.isPrevSong;
-        return false;
-    } else if (!prevProps.isSearching) {
+const areEqual = (prevProps: any, nextProps: any) => {
+    if ((prevProps.song.currentSong || prevProps.song.isPrevSong)) {
+        prevProps.song.isPrevSong && delete prevProps.song.isPrevSong;
         return false;
     }
     return true;

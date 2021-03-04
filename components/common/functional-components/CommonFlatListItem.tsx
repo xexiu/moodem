@@ -124,8 +124,4 @@ CommonFlatListItem.propTypes = {
     tension: PropTypes.number
 };
 
-memo(CommonFlatListItem);
-
-export {
-    CommonFlatListItem
-};
+export default memo(CommonFlatListItem);

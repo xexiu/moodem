@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
-import { PreLoader } from './functional-components/PreLoader';
+import PreLoader from './functional-components/PreLoader';
 
 export const PlayerControlPlayPause = (props: any) => {
     const {

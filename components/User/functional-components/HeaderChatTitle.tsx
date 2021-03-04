@@ -16,8 +16,4 @@ HeaderChatTitle.propTypes = {
     group: PropTypes.any
 };
 
-memo(HeaderChatTitle);
-
-export {
-    HeaderChatTitle
-};
+export default memo(HeaderChatTitle);

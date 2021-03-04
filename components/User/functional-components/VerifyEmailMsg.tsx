@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { CustomButton } from '../../../components/common/functional-components/CustomButton';
+import CustomButton from '../../../components/common/functional-components/CustomButton';
 
 const handleVerifyMsg = () => Alert.alert(
     'Please check your email for the confirmation link.',

@@ -69,8 +69,4 @@ CommonTextInput.propTypes = {
     media: PropTypes.any
 };
 
-memo(CommonTextInput);
-
-export {
-    CommonTextInput
-};
+export default memo(CommonTextInput);

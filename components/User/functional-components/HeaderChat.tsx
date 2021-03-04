@@ -23,8 +23,4 @@ HeaderChat.propTypes = {
     chatRoom: PropTypes.string
 };
 
-memo(HeaderChat);
-
-export {
-    HeaderChat
-};
+export default memo(HeaderChat);

@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import TouchableScale from 'react-native-touchable-scale';
+import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import TouchableScale from 'react-native-touchable-scale';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
-import { BgImage } from '../../common/functional-components/BgImage';
-import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import { btnShadow } from '../../../src/css/styles/common';
+import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
+import BgImage from '../../common/functional-components/BgImage';
 
 const storage = firebase.storage();
 const storageRef = storage.ref();

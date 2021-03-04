@@ -3,15 +3,15 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
-import BurgerMenuIcon from '../common/BurgerMenuIcon';
 import { AbstractMedia } from '../common/functional-components/AbstractMedia';
-import { BgImage } from '../common/functional-components/BgImage';
-import { BodyContainer } from '../common/functional-components/BodyContainer';
-import { PreLoader } from '../common/functional-components/PreLoader';
+import BgImage from '../common/functional-components/BgImage';
+import BodyContainer from '../common/functional-components/BodyContainer';
+import PreLoader from '../common/functional-components/PreLoader';
 import { AppContext } from './functional-components/AppContext';
 import Songs from './functional-components/Songs';
 
 const MediaItems = (props: any) => {
+    const { navigation } = props;
     const { group }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
@@ -49,12 +49,7 @@ const MediaItems = (props: any) => {
 
     return (
         <BodyContainer>
-            <BurgerMenuIcon
-                action={() => {
-                    props.navigation.openDrawer();
-                }}
-            />
-            <Songs media={media} />
+            <Songs media={media} navigation={navigation} />
             <Toast
                 position='top'
                 ref={media.toastRef}

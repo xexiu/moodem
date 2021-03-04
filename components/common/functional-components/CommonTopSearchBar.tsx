@@ -19,13 +19,17 @@ const CommonTopSearchBar = (props: any) => {
     const [value, setValue] = useState('');
     const [showLoadingSpin, setShowLoadingSpin] = useState(false);
 
-    useEffect(() => () => {
-        controller.abort();
+    useEffect(() => {
+        console.log('ON EFFECT SEARCH BAR');
+        return () => {
+            console.log('OFF EFFECT SEARCH BAR');
+            controller.abort();
+        };
     }, []);
 
     return (
         <SearchBar
-            placeholderTextColor={'#ccc' }
+            placeholderTextColor={'#ccc'}
             ref={searchRef}
             autoCorrect={false}
             containerStyle={[commonTopSeachBarContainer, customStyleContainer]}
@@ -48,12 +52,10 @@ const CommonTopSearchBar = (props: any) => {
             onCancel={() => cancelSearch()}
             onEndEditing={() => {
                 if (value) {
+                    setShowLoadingSpin(false);
+                    setValue('');
                     setShowLoadingSpin(true);
-                    onEndEditingSearch(value)
-                        .then(() => {
-                            setShowLoadingSpin(false);
-                            setValue('');
-                        });
+                    onEndEditingSearch(value);
                 }
             }}
         />

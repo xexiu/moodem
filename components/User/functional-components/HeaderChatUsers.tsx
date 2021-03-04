@@ -59,8 +59,4 @@ HeaderChatUsers.propTypes = {
     chatRoom: PropTypes.string
 };
 
-memo(HeaderChatUsers);
-
-export {
-    HeaderChatUsers
-};
+export default memo(HeaderChatUsers);

@@ -9,12 +9,12 @@ import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmp
 import { createInvitedGroup, getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
-import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
-import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
+import CommonFlatList from '../../common/functional-components/CommonFlatList';
+import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
-import { CustomButton } from '../../common/functional-components/CustomButton';
+import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
-import { PreLoader } from '../../common/functional-components/PreLoader';
+import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../../User/functional-components/AppContext';
 import { NewGroup } from './NewGroup';
 

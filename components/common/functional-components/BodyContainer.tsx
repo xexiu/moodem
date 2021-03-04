@@ -22,8 +22,4 @@ BodyContainer.propTypes = {
     ]).isRequired
 };
 
-memo(BodyContainer);
-
-export {
-    BodyContainer
-};
+export default memo(BodyContainer);

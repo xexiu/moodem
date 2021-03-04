@@ -23,8 +23,4 @@ PreLoader.propTypes = {
     containerStyle: PropTypes.object
 };
 
-memo(PreLoader);
-
-export {
-    PreLoader
-};
+export default memo(PreLoader);

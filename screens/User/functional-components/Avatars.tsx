@@ -2,8 +2,8 @@
 import PropTypes from 'prop-types';
 import React, { memo, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
-import { BgImage } from '../../../components/common/functional-components/BgImage';
-import { PreLoader } from '../../../components/common/functional-components/PreLoader';
+import BgImage from '../../../components/common/functional-components/BgImage';
+import PreLoader from '../../../components/common/functional-components/PreLoader';
 
 const Avatars = (props: any) => {
     const { route, navigation } = props;

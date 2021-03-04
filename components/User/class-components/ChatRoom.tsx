@@ -2,15 +2,15 @@ import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
-import { BurgerMenuIcon } from '../../common/BurgerMenuIcon';
+import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
-import { BodyContainer } from '../../common/functional-components/BodyContainer';
-import { CommonTextInput } from '../../common/functional-components/CommonTextInput';
+import BodyContainer from '../../common/functional-components/BodyContainer';
+import CommonTextInput from '../../common/functional-components/CommonTextInput';
 import { AppContext } from '../functional-components/AppContext';
-import { HeaderChat } from '../functional-components/HeaderChat';
-import { HeaderChatTitle } from '../functional-components/HeaderChatTitle';
-import { HeaderChatUsers } from '../functional-components/HeaderChatUsers';
-import { MessagesList } from '../functional-components/MessagesList';
+import HeaderChat from '../functional-components/HeaderChat';
+import HeaderChatTitle from '../functional-components/HeaderChatTitle';
+import HeaderChatUsers from '../functional-components/HeaderChatUsers';
+import MessagesList from '../functional-components/MessagesList';
 
 const ChatRoom = (props: any) => {
     const { user, group }: any = useContext(AppContext);
@@ -75,8 +75,4 @@ ChatRoom.propTypes = {
     navigation: PropTypes.object
 };
 
-memo(ChatRoom);
-
-export {
-    ChatRoom
-};
+export default memo(ChatRoom);

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { CommonFlatList } from '../../common/functional-components/CommonFlatList';
-import { CommonFlatListItem } from '../../common/functional-components/CommonFlatListItem';
+import CommonFlatList from '../../common/functional-components/CommonFlatList';
+import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 
 const MessagesList = (props: any) => {
     const {
@@ -40,8 +40,4 @@ MessagesList.propTypes = {
     messages: PropTypes.any
 };
 
-memo(MessagesList);
-
-export {
-    MessagesList
-};
+export default memo(MessagesList);

@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react';
 import { Text, View } from 'react-native';
-import { CustomButton } from '../../common/functional-components/CustomButton';
+import CustomButton from '../../common/functional-components/CustomButton';
 
-export const Copyright = (props) => {
+export const Copyright = (props: any) => {
     const {
         navigation
     } = props;

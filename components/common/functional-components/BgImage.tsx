@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import { Dimensions, ImageBackground, View } from 'react-native';
 
 interface Props {
@@ -14,7 +14,7 @@ const {
     width
 } = Dimensions.get('window');
 
-export const BgImage = (props: Props) => {
+const BgImage = (props: Props) => {
     const {
         source = { uri: DEFAULT_LOGO, cache: 'force-cache' },
         children,
@@ -42,3 +42,5 @@ BgImage.propTypes = {
     source: PropTypes.object,
     style: PropTypes.object
 };
+
+export default memo(BgImage);
