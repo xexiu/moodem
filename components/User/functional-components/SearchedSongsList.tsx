@@ -29,10 +29,7 @@ const SearchedSongsList = (props: any) => {
                 type='entypo'
                 size={25}
                 color='#dd0031'
-                onPress={() => {
-                    console.log('PRESSSED');
-                    resetSearch();
-                }}
+                onPress={() => resetSearch()}
             />
             <PlayerContainer items={searchedSongs}>
                 <Player

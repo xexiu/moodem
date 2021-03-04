@@ -15,9 +15,11 @@ import { AppContext } from '../../User/functional-components/AppContext';
 import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
+const LIMIT_RESULT_SEARCHED_SONGS = 20;
+
 const Songs = (props: any) => {
     const { media, navigation } = props;
-    const { group } = useContext(AppContext) as any;
+    const { group, user } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
         searchedSongs: [],
@@ -44,7 +46,7 @@ const Songs = (props: any) => {
 
     const onEndEditingSearch = (text: string) => {
         return media.getSongData({
-            limit: 3,
+            limit: LIMIT_RESULT_SEARCHED_SONGS,
             q: text
         }, 'soundcloud_api', 'soundcloud_key')
             .then((data: any) => {
@@ -101,6 +103,7 @@ const Songs = (props: any) => {
             media={media}
             isSearching={allValues.isSearching}
             group={group}
+            user={user}
             handlePressSong={(song: any, isPlaying: boolean) => onClickUseCallBack(song, isPlaying)}
         />);
     };

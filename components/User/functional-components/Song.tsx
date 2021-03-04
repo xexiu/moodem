@@ -6,12 +6,15 @@ import CommonFlatListItem from '../../common/functional-components/CommonFlatLis
 import PreLoader from '../../common/functional-components/PreLoader';
 import { MediaButtons } from './MediaButtons';
 
+const TEN_MILISECONDS = 10;
+
 const Song = (props: any) => {
     const {
         song,
         media,
         isSearching,
         group,
+        user,
         handlePressSong
     } = props;
     const [isLoading, setIsLoading] = useState(true);
@@ -92,8 +95,8 @@ const Song = (props: any) => {
                 const isCurrentSongPlaying = new Promise(resolve => {
                     setTimeout(() => {
                         resolve(!media.playerRef.current.state.paused);
-                        clearTimeout(50);
-                    }, 50);
+                        clearTimeout(TEN_MILISECONDS);
+                    }, TEN_MILISECONDS);
                 });
                 isCurrentSongPlaying
                     .then(playing => {
@@ -104,8 +107,12 @@ const Song = (props: any) => {
     );
 };
 
+const hasUserVoted = (nextProps: any) => {
+    return nextProps.song.voted_users.includes(nextProps.user.uid);
+};
+
 const areEqual = (prevProps: any, nextProps: any) => {
-    if ((prevProps.song.currentSong || prevProps.song.isPrevSong)) {
+    if ((prevProps.song.currentSong || prevProps.song.isPrevSong || hasUserVoted(nextProps))) {
         prevProps.song.isPrevSong && delete prevProps.song.isPrevSong;
         return false;
     }
