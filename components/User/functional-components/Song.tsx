@@ -6,8 +6,6 @@ import CommonFlatListItem from '../../common/functional-components/CommonFlatLis
 import PreLoader from '../../common/functional-components/PreLoader';
 import { MediaButtons } from './MediaButtons';
 
-const TEN_MILISECONDS = 10;
-
 const Song = (props: any) => {
     const {
         song,
@@ -20,14 +18,11 @@ const Song = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('ON EFFECT SONG');
         if (isFocused) {
             setIsLoading(false);
         }
 
-        return() => {
-            console.log('OFF EFFECT SONG');
-        };
+        return () => { };
     }, []);
 
     const isPlayerPlaying = () => !media.playerRef.current.state.paused;
@@ -50,7 +45,7 @@ const Song = (props: any) => {
             isMediaOnList: true
         });
 
-        media.emit('send-message-media', { song, chatRoom: group.group_name });
+        media.emit('send-message-media', { song, chatRoom: group.group_name, isComingFromSearchingSong: true });
     };
 
     if (isLoading) {
@@ -67,8 +62,6 @@ const Song = (props: any) => {
             </View>
         );
     }
-
-    console.log('Rendering song....');
 
     return (
         <CommonFlatListItem
@@ -92,17 +85,10 @@ const Song = (props: any) => {
                 iconStyle: { fontSize: 27, alignSelf: 'center' }
             }}
             action={() => {
-                media.playerRef.current.dispatchActionsPressedTrack(song);
-                const isCurrentSongPlaying = new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(!media.playerRef.current.state.paused);
-                        clearTimeout(TEN_MILISECONDS);
-                    }, TEN_MILISECONDS);
-                });
-                isCurrentSongPlaying
-                    .then(playing => {
-                        return handlePressSong(song, playing);
-                    });
+                return media.playerRef.current.dispatchActionsPressedTrack(
+                    song,
+                    () => handlePressSong(song)
+                );
             }}
         />
     );

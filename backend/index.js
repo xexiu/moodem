@@ -76,7 +76,9 @@ io.on('connection', (socket) => {
     });
     songs.sort(compareValues('votes_count'));
 
-    io.to(data.chatRoom).emit('send-message-media', songs);
+    const { isComingFromSearchingSong = false } = data;
+
+    io.to(data.chatRoom).emit('send-message-media', { songs, isComingFromSearchingSong });
   });
 
   // Vote
@@ -93,7 +95,7 @@ io.on('connection', (socket) => {
           song.votes_count = data.count;
           const songs = Array.from(chatRooms[data.chatRoom].songs);
           songs.sort(compareValues('votes_count'));
-          io.to(data.chatRoom).emit('send-message-media', songs);
+          io.to(data.chatRoom).emit('send-message-media', { songs });
         }
       });
   });
@@ -108,7 +110,8 @@ io.on('connection', (socket) => {
           chatRooms[data.chatRoom].songs.delete(song);
         }
       });
-      io.to(data.chatRoom).emit('send-message-media', Array.from(chatRooms[data.chatRoom].songs));
+      const songs = Array.from(chatRooms[data.chatRoom].songs);
+      io.to(data.chatRoom).emit('send-message-media', { songs });
     };
 
     removeMedia();

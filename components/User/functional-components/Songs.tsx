@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Dimensions, Keyboard, View } from 'react-native';
+import React, { memo, useContext, useEffect, useState } from 'react';
+import { Keyboard, View } from 'react-native';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import BgImage from '../../common/functional-components/BgImage';
@@ -16,8 +16,6 @@ import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
 const LIMIT_RESULT_SEARCHED_SONGS = 20;
-const currentSizeHeight = Dimensions.get('window').height;
-let firstLanding = false;
 
 const Songs = (props: any) => {
     const { media, navigation } = props;
@@ -27,15 +25,22 @@ const Songs = (props: any) => {
         searchedSongs: [],
         playingSongs: [],
         isSearching: false,
-        isLoading: true
+        isLoading: true,
+        isComingFromSearchingSong: false
     });
 
     useEffect(() => {
         console.log('3. Songs');
 
-        media.on('send-message-media', (songs: any) => {
+        media.on('send-message-media', ({ songs, isComingFromSearchingSong }: any) => {
             setAllValues(prev => {
-                return { ...prev, songs: [...songs], isLoading: false, isSearching: false };
+                return {
+                    ...prev, songs:
+                    [...songs],
+                    isLoading: false,
+                    isSearching: false,
+                    isComingFromSearchingSong
+                };
             });
         });
         media.emit('send-message-media', { chatRoom: group.group_name });
@@ -72,8 +77,8 @@ const Songs = (props: any) => {
 
     const keyExtractor = (item: any) => item.index.toString();
 
-    const onClickUseCallBack = useCallback((song, isPlaying) => {
-        return setAllValues(prevSongs => {
+    const handlePressSong = (song: any) => {
+        setAllValues(prevSongs => {
             const { playingSongs } = prevSongs;
             const isCurrentSong = playingSongs.includes(song.id);
 
@@ -91,13 +96,13 @@ const Songs = (props: any) => {
 
             if (!isCurrentSong) {
                 Object.assign(song, {
-                    isPlaying,
+                    isPlaying: !media.playerRef.current.state.paused,
                     currentSong: true
                 });
             }
             return { ...prevSongs, playingSongs: [song, ...playingSongs] };
         });
-    }, []);
+    };
 
     const renderItem = ({ item }: any) => {
         return (<Song
@@ -106,7 +111,7 @@ const Songs = (props: any) => {
             isSearching={allValues.isSearching}
             group={group}
             user={user}
-            handlePressSong={(song: any, isPlaying: boolean) => onClickUseCallBack(song, isPlaying)}
+            handlePressSong={(song: any) => handlePressSong(song)}
         />);
     };
 
@@ -165,12 +170,10 @@ const Songs = (props: any) => {
                     keyExtractor={keyExtractor}
                     action={renderItem}
                     onContentSizeChange={(w, h) => {
-                        if ((h > currentSizeHeight - 350 && firstLanding)) {
+                        if (allValues.isComingFromSearchingSong) {
                             media.flatListRef.current.scrollToEnd({
                                 animated: true
                             });
-                        } else {
-                            firstLanding = true;
                         }
                     }}
                 />

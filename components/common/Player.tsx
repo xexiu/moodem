@@ -41,8 +41,8 @@ class Player extends Component {
         this.toastRef = React.createRef();
 
         props.tracks && props.tracks.length ?
-        this.tracks = props.tracks :
-        this.tracks = [];
+            this.tracks = props.tracks :
+            this.tracks = [];
 
         this.state = {
             tracks: [],
@@ -69,18 +69,18 @@ class Player extends Component {
 
     onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
         if (shouldRepeat) {
-            this.dispatchActionsPressedTrack(tracks[songIndex]);
+            this.dispatchActionsPressedTrack(tracks[songIndex], null);
         } else if (shouldShuffle) {
             const random = Math.floor((Math.random() * tracks.length) + 0);
 
             if (tracks[random]) {
-                this.dispatchActionsPressedTrack(tracks[random]);
+                this.dispatchActionsPressedTrack(tracks[random], null);
             }
         } else {
             // next track
             if (tracks[songIndex + 1]) {
                 this.player.seek(0);
-                return this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
+                return this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
             }
         }
     };
@@ -93,7 +93,7 @@ class Player extends Component {
         this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     };
 
-    dispatchActionsPressedTrack = (track: any) => {
+    dispatchActionsPressedTrack = (track: any, cb: Function) => {
         this.setState({
             currentSong: track.stream_url,
             songAlbumCover: track.artwork_url,
@@ -102,6 +102,8 @@ class Player extends Component {
             songIndex: track.index,
             trackMaxDuration: track.duration,
             paused: track.index === this.state.songIndex ? !this.state.paused : false
+        }, () => {
+            return cb && cb();
         });
     };
 
@@ -111,7 +113,7 @@ class Player extends Component {
 
     handleOnPressForward = (tracks: any, songIndex: number) => {
         if (tracks[songIndex + 1]) {
-            this.dispatchActionsPressedTrack(tracks[songIndex + 1]);
+            this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
         }
     };
 
@@ -120,7 +122,7 @@ class Player extends Component {
             this.setState({ trackCurrentTime: 0 });
         }
         if (tracks[songIndex - 1]) {
-            this.dispatchActionsPressedTrack(tracks[this.state.songIndex - 1]);
+            this.dispatchActionsPressedTrack(tracks[this.state.songIndex - 1], null);
         }
     };
 
