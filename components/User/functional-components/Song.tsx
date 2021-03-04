@@ -68,6 +68,8 @@ const Song = (props: any) => {
         );
     }
 
+    console.log('Rendering song....');
+
     return (
         <CommonFlatListItem
             bottomDivider
@@ -106,13 +108,19 @@ const Song = (props: any) => {
     );
 };
 
-const hasUserVoted = (nextProps: any) => {
-    return nextProps.song.voted_users.includes(nextProps.user.uid);
+const hasUserVoted = (prevProps: any, nextProps: any) => {
+    const prevCountVotes = prevProps.song.voted_users.length;
+    const nextCountVotes = nextProps.song.voted_users.length;
+    const currentUserIsVoting = nextProps.song.voted_users.includes(nextProps.user.uid);
+
+    return prevCountVotes !== nextCountVotes || currentUserIsVoting;
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if ((prevProps.song.currentSong || prevProps.song.isPrevSong || hasUserVoted(nextProps))) {
+    if ((prevProps.song.currentSong || prevProps.song.isPrevSong)) {
         prevProps.song.isPrevSong && delete prevProps.song.isPrevSong;
+        return false;
+    } else if (hasUserVoted(prevProps, nextProps)) {
         return false;
     }
     return true;
