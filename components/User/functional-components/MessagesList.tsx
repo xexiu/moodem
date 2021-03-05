@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
+import { Keyboard } from 'react-native';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 
@@ -22,6 +23,7 @@ const MessagesList = (props: any) => {
                 titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitle={message.text}
                 subtitleStyle={{ fontSize: 14, color: '#999', fontStyle: 'italic' }}
+                action={Keyboard.dismiss}
             />
         );
     }

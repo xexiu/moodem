@@ -2,8 +2,8 @@
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
-import { Login } from '../../../components/Guest/class-components/Login';
-import { Register } from '../../../components/Guest/functional-components/Register';
+import Login from '../../../components/Guest/class-components/Login';
+import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
 import MediaItems from '../../../components/User/MediaItems';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
@@ -87,7 +87,7 @@ const SideBarDrawer = (props: any) => {
         >
             <Drawer.Screen
                 name='Moodem'
-                component={P2PLanding}
+                component={MediaItems}
                 initialParams={{ user, group }}
             />
             <Drawer.Screen

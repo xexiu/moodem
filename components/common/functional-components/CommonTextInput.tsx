@@ -31,7 +31,7 @@ const CommonTextInput = ({ navigation, user, group, media }: any) => {
                 style={{
                     height: 40,
                     borderWidth: 1,
-                    borderColor: '#ddd',
+                    borderColor: 'green',
                     textAlignVertical: 'top',
                     borderRadius: 5,
                     padding: 5

@@ -1,7 +1,8 @@
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 import BodyContainer from '../../common/functional-components/BodyContainer';
@@ -56,9 +57,16 @@ const ChatRoom = (props: any) => {
                     chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`}
                 />
             </HeaderChat>
-            <MessagesList messages={messages} />
+            <TouchableWithoutFeedback
+                onPress={Keyboard.dismiss}
+                accessible={false}
+            >
+                <View style={{ flex: 1 }}>
+                    <MessagesList messages={messages} />
+                </View>
+            </TouchableWithoutFeedback>
             <View style={{ height: 50 }}>
-                <View style={{ position: 'absolute', bottom: 2, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                <View style={{ position: 'absolute', bottom: 0, right: 0, left: 7, width: '96%', zIndex: 1 }}>
                     <CommonTextInput
                         navigation={navigation}
                         user={user}
@@ -67,6 +75,9 @@ const ChatRoom = (props: any) => {
                     />
                 </View>
             </View>
+            <KeyboardSpacer
+                topSpacing={-30}
+            />
         </BodyContainer>
     );
 };

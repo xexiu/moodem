@@ -15,8 +15,6 @@ import { AppContext } from '../../User/functional-components/AppContext';
 import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
-const LIMIT_RESULT_SEARCHED_SONGS = 20;
-
 const Songs = (props: any) => {
     const { media, navigation } = props;
     const { group, user } = useContext(AppContext) as any;
@@ -53,7 +51,6 @@ const Songs = (props: any) => {
 
     const onEndEditingSearch = (text: string) => {
         return media.getSongData({
-            limit: LIMIT_RESULT_SEARCHED_SONGS,
             q: text
         }, 'soundcloud_api', 'soundcloud_key')
             .then((data: any) => {

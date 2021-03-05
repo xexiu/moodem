@@ -3,7 +3,7 @@ import React, { Component, memo } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Video from 'react-native-video';
-import { SC_KEY } from '../../src/js/Utils/constants/api/apiKeys';
+import { SC_KEYS } from '../../src/js/Utils/constants/api/apiKeys';
 import { PlayerControlBackward } from '../common/PlayerControlBackward';
 import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
@@ -16,6 +16,7 @@ import { SongInfoArtist } from '../common/SongInfoArtist';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { SongInfoTitle } from '../common/SongInfoTitle';
 
+const errors = [] as string[];
 class Player extends Component {
     public toastRef: any;
     public tracks: any;
@@ -45,6 +46,7 @@ class Player extends Component {
             this.tracks = [];
 
         this.state = {
+            key: SC_KEYS.key_1,
             tracks: [],
             songAlbumCover: this.tracks.length ? this.tracks[0].artwork_url : '',
             songTitle: this.tracks.length ? this.tracks[0].title : '',
@@ -87,6 +89,18 @@ class Player extends Component {
 
     onBuffer = (buffer: any) => {
         this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
+    };
+
+    setKeyApi = (key: string) => {
+        if (this.state.key === SC_KEYS[key]) {
+            return this.setState({
+                key: SC_KEYS[key]
+            });
+        }
+
+        return this.setState({
+            key: SC_KEYS[key]
+        });
     };
 
     onAudioError = ({ error }: any) => {
@@ -166,7 +180,8 @@ class Player extends Component {
             shouldShuffle,
             trackCurrentTime,
             trackMaxDuration,
-            songIsReady
+            songIsReady,
+            key
         } = this.state;
         const {
             tracks
@@ -175,7 +190,7 @@ class Player extends Component {
         return (
             <View>
                 <Video
-                    source={currentSong && { uri: `${currentSong}?client_id=${SC_KEY}` }}
+                    source={currentSong && { uri: `${currentSong}?client_id=${key}` }}
                     ref={ref => {
                         this.player = ref;
                     }}
@@ -186,7 +201,17 @@ class Player extends Component {
                     playWhenInactive
                     ignoreSilentSwitch={'ignore'}
                     onBuffer={(buffer) => this.onBuffer(buffer)}
-                    onError={(error) => this.onAudioError(error)}
+                    onError={(error) => {
+                        const keys = Object.keys(SC_KEYS);
+                        errors.push(error as any);
+
+                        for (const _key of errors) {
+                            if (keys.length < errors.length) {
+                                return this.onAudioError(error);
+                            }
+                            this.setKeyApi(keys[errors.length]);
+                        }
+                    }}
                     paused={paused}
                     onLoad={() => {
                         this.setState({ trackCurrentTime: 0, isBuffering: false });
@@ -266,7 +291,5 @@ class Player extends Component {
         );
     }
 }
-
-memo(Player);
 
 export { Player };

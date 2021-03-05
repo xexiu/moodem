@@ -22,11 +22,13 @@ const CommonFlatList = (props: any) => {
         keyExtractor = (item, index: number) => String(index),
         action = (item: any) => console.log('Item from CommonFlatList: ', item),
         viewabilityConfig,
-        onViewableItemsChanged
+        onViewableItemsChanged,
+        style
     } = props;
 
     return (
         <FlatList
+            style={style}
             removeClippedSubviews={true}
             viewabilityConfig={viewabilityConfig}
             onViewableItemsChanged={onViewableItemsChanged}
@@ -67,7 +69,8 @@ CommonFlatList.propTypes = {
     onContentSizeChange: PropTypes.func,
     reference: PropTypes.any,
     viewabilityConfig: PropTypes.object,
-    onViewableItemsChanged: PropTypes.func
+    onViewableItemsChanged: PropTypes.func,
+    style: PropTypes.object
 };
 
 export default memo(CommonFlatList);
