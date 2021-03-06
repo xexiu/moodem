@@ -12,7 +12,9 @@ const Song = (props: any) => {
         media,
         isSearching,
         group,
-        handlePressSong
+        handlePressSong,
+        player,
+        sendMediaToServer
     } = props;
     const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
@@ -23,9 +25,9 @@ const Song = (props: any) => {
         }
 
         return () => { };
-    }, []);
+    }, [isFocused]);
 
-    const isPlayerPlaying = () => !media.playerRef.current.state.paused;
+    const isPlayerPlaying = () => !player.current.state.paused;
 
     const setSource = () => {
         if (isPlayerPlaying() && song.isPlaying) {
@@ -38,14 +40,6 @@ const Song = (props: any) => {
         return {
             source: { uri: song.artwork_url }
         };
-    };
-
-    const sendMediaToServer = () => {
-        Object.assign(song, {
-            isMediaOnList: true
-        });
-
-        media.emit('send-message-media', { song, chatRoom: group.group_name, isComingFromSearchingSong: true });
     };
 
     if (isLoading) {
@@ -79,13 +73,13 @@ const Song = (props: any) => {
                 name: 'arrow-right',
                 type: 'AntDesign',
                 color: '#dd0031',
-                onPress: () => sendMediaToServer(),
+                onPress: () => sendMediaToServer(song),
                 size: 10,
                 raised: true,
                 iconStyle: { fontSize: 27, alignSelf: 'center' }
             }}
             action={() => {
-                return media.playerRef.current.dispatchActionsPressedTrack(
+                return player.current.dispatchActionsPressedTrack(
                     song,
                     () => handlePressSong(song)
                 );

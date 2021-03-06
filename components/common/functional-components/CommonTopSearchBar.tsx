@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';
@@ -18,12 +19,13 @@ const CommonTopSearchBar = (props: any) => {
     } = props;
     const [value, setValue] = useState('');
     const [showLoadingSpin, setShowLoadingSpin] = useState(false);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         return () => {
             controller.abort();
         };
-    }, []);
+    }, [isFocused]);
 
     return (
         <SearchBar
@@ -52,7 +54,6 @@ const CommonTopSearchBar = (props: any) => {
                 if (value) {
                     setShowLoadingSpin(false);
                     setValue('');
-                    setShowLoadingSpin(true);
                     onEndEditingSearch(value);
                 }
             }}

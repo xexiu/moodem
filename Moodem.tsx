@@ -9,7 +9,7 @@ import { CommonStackWrapper } from './components/common/functional-components/Co
 import PreLoader from './components/common/functional-components/PreLoader';
 import { SideBarDrawer } from './components/common/functional-components/SideBarDrawer';
 import { AppContext } from './components/User/functional-components/AppContext';
-import { GuestScreen } from './screens/Guest/functional-components/GuestScreen';
+import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
 import { getGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';

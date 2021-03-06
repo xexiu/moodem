@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
@@ -15,6 +16,8 @@ import { AppContext } from '../../User/functional-components/AppContext';
 import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
+let lastSearchText = '';
+
 const Songs = (props: any) => {
     const { media, navigation } = props;
     const { group, user } = useContext(AppContext) as any;
@@ -26,6 +29,8 @@ const Songs = (props: any) => {
         isLoading: true,
         isComingFromSearchingSong: false
     });
+    const isFocused = useIsFocused();
+    const player = useRef(null);
 
     useEffect(() => {
         console.log('3. Songs');
@@ -44,29 +49,18 @@ const Songs = (props: any) => {
         media.emit('send-message-media', { chatRoom: group.group_name });
 
         return () => {
-            console.log('2. OFF EFFECT Songs');
+            console.log('3. OFF EFFECT Songs');
             media.destroy();
         };
     }, []);
 
-    const onEndEditingSearch = (text: string) => {
-        return media.getSongData({
-            q: text
-        }, 'soundcloud_api', 'soundcloud_key')
-            .then((data: any) => {
-                const filteredSongs = filterCleanData(data, media.user);
-                media.checkIfAlreadyOnList(allValues.songs, filteredSongs);
-                setAllValues(prev => {
-                    return { ...prev, searchedSongs: [...filteredSongs], isSearching: !!filteredSongs.length };
-                });
-                Promise.resolve();
-            })
-            .catch((err: any) => { });
-    };
-
     const resetSearch = () => {
         setAllValues(prev => {
-            return { ...prev, isSearching: false };
+            return {
+                ...prev,
+                isSearching: false,
+                isComingFromSearchingSong: true
+            };
         });
         Keyboard.dismiss();
         return true;
@@ -93,7 +87,7 @@ const Songs = (props: any) => {
 
             if (!isCurrentSong) {
                 Object.assign(song, {
-                    isPlaying: !media.playerRef.current.state.paused,
+                    isPlaying: !player.current.state.paused,
                     currentSong: true
                 });
             }
@@ -105,6 +99,7 @@ const Songs = (props: any) => {
         return (<Song
             song={item}
             media={media}
+            player={player}
             isSearching={allValues.isSearching}
             group={group}
             user={user}
@@ -136,6 +131,8 @@ const Songs = (props: any) => {
         );
     }
 
+    console.log('Render songs');
+
     return (
         <BodyContainer>
             <BurgerMenuIcon
@@ -150,12 +147,22 @@ const Songs = (props: any) => {
                         return { ...prev, isSearching: false };
                     });
                 }}
-                onEndEditingSearch={onEndEditingSearch}
+                onEndEditingSearch={(searchedText) => {
+                    lastSearchText = searchedText;
+                    navigation.navigate('SearchingSongsScreen', {
+                        media,
+                        group,
+                        user,
+                        searchedText,
+                        lastSearchText,
+                        songsOnGroup: allValues.songs
+                    });
+                }}
                 searchRef={media.searchRef}
             />
             <PlayerContainer items={allValues.songs}>
                 <Player
-                    ref={media.playerRef}
+                    ref={player}
                     tracks={allValues.songs}
                 />
             </PlayerContainer>

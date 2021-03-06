@@ -69,7 +69,7 @@ export class AbstractMedia {
 
         let url = clientKeysMap[server];
         const keys = Object.keys(SC_KEYS);
-        const newOptions = {...DEFAULT_SEARCH_OPTIONS, ...options};
+        const newOptions = { ...DEFAULT_SEARCH_OPTIONS, ...options };
 
         Object.keys(newOptions).map((k: string) => {
             url += (url.split('?')[1] ? '&' : '?') + `${k}=${newOptions[k]}`;
@@ -108,10 +108,10 @@ export class AbstractMedia {
     }
 
     checkIfAlreadyOnList = (medias: string[], searchedMedias: string[]) => {
-        medias.forEach((media: any) => {
-            searchedMedias.forEach((searchedMedia: any) => {
-                if (media.id === searchedMedia.id) {
-                    Object.assign(searchedMedia, {
+        medias.filter((song: any) => {
+            return !searchedMedias.some((_song: any) => {
+                if (song.index === _song.index && song.isMediaOnList) {
+                    Object.assign(_song, {
                         isMediaOnList: true
                     });
                 }

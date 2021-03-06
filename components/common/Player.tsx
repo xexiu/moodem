@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import React, { Component, memo } from 'react';
+import React, { Component } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Video from 'react-native-video';
 import { SC_KEYS } from '../../src/js/Utils/constants/api/apiKeys';
+import PreLoader from '../common/functional-components/PreLoader';
 import { PlayerControlBackward } from '../common/PlayerControlBackward';
 import { PlayerControlForward } from '../common/PlayerControlForward';
 import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
@@ -39,6 +40,8 @@ class Player extends Component {
     constructor(props: any) {
         super(props);
 
+        console.log('CONSTRUCTOR');
+
         this.toastRef = React.createRef();
 
         props.tracks && props.tracks.length ?
@@ -46,8 +49,8 @@ class Player extends Component {
             this.tracks = [];
 
         this.state = {
+            loading: true,
             key: SC_KEYS.key_1,
-            tracks: [],
             songAlbumCover: this.tracks.length ? this.tracks[0].artwork_url : '',
             songTitle: this.tracks.length ? this.tracks[0].title : '',
             songArtist: this.tracks.length ? this.tracks[0].user && this.tracks[0].user.username : '',
@@ -61,6 +64,25 @@ class Player extends Component {
             trackCurrentTime: 0,
             trackMaxDuration: this.tracks.length ? this.tracks[0].duration : 0
         };
+    }
+
+    componentDidMount() {
+        if (this.props.tracks && this.props.tracks.length) {
+            this.setState({
+                isLoading: false
+            });
+        }
+    }
+
+    shouldComponentUpdate(prevProps: any, nextProps: any) {
+        if (prevProps.tracks &&
+            !!prevProps.tracks.length &&
+            !nextProps.isLoading &&
+            !nextProps.isBuffering) {
+            return true;
+        }
+
+        return false;
     }
 
     onPlayProgress = ({ currentTime }: any) => {
@@ -181,11 +203,26 @@ class Player extends Component {
             trackCurrentTime,
             trackMaxDuration,
             songIsReady,
-            key
+            key,
+            isLoading
         } = this.state;
         const {
             tracks
         } = this.props;
+
+        if (isLoading) {
+            return (
+                <View>
+                    <PreLoader
+                        containerStyle={{
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                        size={50}
+                    />
+                </View>
+            );
+        }
 
         return (
             <View>

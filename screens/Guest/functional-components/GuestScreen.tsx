@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import BgImage from '../../../components/common/functional-components/BgImage';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
@@ -9,6 +11,18 @@ import Register from '../../../components/Guest/functional-components/Register';
 
 const GuestScreen = (props: any) => {
     const { navigation } = props;
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+            unmountOnBlur: true,
+            headerMode: 'none'
+        });
+        return () => {
+
+        };
+    }, [isFocused]);
 
     return (
         <View style={{ alignItems: 'center' }}>
@@ -31,18 +45,10 @@ const GuestScreen = (props: any) => {
     );
 };
 
-GuestScreen.navigationOptions = () => ({
-    headerShown: false,
-    unmountOnBlur: true
-});
-
 GuestScreen.propTypes = {
     route: PropTypes.object,
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    navigationOptions: PropTypes.any
 };
 
-memo(GuestScreen);
-
-export {
-    GuestScreen
-};
+export default memo(GuestScreen);

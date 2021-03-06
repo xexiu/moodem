@@ -49,11 +49,11 @@ const MediaItems = (props: any) => {
 
     return (
         <BodyContainer>
-            <Songs media={media} navigation={navigation} />
             <Toast
                 position='top'
                 ref={media.toastRef}
             />
+            <Songs media={media} navigation={navigation} />
         </BodyContainer>
     );
 };
