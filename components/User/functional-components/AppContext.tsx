@@ -16,6 +16,12 @@ const initialContext: Context = {
     group: {
         group_name: 'Moodem',
         group_id: 0
+    },
+    searchedSongs: {
+        userId: {
+            bla: [],
+            test: []
+        }
     }
 };
 

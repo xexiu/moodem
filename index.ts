@@ -1,3 +1,6 @@
+if (__DEV__) {
+    import('./src/js/Utils/common/reactotronConfig');
+}
 import { AppRegistry, Platform } from 'react-native';
 import App from './App';
 

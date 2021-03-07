@@ -27,6 +27,7 @@ export const PlayerControlTimeSeek = (props: any) => {
         onTouchMove,
         songIsReady
     } = props;
+
     const [value, setValue] = useState(0);
 
     useEffect(() => {

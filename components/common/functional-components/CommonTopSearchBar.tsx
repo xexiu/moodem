@@ -1,4 +1,5 @@
 import { useIsFocused } from '@react-navigation/native';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';
@@ -12,6 +13,7 @@ const controller = new AbortController();
 const CommonTopSearchBar = (props: any) => {
     const {
         placeholder,
+        onChangeText,
         onEndEditingSearch,
         cancelSearch,
         searchRef,
@@ -44,7 +46,13 @@ const CommonTopSearchBar = (props: any) => {
             placeholder={placeholder}
             onChangeText={text => {
                 setValue(text);
-                setShowLoadingSpin(false);
+                setShowLoadingSpin(true);
+                if (onChangeText && onChangeText(text)) {
+                    onChangeText(text)
+                    .then(() => {
+                        setShowLoadingSpin(false);
+                    });
+                }
             }}
             value={value}
             onClear={() => setShowLoadingSpin(false)}
@@ -54,7 +62,7 @@ const CommonTopSearchBar = (props: any) => {
                 if (value) {
                     setShowLoadingSpin(false);
                     setValue('');
-                    onEndEditingSearch(value);
+                    onEndEditingSearch && onEndEditingSearch(value);
                 }
             }}
         />
@@ -63,6 +71,7 @@ const CommonTopSearchBar = (props: any) => {
 
 CommonTopSearchBar.propTypes = {
     placeholder: PropTypes.string,
+    onChangeText: PropTypes.func,
     onEndEditingSearch: PropTypes.func,
     cancelSearch: PropTypes.func,
     searchRef: PropTypes.any,

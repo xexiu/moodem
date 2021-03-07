@@ -1,7 +1,7 @@
 import { FIREBASE_API_KEY } from './api/apiKeys';
 
 export const firebaseConfig = {
-	apiKey: FIREBASE_API_KEY, // apiKey: 'sdfsdvsd33344tdvcdf'
+    apiKey: FIREBASE_API_KEY, // apiKey: 'sdfsdvsd33344tdvcdf'
     databaseURL: 'https://moodem-dc82a-default-rtdb.firebaseio.com',
     authDomain: 'moodem-dc82a.firebaseapp.com',
     projectId: 'moodem-dc82a',
