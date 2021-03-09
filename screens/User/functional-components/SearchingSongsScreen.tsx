@@ -25,7 +25,7 @@ const SearchingSongsScreen = (props: any) => {
     } = props.route.params;
 
     const { navigation } = props;
-    const [, setPlayingSongs] = useState([]);
+    const [playingSongs, setPlayingSongs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const player = useRef(null);
     const searchedSongsRef = useRef([]);
@@ -45,9 +45,9 @@ const SearchingSongsScreen = (props: any) => {
     useEffect(() => {
         console.log('4. Searching songs screen...', isLoading);
         getResultsForSearch()
-        .then((videoIds: any) => {
-            media.emit('get-songs-from-youtube', { chatRoom: group.group_name, videoIds });
-        });
+            .then((videoIds: any) => {
+                media.emit('get-songs-from-youtube', { chatRoom: group.group_name, videoIds });
+            });
         media.on('get-songs-from-youtube', (data: any) => {
             const _searchedSongs = setExtraAttrs(data.audios, media.user);
             searchedSongsRef.current = [..._searchedSongs];
@@ -107,7 +107,6 @@ const SearchingSongsScreen = (props: any) => {
     };
 
     const renderItem = ({ item }: any) => {
-        console.log('Itemmm to render', item);
         return (<Song
             song={item}
             media={media}
@@ -116,7 +115,6 @@ const SearchingSongsScreen = (props: any) => {
             player={player}
             isSearching={!!searchedSongsRef.current.length}
             sendMediaToServer={sendMediaToServer}
-            handlePressSong={(song: any) => handlePressSong(song)}
         />);
     };
 

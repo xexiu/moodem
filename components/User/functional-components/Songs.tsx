@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { Keyboard, Text, View } from 'react-native';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import BgImage from '../../common/functional-components/BgImage';
 import BodyContainer from '../../common/functional-components/BodyContainer';
@@ -146,24 +146,23 @@ const Songs = (props: any) => {
                 <Player
                     ref={player}
                     tracks={allValues.songs}
-                />
+                >
+                        <CommonFlatList
+                            reference={media.flatListRef}
+                            data={allValues.songs}
+                            extraData={allValues.searchedSongs}
+                            keyExtractor={keyExtractor}
+                            action={renderItem}
+                            onContentSizeChange={(w, h) => {
+                                if (allValues.isComingFromSearchingSong) {
+                                    media.flatListRef.current.scrollToEnd({
+                                        animated: true
+                                    });
+                                }
+                            }}
+                        />
+                </Player>
             </PlayerContainer>
-            <View style={{ backgroundColor: '#fff', flex: 1 }}>
-                <CommonFlatList
-                    reference={media.flatListRef}
-                    data={allValues.songs}
-                    extraData={allValues.searchedSongs}
-                    keyExtractor={keyExtractor}
-                    action={renderItem}
-                    onContentSizeChange={(w, h) => {
-                        if (allValues.isComingFromSearchingSong) {
-                            media.flatListRef.current.scrollToEnd({
-                                animated: true
-                            });
-                        }
-                    }}
-                />
-            </View>
         </BodyContainer>
     );
 };

@@ -39,7 +39,7 @@ async function getSongs(videoId) {
       });
       return { ...info, ...audioMem[0] };
     }
-    memCache.put(key, audio, 30 * 1000);
+    memCache.put(key, audio, 30 * 100);
     return { ...info, ...audio[0] };
   }
 

@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import BgImage from '../../common/functional-components/BgImage';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import PreLoader from '../../common/functional-components/PreLoader';
@@ -13,10 +13,13 @@ const Song = (props: any) => {
         isSearching,
         group,
         player,
-        sendMediaToServer,
-        handlePressSong
+        sendMediaToServer
     } = props;
     const [isLoading, setIsLoading] = useState(true);
+    const [currentSong, setCurrentSong] = useState({}) as any;
+    const [prevSong, setPrevSong] = useState({}) as any;
+    const [songIsPlaying, setSongIsPlaying] = useState(false);
+    const [playingSongs, setPlayingSongs] = useState([]);
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -26,7 +29,7 @@ const Song = (props: any) => {
         }
 
         return () => { };
-    }, [isFocused]);
+    }, [isFocused, songIsPlaying]);
 
     function cleanImageParams(img: string) {
         if (img.indexOf('hqdefault.jpg') >= 0) {
@@ -50,6 +53,33 @@ const Song = (props: any) => {
         );
     }
 
+    const handlePressSong = () => {
+        setPlayingSongs(prevSongs => {
+            const isCurrentSong = !prevSongs.includes(song);
+
+            if (prevSongs.length) {
+                prevSongs.forEach(_song => {
+                    _song.currentSong && delete _song.currentSong;
+                    _song.isPrevSong && delete _song.isPrevSong;
+
+                    Object.assign(_song, {
+                        isPrevSong: true,
+                        isPlaying: false
+                    });
+                });
+            }
+
+            if (!isCurrentSong) {
+                Object.assign(song, {
+                    isPlaying: !player.current.state.paused,
+                    currentSong: true
+                });
+            }
+            return [...playingSongs, song];
+        });
+    };
+
+    console.log('SONG', song, 'currentSong', currentSong, 'PrevSong', prevSong);
     return (
         <CommonFlatListItem
             bottomDivider
@@ -74,26 +104,28 @@ const Song = (props: any) => {
                 iconStyle: { fontSize: 27, alignSelf: 'center' }
             }}
             action={() => {
+                // setSongIsPlaying(songIsPlaying);
                 player.current.dispatchActionsPressedTrack(song,
-                    () => {
-                        handlePressSong(song);
+                    (_song: any) => {
+                        console.log('Neww song', _song.index, 'and currentSongPlaying', _song.isCurrentSongPlaying);
+
+                        if (_song.isCurrentSongPlaying) {
+                            setPlayingSongs([_song]);
+                            handlePressSong();
+                            setSongIsPlaying(_song.isPlaying);
+                        } else if (!_song.isCurrentSongPlaying) {
+                            setPlayingSongs([_song]);
+                            handlePressSong();
+                            setSongIsPlaying(_song.isPlaying);
+                        }
                     });
             }}
         />
     );
 };
 
-const hasUserVoted = (prevProps: any, nextProps: any) => {
-    const { voted_users } = prevProps.song;
-
-    const prevCountVotes = voted_users.length;
-    const nextCountVotes = voted_users.length;
-    const currentUserIsVoting = voted_users.includes(nextProps.user.uid);
-
-    return prevCountVotes !== nextCountVotes || currentUserIsVoting;
-};
-
 const areEqual = (prevProps: any, nextProps: any) => {
+    console.log('PREVV', prevProps, 'NExtt', nextProps);
     const {
         currentSong,
         isPrevSong
@@ -108,4 +140,4 @@ const areEqual = (prevProps: any, nextProps: any) => {
     return true;
 };
 
-export default memo(Song, areEqual);
+export default memo(Song);

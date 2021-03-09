@@ -17,6 +17,7 @@ const SearchBarAutoComplete = (props: any) => {
 
     useEffect(() => {
         console.log('Effect SearchBar Autocomplete');
+        setSuggestions([]);
 
         return () => {
             console.log('OFF SearchBar Autocomplete');

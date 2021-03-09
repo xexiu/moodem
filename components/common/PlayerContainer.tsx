@@ -13,7 +13,7 @@ const PlayerContainer = (props: any) => {
     }
 
     return (
-        <View style={[{ marginLeft: 10, marginRight: 10, position: 'relative' }]}>
+        <View style={[{ marginLeft: 10, marginRight: 10, position: 'relative', flex: 1 }]}>
             {children}
         </View>
     );
