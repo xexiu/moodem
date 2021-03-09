@@ -44,7 +44,6 @@ const SuggestionList = (props: any) => {
                                     media,
                                     group,
                                     user,
-                                    searchedText: suggestion,
                                     songsOnGroup
                                 });
                             }}

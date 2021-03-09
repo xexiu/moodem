@@ -57,7 +57,6 @@ const SearchBarAutoComplete = (props: any) => {
                         media,
                         group,
                         user,
-                        searchedText,
                         songsOnGroup
                     });
                 }}

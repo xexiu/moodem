@@ -21,8 +21,7 @@ const SearchingSongsScreen = (props: any) => {
         media,
         group,
         user,
-        songsOnGroup,
-        searchedText
+        songsOnGroup
     } = props.route.params;
 
     const { navigation } = props;
@@ -70,31 +69,31 @@ const SearchingSongsScreen = (props: any) => {
         };
     }, [isFocused]);
 
-    // const handlePressSong = (song: any) => {
-    //     setPlayingSongs(prevSongs => {
-    //         const isCurrentSong = prevSongs.includes(song.id);
+    const handlePressSong = (song: any) => {
+        setPlayingSongs(prevSongs => {
+            const isCurrentSong = prevSongs.includes(song.id);
 
-    //         if (prevSongs.length) {
-    //             prevSongs.forEach(_song => {
-    //                 _song.currentSong && delete _song.currentSong;
-    //                 _song.isPrevSong && delete _song.isPrevSong;
+            if (prevSongs.length) {
+                prevSongs.forEach(_song => {
+                    _song.currentSong && delete _song.currentSong;
+                    _song.isPrevSong && delete _song.isPrevSong;
 
-    //                 Object.assign(_song, {
-    //                     isPrevSong: true,
-    //                     isPlaying: false
-    //                 });
-    //             });
-    //         }
+                    Object.assign(_song, {
+                        isPrevSong: true,
+                        isPlaying: false
+                    });
+                });
+            }
 
-    //         if (!isCurrentSong) {
-    //             Object.assign(song, {
-    //                 isPlaying: !player.current.state.paused,
-    //                 currentSong: true
-    //             });
-    //         }
-    //         return [song, ...prevSongs];
-    //     });
-    // };
+            if (!isCurrentSong) {
+                Object.assign(song, {
+                    isPlaying: !player.current.state.paused,
+                    currentSong: true
+                });
+            }
+            return [song, ...prevSongs];
+        });
+    };
 
     const keyExtractor = (item: any) => item.index.toString();
 
@@ -117,6 +116,7 @@ const SearchingSongsScreen = (props: any) => {
             player={player}
             isSearching={!!searchedSongsRef.current.length}
             sendMediaToServer={sendMediaToServer}
+            handlePressSong={(song: any) => handlePressSong(song)}
         />);
     };
 

@@ -13,10 +13,10 @@ const Song = (props: any) => {
         isSearching,
         group,
         player,
-        sendMediaToServer
+        sendMediaToServer,
+        handlePressSong
     } = props;
     const [isLoading, setIsLoading] = useState(true);
-    const [songIsPlaying, setSongIsPlaying] = useState(true);
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -50,8 +50,6 @@ const Song = (props: any) => {
         );
     }
 
-    console.log('Sooong', songIsPlaying, 'Thumb', song.videoDetails.thumbnails[1].url);
-
     return (
         <CommonFlatListItem
             bottomDivider
@@ -60,7 +58,7 @@ const Song = (props: any) => {
             subtitle={song.videoDetails.author.name.replace('VEVO', '')}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
-                source: { uri: !songIsPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(song.videoDetails.thumbnails[1].url) }
+                source: { uri: song.isPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(song.videoDetails.thumbnails[1].url) }
             }}
             buttonGroup={
                 isSearching ? [] :
@@ -78,7 +76,7 @@ const Song = (props: any) => {
             action={() => {
                 player.current.dispatchActionsPressedTrack(song,
                     () => {
-                        setSongIsPlaying(player.current.state.paused);
+                        handlePressSong(song);
                     });
             }}
         />
@@ -96,8 +94,6 @@ const hasUserVoted = (prevProps: any, nextProps: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-
-    console.log('PREVVV', prevProps, 'NEXTT', nextProps);
     const {
         currentSong,
         isPrevSong
