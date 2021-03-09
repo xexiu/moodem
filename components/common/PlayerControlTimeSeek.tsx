@@ -22,7 +22,7 @@ function timeFormat(time: number) {
 }
 export const PlayerControlTimeSeek = (props: any) => {
     const {
-        trackLength,
+        trackMaxDuration,
         currentPosition,
         onTouchMove,
         songIsReady
@@ -42,13 +42,13 @@ export const PlayerControlTimeSeek = (props: any) => {
                 </Text>
                 <View style={{ flex: 1 }} />
                 <Text style={styles.text}>
-                    {timeFormat(trackLength - currentPosition)}
+                    {timeFormat(trackMaxDuration - currentPosition)}
                 </Text>
             </View>
             <Slider
                 disabled={!songIsReady}
                 onTouchMove={() => onTouchMove(value)}
-                maximumValue={Math.max(trackLength, 1, currentPosition + 1)}
+                maximumValue={Number(trackMaxDuration)}
                 minimumValue={0}
                 value={currentPosition}
                 onValueChange={setValue}

@@ -4,8 +4,6 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import SuggestionList from './SuggestionList';
 
-let lastSearchText = '';
-
 const SearchBarAutoComplete = (props: any) => {
     const {
         group,
@@ -25,54 +23,55 @@ const SearchBarAutoComplete = (props: any) => {
         };
     }, []);
 
-    function onChangeText(text: string) {
+    async function onChangeText(text: string): Promise<void> {
         const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
-        return axios.get(GOOGLE_AC_URL, {
+        const res = await axios.get(GOOGLE_AC_URL, {
             cancelToken: signalToken.token,
             params: {
                 client: 'youtube',
                 ds: 'yt',
                 q: text
             }
-        })
-            .then((res: any) => {
-                if (res.status !== 200) {
-                    throw Error('Suggest API not 200!');
-                }
-                const cleanResp = res.data.replace('window.google.ac.h(', '').replace(')', '');
-                const parsedData = JSON.parse(cleanResp);
-                const _suggestions = [] as any;
-                parsedData[1].map((item: any[]) => {
-                    _suggestions.push(item[0]);
-                });
-                setSuggestions(_suggestions);
-            });
+        });
+        if (res.status !== 200) {
+            throw Error('Suggest API not 200!');
+        }
+        const cleanResp = res.data.replace('window.google.ac.h(', '').replace(')', '');
+        const parsedData = JSON.parse(cleanResp);
+        const _suggestions = [] as any;
+        parsedData[1].map((item: any[]) => {
+            _suggestions.push(item[0]);
+        });
+        setSuggestions(_suggestions);
     }
 
     return (
         <View style={suggestions && suggestions.length && { position: 'relative', flex: 1, zIndex: 100 }}>
             <CommonTopSearchBar
                 placeholder='Encuentra una canción...'
-                cancelSearch={() => {
-                    setSuggestions([]);
-                }}
+                cancelSearch={() => setSuggestions([])}
                 onChangeText={onChangeText}
                 onEndEditingSearch={(searchedText) => {
                     setSuggestions([]);
-                    lastSearchText = searchedText;
                     navigation.navigate('SearchingSongsScreen', {
                         media,
                         group,
                         user,
                         searchedText,
-                        lastSearchText,
                         songsOnGroup
                     });
                 }}
                 searchRef={media.searchRef}
             />
 
-            <SuggestionList suggestions={suggestions} />
+            <SuggestionList
+                songsOnGroup={songsOnGroup}
+                user={user}
+                group={group}
+                navigation={navigation}
+                media={media}
+                suggestions={suggestions}
+            />
         </View>
     );
 };

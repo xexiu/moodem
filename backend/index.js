@@ -4,8 +4,49 @@
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const ytdl = require('ytdl-core');
+const mcache = require('memory-cache');
 
-app.get('/', (req, res) => {
+const memCache = new mcache.Cache();
+
+const cacheMiddleware = (duration) => (req, res, next) => {
+  const key = `__youtube-songs__${req.originalUrl}` || req.url;
+  const cacheContent = memCache.get(key);
+  if (cacheContent) {
+    res.send(cacheContent);
+  } else {
+    res.sendResponse = res.send;
+    res.send = (body) => {
+      memCache.put(key, body, duration * 1000);
+      res.sendResponse(body);
+    };
+    next();
+  }
+};
+
+async function getSongs(videoId) {
+  const key = `__youtube-songs__${videoId}`;
+  const info = await ytdl.getInfo(videoId);
+
+  const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+  const audio = audioFormats.filter((format) => format.codecs.indexOf('mp4a') >= 0);
+
+  if (audio && audio.length) {
+    const audioMem = memCache.get(key);
+    if (audioMem) {
+      Object.assign(audioMem[0], {
+        isCachedInMemory: true,
+      });
+      return { ...info, ...audioMem[0] };
+    }
+    memCache.put(key, audio, 30 * 1000);
+    return { ...info, ...audio[0] };
+  }
+
+  return {};
+}
+
+app.get('/', cacheMiddleware(30), (req, res) => {
   res.sendfile('index.html');
 });
 
@@ -52,10 +93,28 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  // Welcome Msg
-  socket.on('server-send-message-welcomeMsg', (data) => {
+  // get songs
+  socket.on('get-songs-from-youtube', async (data) => {
+    await socket.join(data.chatRoom);
     buildMedia(data);
-    socket.emit('server-send-message-welcomeMsg', `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`);
+
+    let results;
+    if (data.videoIds) {
+      results = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
+    }
+
+    io.to(data.chatRoom).emit('get-songs-from-youtube', {
+      audios: results,
+    });
+  });
+
+  // Welcome Msg
+  socket.on('server-send-message-welcomeMsg', async (data) => {
+    buildMedia(data);
+    socket.emit('server-send-message-welcomeMsg',
+      {
+        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`,
+      });
     socket.disconnect(true);
   });
 

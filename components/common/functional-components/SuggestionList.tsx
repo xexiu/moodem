@@ -1,9 +1,13 @@
-import axios from 'axios';
 import React, { memo, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 const SuggestionList = (props: any) => {
     const {
+        songsOnGroup,
+        user,
+        group,
+        navigation,
+        media,
         suggestions
     } = props;
 
@@ -33,7 +37,18 @@ const SuggestionList = (props: any) => {
             {
                 suggestions.map((suggestion: any, index: number) => {
                     return (
-                        <TouchableOpacity key={index} onPress={() => console.log('Pressed', suggestion)}>
+                        <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                                navigation.navigate('SearchingSongsScreen', {
+                                    media,
+                                    group,
+                                    user,
+                                    searchedText: suggestion,
+                                    songsOnGroup
+                                });
+                            }}
+                        >
                             <Text
                                 key={index}
                                 style={{

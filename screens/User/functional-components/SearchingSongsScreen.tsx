@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
+import { resolvePlugin } from '@babel/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
+import ytdl from 'react-native-ytdl';
 import Reactotron from 'reactotron-react-native';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
@@ -11,13 +14,12 @@ import { Player } from '../../../components/common/Player';
 import { PlayerContainer } from '../../../components/common/PlayerContainer';
 import Song from '../../../components/User/functional-components/Song';
 import storage, { removeItem, saveUserSearchedSongs } from '../../../src/js/Utils/common/storageConfig';
-import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
+import { setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const SearchingSongsScreen = (props: any) => {
     const {
         media,
         group,
-        lastSearchText,
         user,
         songsOnGroup,
         searchedText
@@ -28,114 +30,32 @@ const SearchingSongsScreen = (props: any) => {
     const [isLoading, setIsLoading] = useState(true);
     const player = useRef(null);
     const searchedSongsRef = useRef([]);
+    const isFocused = useIsFocused();
+
+    function getResultsForSearch() {
+        return new Promise((resolve, reject) => {
+            // make fetch to youtube search
+            // get only the videoId
+            // const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=20&videoCategoryId=10&type=video&key=AIzaSyCNAtpEYrSP4SCmk4FnXB0DxAw_JefBcGw`);
+
+            resolve(['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc']);
+
+        });
+    }
 
     useEffect(() => {
-        console.log('4. Searching songs...', isLoading);
-        // removeItem(user.uid, (error: any) => console.log('removeItem', error));
-
-        // storage.getBatchData([
-        //     { key: user.uid }
-        // ])
-        //     .then(results => {
-        //         Reactotron.log('Item with getBatchData 1 ');
-        //         results.forEach(result => {
-        //             if (result.searchedSongs[searchedText] && result.searchedSongs[searchedText].length) {
-        //                 console.log('Already Serached text', result.searchedSongs[searchedText]);
-        //                 Reactotron.log('Item with getBatchData 2');
-        //                 removeItem(user.id, (error: any) => console.log('removeItem', error));
-        //             } else {
-        //                 result.searchedSongs[searchedText] = [{ index: 1, song: 1 }];
-        //                 storage.save(
-        //                     {
-        //                         key: user.uid, // Note: Do not use underscore("_") in key!
-        //                         data: result,
-
-        //                     // if expires not specified, the defaultExpires will be applied instead.
-        //                     // if set to null, then it will never expire.
-        //                         expires: 1000 * 3600
-        //                     })
-        //                     .then(data => {
-        //                         console.log('Saved', data);
-        //                         console.log('FOUND BATCH', result);
-        //                         return;
-        //                     });
-        //                 console.log('SYNC', storage.sync[user.uid]);
-        //             }
-
-        //         });
-        //     })
-        //     .catch(error => {
-        //         console.log('Error getting batch', error);
-        //         const saveNewUserSearchedSongs = {
-        //             searchedSongs: {}
-        //         };
-        //         saveNewUserSearchedSongs.searchedSongs[searchedText] = [{ index: 0, song: 0 }];
-
-        //         storage.save(
-        //             {
-        //                 key: user.uid, // Note: Do not use underscore("_") in key!
-        //                 data: saveNewUserSearchedSongs,
-
-        //             // if expires not specified, the defaultExpires will be applied instead.
-        //             // if set to null, then it will never expire.
-        //                 expires: 1000 * 3600
-        //             })
-        //             .then(data => {
-        //                 console.log('Saved', data);
-        //                 return;
-        //             });
-        //     });
-
-        // storage
-        //     .load({
-        //         key: user.uid,
-
-        //         // autoSync (default: true) means if data is not found or has expired,
-        //         // then invoke the corresponding sync method
-        //         autoSync: true,
-
-        //         // syncInBackground (default: true) means if data expired,
-        //         // return the outdated data first while invoking the sync method.
-        //         // If syncInBackground is set to false, and there is expired data,
-        //         // it will wait for the new data and return only after the sync completed.
-        //         // (This, of course, is slower)
-        //         syncInBackground: true,
-
-        //         // you can pass extra params to the sync method
-        //         // see sync example below
-        //         syncParams: {
-        //             extraFetchOptions: {
-        //                 // blahblah
-        //             },
-        //             someFlag: true
-        //         }
-        //     })
-        //     .then(data => {
-        //         Reactotron.log('Item with load()', data.searchedSongs);
-        //         // found data go to then()
-        //         console.log('Retrieved from storage', data.searchedSongs[searchedText]);
-        //         searchedSongsRef.current = data.searchedSongs[searchedText];
-        //         debugger;
-        //         setIsLoading(false);
-        //     })
-        //     .catch(err => {
-        //         // any exception including data not found
-        //         // goes to catch()
-        //         console.warn(err.message);
-        //         switch (err.name) {
-        //         case 'NotFoundError':
-        //                 // TODO;
-        //             console.warn(
-        //                     'User not found in AsyncStorage for searchedsongs... creating searchedsongs for user',
-        //                     user.uid
-        //                     );
-
-        //             return fetchData();
-        //         case 'ExpiredError':
-        //                 // TODO
-        //             break;
-        //         }
-        //     });
+        console.log('4. Searching songs screen...', isLoading);
+        getResultsForSearch()
+        .then((videoIds: any) => {
+            media.emit('get-songs-from-youtube', { chatRoom: group.group_name, videoIds });
+        });
+        media.on('get-songs-from-youtube', (data: any) => {
+            const _searchedSongs = setExtraAttrs(data.audios, media.user);
+            searchedSongsRef.current = [..._searchedSongs];
+            media.checkIfAlreadyOnList(songsOnGroup, _searchedSongs);
+            console.log('Searchedsongs', searchedSongsRef.current);
+            setIsLoading(false);
+        });
 
         navigation.setOptions({
             title: props.route.params.group.group_name,
@@ -144,50 +64,37 @@ const SearchingSongsScreen = (props: any) => {
             headerBackTitleVisible: false
         });
 
-        fetchData();
-    }, [isLoading]);
+        return () => {
+            console.log('3. OFF SearchingSongsScreen');
+            media.destroy();
+        };
+    }, [isFocused]);
 
-    async function fetchData() {
-        console.log('Already fetched', searchedSongsRef.current);
-        return media.getSongData({
-            q: searchedText
-        }, 'soundcloud_api', 'soundcloud_key')
-            .then((data: any) => {
-                const _searchedSongs = filterCleanData(data, media.user);
-                searchedSongsRef.current = [..._searchedSongs];
-                media.checkIfAlreadyOnList(songsOnGroup, _searchedSongs);
-                saveUserSearchedSongs(user.uid, _searchedSongs, searchedText);
-                setIsLoading(false);
+    // const handlePressSong = (song: any) => {
+    //     setPlayingSongs(prevSongs => {
+    //         const isCurrentSong = prevSongs.includes(song.id);
 
-            })
-            .catch((err: any) => { });
-    }
+    //         if (prevSongs.length) {
+    //             prevSongs.forEach(_song => {
+    //                 _song.currentSong && delete _song.currentSong;
+    //                 _song.isPrevSong && delete _song.isPrevSong;
 
-    const handlePressSong = (song: any) => {
-        setPlayingSongs(prevSongs => {
-            const isCurrentSong = prevSongs.includes(song.id);
+    //                 Object.assign(_song, {
+    //                     isPrevSong: true,
+    //                     isPlaying: false
+    //                 });
+    //             });
+    //         }
 
-            if (prevSongs.length) {
-                prevSongs.forEach(_song => {
-                    _song.currentSong && delete _song.currentSong;
-                    _song.isPrevSong && delete _song.isPrevSong;
-
-                    Object.assign(_song, {
-                        isPrevSong: true,
-                        isPlaying: false
-                    });
-                });
-            }
-
-            if (!isCurrentSong) {
-                Object.assign(song, {
-                    isPlaying: !player.current.state.paused,
-                    currentSong: true
-                });
-            }
-            return [song, ...prevSongs];
-        });
-    };
+    //         if (!isCurrentSong) {
+    //             Object.assign(song, {
+    //                 isPlaying: !player.current.state.paused,
+    //                 currentSong: true
+    //             });
+    //         }
+    //         return [song, ...prevSongs];
+    //     });
+    // };
 
     const keyExtractor = (item: any) => item.index.toString();
 
@@ -201,6 +108,7 @@ const SearchingSongsScreen = (props: any) => {
     };
 
     const renderItem = ({ item }: any) => {
+        console.log('Itemmm to render', item);
         return (<Song
             song={item}
             media={media}
@@ -209,7 +117,6 @@ const SearchingSongsScreen = (props: any) => {
             player={player}
             isSearching={!!searchedSongsRef.current.length}
             sendMediaToServer={sendMediaToServer}
-            handlePressSong={(song: any) => handlePressSong(song)}
         />);
     };
 

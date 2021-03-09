@@ -17,6 +17,17 @@ import { SongInfoArtist } from '../common/SongInfoArtist';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import { SongInfoTitle } from '../common/SongInfoTitle';
 
+function cleanImageParams(img: string) {
+    if (img.indexOf('hqdefault.jpg') >= 0) {
+        return img.replace(/(\?.*)/g, '');
+    }
+    return img;
+}
+
+function cleanTitle(title: string) {
+    return title && title.replace('VEVO', '') || '';
+}
+
 const errors = [] as string[];
 class Player extends Component {
     public toastRef: any;
@@ -51,18 +62,18 @@ class Player extends Component {
         this.state = {
             loading: true,
             key: SC_KEYS.key_1,
-            songAlbumCover: this.tracks.length ? this.tracks[0].artwork_url : '',
-            songTitle: this.tracks.length ? this.tracks[0].title : '',
-            songArtist: this.tracks.length ? this.tracks[0].user && this.tracks[0].user.username : '',
+            songAlbumCover: this.tracks.length ? cleanImageParams(this.tracks[0].videoDetails.thumbnails[0].url) : '',
+            songTitle: this.tracks.length ? this.tracks[0].videoDetails.title : '',
+            songArtist: this.tracks.length ? cleanTitle(this.tracks[0].videoDetails.author.name) : '',
             songIndex: 0,
             paused: true,
-            currentSong: this.tracks.length ? this.tracks[0].stream_url : '',
+            currentSong: this.tracks.length ? this.tracks[0].url : '',
             isBuffering: true,
             shouldRepeat: false,
             shouldShuffle: false,
             songIsReady: false,
             trackCurrentTime: 0,
-            trackMaxDuration: this.tracks.length ? this.tracks[0].duration : 0
+            trackMaxDuration: this.tracks.length ? this.tracks[0].videoDetails.lengthSeconds : 0
         };
     }
 
@@ -86,6 +97,23 @@ class Player extends Component {
     }
 
     onPlayProgress = ({ currentTime }: any) => {
+        if (Math.round(currentTime) >= this.state.trackMaxDuration) {
+            console.log('STOOOPS', currentTime);
+            // const songEnded = setTimeout(() => {
+            //     !this.state.shouldRepeat && this.resetPlayLastSong(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
+
+            //     if (!this.state.shouldRepeat) {
+            //         this.setState({ trackCurrentTime: 0, paused: true });
+            //         this.player.seek(0);
+            //         clearTimeout(songEnded);
+            //         this.onPlayEnd(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
+            //     } else {
+            //         this.setState({ trackCurrentTime: 0, paused: true });
+            //         clearTimeout(songEnded);
+            //         this.onPlayEnd(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
+            //     }
+            // }, 100);
+        }
         this.setState({
             trackCurrentTime: currentTime
         });
@@ -104,7 +132,7 @@ class Player extends Component {
             // next track
             if (tracks[songIndex + 1]) {
                 this.player.seek(0);
-                return this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
+                this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
             }
         }
     };
@@ -131,14 +159,23 @@ class Player extends Component {
 
     dispatchActionsPressedTrack = (track: any, cb: Function) => {
         this.setState({
-            currentSong: track.stream_url,
-            songAlbumCover: track.artwork_url,
-            songTitle: track.title,
-            songArtist: track.user && track.user.username,
+            currentSong: track.url,
+            songAlbumCover: cleanImageParams(track.videoDetails.thumbnails[0].url),
+            songTitle: track.videoDetails.title,
+            songArtist: cleanTitle(track.videoDetails.author.name),
             songIndex: track.index,
-            trackMaxDuration: track.duration,
-            paused: track.index === this.state.songIndex ? !this.state.paused : false
+            trackMaxDuration: Number(track.videoDetails.lengthSeconds),
+            paused: track.index === this.state.songIndex ? !this.state.paused : false,
+            isPlaying: this.state.paused
         }, () => {
+            track.videoDetails.thumbnails[0].url = track.isPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(track.videoDetails.thumbnails[1].url);
+            Object.assign(track, {
+                isPlaying: !this.state.paused
+            });
+            this.setState({
+                songAlbumCover: track.isPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(track.videoDetails.thumbnails[1].url)
+            });
+
             return cb && cb();
         });
     };
@@ -227,10 +264,11 @@ class Player extends Component {
         return (
             <View>
                 <Video
-                    source={currentSong && { uri: `${currentSong}?client_id=${key}` }}
+                    source={{ uri: `${currentSong}?client_id=${key}` }}
                     ref={ref => {
                         this.player = ref;
                     }}
+                    onExternalPlaybackChange={() => console.log('Checngeee')}
                     volume={1.0}
                     audioOnly
                     muted={false}
@@ -239,6 +277,7 @@ class Player extends Component {
                     ignoreSilentSwitch={'ignore'}
                     onBuffer={(buffer) => this.onBuffer(buffer)}
                     onError={(error) => {
+                        console.log('Error', error);
                         const keys = Object.keys(SC_KEYS);
                         errors.push(error as any);
 
@@ -256,25 +295,9 @@ class Player extends Component {
                     onLoadStart={() => {
                         this.tracks = tracks;
                         this.setState({ trackCurrentTime: 0, isBuffering: false });
-                    }
-                    }
-                    onProgress={this.onPlayProgress}
-                    onEnd={() => {
-                        const songEnded = setTimeout(() => {
-                            !shouldRepeat && this.resetPlayLastSong(tracks, songIndex, shouldShuffle, shouldRepeat);
-
-                            if (!shouldRepeat) {
-                                this.setState({ trackCurrentTime: 0, paused: true });
-                                this.player.seek(0);
-                                clearTimeout(songEnded);
-                                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
-                            } else {
-                                this.setState({ trackCurrentTime: 0, paused: true });
-                                clearTimeout(songEnded);
-                                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
-                            }
-                        }, 100);
                     }}
+                    onProgress={this.onPlayProgress}
+                    onEnd={() => console.log('end current song')}
                     repeat={shouldRepeat}
                 />
 
@@ -314,7 +337,7 @@ class Player extends Component {
                         }}
                     />
                     <PlayerControlTimeSeek
-                        trackLength={trackMaxDuration}
+                        trackMaxDuration={trackMaxDuration}
                         currentPosition={trackCurrentTime}
                         songIsReady={songIsReady}
                         onTouchMove={(time: any) => this.handleOnTouchMoveSliderSeek(time)}

@@ -21,7 +21,9 @@ const MediaItems = (props: any) => {
         console.log('2. ON MediaItems');
 
         if (isFocused) {
-            media.on('server-send-message-welcomeMsg', (data: any) => media.toastRef.current.show(data, 3000));
+            media.on('server-send-message-welcomeMsg', (data: any) => {
+                media.toastRef.current.show(data.welcomeMsg, 3000);
+            });
             media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
             setIsLoading(false);
         }

@@ -1,17 +1,11 @@
 /* eslint-disable max-len */
-import { useIsFocused } from '@react-navigation/native';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
-import ytdl from 'react-native-ytdl';
-import Reactotron from 'reactotron-react-native';
-import { filterCleanData } from '../../../src/js/Utils/Helpers/actions/songs';
+import { Keyboard, View } from 'react-native';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import BgImage from '../../common/functional-components/BgImage';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
-import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { Player } from '../../common/Player';
@@ -19,28 +13,6 @@ import { PlayerContainer } from '../../common/PlayerContainer';
 import { AppContext } from '../../User/functional-components/AppContext';
 import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
-
-async function getVideo() {
-    const youtubeURL = 'https://www.youtube.com/watch?v=8SbUC-UaAxE';
-    const urls = await ytdl(youtubeURL, {
-        filter: format => format.codecs.indexOf('mp4a') >= 0,
-        quality: 'highestaudio'
-    });
-    const info = await ytdl.getBasicInfo(youtubeURL);
-    const videoDetails = info.videoDetails;
-    const category = videoDetails.category;
-    const videoTitle = videoDetails.title;
-    const authorName = videoDetails.author.name;
-    const lengthSeconds = videoDetails.lengthSeconds;
-    const viewCount = videoDetails.viewCount;
-    const videoId = videoDetails.videoId;
-    const description = videoDetails.description;
-    const videoThumb = Object.keys(videoDetails.thumbnails || []).length && videoDetails.thumbnails[0];
-    Reactotron.log('Fetched with uydl');
-    console.log(urls, 'Info', info.videoDetails);
-}
-
-getVideo();
 
 const Songs = (props: any) => {
     const { media, navigation } = props;
@@ -53,7 +25,6 @@ const Songs = (props: any) => {
         isLoading: true,
         isComingFromSearchingSong: false
     });
-    const isFocused = useIsFocused();
     const player = useRef(null);
 
     useEffect(() => {
