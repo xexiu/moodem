@@ -81,6 +81,7 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
     }
 
     function createButton(action: string) {
+        console.log('Actions buttons')
         return {
             element: () => (
                 <View style={{marginBottom: 5 }}>

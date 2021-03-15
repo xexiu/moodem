@@ -44,7 +44,7 @@ export class AbstractMedia {
         this.user = user;
         this.group = group;
         this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
-        this.playerRef = useRef();
+        this.playerRef = useRef(null);
         this.searchRef = useRef();
         this.flatListRef = useRef();
         this.toastRef = useRef();

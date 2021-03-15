@@ -127,44 +127,41 @@ export const createGroupHandler = (validate, user) => new Promise((resolve, reje
 });
 
 export const getOwnedGroupsFromDatabase = (ref) => new Promise((resolve) => {
-    ref.once('value')
-        .then(snapshot => {
-            const groups = snapshot.val() || [];
-
-            return resolve(Object.values(groups));
-        });
+    return ref.on('value', (snapshot) => {
+        const groups = snapshot.val() || [];
+        resolve(Object.values(groups));
+    });
 });
 
 export const getInvitedGroupsFromDatabase = (ref) => new Promise((resolve) => {
-    ref.once('value')
-        .then(snapshot => {
-            if (snapshot.val()) {
-                const data = Object.values(snapshot.val()) || [];
-                const groups = [];
+    return ref.on('value', (snapshot) => {
+        if (snapshot.val()) {
+            const data = Object.values(snapshot.val()) || [];
+            const groups = [];
 
-                for (let i = 0; i < data.length; i++) {
-                    const groupAttr = data[i];
-                    const groupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
+            for (let i = 0; i < data.length; i++) {
+                const groupAttr = data[i];
+                const groupRef = firebase.database().ref().child(`Groups/${groupAttr.owner_user_id}/${groupAttr.group_id}`);
 
-                    groupRef.once('value')
-                        .then(groupSnapshot => {
-                            const group = groupSnapshot.val() || [];
+                groupRef.once('value')
+                    .then(groupSnapshot => {
+                        const group = groupSnapshot.val() || [];
 
-                            if (!isEmpty(group)) {
-                                group.isAdmin = false;
-                                group.isOwner = false;
-                                group.invited = true;
-                                groups.push(group);
+                        if (!isEmpty(group)) {
+                            group.isAdmin = false;
+                            group.isOwner = false;
+                            group.invited = true;
+                            groups.push(group);
 
-                                return i === (data.length - 1) && resolve(groups);
-                            }
-                            return resolve(groups);
-                        });
-                }
-            } else {
-                resolve([]);
+                            return i === (data.length - 1) && resolve(groups);
+                        }
+                        return resolve(groups);
+                    });
             }
-        });
+        } else {
+            resolve([]);
+        }
+    });
 });
 
 export const getAllGroups = () => new Promise(resolve => {
@@ -198,10 +195,10 @@ export const getGroups = (user) => {
     const refInvitedUsers = firebase.database().ref().child(`Users/${user.uid}/groups_invited`);
 
     return new Promise((resolve, reject) => {
-        getOwnedGroupsFromDatabase(refOwnedGroups)
+        return getOwnedGroupsFromDatabase(refOwnedGroups)
             .then(groupsOwned => {
                 allGroups.push(...groupsOwned);
-                getInvitedGroupsFromDatabase(refInvitedUsers)
+                return getInvitedGroupsFromDatabase(refInvitedUsers)
                     .then(invitedToGroups => {
                         allGroups.push(...invitedToGroups);
                         return resolve(allGroups);

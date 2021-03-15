@@ -1,3 +1,4 @@
+
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
@@ -19,8 +20,6 @@ const Songs = (props: any) => {
     const { group, user } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
-        searchedSongs: [],
-        playingSongs: [],
         isSearching: false,
         isLoading: true,
         isComingFromSearchingSong: false
@@ -33,8 +32,8 @@ const Songs = (props: any) => {
         media.on('send-message-media', ({ songs, isComingFromSearchingSong }: any) => {
             setAllValues(prev => {
                 return {
-                    ...prev, songs:
-                        [...songs],
+                    ...prev,
+                    songs: [...songs],
                     isLoading: false,
                     isSearching: false,
                     isComingFromSearchingSong
@@ -65,11 +64,11 @@ const Songs = (props: any) => {
 
     const handlePressSong = (song: any) => {
         setAllValues(prevSongs => {
-            const { playingSongs } = prevSongs;
-            const isCurrentSong = playingSongs.includes(song.id);
+            const { songs } = prevSongs;
+            const isCurrentSong = songs.includes(song.id);
 
-            if (playingSongs.length) {
-                playingSongs.forEach(_song => {
+            if (songs.length) {
+                songs.forEach(_song => {
                     _song.currentSong && delete _song.currentSong;
                     _song.isPrevSong && delete _song.isPrevSong;
 
@@ -86,7 +85,7 @@ const Songs = (props: any) => {
                     currentSong: true
                 });
             }
-            return { ...prevSongs, playingSongs: [song, ...playingSongs] };
+            return { ...prevSongs, song };
         });
     };
 
@@ -98,7 +97,7 @@ const Songs = (props: any) => {
             isSearching={allValues.isSearching}
             group={group}
             user={user}
-            handlePressSong={(song: any) => handlePressSong(song)}
+            handlePressSong={handlePressSong}
         />);
     };
 
@@ -115,16 +114,17 @@ const Songs = (props: any) => {
                 />
             </View>
         );
-    } else if (allValues.isSearching) {
-        return (
-            <SearchedSongsList
-                renderItem={renderItem}
-                media={media}
-                resetSearch={resetSearch}
-                searchedSongs={allValues.searchedSongs}
-            />
-        );
     }
+    // else if (allValues.isSearching) {
+    //     return (
+    //         <SearchedSongsList
+    //             renderItem={renderItem}
+    //             media={media}
+    //             resetSearch={resetSearch}
+    //             searchedSongs={allValues}
+    //         />
+    //     );
+    // }
 
     console.log('Render songs');
 
@@ -135,34 +135,19 @@ const Songs = (props: any) => {
                     navigation.openDrawer();
                 }}
             />
-            <SearchBarAutoComplete
+            {/* <SearchBarAutoComplete
                 group={group}
                 user={user}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
+            /> */}
+            <Player
+                ref={player}
+                user={user}
+                player={player}
+                tracks={allValues.songs}
             />
-            <PlayerContainer items={allValues.songs}>
-                <Player
-                    ref={player}
-                    tracks={allValues.songs}
-                >
-                        <CommonFlatList
-                            reference={media.flatListRef}
-                            data={allValues.songs}
-                            extraData={allValues.searchedSongs}
-                            keyExtractor={keyExtractor}
-                            action={renderItem}
-                            onContentSizeChange={(w, h) => {
-                                if (allValues.isComingFromSearchingSong) {
-                                    media.flatListRef.current.scrollToEnd({
-                                        animated: true
-                                    });
-                                }
-                            }}
-                        />
-                </Player>
-            </PlayerContainer>
         </BodyContainer>
     );
 };

@@ -55,7 +55,7 @@ const MediaItems = (props: any) => {
                 position='top'
                 ref={media.toastRef}
             />
-            <Songs media={media} navigation={navigation} />
+            <Songs media={media} navigation={navigation} player={media.playerRef} />
         </BodyContainer>
     );
 };

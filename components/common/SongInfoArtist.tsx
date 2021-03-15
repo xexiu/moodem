@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Text, View } from 'react-native';
 
 const SongInfoArtist = (props: any) => {
@@ -13,4 +13,4 @@ const SongInfoArtist = (props: any) => {
     );
 };
 
-export { SongInfoArtist };
+export default memo(SongInfoArtist);

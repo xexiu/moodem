@@ -1,6 +1,6 @@
 /* tslint:disable:no-bitwise */
 import Slider from '@react-native-community/slider';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 function timeFormat(time: number) {
@@ -20,24 +20,23 @@ function timeFormat(time: number) {
     ret += '' + secs;
     return ret;
 }
-export const PlayerControlTimeSeek = (props: any) => {
+const PlayerControlTimeSeek = (props: any) => {
     const {
         trackMaxDuration,
         currentPosition,
-        onTouchMove,
-        songIsReady
+        onTouchMove
     } = props;
 
     const [value, setValue] = useState(0);
 
     useEffect(() => {
-        setValue(props.currentPosition);
+        setValue(currentPosition);
     }, []);
 
     return (
         <View style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
-                <Text style={[styles.text, { width: 40 }]}>
+                <Text style={[styles.text, { width: 40, textAlign: 'left' }]}>
                     {timeFormat(currentPosition)}
                 </Text>
                 <View style={{ flex: 1 }} />
@@ -46,8 +45,10 @@ export const PlayerControlTimeSeek = (props: any) => {
                 </Text>
             </View>
             <Slider
-                disabled={!songIsReady}
-                onTouchMove={() => onTouchMove(value)}
+                disabled={!currentPosition}
+                onTouchMove={() => {
+                    onTouchMove(value);
+                }}
                 maximumValue={Number(trackMaxDuration)}
                 minimumValue={0}
                 value={currentPosition}
@@ -64,6 +65,9 @@ const styles = {
     container: {
         position: 'absolute',
         bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
         width: '100%'
     },
     text: {
@@ -85,3 +89,5 @@ const styles = {
         backgroundColor: '#dd0031'
     }
 } as any;
+
+export default memo(PlayerControlTimeSeek);

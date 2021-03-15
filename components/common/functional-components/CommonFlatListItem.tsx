@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { ListItem } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import TouchableScale from 'react-native-touchable-scale';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Text, View } from 'react-native';
 
 const SongInfoTitle = (props: any) => {
@@ -7,7 +7,7 @@ const SongInfoTitle = (props: any) => {
     } = props;
 
     return (
-        <View style={{ minHeight: 30, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ minHeight: 30, justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
             <Text
                 style={{ color: '#dd0031', fontSize: 22, textAlign: 'center' }}
                 numberOfLines={1}
@@ -18,4 +18,4 @@ const SongInfoTitle = (props: any) => {
     );
 };
 
-export { SongInfoTitle };
+export default memo(SongInfoTitle);

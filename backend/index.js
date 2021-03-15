@@ -7,6 +7,10 @@ const io = require('socket.io')(server);
 const ytdl = require('ytdl-core');
 const mcache = require('memory-cache');
 
+// memory-cache docs -> https://github.com/ptarjan/node-cache
+// Socket.io do -> https://socket.io/docs/server-api/#socket-id
+
+const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFmmF2swRgIhALFkP9EgTxgWwh8_Dx3Fa2g-WN-K4umS1JQyzndTP5DLAiEAyHfgMQ2jMlNpvltT8LdxKqTle8a4ZSjODYq-svrKlVA:QUQ3MjNmemFvaS1aNkFXVURieUYtMUtWbnR5bFMzRnJfa21CUXdhSTV4QXNPVnNfQWlabDBUZU1qaC1oMnh1eVNwa2pxVWxkN3duYWdhbkk5aHM1ai1JNHFORy1ZVHNvMWw3X2RBdlhKMGZaamFaa3JfeUZzVmhqTnFLS1BETlJTOFRfTmZ6TVQyd0tfUktlcEQ5X1hiNmROcU5hSEt6NC13; VISITOR_INFO1_LIVE=Foji98RNGoc; HSID=AFT92MyweZvASBFc8; SSID=Adqw7Q8srjSE8qVwE; APISID=aS1BdrF_061pvnJi/AK-F-FrDdaxvZ2M9S; SAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; __Secure-3PAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; SID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQvrjB2Ws224CKFU_q-xDu6g.; __Secure-3PSID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQyzg_CthnHmIDweLdzl7x6w.; _gcl_au=1.1.1092345076.1615207146; PREF=tz=America.Bogota&f4=4000000&volume=100; SIDCC=AJi4QfHEidaBriNX7zfdqwhYttDNMZaRIs2EiVR8sxQEsgzh5tlYaBOoAUn9tNTUrmuHbD37LA; __Secure-3PSIDCC=AJi4QfHpDx-igRwtg57bWL78ZZK45bEB4srtDgZAfdcKm4cmO1a5l7jiJ0EVDsAKQlM_meAlN60';
 const memCache = new mcache.Cache();
 
 const cacheMiddleware = (duration) => (req, res, next) => {
@@ -26,20 +30,28 @@ const cacheMiddleware = (duration) => (req, res, next) => {
 
 async function getSongs(videoId) {
   const key = `__youtube-songs__${videoId}`;
-  const info = await ytdl.getInfo(videoId);
 
-  const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-  const audio = audioFormats.filter((format) => format.codecs.indexOf('mp4a') >= 0);
+  const audioMem = memCache.get(key);
+
+  if (audioMem && Object.keys(audioMem).length) {
+    Object.assign(audioMem, {
+      isCachedInMemory: true,
+    });
+    return audioMem;
+  }
+
+  const info = await ytdl.getInfo(videoId, {
+    requestOptions: {
+      headers: {
+        Cookie: COOKIE,
+      },
+    },
+  });
+  // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
 
   if (audio && audio.length) {
-    const audioMem = memCache.get(key);
-    if (audioMem) {
-      Object.assign(audioMem[0], {
-        isCachedInMemory: true,
-      });
-      return { ...info, ...audioMem[0] };
-    }
-    memCache.put(key, audio, 30 * 100);
+    memCache.put(key, { ...info, ...audio[0] }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
     return { ...info, ...audio[0] };
   }
 
@@ -84,7 +96,26 @@ const compareValues = (key) => (a, b) => {
   return 0;
 };
 
-// Socket.io doc ==> https://socket.io/docs/server-api/#socket-id
+function setExtraAttrs(audios, uid) {
+  const audiosArr = [];
+
+  audios.forEach((track, index) => {
+    Object.assign(track, {
+      index,
+      isPlaying: false,
+      boosts_count: 0,
+      votes_count: 0,
+      voted_users: [],
+      boosted_users: [],
+      user: {
+        uid,
+      },
+    });
+    audiosArr.push(track);
+  });
+
+  return audiosArr;
+}
 
 io.use((socket, next) => {
   socket.uid = socket.handshake.query.uid;
@@ -94,17 +125,17 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   // get songs
-  socket.on('get-songs-from-youtube', async (data) => {
+  socket.on('search-songs-on-youtube', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    let results;
+    let audios = [];
     if (data.videoIds) {
-      results = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
+      audios = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
     }
 
     io.to(data.chatRoom).emit('get-songs-from-youtube', {
-      audios: results,
+      audios: setExtraAttrs(audios, socket.uid),
     });
   });
 
@@ -248,6 +279,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => { // Digital Ocean Open Port
+server.listen(3000, '::', () => { // Digital Ocean Open Port
   console.log('listening on *:3000');
 });

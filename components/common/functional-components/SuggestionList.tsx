@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -10,9 +11,18 @@ const SuggestionList = (props: any) => {
         media,
         suggestions
     } = props;
+    const isFocused = useIsFocused();
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         console.log('Effect SuggestionList');
+        if (isFocused && suggestions.length) {
+            setIsLoading(false);
+        }
+
+        return () => {
+            setIsLoading(true);
+        };
     }, []);
 
     if (suggestions && !suggestions.length) {
@@ -26,12 +36,7 @@ const SuggestionList = (props: any) => {
                 borderWidth: 1,
                 borderRadius: 5,
                 borderColor: '#eee',
-                flex: 1,
-                position: 'absolute',
-                marginTop: 40,
-                marginLeft: 50,
-                right: 10,
-                left: 0
+                flex: 1
             }}
         >
             {
@@ -40,11 +45,13 @@ const SuggestionList = (props: any) => {
                         <TouchableOpacity
                             key={index}
                             onPress={() => {
+                                console.log('SuggestionList Player', player);
                                 navigation.navigate('SearchingSongsScreen', {
                                     media,
                                     group,
                                     user,
-                                    songsOnGroup
+                                    songsOnGroup,
+                                    player
                                 });
                             }}
                         >

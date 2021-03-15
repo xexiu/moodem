@@ -1,6 +1,7 @@
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import SuggestionList from './SuggestionList';
 
@@ -10,19 +11,25 @@ const SearchBarAutoComplete = (props: any) => {
         user,
         songsOnGroup,
         navigation,
-        media
+        media,
+        player
     } = props;
+    const isFocused = useIsFocused();
     const [suggestions, setSuggestions] = useState([]);
     const signalToken = axios.CancelToken.source();
 
     useEffect(() => {
         console.log('Effect SearchBar Autocomplete');
-        setSuggestions([]);
+
+        if (isFocused) {
+            setSuggestions([]);
+        }
 
         return () => {
+            setSuggestions([]);
             console.log('OFF SearchBar Autocomplete');
         };
-    }, []);
+    }, [isFocused]);
 
     async function onChangeText(text: string): Promise<void> {
         const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
@@ -47,7 +54,15 @@ const SearchBarAutoComplete = (props: any) => {
     }
 
     return (
-        <View style={suggestions && suggestions.length && { position: 'relative', flex: 1, zIndex: 100 }}>
+        <View
+            style={suggestions && suggestions.length && {
+                position: 'absolute',
+                flex: 1,
+                zIndex: 100,
+                left: 0,
+                right: 0
+            }}
+        >
             <CommonTopSearchBar
                 placeholder='Encuentra una canción...'
                 cancelSearch={() => setSuggestions([])}

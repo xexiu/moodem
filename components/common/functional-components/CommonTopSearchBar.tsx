@@ -44,7 +44,7 @@ const CommonTopSearchBar = (props: any) => {
                 }
             }}
             placeholder={placeholder}
-            onChangeText={text => {
+            onChangeText={(text: string) => {
                 setValue(text);
                 setShowLoadingSpin(true);
                 if (onChangeText && onChangeText(text)) {

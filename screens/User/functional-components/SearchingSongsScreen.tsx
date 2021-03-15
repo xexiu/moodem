@@ -14,7 +14,6 @@ import { Player } from '../../../components/common/Player';
 import { PlayerContainer } from '../../../components/common/PlayerContainer';
 import Song from '../../../components/User/functional-components/Song';
 import storage, { removeItem, saveUserSearchedSongs } from '../../../src/js/Utils/common/storageConfig';
-import { setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const SearchingSongsScreen = (props: any) => {
     const {
@@ -46,12 +45,11 @@ const SearchingSongsScreen = (props: any) => {
         console.log('4. Searching songs screen...', isLoading);
         getResultsForSearch()
             .then((videoIds: any) => {
-                media.emit('get-songs-from-youtube', { chatRoom: group.group_name, videoIds });
+                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
             });
         media.on('get-songs-from-youtube', (data: any) => {
-            const _searchedSongs = setExtraAttrs(data.audios, media.user);
-            searchedSongsRef.current = [..._searchedSongs];
-            media.checkIfAlreadyOnList(songsOnGroup, _searchedSongs);
+            searchedSongsRef.current = [...data.audios];
+            media.checkIfAlreadyOnList(songsOnGroup, data.audios);
             console.log('Searchedsongs', searchedSongsRef.current);
             setIsLoading(false);
         });
@@ -65,7 +63,7 @@ const SearchingSongsScreen = (props: any) => {
 
         return () => {
             console.log('3. OFF SearchingSongsScreen');
-            media.destroy();
+            //media.destroy();
         };
     }, [isFocused]);
 

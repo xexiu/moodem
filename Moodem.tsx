@@ -68,7 +68,7 @@ const App = function Moodem() {
 
     return (
         <CommonStackWrapper>
-            <Stack.Screen name='Guest' component={GuestScreen} options={GuestScreen.navigationOptions} />
+            <Stack.Screen name='Guest' component={GuestScreen} />
             <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
         </CommonStackWrapper>
     );

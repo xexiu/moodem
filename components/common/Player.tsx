@@ -1,373 +1,375 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
-import Video from 'react-native-video';
-import { SC_KEYS } from '../../src/js/Utils/constants/api/apiKeys';
-import PreLoader from '../common/functional-components/PreLoader';
-import { PlayerControlBackward } from '../common/PlayerControlBackward';
-import { PlayerControlForward } from '../common/PlayerControlForward';
-import { PlayerControlPlayPause } from '../common/PlayerControlPlayPause';
+import { MediaListEmpty } from '../../screens/User/functional-components/MediaListEmpty';
+import BodyContainer from '../common/functional-components/BodyContainer';
+import CommonFlatList from '../common/functional-components/CommonFlatList';
+import PlayerControlNextPrev from '../common/PlayerControlNextPrev';
+import PlayerControlPlayPause from '../common/PlayerControlPlayPause';
 import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
-import { PlayerControlShuffle } from '../common/PlayerControlShuffle';
-import { PlayerControlTimeSeek } from '../common/PlayerControlTimeSeek';
-import { SongInfoAlbumCover } from '../common/SongInfoAlbumCover';
-import { SongInfoArtist } from '../common/SongInfoArtist';
+import PlayerControlShuffle from '../common/PlayerControlShuffle';
+import SongInfoAlbumCover from '../common/SongInfoAlbumCover';
+import SongInfoArtist from '../common/SongInfoArtist';
 import { SongInfoContainer } from '../common/SongInfoContainer';
-import { SongInfoTitle } from '../common/SongInfoTitle';
+import SongInfoTitle from '../common/SongInfoTitle';
+import Song from '../User/functional-components/Song';
+import BasePlayer from './BasePlayer';
 
-const Player = (props: any) => {
-
+function cleanImageParams(img: string) {
+    if (img.indexOf('hqdefault.jpg') >= 0) {
+        return img.replace(/(\?.*)/g, '');
+    }
+    return img;
 }
 
-// function cleanImageParams(img: string) {
-//     if (img.indexOf('hqdefault.jpg') >= 0) {
-//         return img.replace(/(\?.*)/g, '');
-//     }
-//     return img;
-// }
+function cleanTitle(title: string) {
+    return title && title.replace('VEVO', '') || '';
+}
 
-// function cleanTitle(title: string) {
-//     return title && title.replace('VEVO', '') || '';
-// }
+let SHOULD_SHUFFLE = false;
+class Player extends Component {
+    public toastRef: any;
+    public tracks: any;
+    public state: any;
+    public setState: any;
+    public player: any;
+    public props: any;
+    public songAlbumCover: any;
+    public songTitle: any;
+    public songArtist: any;
+    public songIndex: any;
+    public currentSong: any;
+    public paused: any;
+    public shouldRepeat: any;
+    public shouldShuffle: any;
+    public trackCurrentTime: any;
+    public trackMaxDuration: any;
+    public songIsReady: any;
+    public flatListRef: any;
 
-// const errors = [] as string[];
-// class Player extends Component {
-//     public toastRef: any;
-//     public tracks: any;
-//     public state: any;
-//     public setState: any;
-//     public player: any;
-//     public props: any;
-//     public songAlbumCover: any;
-//     public songTitle: any;
-//     public songArtist: any;
-//     public songIndex: any;
-//     public currentSong: any;
-//     public paused: any;
-//     public shouldRepeat: any;
-//     public shouldShuffle: any;
-//     public trackCurrentTime: any;
-//     public trackMaxDuration: any;
-//     public songIsReady: any;
+    constructor(props: any) {
+        super(props);
 
-//     constructor(props: any) {
-//         super(props);
+        console.log('CONSTRUCTOR');
+        this.toastRef = React.createRef();
+        this.flatListRef = React.createRef();
 
-//         console.log('CONSTRUCTOR');
+        this.state = {
+            currentSong: {},
+            tracks: [],
+            shouldShuffle: false,
+            shouldRepeat: false,
+            isBuffering: false
+        };
+    }
 
-//         this.toastRef = React.createRef();
+    shouldComponentUpdate(prevProps: any, nextProps: any) {
+        // console.log('Should Update Prev', prevProps, 'NextProps', nextProps);
+        // // if (prevProps.tracks &&
+        // //     !!prevProps.tracks.length &&
+        // //     !nextProps.isLoading &&
+        // //     !nextProps.isBuffering) {
+        // //     return true;
+        // // }
 
-//         props.tracks && props.tracks.length ?
-//             this.tracks = props.tracks :
-//             this.tracks = [];
+        // if (prevProps.tracks[nextProps.currentSong.index].index === nextProps.currentSong.index) {
+        //     return true;
+        // }
 
-//         this.state = {
-//             loading: true,
-//             key: SC_KEYS.key_1,
-//             songAlbumCover: this.tracks.length ? cleanImageParams(this.tracks[0].videoDetails.thumbnails[0].url) : '',
-//             songTitle: this.tracks.length ? this.tracks[0].videoDetails.title : '',
-//             songArtist: this.tracks.length ? cleanTitle(this.tracks[0].videoDetails.author.name) : '',
-//             songIndex: 0,
-//             paused: true,
-//             currentSong: this.tracks.length ? this.tracks[0].url : '',
-//             isBuffering: true,
-//             shouldRepeat: false,
-//             shouldShuffle: false,
-//             songIsReady: false,
-//             trackCurrentTime: 0,
-//             trackMaxDuration: this.tracks.length ? this.tracks[0].videoDetails.lengthSeconds : 0
-//         };
-//     }
+        return true;
+    }
 
-//     componentDidMount() {
-//         if (this.props.tracks && this.props.tracks.length) {
-//             this.setState({
-//                 isLoading: false
-//             });
-//         }
-//     }
+    componentDidMount() {
+        if (this.props.tracks && this.props.tracks.length) {
+            console.log('ComponentDidUpdate');
+            this.setState({
+                tracks: [...this.props.tracks],
+                currentSong: { ...this.props.tracks[0] }
+            });
+        }
+    }
 
-//     shouldComponentUpdate(prevProps: any, nextProps: any) {
-//         if (prevProps.tracks &&
-//             !!prevProps.tracks.length &&
-//             !nextProps.isLoading &&
-//             !nextProps.isBuffering) {
-//             return true;
-//         }
+    onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
+        if (shouldRepeat) {
+            this.dispatchActionsPressedTrack(tracks[songIndex], null);
+        } else if (shouldShuffle) {
+            const random = Math.floor((Math.random() * tracks.length) + 0);
 
-//         return false;
-//     }
+            if (tracks[random]) {
+                this.dispatchActionsPressedTrack(tracks[random], null);
+            }
+        } else {
+            // next track
+            if (tracks[songIndex + 1]) {
+                this.player.seek(0);
+                this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
+            }
+        }
+    };
 
-//     onPlayProgress = ({ currentTime }: any) => {
-//         if (Math.round(currentTime) >= this.state.trackMaxDuration) {
-//             console.log('STOOOPS', currentTime);
-//             // const songEnded = setTimeout(() => {
-//             //     !this.state.shouldRepeat && this.resetPlayLastSong(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
+    onBuffer = (buffer: any) => {
+        this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
+    };
 
-//             //     if (!this.state.shouldRepeat) {
-//             //         this.setState({ trackCurrentTime: 0, paused: true });
-//             //         this.player.seek(0);
-//             //         clearTimeout(songEnded);
-//             //         this.onPlayEnd(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
-//             //     } else {
-//             //         this.setState({ trackCurrentTime: 0, paused: true });
-//             //         clearTimeout(songEnded);
-//             //         this.onPlayEnd(this.tracks, this.state.songIndex, this.state.shouldShuffle, this.state.shouldRepeat);
-//             //     }
-//             // }, 100);
-//         }
-//         this.setState({
-//             trackCurrentTime: currentTime
-//         });
-//     };
+    onAudioError = ({ error }: any) => {
+        this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
+    };
 
-//     onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-//         if (shouldRepeat) {
-//             this.dispatchActionsPressedTrack(tracks[songIndex], null);
-//         } else if (shouldShuffle) {
-//             const random = Math.floor((Math.random() * tracks.length) + 0);
+    dispatchActionsPressedTrack = (track: any, cb: Function) => {
+        this.setState({
+            currentSong: track
+        }, () => {
+            this.tracks.forEach((_track: any) => {
+                if (track.index === _track.index) {
+                    Object.assign(track, {
+                        isPlaying: this.state.currentSong.isPlaying,
+                        isCurrentSongPlaying: true
+                    });
+                } else if (track.index !== _track.index && _track.isCurrentSongPlaying) {
+                    Object.assign(_track, {
+                        isPlaying: false,
+                        isCurrentSongPlaying: false
+                    });
+                }
+            });
 
-//             if (tracks[random]) {
-//                 this.dispatchActionsPressedTrack(tracks[random], null);
-//             }
-//         } else {
-//             // next track
-//             if (tracks[songIndex + 1]) {
-//                 this.player.seek(0);
-//                 this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-//             }
-//         }
-//     };
+            console.log('Tracks', this.tracks);
+        });
+    };
 
-//     onBuffer = (buffer: any) => {
-//         this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
-//     };
+    handleOnPressPlayPause = (paused: boolean) => {
+        this.setState({ paused: !paused });
+    };
 
-//     setKeyApi = (key: string) => {
-//         if (this.state.key === SC_KEYS[key]) {
-//             return this.setState({
-//                 key: SC_KEYS[key]
-//             });
-//         }
+    handleOnPressForward = (tracks: any, songIndex: number) => {
+        if (tracks[songIndex + 1]) {
+            this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
+        }
+    };
 
-//         return this.setState({
-//             key: SC_KEYS[key]
-//         });
-//     };
+    handleOnPressNextPrev = (track: any) => {
+        console.log('Track back', track);
+        this.markCurentSong(track);
+        this.setIsPlayingPaused(track);
+    };
 
-//     onAudioError = ({ error }: any) => {
-//         this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
-//     };
+    hanleOnPressRepeat = () => {
+        this.setState({
+            shouldRepeat: !this.state.shouldRepeat
+        });
+    };
 
-//     dispatchActionsPressedTrack = (track: any, cb: Function) => {
-//         this.setState({
-//             currentSong: track.url,
-//             songAlbumCover: cleanImageParams(track.videoDetails.thumbnails[0].url),
-//             songTitle: track.videoDetails.title,
-//             songArtist: cleanTitle(track.videoDetails.author.name),
-//             songIndex: track.index,
-//             trackMaxDuration: Number(track.videoDetails.lengthSeconds),
-//             paused: track.index === this.state.songIndex ? !this.state.paused : false
-//         }, () => {
-//             this.tracks.forEach((_track: any) => {
-//                 if (track.index === _track.index) {
-//                     Object.assign(track, {
-//                         isPlaying: !this.state.paused,
-//                         isCurrentSongPlaying: true
-//                     });
-//                     cb && cb(track);
-//                 } else if (track.index !== _track.index && _track.isCurrentSongPlaying) {
-//                     Object.assign(_track, {
-//                         isPlaying: false,
-//                         isCurrentSongPlaying: false
-//                     });
-//                     cb && cb(_track);
-//                 }
-//             });
-//             this.setState({
-//                 songAlbumCover: track.isPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(track.videoDetails.thumbnails[1].url)
-//             });
+    hanleOnPressShuffle = (shouldShuffle: boolean, random: number) => {
+        console.log('HandlePressedSgufle', shouldShuffle, 'Random', random, 'Item', this.itemRef);
+        SHOULD_SHUFFLE = shouldShuffle;
+        // this.setState({
+        //     shouldShuffle: !shouldShuffle
+        // });
+        // this.markCurentSong(this.itemRef.current);
+        // this.setIsPlayingPaused(this.state.tracks[random]);
+    };
 
-//             console.log('Tracks', this.tracks);
-//         });
-//     };
+    handleOnTouchMoveSliderSeek = (time: any) => {
+        this.player.seek(time);
+    };
 
-//     handleOnPressPlayPause = (paused: boolean) => {
-//         this.setState({ paused: !paused });
-//     };
+    resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
+        let groupLength = tracks.length;
 
-//     handleOnPressForward = (tracks: any, songIndex: number) => {
-//         if (tracks[songIndex + 1]) {
-//             this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-//         }
-//     };
+        while (groupLength--) {
+            if (groupLength === 0) {
+                this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
+                this.player.seek(0);
+                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
+            }
+        }
+    };
 
-//     handleOnPressBackward = (tracks: any, songIndex: number) => {
-//         if (tracks.length > 1) {
-//             this.setState({ trackCurrentTime: 0 });
-//         }
-//         if (tracks[songIndex - 1]) {
-//             this.dispatchActionsPressedTrack(tracks[this.state.songIndex - 1], null);
-//         }
-//     };
+    markCurentSong = (track: any) => {
+        // tslint:disable-next-line:max-line-length
+        // all songs props should be updated on this.tracks in order to be updated also on FlatList data (this.state.tracks)
+        if (track.index === this.state.currentSong.index) {
+            // update is playing
+            Object.assign(this.state.tracks[track.index], {
+                isPlaying: !track.isPlaying
+            });
+        } else if (this.state.tracks[this.state.currentSong.index]) {
+            // update track on this tracks
+            Object.assign(this.state.tracks[this.state.currentSong.index], {
+                isPlaying: false
+            });
+        }
 
-//     hanleOnPressRepeat = () => {
-//         this.setState({
-//             shouldRepeat: !this.state.shouldRepeat
-//         });
-//     };
+        if (track.index !== this.state.currentSong.index) {
+            Object.assign(this.state.tracks[track.index], {
+                isPlaying: !track.isPlaying
+            });
+        }
+    };
 
-//     hanleOnPressShuffle = () => {
-//         this.setState({
-//             shouldShuffle: !this.state.shouldShuffle
-//         });
-//     };
+    setIsPlayingPaused = (track: any) => { // should MarkCurrentSong before setIsPlayingPaused
+        this.setState({
+            currentSong: { ...track }
+        });
+    };
 
-//     handleOnTouchMoveSliderSeek = (time: any) => {
-//         this.player.seek(time);
-//     };
+    manageTrack = (track: any) => {
+        const nextPrevIndex = this.state.tracks.length ? track.index + 1 : 0;
+        // if should repeat, then repeat, if not
+        // then check if should suffle, if not
+        // add + 1 and go next song
+        // const nextIndex = ++track.index % this.state.tracks.length;
 
-//     resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-//         let groupLength = tracks.length;
+        if (this.state.shouldRepeat) {
+            // return currentSong
+        } else if (this.state.shouldShuffle) {
+            // return random song
+        }
 
-//         while (groupLength--) {
-//             if (groupLength === 0) {
-//                 this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
-//                 this.player.seek(0);
-//                 return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
-//             }
-//         }
-//     };
+        // check if next has been pressed
+        // check if prev has been pressed
 
-//     render() {
-//         const {
-//             songAlbumCover,
-//             songTitle,
-//             songArtist,
-//             songIndex,
-//             currentSong,
-//             paused,
-//             shouldRepeat,
-//             shouldShuffle,
-//             trackCurrentTime,
-//             trackMaxDuration,
-//             songIsReady,
-//             key,
-//             isLoading
-//         } = this.state;
-//         const {
-//             tracks,
-//             children
-//         } = this.props;
+        // check if item is single or last song in the array
 
-//         // console.log('Updated player');
+        // return next song
 
-//         if (isLoading) {
-//             return (
-//                 <View>
-//                     <PreLoader
-//                         containerStyle={{
-//                             justifyContent: 'center',
-//                             alignItems: 'center'
-//                         }}
-//                         size={50}
-//                     />
-//                 </View>
-//             );
-//         }
+        console.log('Tracks', this.state.tracks[track.index + 1]);
 
-//         return (
-//             <View style={{ flex: 1 }}>
-//                 <Video
-//                     source={{ uri: `${currentSong}?client_id=${key}` }}
-//                     ref={ref => {
-//                         this.player = ref;
-//                     }}
-//                     onExternalPlaybackChange={() => console.log('Checngeee')}
-//                     volume={1.0}
-//                     audioOnly
-//                     muted={false}
-//                     playInBackground
-//                     playWhenInactive
-//                     ignoreSilentSwitch={'ignore'}
-//                     onBuffer={(buffer) => this.onBuffer(buffer)}
-//                     onError={(error) => {
-//                         console.log('Error', error);
-//                         const keys = Object.keys(SC_KEYS);
-//                         errors.push(error as any);
+        if (this.state.tracks[nextPrevIndex]) {
+            this.markCurentSong(this.state.tracks[nextPrevIndex]);
+            this.setIsPlayingPaused(this.state.tracks[nextPrevIndex]);
+        } else {
+            this.markCurentSong(track);
+            this.setIsPlayingPaused(track);
+        }
 
-//                         for (const _key of errors) {
-//                             if (keys.length < errors.length) {
-//                                 return this.onAudioError(error);
-//                             }
-//                             this.setKeyApi(keys[errors.length]);
-//                         }
-//                     }}
-//                     paused={paused}
-//                     onLoad={({ duration }) => {
-//                         this.setState({ trackCurrentTime: 0, isBuffering: false });
-//                     }}
-//                     onLoadStart={() => {
-//                         this.tracks = tracks;
-//                         this.setState({ trackCurrentTime: 0, isBuffering: false });
-//                     }}
-//                     onProgress={this.onPlayProgress}
-//                     onEnd={() => console.log('end current song')}
-//                     repeat={shouldRepeat}
-//                 />
+        console.log('track manage');
+    };
 
-//                 <SongInfoContainer>
-//                     <SongInfoAlbumCover songAlbumCover={songAlbumCover} />
-//                     <SongInfoTitle songTitle={songTitle} />
-//                     <SongInfoArtist songArtist={songArtist} />
-//                 </SongInfoContainer>
-//                 <PlayerControlsContainer>
-//                     <PlayerControlShuffle
-//                         shouldShuffle={shouldShuffle}
-//                         onPressShuffle={() => {
-//                             this.setState({
-//                                 shouldRepeat: false
-//                             });
-//                             this.hanleOnPressShuffle();
-//                         }}
-//                     />
-//                     <PlayerControlBackward
-//                         onPressBackward={() => this.handleOnPressBackward(tracks, songIndex)}
-//                     />
-//                     <PlayerControlPlayPause
-//                         paused={paused}
-//                         onPressPlayPause={this.handleOnPressPlayPause}
-//                         songIsReady={songIsReady}
-//                     />
-//                     <PlayerControlForward
-//                         onPressForward={() => this.handleOnPressForward(tracks, songIndex)}
-//                     />
-//                     <PlayerControlRepeat
-//                         shouldRepeat={shouldRepeat}
-//                         onPressRepeat={() => {
-//                             this.setState({
-//                                 shouldShuffle: false
-//                             });
-//                             this.hanleOnPressRepeat();
-//                         }}
-//                     />
-//                     <PlayerControlTimeSeek
-//                         trackMaxDuration={trackMaxDuration}
-//                         currentPosition={trackCurrentTime}
-//                         songIsReady={songIsReady}
-//                         onTouchMove={(time: any) => this.handleOnTouchMoveSliderSeek(time)}
-//                     />
-//                 </PlayerControlsContainer>
-//                 {children}
-//                 <Toast
-//                     position='top'
-//                     ref={this.toastRef}
-//                 />
-//             </View>
-//         );
-//     }
-// }
+    handleBuffer = (isBuffering: boolean) => {
+        this.setState({ isBuffering });
+    };
 
-// export { Player };
+    render() {
+        const {
+            tracks,
+            currentSong,
+            isBuffering,
+            shouldShuffle,
+            shouldRepeat
+        } = this.state;
+        const {
+            user,
+            player
+        } = this.props;
+
+        if (!Object.keys(currentSong).length) {
+            return (<MediaListEmpty />);
+        }
+
+        const keyExtractor = (item: any) => item.index.toString();
+
+        return (
+            <BodyContainer>
+                <SongInfoContainer>
+                    <SongInfoAlbumCover songAlbumCover={cleanImageParams(currentSong.videoDetails.thumbnails[0].url)} />
+                    <SongInfoTitle songTitle={currentSong.videoDetails.title} />
+                    <SongInfoArtist songArtist={cleanTitle(currentSong.videoDetails.author.name)} />
+                </SongInfoContainer>
+                {/* <PlayerControlShuffle
+                        shouldShuffle={shouldShuffle}
+                        onPressShuffle={() => {
+                            this.setState({
+                                shouldRepeat: false
+                            });
+                            this.hanleOnPressShuffle();
+                        }}
+                    />
+                    <PlayerControlBackward
+                        onPressBackward={() => this.handleOnPressBackward(tracks, songIndex)}
+                    /> */}
+                {/* <PlayerControlForward
+                        onPressForward={() => this.handleOnPressForward(tracks, songIndex)}
+                    />
+                    <PlayerControlRepeat
+                        shouldRepeat={shouldRepeat}
+                        onPressRepeat={() => {
+                            this.setState({
+                                shouldShuffle: false
+                            });
+                            this.hanleOnPressRepeat();
+                        }}
+                    />*/}
+                <PlayerControlsContainer>
+                    <PlayerControlNextPrev
+                        action='prev'
+                        nextPrevSong={currentSong.index - 1}
+                        currentSong={currentSong}
+                        tracks={tracks}
+                        onPressHandler={this.handleOnPressNextPrev}
+                    />
+                    <PlayerControlPlayPause
+                        isBuffering={isBuffering}
+                        currentSong={currentSong}
+                        tracks={tracks}
+                        flatListRef={this.flatListRef}
+                        onPressHandler={(flatListItem: any) => {
+                            // tslint:disable-next-line:max-line-length
+                            // item needs to come from flatList ref in order to sync with play/pause button and items from FlatList
+                            this.markCurentSong(flatListItem);
+                            this.setIsPlayingPaused(flatListItem);
+                        }}
+                    />
+                    <PlayerControlNextPrev
+                        action='next'
+                        nextPrevSong={currentSong.index + 1}
+                        currentSong={currentSong}
+                        tracks={tracks}
+                        onPressHandler={this.handleOnPressNextPrev}
+                    />
+                </PlayerControlsContainer>
+                <BasePlayer
+                    handleBuffer={this.handleBuffer}
+                    manageTrack={this.manageTrack}
+                    currentSong={currentSong}
+                    player={player}
+                />
+                <CommonFlatList
+                    style={{ marginTop: 20 }}
+                    reference={this.flatListRef}
+                    data={this.state.tracks}
+                    extraData={this.state}
+                    keyExtractor={keyExtractor}
+                    action={({ item, index }) => {
+                        return (
+                            // <Song
+                            //     song={item}
+                            //     user={user}
+                            // />
+                            <TouchableOpacity
+                                style={{ padding: 10 }}
+                                onPress={() => {
+                                    this.markCurentSong(item);
+                                    this.setIsPlayingPaused(item);
+                                    // this.dispatchActionsPressedTrack(item, null);
+                                }}
+                            >
+                                <View>
+                                    <Text>Song {item.index} is Playing: {String(item.isPlaying)}, Title: ${item.videoDetails.title}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
+                <Toast
+                    position='top'
+                    ref={this.toastRef}
+                />
+            </BodyContainer>
+        );
+    }
+}
+
+export { Player };

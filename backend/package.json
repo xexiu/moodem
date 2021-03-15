@@ -12,12 +12,12 @@
   "dependencies": {
     "express": "^4.17.1",
     "memory-cache": "^0.2.0",
-    "socket.io": "^3.0.1",
-    "socket.io-client": "^3.0.1",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0",
     "ytdl-core": "^4.5.0"
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
+    "eslint": "^7.21.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "fly": "^4.2.3"

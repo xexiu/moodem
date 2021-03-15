@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 const SongInfoContainer = (props: any) => {
     return (
-            <View style={{ height: 150 }}>
+            <View style={{ height: 145 }}>
                 {props.children}
             </View>
     );
