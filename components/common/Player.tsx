@@ -48,6 +48,7 @@ class Player extends Component {
     public trackMaxDuration: any;
     public songIsReady: any;
     public flatListRef: any;
+    public playPauseRef: any;
 
     constructor(props: any) {
         super(props);
@@ -55,6 +56,7 @@ class Player extends Component {
         console.log('CONSTRUCTOR');
         this.toastRef = React.createRef();
         this.flatListRef = React.createRef();
+        this.playPauseRef = React.createRef();
 
         this.state = {
             currentSong: {},
@@ -247,15 +249,10 @@ class Player extends Component {
         console.log('track manage');
     };
 
-    handleBuffer = (isBuffering: boolean) => {
-        this.setState({ isBuffering });
-    };
-
     render() {
         const {
             tracks,
             currentSong,
-            isBuffering,
             shouldShuffle,
             shouldRepeat
         } = this.state;
@@ -310,7 +307,7 @@ class Player extends Component {
                         onPressHandler={this.handleOnPressNextPrev}
                     />
                     <PlayerControlPlayPause
-                        isBuffering={isBuffering}
+                        ref={this.playPauseRef}
                         currentSong={currentSong}
                         tracks={tracks}
                         flatListRef={this.flatListRef}
@@ -330,7 +327,7 @@ class Player extends Component {
                     />
                 </PlayerControlsContainer>
                 <BasePlayer
-                    handleBuffer={this.handleBuffer}
+                    playPauseRef={this.playPauseRef}
                     manageTrack={this.manageTrack}
                     currentSong={currentSong}
                     player={player}

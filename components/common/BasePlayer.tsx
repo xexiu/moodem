@@ -5,7 +5,7 @@ import PlayerControlTimeSeek from '../common/PlayerControlTimeSeek';
 
 const BasePlayer = (props: any) => {
     const {
-        handleBuffer,
+        playPauseRef,
         manageTrack,
         currentSong,
         player
@@ -19,7 +19,7 @@ const BasePlayer = (props: any) => {
         return () => { };
     }, [currentSong]);
 
-    console.log('Update BasePlayer');
+    console.log('Update BasePlayer', playPauseRef);
 
     return (
         <PlayerControlsContainer>
@@ -38,7 +38,7 @@ const BasePlayer = (props: any) => {
                 playWhenInactive
                 ignoreSilentSwitch={'ignore'}
                 onBuffer={(buffer) => {
-                    handleBuffer(buffer.isBuffering);
+                    playPauseRef.current.setIsBuffering(buffer.isBuffering);
                 }}
                 onError={(error) => {
                     console.log('Error', error);
