@@ -1,7 +1,8 @@
 /* tslint:disable:no-bitwise */
 import Slider from '@react-native-community/slider';
-import React, { memo, useEffect, useState } from 'react';
+import React, { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
+import { styles } from '../../src/css/styles/playerControlTimeSeek';
 
 function timeFormat(time: number) {
     // Hours, minutes and seconds
@@ -20,74 +21,87 @@ function timeFormat(time: number) {
     ret += '' + secs;
     return ret;
 }
-const PlayerControlTimeSeek = (props: any) => {
+
+type MyProps = {
+    player: any,
+    currentSong: any
+};
+
+const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     const {
-        trackMaxDuration,
-        currentPosition,
-        onTouchMove
+        player,
+        currentSong
     } = props;
 
-    const [value, setValue] = useState(0);
+    const [trackCurrentTime, setTrackCurrentTime] = useState(0);
+    const [isSliding, setIsSliding] = useState(false);
+    const sliderRef = useRef();
 
     useEffect(() => {
-        setValue(currentPosition);
+        console.log('On Effect Slider');
+        setTrackCurrentTime(0);
+        return () => {
+            console.log('Off Effect Slider');
+        };
     }, []);
+
+    useImperativeHandle(ref, () => {
+        return {
+            setTrackCurrentTime,
+            setIsSliding,
+            isSliding
+        };
+    }, [isSliding]);
 
     return (
         <View style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
                 <Text style={[styles.text, { width: 40, textAlign: 'left' }]}>
-                    {timeFormat(currentPosition)}
+                    {timeFormat(trackCurrentTime)}
                 </Text>
                 <View style={{ flex: 1 }} />
                 <Text style={styles.text}>
-                    {timeFormat(trackMaxDuration - currentPosition)}
+                    {timeFormat(Number(currentSong.videoDetails.lengthSeconds) - trackCurrentTime)}
                 </Text>
             </View>
             <Slider
-                disabled={!currentPosition}
-                onTouchMove={() => {
-                    onTouchMove(value);
-                }}
-                maximumValue={Number(trackMaxDuration)}
+                step={1}
+                ref={sliderRef}
+                maximumValue={Number(currentSong.videoDetails.lengthSeconds)}
                 minimumValue={0}
-                value={currentPosition}
-                onValueChange={setValue}
+                value={trackCurrentTime}
                 style={styles.slider}
-                minimumTrackTintColor='#dd0031'
-                maximumTrackTintColor='#ccc'
+                onValueChange={(_value) => {
+                    setIsSliding(true);
+                    setTrackCurrentTime(_value);
+                }}
+                minimumTrackTintColor={styles.minimumTrackTintColor}
+                maximumTrackTintColor={styles.maximumTrackTintColor}
+                onSlidingComplete={(_value) => {
+                    player.current.seek(_value);
+                    setIsSliding(false);
+                }}
             />
         </View>
     );
+});
+
+const prevNextSongIsPlaying = (prevProps: any, nextProps: any) => {
+    return prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying;
 };
 
-const styles = {
-    container: {
-        position: 'absolute',
-        bottom: 0,
-        top: 0,
-        left: 0,
-        right: 0,
-        width: '100%'
-    },
-    text: {
-        color: '#dd0031',
-        fontSize: 12,
-        textAlign: 'center'
-    },
-    slider: {
-        height: 50
-    },
-    thumb: {
-        borderWidth: 1,
-        color: 'green',
-        backgroundColor: '#dd0031'
-    },
-    track: {
-        borderWidth: 1,
-        color: 'blue',
-        backgroundColor: '#dd0031'
-    }
-} as any;
+const nextPrevSongIndex = (prevProps: any, nextProps: any) => {
+    return prevProps.currentSong.index !== nextProps.currentSong.index &&
+    nextProps.currentSong.isPlaying;
+};
 
-export default memo(PlayerControlTimeSeek);
+const areEqual = (prevProps: any, nextProps: any) => {
+    if (prevNextSongIsPlaying(prevProps, nextProps)) {
+        return false;
+    } else if (nextPrevSongIndex(prevProps, nextProps)) {
+        return false;
+    }
+    return true;
+};
+
+export default memo(PlayerControlTimeSeek, areEqual);

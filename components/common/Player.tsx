@@ -91,66 +91,65 @@ class Player extends Component {
         }
     }
 
-    onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-        if (shouldRepeat) {
-            this.dispatchActionsPressedTrack(tracks[songIndex], null);
-        } else if (shouldShuffle) {
-            const random = Math.floor((Math.random() * tracks.length) + 0);
+    // onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
+    //     if (shouldRepeat) {
+    //         this.dispatchActionsPressedTrack(tracks[songIndex], null);
+    //     } else if (shouldShuffle) {
+    //         const random = Math.floor((Math.random() * tracks.length) + 0);
 
-            if (tracks[random]) {
-                this.dispatchActionsPressedTrack(tracks[random], null);
-            }
-        } else {
-            // next track
-            if (tracks[songIndex + 1]) {
-                this.player.seek(0);
-                this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-            }
-        }
-    };
+    //         if (tracks[random]) {
+    //             this.dispatchActionsPressedTrack(tracks[random], null);
+    //         }
+    //     } else {
+    //         // next track
+    //         if (tracks[songIndex + 1]) {
+    //             this.player.seek(0);
+    //             this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
+    //         }
+    //     }
+    // };
 
-    onBuffer = (buffer: any) => {
-        this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
-    };
+    // onBuffer = (buffer: any) => {
+    //     this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
+    // };
 
-    onAudioError = ({ error }: any) => {
-        this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
-    };
+    // onAudioError = ({ error }: any) => {
+    //     this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
+    // };
 
-    dispatchActionsPressedTrack = (track: any, cb: Function) => {
-        this.setState({
-            currentSong: track
-        }, () => {
-            this.tracks.forEach((_track: any) => {
-                if (track.index === _track.index) {
-                    Object.assign(track, {
-                        isPlaying: this.state.currentSong.isPlaying,
-                        isCurrentSongPlaying: true
-                    });
-                } else if (track.index !== _track.index && _track.isCurrentSongPlaying) {
-                    Object.assign(_track, {
-                        isPlaying: false,
-                        isCurrentSongPlaying: false
-                    });
-                }
-            });
+    // dispatchActionsPressedTrack = (track: any, cb: Function) => {
+    //     this.setState({
+    //         currentSong: track
+    //     }, () => {
+    //         this.tracks.forEach((_track: any) => {
+    //             if (track.index === _track.index) {
+    //                 Object.assign(track, {
+    //                     isPlaying: this.state.currentSong.isPlaying,
+    //                     isCurrentSongPlaying: true
+    //                 });
+    //             } else if (track.index !== _track.index && _track.isCurrentSongPlaying) {
+    //                 Object.assign(_track, {
+    //                     isPlaying: false,
+    //                     isCurrentSongPlaying: false
+    //                 });
+    //             }
+    //         });
 
-            console.log('Tracks', this.tracks);
-        });
-    };
+    //         console.log('Tracks', this.tracks);
+    //     });
+    // };
 
     handleOnPressPlayPause = (paused: boolean) => {
         this.setState({ paused: !paused });
     };
 
-    handleOnPressForward = (tracks: any, songIndex: number) => {
-        if (tracks[songIndex + 1]) {
-            this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-        }
-    };
+    // handleOnPressForward = (tracks: any, songIndex: number) => {
+    //     if (tracks[songIndex + 1]) {
+    //         this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
+    //     }
+    // };
 
     handleOnPressNextPrev = (track: any) => {
-        console.log('Track back', track);
         this.markCurentSong(track);
         this.setIsPlayingPaused(track);
     };
@@ -162,7 +161,7 @@ class Player extends Component {
     };
 
     hanleOnPressShuffle = (shouldShuffle: boolean, random: number) => {
-        console.log('HandlePressedSgufle', shouldShuffle, 'Random', random, 'Item', this.itemRef);
+        console.log('HandlePressedSgufle', shouldShuffle, 'Random', random, 'Item');
         SHOULD_SHUFFLE = shouldShuffle;
         // this.setState({
         //     shouldShuffle: !shouldShuffle
@@ -171,21 +170,21 @@ class Player extends Component {
         // this.setIsPlayingPaused(this.state.tracks[random]);
     };
 
-    handleOnTouchMoveSliderSeek = (time: any) => {
-        this.player.seek(time);
-    };
+    // handleOnTouchMoveSliderSeek = (time: any) => {
+    //     this.player.seek(time);
+    // };
 
-    resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-        let groupLength = tracks.length;
+    // resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
+    //     let groupLength = tracks.length;
 
-        while (groupLength--) {
-            if (groupLength === 0) {
-                this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
-                this.player.seek(0);
-                return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
-            }
-        }
-    };
+    //     while (groupLength--) {
+    //         if (groupLength === 0) {
+    //             this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
+    //             this.player.seek(0);
+    //             return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
+    //         }
+    //     }
+    // };
 
     markCurentSong = (track: any) => {
         // tslint:disable-next-line:max-line-length

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import Video from 'react-native-video';
 import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
 import PlayerControlTimeSeek from '../common/PlayerControlTimeSeek';
@@ -11,33 +11,22 @@ const BasePlayer = (props: any) => {
         player
     } = props;
 
-    const [trackCurrentTime, setTrackCurrentTime] = useState(0);
-
-    const handleOnTouchMove = (time: number) => {
-        player.current.seek(time);
-    };
-
-    const handleOnProgress = (currentTime: number) => {
-        console.log('Seeks');
-        setTrackCurrentTime(currentTime);
-    };
-
-    const handleOnSeek = (currentTime: number) => {
-        setTrackCurrentTime(currentTime);
-    };
+    const seekRef = useRef(null);
 
     useEffect(() => {
-        setTrackCurrentTime(0);
+        seekRef.current.setTrackCurrentTime(0);
 
         return () => { };
     }, [currentSong]);
 
+    console.log('Update BasePlayer');
+
     return (
         <PlayerControlsContainer>
             <PlayerControlTimeSeek
-                trackMaxDuration={currentSong.videoDetails.lengthSeconds}
-                currentPosition={trackCurrentTime}
-                onTouchMove={handleOnTouchMove}
+                ref={seekRef}
+                player={player}
+                currentSong={currentSong}
             />
             <Video
                 source={{ uri: currentSong.url }}
@@ -54,18 +43,21 @@ const BasePlayer = (props: any) => {
                 onError={(error) => {
                     console.log('Error', error);
                 }}
-                onSeek={({ currentTime }) => handleOnSeek(currentTime)}
                 paused={!currentSong.isPlaying}
                 onLoad={() => {
-                    setTrackCurrentTime(0);
+                    seekRef.current.setTrackCurrentTime(0);
                 }}
                 onLoadStart={() => {
-                    setTrackCurrentTime(0);
+                    seekRef.current.setTrackCurrentTime(0);
                 }}
-                onProgress={({ currentTime, playableDuration }) => handleOnProgress(currentTime)}
+                onProgress={({ currentTime, playableDuration }) => {
+                    if (!seekRef.current.isSliding) {
+                        seekRef.current.setTrackCurrentTime(currentTime);
+                    }
+                }}
                 onEnd={() => {
                     console.log('end current song');
-                    setTrackCurrentTime(0);
+                    seekRef.current.setTrackCurrentTime(0);
                     manageTrack(currentSong);
                 }}
             // repeat={true}
