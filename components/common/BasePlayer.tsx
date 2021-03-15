@@ -14,12 +14,8 @@ const BasePlayer = (props: any) => {
     const seekRef = useRef(null);
 
     useEffect(() => {
-        seekRef.current.setTrackCurrentTime(0);
-
         return () => { };
     }, [currentSong]);
-
-    console.log('Update BasePlayer', playPauseRef);
 
     return (
         <PlayerControlsContainer>
@@ -44,12 +40,6 @@ const BasePlayer = (props: any) => {
                     console.log('Error', error);
                 }}
                 paused={!currentSong.isPlaying}
-                onLoad={() => {
-                    seekRef.current.setTrackCurrentTime(0);
-                }}
-                onLoadStart={() => {
-                    seekRef.current.setTrackCurrentTime(0);
-                }}
                 onProgress={({ currentTime, playableDuration }) => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);
