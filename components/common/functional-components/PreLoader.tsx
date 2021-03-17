@@ -6,14 +6,15 @@ import { defaultPreLoaderStyles } from '../../../src/css/styles/preLoader';
 
 type Props = {
     size?: number;
-    containerStyle?: object
+    containerStyle?: object,
+    borderWidth?: number
 };
 
-const PreLoader = ({ size = 30, containerStyle }: Props) => {
+const PreLoader = ({ size = 30, containerStyle, borderWidth = 1 }: Props) => {
 
     return (
         <View style={[defaultPreLoaderStyles, containerStyle]}>
-            <Progress.Circle size={size} indeterminate color={'#dd0031'} />
+            <Progress.Circle size={size} indeterminate color={'#dd0031'} borderWidth={borderWidth} />
         </View>
     );
 };

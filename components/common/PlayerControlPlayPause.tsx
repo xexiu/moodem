@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 import PreLoader from './functional-components/PreLoader';
@@ -20,7 +20,8 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
 
     useImperativeHandle(ref, () => {
         return {
-            setIsBuffering
+            setIsBuffering,
+            onPressHandler
         };
     }, [isBuffering]);
 
@@ -31,13 +32,31 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const flatListItem = flatList.current._getItem(tracks, currentSong.index);
 
     if (isBuffering) {
-        return (<PreLoader size={58} containerStyle={{}} />);
+        return (<PreLoader
+            size={100}
+            containerStyle={{
+                position: 'absolute',
+                zIndex: 10,
+                top: -4,
+                borderColor: '#eee',
+                width: 110
+            }}
+            borderWidth={3}
+        />);
     }
 
     return (
         <Icon
+            containerStyle={{
+                position: 'absolute',
+                zIndex: 10,
+                top: 35,
+                borderWidth: 1,
+                borderColor: '#eee',
+                borderRadius: 50,
+                width: 50
+            }}
             Component={TouchableScale}
-            raised
             name={!flatListItem.isPlaying ? 'play' : 'pause'}
             type={!flatListItem.isPlaying ? 'foundation' : 'AntDesign'}
             size={25}
@@ -53,6 +72,8 @@ const areEqual = (prevProps: any, nextProps: any) => {
     } else if (prevProps.currentSong.index !== nextProps.currentSong.index) {
         return false;
     } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
+        return false;
+    } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index) {
         return false;
     }
     return true;

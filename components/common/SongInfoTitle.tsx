@@ -7,7 +7,7 @@ const SongInfoTitle = (props: any) => {
     } = props;
 
     return (
-        <View style={{ minHeight: 30, justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
+        <View style={{ minHeight: 30, justifyContent: 'center', alignItems: 'center' }}>
             <Text
                 style={{ color: '#dd0031', fontSize: 22, textAlign: 'center' }}
                 numberOfLines={1}

@@ -49,9 +49,10 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
         return {
             setTrackCurrentTime,
             setIsSliding,
-            isSliding
+            isSliding,
+            trackCurrentTime
         };
-    }, [isSliding]);
+    }, [isSliding, trackCurrentTime]);
 
     return (
         <View style={styles.container}>

@@ -2,20 +2,18 @@
 import React, { Component } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
+import PreLoader from '../../components/common/functional-components/PreLoader';
 import { MediaListEmpty } from '../../screens/User/functional-components/MediaListEmpty';
 import BodyContainer from '../common/functional-components/BodyContainer';
 import CommonFlatList from '../common/functional-components/CommonFlatList';
-import PlayerControlNextPrev from '../common/PlayerControlNextPrev';
 import PlayerControlPlayPause from '../common/PlayerControlPlayPause';
-import { PlayerControlRepeat } from '../common/PlayerControlRepeat';
-import { PlayerControlsContainer } from '../common/PlayerControlsContainer';
-import PlayerControlShuffle from '../common/PlayerControlShuffle';
-import SongInfoAlbumCover from '../common/SongInfoAlbumCover';
-import SongInfoArtist from '../common/SongInfoArtist';
+import PlayerControlRepeat from '../common/PlayerControlRepeat';
+import PlayerControlTimeSeek from '../common/PlayerControlTimeSeek';
 import { SongInfoContainer } from '../common/SongInfoContainer';
 import SongInfoTitle from '../common/SongInfoTitle';
 import Song from '../User/functional-components/Song';
 import BasePlayer from './BasePlayer';
+import PlayerControl from './PlayerControl';
 
 function cleanImageParams(img: string) {
     if (img.indexOf('hqdefault.jpg') >= 0) {
@@ -27,8 +25,6 @@ function cleanImageParams(img: string) {
 function cleanTitle(title: string) {
     return title && title.replace('VEVO', '') || '';
 }
-
-let SHOULD_SHUFFLE = false;
 class Player extends Component {
     public toastRef: any;
     public tracks: any;
@@ -49,21 +45,23 @@ class Player extends Component {
     public songIsReady: any;
     public flatListRef: any;
     public playPauseRef: any;
+    public seekRef: any;
+    public repeatRef: any;
 
     constructor(props: any) {
         super(props);
 
-        console.log('CONSTRUCTOR');
+        console.log('CONSTRUCTOR', this.player);
         this.toastRef = React.createRef();
         this.flatListRef = React.createRef();
         this.playPauseRef = React.createRef();
+        this.seekRef = React.createRef();
+        this.repeatRef = React.createRef();
 
         this.state = {
+            isLoading: true,
             currentSong: {},
-            tracks: [],
-            shouldShuffle: false,
-            shouldRepeat: false,
-            isBuffering: false
+            tracks: []
         };
     }
 
@@ -85,71 +83,24 @@ class Player extends Component {
 
     componentDidMount() {
         if (this.props.tracks && this.props.tracks.length) {
-            console.log('ComponentDidUpdate');
             this.setState({
                 tracks: [...this.props.tracks],
                 currentSong: { ...this.props.tracks[0] }
+            }, () => {
+                this.setState({
+                    isLoading: false
+                });
             });
         }
     }
-
-    // onPlayEnd = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-    //     if (shouldRepeat) {
-    //         this.dispatchActionsPressedTrack(tracks[songIndex], null);
-    //     } else if (shouldShuffle) {
-    //         const random = Math.floor((Math.random() * tracks.length) + 0);
-
-    //         if (tracks[random]) {
-    //             this.dispatchActionsPressedTrack(tracks[random], null);
-    //         }
-    //     } else {
-    //         // next track
-    //         if (tracks[songIndex + 1]) {
-    //             this.player.seek(0);
-    //             this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-    //         }
-    //     }
-    // };
-
-    // onBuffer = (buffer: any) => {
-    //     this.setState({ isBuffering: buffer.isBuffering, songIsReady: !buffer.isBuffering });
-    // };
 
     // onAudioError = ({ error }: any) => {
     //     this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
     // };
 
-    // dispatchActionsPressedTrack = (track: any, cb: Function) => {
-    //     this.setState({
-    //         currentSong: track
-    //     }, () => {
-    //         this.tracks.forEach((_track: any) => {
-    //             if (track.index === _track.index) {
-    //                 Object.assign(track, {
-    //                     isPlaying: this.state.currentSong.isPlaying,
-    //                     isCurrentSongPlaying: true
-    //                 });
-    //             } else if (track.index !== _track.index && _track.isCurrentSongPlaying) {
-    //                 Object.assign(_track, {
-    //                     isPlaying: false,
-    //                     isCurrentSongPlaying: false
-    //                 });
-    //             }
-    //         });
-
-    //         console.log('Tracks', this.tracks);
-    //     });
-    // };
-
     handleOnPressPlayPause = (paused: boolean) => {
         this.setState({ paused: !paused });
     };
-
-    // handleOnPressForward = (tracks: any, songIndex: number) => {
-    //     if (tracks[songIndex + 1]) {
-    //         this.dispatchActionsPressedTrack(tracks[songIndex + 1], null);
-    //     }
-    // };
 
     handleOnPressNextPrev = (track: any) => {
         this.markCurentSong(track);
@@ -161,32 +112,6 @@ class Player extends Component {
             shouldRepeat: !this.state.shouldRepeat
         });
     };
-
-    hanleOnPressShuffle = (shouldShuffle: boolean, random: number) => {
-        console.log('HandlePressedSgufle', shouldShuffle, 'Random', random, 'Item');
-        SHOULD_SHUFFLE = shouldShuffle;
-        // this.setState({
-        //     shouldShuffle: !shouldShuffle
-        // });
-        // this.markCurentSong(this.itemRef.current);
-        // this.setIsPlayingPaused(this.state.tracks[random]);
-    };
-
-    // handleOnTouchMoveSliderSeek = (time: any) => {
-    //     this.player.seek(time);
-    // };
-
-    // resetPlayLastSong = (tracks: any, songIndex: number, shouldShuffle: boolean, shouldRepeat: boolean) => {
-    //     let groupLength = tracks.length;
-
-    //     while (groupLength--) {
-    //         if (groupLength === 0) {
-    //             this.setState({ trackCurrentTime: 0, songIndex: tracks.length, paused: true });
-    //             this.player.seek(0);
-    //             return this.onPlayEnd(tracks, songIndex, shouldShuffle, shouldRepeat);
-    //         }
-    //     }
-    // };
 
     markCurentSong = (track: any) => {
         // tslint:disable-next-line:max-line-length
@@ -216,27 +141,12 @@ class Player extends Component {
         });
     };
 
-    manageTrack = (track: any) => {
-        const nextPrevIndex = this.state.tracks.length ? track.index + 1 : 0;
-        // if should repeat, then repeat, if not
-        // then check if should suffle, if not
-        // add + 1 and go next song
-        // const nextIndex = ++track.index % this.state.tracks.length;
-
-        if (this.state.shouldRepeat) {
-            // return currentSong
-        } else if (this.state.shouldShuffle) {
-            // return random song
+    manageTrack = (track: any, shouldRepeat: boolean) => {
+        console.log('Manage');
+        if (shouldRepeat) {
+            return this.setIsPlayingPaused(track);
         }
-
-        // check if next has been pressed
-        // check if prev has been pressed
-
-        // check if item is single or last song in the array
-
-        // return next song
-
-        console.log('Tracks', this.state.tracks[track.index + 1]);
+        const nextPrevIndex = this.state.tracks.length ? track.index + 1 : 0;
 
         if (this.state.tracks[nextPrevIndex]) {
             this.markCurentSong(this.state.tracks[nextPrevIndex]);
@@ -245,24 +155,32 @@ class Player extends Component {
             this.markCurentSong(track);
             this.setIsPlayingPaused(track);
         }
-
-        console.log('track manage');
     };
 
     render() {
         const {
             tracks,
             currentSong,
-            shouldShuffle,
-            shouldRepeat
+            isLoading
         } = this.state;
         const {
             user,
-            player
+            player,
+            repeatRef
         } = this.props;
 
         if (!Object.keys(currentSong).length) {
             return (<MediaListEmpty />);
+        } else if (isLoading) {
+            return (
+                <PreLoader
+                    containerStyle={{
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+            );
         }
 
         const keyExtractor = (item: any) => item.index.toString();
@@ -270,41 +188,33 @@ class Player extends Component {
         return (
             <BodyContainer>
                 <SongInfoContainer>
-                    <SongInfoAlbumCover songAlbumCover={cleanImageParams(currentSong.videoDetails.thumbnails[0].url)} />
-                    <SongInfoTitle songTitle={currentSong.videoDetails.title} />
-                    <SongInfoArtist songArtist={cleanTitle(currentSong.videoDetails.author.name)} />
-                </SongInfoContainer>
-                {/* <PlayerControlShuffle
-                        shouldShuffle={shouldShuffle}
-                        onPressShuffle={() => {
-                            this.setState({
-                                shouldRepeat: false
-                            });
-                            this.hanleOnPressShuffle();
+                    <PlayerControl
+                        iconStyle={{
+                            textAlign: 'center',
+                            backgroundColor: '#fff',
+                            borderWidth: 1,
+                            borderColor: '#eee',
+                            padding: 10,
+                            borderRadius: 20,
+                            width: 40
                         }}
-                    />
-                    <PlayerControlBackward
-                        onPressBackward={() => this.handleOnPressBackward(tracks, songIndex)}
-                    /> */}
-                {/* <PlayerControlForward
-                        onPressForward={() => this.handleOnPressForward(tracks, songIndex)}
-                    />
-                    <PlayerControlRepeat
-                        shouldRepeat={shouldRepeat}
-                        onPressRepeat={() => {
-                            this.setState({
-                                shouldShuffle: false
-                            });
-                            this.hanleOnPressRepeat();
-                        }}
-                    />*/}
-                <PlayerControlsContainer>
-                    <PlayerControlNextPrev
+                        iconType='font-awesome'
+                        iconSize={18}
                         action='prev'
+                        iconName='step-backward'
+                        containerStyle={{ position: 'absolute', top: 20, left: 70, zIndex: 100 }}
                         nextPrevSong={currentSong.index - 1}
                         currentSong={currentSong}
                         tracks={tracks}
-                        onPressHandler={this.handleOnPressNextPrev}
+                        onPressHandler={(track: any) => {
+                            this.handleOnPressNextPrev(track);
+                        }}
+                    />
+                    <PlayerControlRepeat
+                        ref={repeatRef}
+                        iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 2, backgroundColor: '#fff' }}
+                        action='shouldRepeat'
+                        containerStyle={{ position: 'absolute', top: 70, left: 115, zIndex: 100 }}
                     />
                     <PlayerControlPlayPause
                         ref={this.playPauseRef}
@@ -312,26 +222,66 @@ class Player extends Component {
                         tracks={tracks}
                         flatListRef={this.flatListRef}
                         onPressHandler={(flatListItem: any) => {
-                            // tslint:disable-next-line:max-line-length
-                            // item needs to come from flatList ref in order to sync with play/pause button and items from FlatList
+                            const lastItem = tracks[tracks.length - 1].index === currentSong.index;
+
+                            if (lastItem && this.seekRef.current.trackCurrentTime === 0) {
+                                player.current.seek(0);
+                            }
                             this.markCurentSong(flatListItem);
                             this.setIsPlayingPaused(flatListItem);
                         }}
                     />
-                    <PlayerControlNextPrev
+                    <BasePlayer
+                        repeatRef={repeatRef}
+                        seekRef={this.seekRef}
+                        playPauseRef={this.playPauseRef}
+                        manageTrack={this.manageTrack}
+                        currentSong={currentSong}
+                        player={player}
+                        tracks={tracks}
+                    />
+                    <PlayerControl
+                        iconStyle={{
+                            textAlign: 'center',
+                            backgroundColor: '#fff',
+                            borderWidth: 1,
+                            borderColor: '#eee',
+                            padding: 10,
+                            borderRadius: 20,
+                            width: 40
+                        }}
+                        iconType='font-awesome'
+                        iconSize={18}
                         action='next'
+                        iconName='step-forward'
+                        containerStyle={{ position: 'absolute', top: 20, right: 60, zIndex: 100 }}
                         nextPrevSong={currentSong.index + 1}
                         currentSong={currentSong}
                         tracks={tracks}
-                        onPressHandler={this.handleOnPressNextPrev}
+                        onPressHandler={(track: any) => {
+                            this.handleOnPressNextPrev(track);
+                        }}
                     />
-                </PlayerControlsContainer>
-                <BasePlayer
-                    playPauseRef={this.playPauseRef}
-                    manageTrack={this.manageTrack}
-                    currentSong={currentSong}
-                    player={player}
-                />
+                    <PlayerControl
+                        iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 5, backgroundColor: '#fff' }}
+                        iconType='entypo'
+                        iconSize={18}
+                        action='full-screen'
+                        iconName='resize-full-screen'
+                        containerStyle={{ position: 'absolute', top: 70, right: 115, zIndex: 100 }}
+                        currentSong={currentSong}
+                        tracks={tracks}
+                        onPressHandler={() => {
+                            player.current.presentFullscreenPlayer();
+                        }}
+                    />
+                    <SongInfoTitle songTitle={currentSong.videoDetails.title} />
+                    <PlayerControlTimeSeek
+                        ref={this.seekRef}
+                        player={player}
+                        currentSong={currentSong}
+                    />
+                </SongInfoContainer>
                 <CommonFlatList
                     style={{ marginTop: 20 }}
                     reference={this.flatListRef}
@@ -347,8 +297,9 @@ class Player extends Component {
                             <TouchableOpacity
                                 style={{ padding: 10 }}
                                 onPress={() => {
-                                    this.markCurentSong(item);
-                                    this.setIsPlayingPaused(item);
+                                    this.playPauseRef.current.onPressHandler(item);
+                                    // this.markCurentSong(item);
+                                    // this.setIsPlayingPaused(item);
                                     // this.dispatchActionsPressedTrack(item, null);
                                 }}
                             >

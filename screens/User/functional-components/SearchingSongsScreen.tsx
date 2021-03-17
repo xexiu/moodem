@@ -26,9 +26,10 @@ const SearchingSongsScreen = (props: any) => {
     const { navigation } = props;
     const [playingSongs, setPlayingSongs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const player = useRef(null);
     const searchedSongsRef = useRef([]);
     const isFocused = useIsFocused();
+    const player = useRef(null);
+    const repeatRef = useRef(null);
 
     function getResultsForSearch() {
         return new Promise((resolve, reject) => {
@@ -63,7 +64,7 @@ const SearchingSongsScreen = (props: any) => {
 
         return () => {
             console.log('3. OFF SearchingSongsScreen');
-            //media.destroy();
+            // media.destroy();
         };
     }, [isFocused]);
 
@@ -134,7 +135,10 @@ const SearchingSongsScreen = (props: any) => {
         <BodyContainer customBodyContainerStyle={{ paddingTop: 10 }}>
             <PlayerContainer items={searchedSongsRef.current}>
                 <Player
+                    repeatRef={repeatRef}
                     ref={player}
+                    user={user}
+                    player={player}
                     tracks={searchedSongsRef.current}
                 />
             </PlayerContainer>

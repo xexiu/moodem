@@ -25,6 +25,7 @@ const Songs = (props: any) => {
         isComingFromSearchingSong: false
     });
     const player = useRef(null);
+    const repeatRef = useRef(null);
 
     useEffect(() => {
         console.log('3. Songs');
@@ -143,6 +144,7 @@ const Songs = (props: any) => {
                 media={media}
             /> */}
             <Player
+                repeatRef={repeatRef}
                 ref={player}
                 user={user}
                 player={player}
@@ -157,4 +159,14 @@ Songs.propTypes = {
     navigation: PropTypes.any
 };
 
-export default memo(Songs);
+const areEqual = (prevProps: any, nextProps: any) => {
+    console.log('Songs prev', prevProps, 'NExt', nextProps);
+
+    if (!prevProps.tracks.length === nextProps.tracks.length) {
+        return false;
+    }
+
+    return true;
+};
+
+export default memo(Songs, areEqual);
