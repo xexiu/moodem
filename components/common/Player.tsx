@@ -66,19 +66,15 @@ class Player extends Component {
     }
 
     shouldComponentUpdate(prevProps: any, nextProps: any) {
-        // console.log('Should Update Prev', prevProps, 'NextProps', nextProps);
-        // // if (prevProps.tracks &&
-        // //     !!prevProps.tracks.length &&
-        // //     !nextProps.isLoading &&
-        // //     !nextProps.isBuffering) {
-        // //     return true;
-        // // }
+        console.log('Should Update Prev', prevProps, 'NextProps', nextProps);
+        if (prevProps.tracks &&
+            prevProps.tracks.length &&
+            nextProps.tracks &&
+            nextProps.tracks.length) {
+            return true;
+        }
 
-        // if (prevProps.tracks[nextProps.currentSong.index].index === nextProps.currentSong.index) {
-        //     return true;
-        // }
-
-        return true;
+        return false;
     }
 
     componentDidMount() {
@@ -182,6 +178,8 @@ class Player extends Component {
                 />
             );
         }
+
+        console.log('Player Updated');
 
         const keyExtractor = (item: any) => item.index.toString();
 

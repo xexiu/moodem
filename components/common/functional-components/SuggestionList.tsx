@@ -33,6 +33,7 @@ const SuggestionList = (props: any) => {
         <View
             style={{
                 backgroundColor: '#fff',
+                marginTop: -4,
                 borderWidth: 1,
                 borderRadius: 5,
                 borderColor: '#eee',

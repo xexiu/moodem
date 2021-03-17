@@ -29,7 +29,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
         return (<PreLoader size={58} containerStyle={{}} />);
     }
 
-    const flatListItem = flatList.current._getItem(tracks, currentSong.index);
+    const flatListItem = flatListRef.current._getItem(tracks, currentSong.index);
 
     if (isBuffering) {
         return (<PreLoader

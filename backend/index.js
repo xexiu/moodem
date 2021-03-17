@@ -140,9 +140,11 @@ io.on('connection', (socket) => {
   });
 
   // Welcome Msg
-  socket.on('server-send-message-welcomeMsg', async (data) => {
+  socket.on('emit-message-welcomeMsg', async (data) => {
+    await socket.join(data.chatRoom);
     buildMedia(data);
-    socket.emit('server-send-message-welcomeMsg',
+
+    io.to(data.chatRoom).emit('get-message-welcomeMsg',
       {
         welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`,
       });
@@ -150,7 +152,7 @@ io.on('connection', (socket) => {
   });
 
   // Media
-  socket.on('send-message-media', async (data) => {
+  socket.on('emit-medias-group', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
@@ -168,7 +170,7 @@ io.on('connection', (socket) => {
 
     const { isComingFromSearchingSong = false } = data;
 
-    io.to(data.chatRoom).emit('send-message-media', { songs, isComingFromSearchingSong });
+    io.to(data.chatRoom).emit('get-medias-group', { songs, isComingFromSearchingSong });
   });
 
   // Vote

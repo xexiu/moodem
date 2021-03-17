@@ -28,9 +28,7 @@ const Songs = (props: any) => {
     const repeatRef = useRef(null);
 
     useEffect(() => {
-        console.log('3. Songs');
-
-        media.on('send-message-media', ({ songs, isComingFromSearchingSong }: any) => {
+        media.on('get-medias-group', ({ songs, isComingFromSearchingSong }: any) => {
             setAllValues(prev => {
                 return {
                     ...prev,
@@ -41,10 +39,9 @@ const Songs = (props: any) => {
                 };
             });
         });
-        media.emit('send-message-media', { chatRoom: group.group_name });
+        media.emit('emit-medias-group', { chatRoom: group.group_name });
 
         return () => {
-            console.log('3. OFF EFFECT Songs');
             media.destroy();
         };
     }, []);
@@ -127,8 +124,6 @@ const Songs = (props: any) => {
     //     );
     // }
 
-    console.log('Render songs');
-
     return (
         <BodyContainer>
             <BurgerMenuIcon
@@ -136,13 +131,13 @@ const Songs = (props: any) => {
                     navigation.openDrawer();
                 }}
             />
-            {/* <SearchBarAutoComplete
+            <SearchBarAutoComplete
                 group={group}
                 user={user}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
-            /> */}
+            />
             <Player
                 repeatRef={repeatRef}
                 ref={player}
@@ -159,14 +154,4 @@ Songs.propTypes = {
     navigation: PropTypes.any
 };
 
-const areEqual = (prevProps: any, nextProps: any) => {
-    console.log('Songs prev', prevProps, 'NExt', nextProps);
-
-    if (!prevProps.tracks.length === nextProps.tracks.length) {
-        return false;
-    }
-
-    return true;
-};
-
-export default memo(Songs, areEqual);
+export default memo(Songs);

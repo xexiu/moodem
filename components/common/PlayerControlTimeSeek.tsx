@@ -38,11 +38,8 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     const sliderRef = useRef();
 
     useEffect(() => {
-        console.log('On Effect Slider');
         setTrackCurrentTime(0);
-        return () => {
-            console.log('Off Effect Slider');
-        };
+        return () => {};
     }, []);
 
     useImperativeHandle(ref, () => {

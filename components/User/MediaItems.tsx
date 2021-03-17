@@ -1,59 +1,53 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
-import React, { memo, useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import Toast from 'react-native-easy-toast';
 import { AbstractMedia } from '../common/functional-components/AbstractMedia';
-import BgImage from '../common/functional-components/BgImage';
 import BodyContainer from '../common/functional-components/BodyContainer';
-import PreLoader from '../common/functional-components/PreLoader';
 import { AppContext } from './functional-components/AppContext';
 import Songs from './functional-components/Songs';
+
+function useHookWithRefCallback(ref: any) {
+    return useCallback(node => {
+        if (ref.current) {
+        // Make sure to cleanup any events/references added to the last instance
+        }
+
+        if (node) {
+        // Check if a node is actually passed. Otherwise node would be null.
+        // You can now do what you need to, addEventListeners, measure, etc.
+        }
+
+      // Save a reference to the node
+        ref.current = node;
+    }, []);
+}
 
 const MediaItems = (props: any) => {
     const { navigation } = props;
     const { group }: any = useContext(AppContext);
-    const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
     const media = new AbstractMedia();
+    const toastRef = useRef(null);
 
     useEffect(() => {
-        console.log('2. ON MediaItems');
-
         if (isFocused) {
-            media.on('server-send-message-welcomeMsg', (data: any) => {
-                media.toastRef.current.show(data.welcomeMsg, 3000);
+            media.on('get-message-welcomeMsg', (data: any) => {
+                toastRef.current.show(data.welcomeMsg, 3000);
             });
-            media.emit('server-send-message-welcomeMsg', { chatRoom: group.group_name });
-            setIsLoading(false);
-        }
+            media.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
 
+        }
         return () => {
-            console.log('3. OFF MediaItems');
             media.destroy();
         };
-    }, []);
-
-    if (isLoading) {
-        return (
-            <View>
-                <BgImage />
-                <PreLoader
-                    containerStyle={{
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                    size={50}
-                />
-            </View>
-        );
-    }
+    }, [group.group_name]);
 
     return (
         <BodyContainer>
             <Toast
                 position='top'
-                ref={media.toastRef}
+                ref={toastRef}
             />
             <Songs media={media} navigation={navigation} />
         </BodyContainer>

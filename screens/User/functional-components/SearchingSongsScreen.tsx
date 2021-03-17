@@ -101,7 +101,7 @@ const SearchingSongsScreen = (props: any) => {
             isMediaOnList: true
         });
 
-        media.emit('send-message-media', { song, chatRoom: group.group_name, isComingFromSearchingSong: true });
+        media.emit('emit-medias-group', { song, chatRoom: group.group_name, isComingFromSearchingSong: true });
         navigation.goBack();
     };
 

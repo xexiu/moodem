@@ -59,8 +59,9 @@ const SearchBarAutoComplete = (props: any) => {
                 position: 'absolute',
                 flex: 1,
                 zIndex: 100,
-                left: 0,
-                right: 0
+                left: 4,
+                right: 0,
+                top: 0
             }}
         >
             <CommonTopSearchBar
