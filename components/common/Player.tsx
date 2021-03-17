@@ -59,14 +59,12 @@ class Player extends Component {
         this.repeatRef = React.createRef();
 
         this.state = {
-            isLoading: true,
             currentSong: {},
             tracks: []
         };
     }
 
     shouldComponentUpdate(prevProps: any, nextProps: any) {
-        console.log('Should Update Prev', prevProps, 'NextProps', nextProps);
         if (prevProps.tracks &&
             prevProps.tracks.length &&
             nextProps.tracks &&
@@ -82,17 +80,9 @@ class Player extends Component {
             this.setState({
                 tracks: [...this.props.tracks],
                 currentSong: { ...this.props.tracks[0] }
-            }, () => {
-                this.setState({
-                    isLoading: false
-                });
             });
         }
     }
-
-    // onAudioError = ({ error }: any) => {
-    //     this.toastRef.current.show(`There was an error loading the Audio. ${error.code}`, 1000);
-    // };
 
     handleOnPressPlayPause = (paused: boolean) => {
         this.setState({ paused: !paused });
@@ -138,7 +128,6 @@ class Player extends Component {
     };
 
     manageTrack = (track: any, shouldRepeat: boolean) => {
-        console.log('Manage');
         if (shouldRepeat) {
             return this.setIsPlayingPaused(track);
         }
@@ -156,8 +145,7 @@ class Player extends Component {
     render() {
         const {
             tracks,
-            currentSong,
-            isLoading
+            currentSong
         } = this.state;
         const {
             user,
@@ -167,19 +155,7 @@ class Player extends Component {
 
         if (!Object.keys(currentSong).length) {
             return (<MediaListEmpty />);
-        } else if (isLoading) {
-            return (
-                <PreLoader
-                    containerStyle={{
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                    size={50}
-                />
-            );
         }
-
-        console.log('Player Updated');
 
         const keyExtractor = (item: any) => item.index.toString();
 

@@ -20,7 +20,6 @@ const Songs = (props: any) => {
     const { group, user } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
-        isSearching: false,
         isLoading: true,
         isComingFromSearchingSong: false
     });
@@ -34,7 +33,6 @@ const Songs = (props: any) => {
                     ...prev,
                     songs: [...songs],
                     isLoading: false,
-                    isSearching: false,
                     isComingFromSearchingSong
                 };
             });
@@ -113,16 +111,6 @@ const Songs = (props: any) => {
             </View>
         );
     }
-    // else if (allValues.isSearching) {
-    //     return (
-    //         <SearchedSongsList
-    //             renderItem={renderItem}
-    //             media={media}
-    //             resetSearch={resetSearch}
-    //             searchedSongs={allValues}
-    //         />
-    //     );
-    // }
 
     return (
         <BodyContainer>
@@ -131,13 +119,13 @@ const Songs = (props: any) => {
                     navigation.openDrawer();
                 }}
             />
-            <SearchBarAutoComplete
+            {/* <SearchBarAutoComplete
                 group={group}
                 user={user}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
-            />
+            /> */}
             <Player
                 repeatRef={repeatRef}
                 ref={player}

@@ -28,8 +28,8 @@ const App = function Moodem() {
             if (_user) {
                 getGroups(_user)
                     .then((dbGroups) => {
-                        setIsLoading(false);
                         dispatch({ type: 'groups', value: dbGroups as string[] });
+                        setIsLoading(false);
                     })
                     .catch(err => console.log('Something happened', err));
                 dispatch({ type: 'user', value: _user });
