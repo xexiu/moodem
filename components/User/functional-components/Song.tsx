@@ -15,7 +15,7 @@ const Song = (props: any) => {
         media,
         isSearching,
         group,
-        player,
+        playPauseRef,
         sendMediaToServer,
         handlePressSong
     } = props;
@@ -42,9 +42,9 @@ const Song = (props: any) => {
                 titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitle={song.videoDetails.author.name.replace('VEVO', '')}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                // leftAvatar={{
-                //     source: { uri: song.isPlaying ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6gzJoRwfiO7YqqZvyjXI9p_wuLtSMIBGUA&usqp=CAU' : cleanImageParams(song.videoDetails.thumbnails[1].url) }
-                // }}
+                leftAvatar={{
+                    source: { uri: song.isPlaying ? 'https://thumbs.gfycat.com/DifficultAjarJanenschia-small.gif' : song.videoDetails.thumbnails[0].url }
+                }}
                 // buttonGroup={
                 //     isSearching ? [] :
                 //         MediaButtons(song, media, group, ['votes', 'remove'])
@@ -59,21 +59,7 @@ const Song = (props: any) => {
                     iconStyle: { fontSize: 27, alignSelf: 'center' }
                 }}
                 action={() => {
-                    // setSongIsPlaying(songIsPlaying);
-                    player.current.dispatchActionsPressedTrack(song,
-                        (_song: any) => {
-                            console.log('Neww song', _song.index, 'and currentSongPlaying', _song.isCurrentSongPlaying);
-
-                            if (_song.isCurrentSongPlaying) {
-                                setPlayingSongs([_song]);
-                                handlePressSong(song);
-                                setSongIsPlaying(_song.isPlaying);
-                            } else if (!_song.isCurrentSongPlaying) {
-                                setPlayingSongs([_song]);
-                                handlePressSong(song);
-                                setSongIsPlaying(_song.isPlaying);
-                            }
-                        });
+                    playPauseRef.current.onPressHandler(song);
                 }}
             />
     );
@@ -85,15 +71,18 @@ const hasUserVoted = (nextProps: any) => {
 
 const areEqual = (prevProps: any, nextProps: any) => {
     console.log('PREVV', prevProps, 'NExtt', nextProps);
-    const {
-        currentSong,
-        isPrevSong
-    } = prevProps.song;
+    const songPrev = prevProps.song;
+    const songNext = nextProps.song;
 
-    if ((currentSong || isPrevSong)) {
-        isPrevSong && delete prevProps.song.isPrevSong;
+    if (songPrev.index === songNext.index &&
+        songPrev.isPlaying && songNext.isPlaying ||
+        hasUserVoted(nextProps)
+        ) {
         return false;
-    } else if (hasUserVoted(nextProps)) {
+    } else if (songPrev.index === songNext.index &&
+        !songPrev.isPlaying &&
+        !songNext.isPlaying || hasUserVoted(nextProps)
+        ) {
         return false;
     }
     return true;

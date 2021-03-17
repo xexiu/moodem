@@ -28,6 +28,26 @@ const cacheMiddleware = (duration) => (req, res, next) => {
   }
 };
 
+function cleanTitle(info) {
+  if (info && info.videoDetails && info.videoDetails.title) {
+    info.videoDetails.title = info.videoDetails.title.replace('(Official Music Video)', '')
+      .replace('(Official Video)', '');
+    return info.videoDetails.title;
+  }
+  return info.videoDetails.title;
+}
+
+function cleanImageParams(info) {
+  if (info && info.videoDetails && info.videoDetails.thumbnails
+    && info.videoDetails.thumbnails.length) {
+    if (info.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
+      info.videoDetails.thumbnails[0].url = info.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
+      return info.videoDetails.thumbnails[0].url;
+    }
+  }
+  return info.videoDetails.thumbnails[0].url;
+}
+
 async function getSongs(videoId) {
   const key = `__youtube-songs__${videoId}`;
 
@@ -49,6 +69,9 @@ async function getSongs(videoId) {
   });
   // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
   const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
+
+  cleanImageParams(info);
+  cleanTitle(info);
 
   if (audio && audio.length) {
     memCache.put(key, { ...info, ...audio[0] }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
@@ -148,7 +171,6 @@ io.on('connection', (socket) => {
       {
         welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`,
       });
-    socket.disconnect(true);
   });
 
   // Media

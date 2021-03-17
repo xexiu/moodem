@@ -119,13 +119,13 @@ const Songs = (props: any) => {
                     navigation.openDrawer();
                 }}
             />
-            {/* <SearchBarAutoComplete
+            <SearchBarAutoComplete
                 group={group}
                 user={user}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
-            /> */}
+            />
             <Player
                 repeatRef={repeatRef}
                 ref={player}

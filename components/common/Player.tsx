@@ -159,6 +159,8 @@ class Player extends Component {
 
         const keyExtractor = (item: any) => item.index.toString();
 
+        console.log('Player Updated', currentSong);
+
         return (
             <BodyContainer>
                 <SongInfoContainer>
@@ -264,23 +266,24 @@ class Player extends Component {
                     keyExtractor={keyExtractor}
                     action={({ item, index }) => {
                         return (
-                            // <Song
-                            //     song={item}
-                            //     user={user}
-                            // />
-                            <TouchableOpacity
-                                style={{ padding: 10 }}
-                                onPress={() => {
-                                    this.playPauseRef.current.onPressHandler(item);
-                                    // this.markCurentSong(item);
-                                    // this.setIsPlayingPaused(item);
-                                    // this.dispatchActionsPressedTrack(item, null);
-                                }}
-                            >
-                                <View>
-                                    <Text>Song {item.index} is Playing: {String(item.isPlaying)}, Title: ${item.videoDetails.title}</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <Song
+                                song={item}
+                                user={user}
+                                playPauseRef={this.playPauseRef}
+                            />
+                            // <TouchableOpacity
+                            //     style={{ padding: 10 }}
+                            //     onPress={() => {
+                            //         this.playPauseRef.current.onPressHandler(item);
+                            //         // this.markCurentSong(item);
+                            //         // this.setIsPlayingPaused(item);
+                            //         // this.dispatchActionsPressedTrack(item, null);
+                            //     }}
+                            // >
+                            //     <View>
+                            //         <Text>Song {item.index} is Playing: {String(item.isPlaying)}, Title: ${item.videoDetails.title}</Text>
+                            //     </View>
+                            // </TouchableOpacity>
                         );
                     }}
                 />

@@ -3,15 +3,8 @@ import { View } from 'react-native';
 import Video from 'react-native-video';
 import PreLoader from '../../components/common/functional-components/PreLoader';
 
-function cleanImageParams(img: string) {
-    if (img.indexOf('hqdefault.jpg') >= 0) {
-        return img.replace(/(\?.*)/g, '');
-    }
-    return img;
-}
-
 function showPoster(currentSong: any) {
-    return !currentSong.isPlaying ? cleanImageParams(currentSong.videoDetails.thumbnails[0].url) : undefined;
+    return !currentSong.isPlaying ? currentSong.videoDetails.thumbnails[0].url : undefined;
 }
 
 const BasePlayer = (props: any) => {
@@ -116,7 +109,8 @@ const areEqual = (prevProps: any, nextProps: any) => {
         return false;
     } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
         return false;
-    } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index) {
+    } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index &&
+        !nextProps.repeatRef.current.shouldRepeat) {
         return false;
     }
     return true;
