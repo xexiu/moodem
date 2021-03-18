@@ -1,11 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
-import BgImage from '../../common/functional-components/BgImage';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import PreLoader from '../../common/functional-components/PreLoader';
-import { PlayerControlPlayPause } from '../../common/PlayerControlPlayPause';
-import { PlayerControlsContainer } from '../../common/PlayerControlsContainer';
 import { MediaButtons } from './MediaButtons';
 
 const Song = (props: any) => {
@@ -33,7 +29,7 @@ const Song = (props: any) => {
         }
 
         return () => { };
-    }, [isFocused, songIsPlaying]);
+    }, [isFocused]);
 
     return (
             <CommonFlatListItem
@@ -43,7 +39,9 @@ const Song = (props: any) => {
                 subtitle={song.videoDetails.author.name.replace('VEVO', '')}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
                 leftAvatar={{
-                    source: { uri: song.isPlaying ? 'https://thumbs.gfycat.com/DifficultAjarJanenschia-small.gif' : song.videoDetails.thumbnails[0].url }
+                    source: { uri: song.isPlaying ?
+                        'https://thumbs.gfycat.com/DifficultAjarJanenschia-small.gif' :
+                        song.videoDetails.thumbnails[0].url }
                 }}
                 // buttonGroup={
                 //     isSearching ? [] :

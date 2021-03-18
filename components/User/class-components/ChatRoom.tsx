@@ -66,7 +66,7 @@ const ChatRoom = (props: any) => {
                 </View>
             </TouchableWithoutFeedback>
             <View style={{ height: 50 }}>
-                <View style={{ position: 'absolute', bottom: 0, right: 0, left: 7, width: '96%', zIndex: 1 }}>
+                <View style={{ position: 'absolute', bottom: 5, right: 0, left: 7, width: '96%', zIndex: 1 }}>
                     <CommonTextInput
                         navigation={navigation}
                         user={user}
@@ -76,7 +76,7 @@ const ChatRoom = (props: any) => {
                 </View>
             </View>
             <KeyboardSpacer
-                topSpacing={-30}
+                topSpacing={0}
             />
         </BodyContainer>
     );
