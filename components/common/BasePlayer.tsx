@@ -14,13 +14,14 @@ const BasePlayer = (props: any) => {
         playPauseRef,
         manageTrack,
         currentSong,
-        player
+        basePlayer
     } = props;
 
     const [isLoading, setIsLoading] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        if (player.current) {
+        if (repeatRef.current) {
             setIsLoading(false);
         }
         return () => { };
@@ -38,10 +39,16 @@ const BasePlayer = (props: any) => {
         );
     }
 
+    console.log('BasePlayer', currentSong.index);
+
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
             <Video
-                onFullscreenPlayerWillDismiss={() => player.current.seek(seekRef.current.trackCurrentTime)}
+                onFullscreenPlayerWillDismiss={() => {
+                    basePlayer.current.setNativeProps({
+                        paused: !currentSong.isPlaying
+                    });
+                }}
                 poster={showPoster(currentSong)}
                 audioOnly={true}
                 posterResizeMode='cover'
@@ -57,26 +64,28 @@ const BasePlayer = (props: any) => {
                     right: 0
                 }}
                 source={{ uri: currentSong.url }}
-                ref={player}
+                ref={basePlayer}
                 volume={1.0}
                 muted={false}
                 playInBackground
                 playWhenInactive
-                ignoreSilentSwitch={'ignore'}
+                ignoreSilentSwitch='ignore'
                 onBuffer={(buffer) => {
-                    playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    if (!buffer.isBuffering) {
+                        playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    }
                 }}
                 onLoad={({ currentTime }) => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
-                    player.current.seek(0);
+                    basePlayer.current.seek(0);
                 }}
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
-                    player.current.seek(0);
+                    basePlayer.current.seek(0);
                 }}
                 onError={(error) => {
                     console.log('Error', error);
@@ -90,9 +99,9 @@ const BasePlayer = (props: any) => {
                 onEnd={() => {
                     console.log('end current song');
                     if (repeatRef.current.shouldRepeat) {
-                        player.current.seek(0);
+                        basePlayer.current.seek(0);
                     }
-                    player.current.dismissFullscreenPlayer();
+                    basePlayer.current.dismissFullscreenPlayer();
                     seekRef.current.setTrackCurrentTime(0);
                     manageTrack(currentSong, repeatRef.current.shouldRepeat);
                 }}
@@ -103,17 +112,19 @@ const BasePlayer = (props: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if (!prevProps.currentSong.isPlaying && nextProps.currentSong.isPlaying) {
-        return false;
-    } else if (prevProps.currentSong.index !== nextProps.currentSong.index) {
-        return false;
-    } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
-        return false;
-    } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index &&
-        !nextProps.repeatRef.current.shouldRepeat) {
-        return false;
-    }
-    return true;
+    // console.log('Base Player prev', prevProps, 'Next', nextProps);
+    return false;
+    // if (!prevProps.currentSong.isPlaying && nextProps.currentSong.isPlaying) {
+    //     return false;
+    // } else if (prevProps.currentSong.index !== nextProps.currentSong.index) {
+    //     return false;
+    // } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
+    //     return false;
+    // } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index &&
+    //     !nextProps.repeatRef.current.shouldRepeat) {
+    //     return false;
+    // }
+    // return true;
 };
 
 export default memo(BasePlayer, areEqual);

@@ -11,19 +11,6 @@ const SuggestionList = (props: any) => {
         media,
         suggestions
     } = props;
-    const isFocused = useIsFocused();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        console.log('Effect SuggestionList');
-        if (isFocused && suggestions.length) {
-            setIsLoading(false);
-        }
-
-        return () => {
-            setIsLoading(true);
-        };
-    }, []);
 
     if (suggestions && !suggestions.length) {
         return null;
@@ -46,13 +33,12 @@ const SuggestionList = (props: any) => {
                         <TouchableOpacity
                             key={index}
                             onPress={() => {
-                                console.log('SuggestionList Player', player);
+                                console.log('SuggestionList Player');
                                 navigation.navigate('SearchingSongsScreen', {
                                     media,
                                     group,
                                     user,
-                                    songsOnGroup,
-                                    player
+                                    songsOnGroup
                                 });
                             }}
                         >

@@ -1,7 +1,7 @@
 
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, Text, View } from 'react-native';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
 import BgImage from '../../common/functional-components/BgImage';
@@ -9,25 +9,51 @@ import BodyContainer from '../../common/functional-components/BodyContainer';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
-import { Player } from '../../common/Player';
-import { PlayerContainer } from '../../common/PlayerContainer';
+import Player from '../../common/Player';
 import { AppContext } from '../../User/functional-components/AppContext';
 import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
 
+function setMediaIndex(song: any, index: number) {
+    Object.assign(song, {
+        index,
+        isPlaying: false
+    });
+}
+
 const Songs = (props: any) => {
     const { media, navigation } = props;
-    const { group, user } = useContext(AppContext) as any;
+    const { group } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
         isLoading: true,
         isComingFromSearchingSong: false
     });
     const player = useRef(null);
+    const basePlayer = useRef(null);
+    const flatListRef = useRef(null);
     const repeatRef = useRef(null);
+    const playPauseRef = useRef(null);
+    const seekRef = useRef(null);
+    const playerInstance = (<Player
+        isSearching={allValues.isComingFromSearchingSong}
+        navigation={navigation}
+        ref={player}
+        player={player}
+        basePlayer={basePlayer}
+        flatListRef={flatListRef}
+        repeatRef={repeatRef}
+        playPauseRef={playPauseRef}
+        seekRef={seekRef}
+        renderItem={(item: any, index: number) => renderItem(item, index)}
+        media={media}
+        tracks={allValues.songs}
+    />);
 
     useEffect(() => {
+        console.log('Focused SOngs');
         media.on('get-medias-group', ({ songs, isComingFromSearchingSong }: any) => {
+            songs.forEach(setMediaIndex);
             setAllValues(prev => {
                 return {
                     ...prev,
@@ -40,62 +66,21 @@ const Songs = (props: any) => {
         media.emit('emit-medias-group', { chatRoom: group.group_name });
 
         return () => {
-            media.destroy();
+            // media.destroy();
+            media.socket.off(media.on);
+            console.log('OFF Focused SOngs');
         };
     }, []);
 
-    const resetSearch = () => {
-        setAllValues(prev => {
-            return {
-                ...prev,
-                isSearching: false,
-                isComingFromSearchingSong: true
-            };
-        });
-        Keyboard.dismiss();
-        return true;
-    };
-
-    const keyExtractor = (item: any) => item.index.toString();
-
-    const handlePressSong = (song: any) => {
-        setAllValues(prevSongs => {
-            const { songs } = prevSongs;
-            const isCurrentSong = songs.includes(song.id);
-
-            if (songs.length) {
-                songs.forEach(_song => {
-                    _song.currentSong && delete _song.currentSong;
-                    _song.isPrevSong && delete _song.isPrevSong;
-
-                    Object.assign(_song, {
-                        isPrevSong: true,
-                        isPlaying: false
-                    });
-                });
-            }
-
-            if (!isCurrentSong) {
-                Object.assign(song, {
-                    isPlaying: !player.current.state.paused,
-                    currentSong: true
-                });
-            }
-            return { ...prevSongs, song };
-        });
-    };
-
-    const renderItem = ({ item }: any) => {
+    const renderItem = useCallback((item, index) => {
         return (<Song
+            player={media.player}
             song={item}
             media={media}
-            player={player}
-            isSearching={allValues.isSearching}
-            group={group}
-            user={user}
-            handlePressSong={handlePressSong}
+            playPauseRef={playPauseRef}
+            flatListRef={flatListRef}
         />);
-    };
+    }, []);
 
     if (allValues.isLoading) {
         return (
@@ -112,6 +97,17 @@ const Songs = (props: any) => {
         );
     }
 
+    console.log('Render Songs');
+
+    const resetLoadingSongs = (loading: boolean) => {
+        setAllValues(prev => {
+            return {
+                ...prev,
+                isLoading: loading
+            };
+        });
+    };
+
     return (
         <BodyContainer>
             <BurgerMenuIcon
@@ -121,18 +117,12 @@ const Songs = (props: any) => {
             />
             <SearchBarAutoComplete
                 group={group}
-                user={user}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
+                resetLoadingSongs={resetLoadingSongs}
             />
-            <Player
-                repeatRef={repeatRef}
-                ref={player}
-                user={user}
-                player={player}
-                tracks={allValues.songs}
-            />
+            {playerInstance}
         </BodyContainer>
     );
 };

@@ -178,16 +178,12 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
+    console.log('HEYY SEND MEDIA');
+
     if (data.song) {
       chatRooms[data.chatRoom].songs.add(data.song);
     }
     const songs = Array.from(chatRooms[data.chatRoom].songs);
-    songs.forEach((song, index) => {
-      Object.assign(song, {
-        index,
-        isPlaying: false,
-      });
-    });
     songs.sort(compareValues('votes_count'));
 
     const { isComingFromSearchingSong = false } = data;
@@ -209,7 +205,8 @@ io.on('connection', (socket) => {
           song.votes_count = data.count;
           const songs = Array.from(chatRooms[data.chatRoom].songs);
           songs.sort(compareValues('votes_count'));
-          io.to(data.chatRoom).emit('send-message-media', { songs });
+          console.log('Vote UP', data.chatRoom, 'Data', data);
+          io.to(data.chatRoom).emit('get-medias-group', { songs });
         }
       });
   });
@@ -218,6 +215,8 @@ io.on('connection', (socket) => {
   socket.on('send-message-remove-song', async (data) => {
     await socket.join(data.chatRoom);
 
+    console.log('HEYY REMOVE');
+
     const removeMedia = () => {
       Array.from(chatRooms[data.chatRoom].songs).forEach((song) => {
         if (song.id === data.song.id) {
@@ -225,7 +224,8 @@ io.on('connection', (socket) => {
         }
       });
       const songs = Array.from(chatRooms[data.chatRoom].songs);
-      io.to(data.chatRoom).emit('send-message-media', { songs });
+      console.log('HEYYY REMOVE SONGS', songs, 'ChatRoom', data.chatRoom);
+      io.to(data.chatRoom).emit('get-medias-group', { songs });
     };
 
     removeMedia();

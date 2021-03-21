@@ -45,8 +45,10 @@ export class AbstractMedia {
         this.group = group;
         this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
         this.playerRef = useRef(null);
+        this.basePlayer = useRef(null);
+        this.playPauseRef = useRef(null);
         this.searchRef = useRef();
-        this.flatListRef = useRef();
+        this.flatListRef = useRef(null);
         this.toastRef = useRef();
         this.signal = axios.CancelToken.source();
         this.axios = axios;

@@ -6,24 +6,18 @@ import { MediaButtons } from './MediaButtons';
 
 const Song = (props: any) => {
     const {
+        resetLoadingSongs,
         song,
-        user,
         media,
-        isSearching,
-        group,
         playPauseRef,
         sendMediaToServer,
-        handlePressSong
+        isSearching = false
     } = props;
     const [isLoading, setIsLoading] = useState(true);
-    const [currentSong, setCurrentSong] = useState({}) as any;
-    const [prevSong, setPrevSong] = useState({}) as any;
-    const [songIsPlaying, setSongIsPlaying] = useState(false);
-    const [playingSongs, setPlayingSongs] = useState([]);
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('SONGGGGGG 2222', user);
+        console.log('SONGGGGGG 2222', song.isMediaOnList);
         if (isFocused) {
             setIsLoading(false);
         }
@@ -43,10 +37,10 @@ const Song = (props: any) => {
                         'https://thumbs.gfycat.com/DifficultAjarJanenschia-small.gif' :
                         song.videoDetails.thumbnails[0].url }
                 }}
-                // buttonGroup={
-                //     isSearching ? [] :
-                //         MediaButtons(song, media, group, ['votes', 'remove'])
-                // }
+                buttonGroup={
+                    isSearching ? [] :
+                        MediaButtons(song, media, ['votes', 'remove'])
+                }
                 chevron={!song.isMediaOnList && {
                     name: 'arrow-right',
                     type: 'AntDesign',
@@ -57,18 +51,21 @@ const Song = (props: any) => {
                     iconStyle: { fontSize: 27, alignSelf: 'center' }
                 }}
                 action={() => {
-                    playPauseRef.current.onPressHandler(song);
+                    if (resetLoadingSongs) {
+                        resetLoadingSongs(true);
+                    }
+                    playPauseRef.current.onPressPlay(song);
                 }}
             />
     );
 };
 
 const hasUserVoted = (nextProps: any) => {
-    return nextProps.song.voted_users.includes(nextProps.user.uid);
+    return nextProps.song.voted_users.includes(nextProps.media.user.uid);
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    console.log('PREVV', prevProps, 'NExtt', nextProps);
+    // console.log('PREVV', prevProps, 'NExtt', nextProps);
     const songPrev = prevProps.song;
     const songNext = nextProps.song;
 

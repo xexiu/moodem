@@ -12,14 +12,14 @@ const SearchBarAutoComplete = (props: any) => {
         songsOnGroup,
         navigation,
         media,
-        player
+        resetLoadingSongs
     } = props;
     const isFocused = useIsFocused();
     const [suggestions, setSuggestions] = useState([]);
-    const signalToken = axios.CancelToken.source();
+    const source = axios.CancelToken.source();
 
     useEffect(() => {
-        console.log('Effect SearchBar Autocomplete');
+        // console.log('Effect SearchBar Autocomplete');
 
         if (isFocused) {
             setSuggestions([]);
@@ -27,14 +27,15 @@ const SearchBarAutoComplete = (props: any) => {
 
         return () => {
             setSuggestions([]);
-            console.log('OFF SearchBar Autocomplete');
+            source.cancel('SearchBarAutoComplete Component got unmounted');
+            // console.log('OFF SearchBar Autocomplete');
         };
     }, [isFocused]);
 
     async function onChangeText(text: string): Promise<void> {
         const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
         const res = await axios.get(GOOGLE_AC_URL, {
-            cancelToken: signalToken.token,
+            cancelToken: source.token,
             params: {
                 client: 'youtube',
                 ds: 'yt',
@@ -74,7 +75,9 @@ const SearchBarAutoComplete = (props: any) => {
                         media,
                         group,
                         user,
-                        songsOnGroup
+                        searchedText,
+                        songsOnGroup,
+                        resetLoadingSongs
                     });
                 }}
                 searchRef={media.searchRef}

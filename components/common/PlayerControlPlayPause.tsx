@@ -8,22 +8,34 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
         currentSong,
         tracks,
         flatListRef,
-        onPressHandler
+        player
     } = props;
 
     const [flatList, setFlatLit] = useState(null);
-    const [isBuffering, setIsBuffering] = useState(false);
+    const [isBuffering, setIsBuffering] = useState(true);
 
     useEffect(() => {
-        setFlatLit(flatListRef);
-    }, []);
+        if (!isBuffering) {
+            setFlatLit(flatListRef);
+        }
+    }, [isBuffering, currentSong]);
 
     useImperativeHandle(ref, () => {
         return {
             setIsBuffering,
-            onPressHandler
+            onPressPlay
         };
-    }, [isBuffering]);
+    }, []);
+
+    const onPressPlay = (song = flatListItem) => {
+        player.current.markCurrentSong(song);
+        player.current.setAllValues((prevState: any) => {
+            return {
+                ...prevState,
+                currentSong: song
+            };
+        });
+    };
 
     if (!flatList) {
         return (<PreLoader size={58} containerStyle={{}} />);
@@ -45,6 +57,8 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
         />);
     }
 
+    console.log('Play/Pause', currentSong.index, 'BasePlayer', player.current);
+
     return (
         <Icon
             containerStyle={{
@@ -61,23 +75,11 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
             type={!flatListItem.isPlaying ? 'foundation' : 'AntDesign'}
             size={25}
             color='#dd0031'
-            onPress={() => onPressHandler(flatListItem)}
+            onPress={() => {
+                onPressPlay(flatListItem);
+            }}
         />
     );
 });
 
-const areEqual = (prevProps: any, nextProps: any) => {
-    if (!prevProps.currentSong.isPlaying && nextProps.currentSong.isPlaying) {
-        return false;
-    } else if (prevProps.currentSong.index !== nextProps.currentSong.index) {
-        return false;
-    } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
-        return false;
-    } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index) {
-        return false;
-    }
-    return true;
-
-};
-
-export default memo(PlayerControlPlayPause, areEqual);
+export default memo(PlayerControlPlayPause);

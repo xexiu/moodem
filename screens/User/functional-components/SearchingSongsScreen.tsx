@@ -1,100 +1,129 @@
 /* eslint-disable max-len */
-import { resolvePlugin } from '@babel/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { HeaderBackButton } from '@react-navigation/stack';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
-import ytdl from 'react-native-ytdl';
-import Reactotron from 'reactotron-react-native';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Button, Text, TouchableHighlight, View } from 'react-native';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
-import { Player } from '../../../components/common/Player';
-import { PlayerContainer } from '../../../components/common/PlayerContainer';
+import Player from '../../../components/common/Player';
 import Song from '../../../components/User/functional-components/Song';
-import storage, { removeItem, saveUserSearchedSongs } from '../../../src/js/Utils/common/storageConfig';
 
 const SearchingSongsScreen = (props: any) => {
     const {
         media,
         group,
         user,
-        songsOnGroup
+        searchedText,
+        songsOnGroup,
+        resetLoadingSongs
     } = props.route.params;
 
     const { navigation } = props;
-    const [playingSongs, setPlayingSongs] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const searchedSongsRef = useRef([]);
+    const [allValues, setAllValues] = useState({
+        searchedSongs: [],
+        isLoading: true
+    });
+    const source = axios.CancelToken.source();
     const isFocused = useIsFocused();
     const player = useRef(null);
+    const basePlayer = useRef(null);
+    const flatListRef = useRef(null);
     const repeatRef = useRef(null);
+    const playPauseRef = useRef(null);
+    const seekRef = useRef(null);
+    const controller = new AbortController();
+    const playerInstance = (<Player
+        isSearching={true}
+        navigation={navigation}
+        ref={player}
+        player={player}
+        basePlayer={basePlayer}
+        flatListRef={flatListRef}
+        repeatRef={repeatRef}
+        playPauseRef={playPauseRef}
+        seekRef={seekRef}
+        renderItem={(item: any, index: number) => renderItem(item, index)}
+        media={media}
+        tracks={allValues.searchedSongs}
+    />);
 
-    function getResultsForSearch() {
-        return new Promise((resolve, reject) => {
-            // make fetch to youtube search
-            // get only the videoId
-            // const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=20&videoCategoryId=10&type=video&key=AIzaSyCNAtpEYrSP4SCmk4FnXB0DxAw_JefBcGw`);
+    async function getResultsForSearch(): Promise<string[]> {
+        const videoIds = ['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc'] as string[];
+        try {
+            // const { data } = await axios.get(
+            //     `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=3&videoCategoryId=10&type=video&key=AIzaSyCNAtpEYrSP4SCmk4FnXB0DxAw_JefBcGw`,
+            //     { cancelToken: source.token });
 
-            resolve(['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc']);
+            const { data } = await axios.get('http://dummy.com',
+                { cancelToken: source.token });
+            // const videos = data.items.filter((video: any) => video.id.videoId);
+            // videos.map((video: any) => {
+            //     videoIds.push(video.id.videoId);
+            // });
 
-        });
+            console.log('Dataaa', data.replace(/(.*)/g, '').trim());
+            return Promise.resolve(videoIds);
+        } catch (err) {
+            return Promise.reject(videoIds);
+        }
     }
 
     useEffect(() => {
-        console.log('4. Searching songs screen...', isLoading);
-        getResultsForSearch()
-            .then((videoIds: any) => {
-                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
-            });
-        media.on('get-songs-from-youtube', (data: any) => {
-            searchedSongsRef.current = [...data.audios];
-            media.checkIfAlreadyOnList(songsOnGroup, data.audios);
-            console.log('Searchedsongs', searchedSongsRef.current);
-            setIsLoading(false);
-        });
-
+        console.log('4. Searching songs screen...', allValues.isLoading);
         navigation.setOptions({
             title: props.route.params.group.group_name,
             headerMode: 'none',
             unmountOnBlur: true,
-            headerBackTitleVisible: false
+            headerBackTitleVisible: false,
+            headerLeft: () => <HeaderBackButton
+                labelVisible={false}
+                onPress={() => {
+                    resetLoadingSongs(false);
+                    source.cancel('SearchingSongsScreen Component got unmounted');
+                    setAllValues(prevValues => {
+                        return {
+                            ...prevValues,
+                            isLoading: true
+                        };
+                    });
+                    navigation.goBack();
+                }
+                }
+            />
         });
+
+        if (isFocused) {
+            // getResultsForSearch()
+            //     .then(videoIds => {
+            //     });
+
+            const videoIds = ['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc'] as string[];
+
+            media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
+            media.on('get-songs-from-youtube', (data: any) => {
+                media.checkIfAlreadyOnList(songsOnGroup, data.audios);
+                setAllValues(prevValues => {
+                    return {
+                        ...prevValues,
+                        searchedSongs: [...data.audios],
+                        isLoading: false
+                    };
+                });
+            });
+        }
 
         return () => {
-            console.log('3. OFF SearchingSongsScreen');
+            console.log('Cancel search');
+            // source.cancel('SearchingSongsScreen Component got unmounted');
+            // controller.abort();
             // media.destroy();
+            media.socket.off('emit-medias-group');
         };
+
     }, [isFocused]);
-
-    const handlePressSong = (song: any) => {
-        setPlayingSongs(prevSongs => {
-            const isCurrentSong = prevSongs.includes(song.id);
-
-            if (prevSongs.length) {
-                prevSongs.forEach(_song => {
-                    _song.currentSong && delete _song.currentSong;
-                    _song.isPrevSong && delete _song.isPrevSong;
-
-                    Object.assign(_song, {
-                        isPrevSong: true,
-                        isPlaying: false
-                    });
-                });
-            }
-
-            if (!isCurrentSong) {
-                Object.assign(song, {
-                    isPlaying: !player.current.state.paused,
-                    currentSong: true
-                });
-            }
-            return [song, ...prevSongs];
-        });
-    };
-
-    const keyExtractor = (item: any) => item.index.toString();
 
     const sendMediaToServer = (song: any) => {
         Object.assign(song, {
@@ -102,22 +131,30 @@ const SearchingSongsScreen = (props: any) => {
         });
 
         media.emit('emit-medias-group', { song, chatRoom: group.group_name, isComingFromSearchingSong: true });
+
+        // media.destroy();
+        setAllValues(prevValues => {
+            return {
+                ...prevValues,
+                isLoading: true
+            };
+        });
         navigation.goBack();
     };
 
-    const renderItem = ({ item }: any) => {
+    const renderItem = useCallback((item, index) => {
+        console.log('item', index);
         return (<Song
+            isSearching={true}
+            resetLoadingSongs={resetLoadingSongs}
             song={item}
             media={media}
-            group={group}
-            user={user}
-            player={player}
-            isSearching={!!searchedSongsRef.current.length}
+            playPauseRef={playPauseRef}
             sendMediaToServer={sendMediaToServer}
         />);
-    };
+    }, []);
 
-    if (isLoading) {
+    if (allValues.isLoading) {
         return (
             <View>
                 <PreLoader
@@ -131,26 +168,19 @@ const SearchingSongsScreen = (props: any) => {
         );
     }
 
+    console.log('Searchedsongs', allValues.searchedSongs);
+
     return (
         <BodyContainer customBodyContainerStyle={{ paddingTop: 10 }}>
-            <PlayerContainer items={searchedSongsRef.current}>
-                <Player
-                    repeatRef={repeatRef}
-                    ref={player}
-                    user={user}
-                    player={player}
-                    tracks={searchedSongsRef.current}
-                />
-            </PlayerContainer>
-            <CommonFlatList
-                reference={media.flatListRef}
-                data={searchedSongsRef.current}
-                extraData={searchedSongsRef.current}
-                keyExtractor={keyExtractor}
-                action={renderItem}
-            />
+            {playerInstance}
         </BodyContainer>
     );
 };
 
-export default memo(SearchingSongsScreen);
+const areEqual = (prevProps: any, nextProps: any) => {
+    console.log('PREVV SearchingScreen', prevProps, 'NExtt', nextProps);
+
+    return true;
+};
+
+export default memo(SearchingSongsScreen, areEqual);

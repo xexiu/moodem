@@ -1,5 +1,4 @@
 import { useIsFocused } from '@react-navigation/native';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';

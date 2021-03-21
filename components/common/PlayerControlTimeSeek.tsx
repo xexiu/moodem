@@ -23,13 +23,13 @@ function timeFormat(time: number) {
 }
 
 type MyProps = {
-    player: any,
+    basePlayer: any,
     currentSong: any
 };
 
 const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     const {
-        player,
+        basePlayer,
         currentSong
     } = props;
 
@@ -76,7 +76,7 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
                 minimumTrackTintColor={styles.minimumTrackTintColor}
                 maximumTrackTintColor={styles.maximumTrackTintColor}
                 onSlidingComplete={(_value) => {
-                    player.current.seek(_value);
+                    basePlayer.current.seek(_value);
                     setIsSliding(false);
                 }}
             />

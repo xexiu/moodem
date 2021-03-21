@@ -7,7 +7,7 @@ function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         mediaUser.uid === groupOwner);
 }
 
-export const MediaButtons = (song: any, media: any, group: any, actions: string[]) => {
+export const MediaButtons = (song: any, media: any, actions: string[]) => {
     const mediaMap = {
         votes: {
             containerStyle: {},
@@ -21,7 +21,7 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
                 media.emit('send-message-vote-up',
                     {
                         song,
-                        chatRoom: group.group_name,
+                        chatRoom: media.group.group_name,
                         user_id: media.user.uid,
                         count: ++song.votes_count
                     });
@@ -37,11 +37,11 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
                 media.emit('send-message-remove-song',
                     {
                         song,
-                        chatRoom: group.group_name,
+                        chatRoom: media.group.group_name,
                         user_id: media.user.uid
                     });
             },
-            isOwner: hasSongOrGroupOwner(media.user, song.user, group.user_owner_id)
+            isOwner: hasSongOrGroupOwner(media.user, song.user, media.group.user_owner_id)
         }
     } as any;
 
@@ -81,7 +81,6 @@ export const MediaButtons = (song: any, media: any, group: any, actions: string[
     }
 
     function createButton(action: string) {
-        console.log('Actions buttons')
         return {
             element: () => (
                 <View style={{marginBottom: 5 }}>

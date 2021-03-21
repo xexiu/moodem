@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
+import { Text } from 'react-native';
 import Toast from 'react-native-easy-toast';
-import PreLoader from '../../components/common/functional-components/PreLoader';
 import { MediaListEmpty } from '../../screens/User/functional-components/MediaListEmpty';
 import BodyContainer from '../common/functional-components/BodyContainer';
 import CommonFlatList from '../common/functional-components/CommonFlatList';
@@ -15,285 +15,259 @@ import Song from '../User/functional-components/Song';
 import BasePlayer from './BasePlayer';
 import PlayerControl from './PlayerControl';
 
-function cleanImageParams(img: string) {
-    if (img.indexOf('hqdefault.jpg') >= 0) {
-        return img.replace(/(\?.*)/g, '');
-    }
-    return img;
-}
+const Player = forwardRef((props: any, ref: any) => {
+    const {
+        isSearching,
+        navigation,
+        basePlayer,
+        seekRef,
+        playPauseRef,
+        repeatRef,
+        flatListRef,
+        player,
+        renderItem,
+        media,
+        tracks,
+        extraData
+    } = props;
+    const [allValues, setAllValues] = useState({
+        currentSong: {
+            isPlaying: false
+        },
+        isPlayerReady: false
+    }) as any;
+    const isFocused = useIsFocused();
 
-function cleanTitle(title: string) {
-    return title && title.replace('VEVO', '') || '';
-}
-class Player extends Component {
-    public toastRef: any;
-    public tracks: any;
-    public state: any;
-    public setState: any;
-    public player: any;
-    public props: any;
-    public songAlbumCover: any;
-    public songTitle: any;
-    public songArtist: any;
-    public songIndex: any;
-    public currentSong: any;
-    public paused: any;
-    public shouldRepeat: any;
-    public shouldShuffle: any;
-    public trackCurrentTime: any;
-    public trackMaxDuration: any;
-    public songIsReady: any;
-    public flatListRef: any;
-    public playPauseRef: any;
-    public seekRef: any;
-    public repeatRef: any;
-
-    constructor(props: any) {
-        super(props);
-
-        console.log('CONSTRUCTOR', this.player);
-        this.toastRef = React.createRef();
-        this.flatListRef = React.createRef();
-        this.playPauseRef = React.createRef();
-        this.seekRef = React.createRef();
-        this.repeatRef = React.createRef();
-
-        this.state = {
-            currentSong: {},
-            tracks: []
-        };
-    }
-
-    shouldComponentUpdate(prevProps: any, nextProps: any) {
-        if (prevProps.tracks &&
-            prevProps.tracks.length &&
-            nextProps.tracks &&
-            nextProps.tracks.length) {
-            return true;
-        }
-
-        return false;
-    }
-
-    componentDidMount() {
-        if (this.props.tracks && this.props.tracks.length) {
-            this.setState({
-                tracks: [...this.props.tracks],
-                currentSong: { ...this.props.tracks[0] }
+    useEffect(() => {
+        console.log('Use effect 1');
+        if (tracks && tracks.length) {
+            setAllValues((prevState: any) => {
+                return {
+                    ...prevState,
+                    currentSong: tracks[0],
+                    isPlayerReady: true
+                };
+            });
+        } else {
+            setAllValues((prevState: any) => {
+                return {
+                    ...prevState,
+                    isPlayerReady: false
+                };
             });
         }
-    }
+    }, [tracks]);
 
-    handleOnPressPlayPause = (paused: boolean) => {
-        this.setState({ paused: !paused });
+    // useEffect(() => {
+    //     console.log('Use effect 2');
+    //     if (Object.keys(currentSong).length) {
+    //         setCurrentSong({
+    //             ...tracks[songIndex]
+    //         });
+    //     }
+    // }, [songIndex]);
+
+    // useEffect(() => {
+    //     if (isSearching) {
+    //         console.log('Comming from Search');
+    //         setIsPlayerReady(true);
+    //     } else if (isPlayerReady) {
+    //         //console.log('Player Ready');
+    //     } else {
+    //         console.log('IsFocused Player');
+    //         setIsPlayerReady(true);
+    //         setCurrentSong({...tracks[0]});
+    //     }
+    // }, [!props.isSearching, currentSong]);
+
+    useImperativeHandle(ref, () => {
+        return {
+            setAllValues,
+            currentSong: allValues.currentSong,
+            markCurrentSong
+        };
+    }, [allValues.currentSong]);
+
+    const handleOnPressNextPrev = (track: any) => {
+        markCurrentSong(track);
+        setIsPlayingPaused(track);
     };
 
-    handleOnPressNextPrev = (track: any) => {
-        this.markCurentSong(track);
-        this.setIsPlayingPaused(track);
-    };
-
-    hanleOnPressRepeat = () => {
-        this.setState({
-            shouldRepeat: !this.state.shouldRepeat
-        });
-    };
-
-    markCurentSong = (track: any) => {
+    const markCurrentSong = (track: any) => {
         // tslint:disable-next-line:max-line-length
         // all songs props should be updated on this.tracks in order to be updated also on FlatList data (this.state.tracks)
-        if (track.index === this.state.currentSong.index) {
+        if (track.index === allValues.currentSong.index) {
             // update is playing
-            Object.assign(this.state.tracks[track.index], {
+            // tslint:disable-next-line:prefer-object-spread
+            return Object.assign(tracks[track.index], {
                 isPlaying: !track.isPlaying
             });
-        } else if (this.state.tracks[this.state.currentSong.index]) {
-            // update track on this tracks
-            Object.assign(this.state.tracks[this.state.currentSong.index], {
+        }
+        if (track.index !== allValues.currentSong.index) {
+            // tslint:disable-next-line:prefer-object-spread
+            Object.assign(tracks[allValues.currentSong.index], {
                 isPlaying: false
             });
-        }
 
-        if (track.index !== this.state.currentSong.index) {
-            Object.assign(this.state.tracks[track.index], {
+            // tslint:disable-next-line:prefer-object-spread
+            return Object.assign(tracks[track.index], {
                 isPlaying: !track.isPlaying
             });
         }
     };
 
-    setIsPlayingPaused = (track: any) => { // should MarkCurrentSong before setIsPlayingPaused
-        this.setState({
-            currentSong: { ...track }
+    const setIsPlayingPaused = (track: any) => { // should MarkCurrentSong before setIsPlayingPaused
+        return setAllValues(prev => {
+            return {
+                ...prev,
+                currentSong: track
+            };
         });
     };
 
-    manageTrack = (track: any, shouldRepeat: boolean) => {
+    const manageTrack = (track: any, shouldRepeat: boolean) => {
         if (shouldRepeat) {
-            return this.setIsPlayingPaused(track);
+            return setIsPlayingPaused(track);
         }
-        const nextPrevIndex = this.state.tracks.length ? track.index + 1 : 0;
+        const nextPrevIndex = tracks.length ? track.index + 1 : 0;
 
-        if (this.state.tracks[nextPrevIndex]) {
-            this.markCurentSong(this.state.tracks[nextPrevIndex]);
-            this.setIsPlayingPaused(this.state.tracks[nextPrevIndex]);
+        if (tracks[nextPrevIndex]) {
+            markCurrentSong(tracks[nextPrevIndex]);
+            setIsPlayingPaused(tracks[nextPrevIndex]);
         } else {
-            this.markCurentSong(track);
-            this.setIsPlayingPaused(track);
+            markCurrentSong(track);
+            setIsPlayingPaused(track);
         }
     };
 
-    render() {
-        const {
-            tracks,
-            currentSong
-        } = this.state;
-        const {
-            user,
-            player,
-            repeatRef
-        } = this.props;
+    const keyExtractor = (item: any) => item.index.toString();
 
-        if (!Object.keys(currentSong).length) {
-            return (<MediaListEmpty />);
-        }
+    if (!allValues.isPlayerReady) {
+        return (<MediaListEmpty />);
+    }
 
-        const keyExtractor = (item: any) => item.index.toString();
+    // console.log('Render Player Ready. Has Songs And Tracks');
 
-        console.log('Player Updated', currentSong);
-
-        return (
-            <BodyContainer>
-                <SongInfoContainer>
-                    <PlayerControl
-                        iconStyle={{
-                            textAlign: 'center',
-                            backgroundColor: '#fff',
-                            borderWidth: 1,
-                            borderColor: '#eee',
-                            padding: 10,
-                            borderRadius: 20,
-                            width: 40
-                        }}
-                        iconType='font-awesome'
-                        iconSize={18}
-                        action='prev'
-                        iconName='step-backward'
-                        containerStyle={{ position: 'absolute', top: 20, left: 70, zIndex: 100 }}
-                        nextPrevSong={currentSong.index - 1}
-                        currentSong={currentSong}
-                        tracks={tracks}
-                        onPressHandler={(track: any) => {
-                            this.handleOnPressNextPrev(track);
-                        }}
-                    />
-                    <PlayerControlRepeat
-                        ref={repeatRef}
-                        iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 2, backgroundColor: '#fff' }}
-                        action='shouldRepeat'
-                        containerStyle={{ position: 'absolute', top: 70, left: 115, zIndex: 100 }}
-                    />
-                    <PlayerControlPlayPause
-                        ref={this.playPauseRef}
-                        currentSong={currentSong}
-                        tracks={tracks}
-                        flatListRef={this.flatListRef}
-                        onPressHandler={(flatListItem: any) => {
-                            const lastItem = tracks[tracks.length - 1].index === currentSong.index;
-
-                            if (lastItem && this.seekRef.current.trackCurrentTime === 0) {
-                                player.current.seek(0);
-                            }
-                            this.markCurentSong(flatListItem);
-                            this.setIsPlayingPaused(flatListItem);
-                        }}
-                    />
-                    <BasePlayer
-                        repeatRef={repeatRef}
-                        seekRef={this.seekRef}
-                        playPauseRef={this.playPauseRef}
-                        manageTrack={this.manageTrack}
-                        currentSong={currentSong}
-                        player={player}
-                        tracks={tracks}
-                    />
-                    <PlayerControl
-                        iconStyle={{
-                            textAlign: 'center',
-                            backgroundColor: '#fff',
-                            borderWidth: 1,
-                            borderColor: '#eee',
-                            padding: 10,
-                            borderRadius: 20,
-                            width: 40
-                        }}
-                        iconType='font-awesome'
-                        iconSize={18}
-                        action='next'
-                        iconName='step-forward'
-                        containerStyle={{ position: 'absolute', top: 20, right: 60, zIndex: 100 }}
-                        nextPrevSong={currentSong.index + 1}
-                        currentSong={currentSong}
-                        tracks={tracks}
-                        onPressHandler={(track: any) => {
-                            this.handleOnPressNextPrev(track);
-                        }}
-                    />
-                    <PlayerControl
-                        iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 5, backgroundColor: '#fff' }}
-                        iconType='entypo'
-                        iconSize={18}
-                        action='full-screen'
-                        iconName='resize-full-screen'
-                        containerStyle={{ position: 'absolute', top: 70, right: 115, zIndex: 100 }}
-                        currentSong={currentSong}
-                        tracks={tracks}
-                        onPressHandler={() => {
-                            player.current.presentFullscreenPlayer();
-                        }}
-                    />
-                    <SongInfoTitle songTitle={currentSong.videoDetails.title} />
-                    <PlayerControlTimeSeek
-                        ref={this.seekRef}
-                        player={player}
-                        currentSong={currentSong}
-                    />
-                </SongInfoContainer>
-                <CommonFlatList
-                    style={{ marginTop: 20 }}
-                    reference={this.flatListRef}
-                    data={this.state.tracks}
-                    extraData={this.state}
-                    keyExtractor={keyExtractor}
-                    action={({ item, index }) => {
-                        return (
-                            <Song
-                                song={item}
-                                user={user}
-                                playPauseRef={this.playPauseRef}
-                            />
-                            // <TouchableOpacity
-                            //     style={{ padding: 10 }}
-                            //     onPress={() => {
-                            //         this.playPauseRef.current.onPressHandler(item);
-                            //         // this.markCurentSong(item);
-                            //         // this.setIsPlayingPaused(item);
-                            //         // this.dispatchActionsPressedTrack(item, null);
-                            //     }}
-                            // >
-                            //     <View>
-                            //         <Text>Song {item.index} is Playing: {String(item.isPlaying)}, Title: ${item.videoDetails.title}</Text>
-                            //     </View>
-                            // </TouchableOpacity>
-                        );
+    return (
+        <BodyContainer>
+            <SongInfoContainer>
+                <PlayerControl
+                    iconStyle={{
+                        textAlign: 'center',
+                        backgroundColor: '#fff',
+                        borderWidth: 1,
+                        borderColor: '#eee',
+                        padding: 10,
+                        borderRadius: 20,
+                        width: 40
+                    }}
+                    iconType='font-awesome'
+                    iconSize={18}
+                    action='prev'
+                    iconName='step-backward'
+                    containerStyle={{ position: 'absolute', top: 20, left: 70, zIndex: 100 }}
+                    nextPrevSong={allValues.currentSong.index - 1}
+                    currentSong={allValues.currentSong}
+                    tracks={tracks}
+                    onPressHandler={(track: any) => {
+                        handleOnPressNextPrev(track);
                     }}
                 />
-                <Toast
-                    position='top'
-                    ref={this.toastRef}
+                <PlayerControlRepeat
+                    ref={repeatRef}
+                    iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 2, backgroundColor: '#fff' }}
+                    action='shouldRepeat'
+                    containerStyle={{ position: 'absolute', top: 70, left: 115, zIndex: 100 }}
                 />
-            </BodyContainer>
-        );
-    }
-}
+                <PlayerControlPlayPause
+                    ref={playPauseRef}
+                    player={player}
+                    basePlayer={basePlayer}
+                    currentSong={allValues.currentSong}
+                    tracks={tracks}
+                    flatListRef={flatListRef}
+                />
+                <BasePlayer
+                    repeatRef={repeatRef}
+                    seekRef={seekRef}
+                    playPauseRef={playPauseRef}
+                    manageTrack={manageTrack}
+                    currentSong={allValues.currentSong}
+                    basePlayer={basePlayer}
+                    tracks={tracks}
+                />
+                <PlayerControl
+                    iconStyle={{
+                        textAlign: 'center',
+                        backgroundColor: '#fff',
+                        borderWidth: 1,
+                        borderColor: '#eee',
+                        padding: 10,
+                        borderRadius: 20,
+                        width: 40
+                    }}
+                    iconType='font-awesome'
+                    iconSize={18}
+                    action='next'
+                    iconName='step-forward'
+                    containerStyle={{ position: 'absolute', top: 20, right: 60, zIndex: 100 }}
+                    nextPrevSong={allValues.currentSong.index + 1}
+                    currentSong={allValues.currentSong}
+                    tracks={tracks}
+                    onPressHandler={(track: any) => {
+                        handleOnPressNextPrev(track);
+                    }}
+                />
+                <PlayerControl
+                    iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 5, backgroundColor: '#fff' }}
+                    iconType='entypo'
+                    iconSize={18}
+                    action='full-screen'
+                    iconName='resize-full-screen'
+                    containerStyle={{ position: 'absolute', top: 70, right: 115, zIndex: 100 }}
+                    currentSong={allValues.currentSong}
+                    tracks={tracks}
+                    onPressHandler={() => {
+                        basePlayer.current.presentFullscreenPlayer();
+                    }}
+                />
+                <SongInfoTitle songTitle={allValues.currentSong.videoDetails.title} />
+                <PlayerControlTimeSeek
+                    ref={seekRef}
+                    basePlayer={basePlayer}
+                    currentSong={allValues.currentSong}
+                />
+            </SongInfoContainer>
+            <CommonFlatList
+                style={{ marginTop: 20 }}
+                reference={flatListRef}
+                data={tracks}
+                extraData={extraData || tracks}
+                keyExtractor={keyExtractor}
+                action={({ item, index }) => {
+                    // console.log('Render Item', item);
+                    return renderItem(item, index, playPauseRef);
+                }}
+            />
+            <Toast
+                position='top'
+                ref={media.toastRef}
+            />
+        </BodyContainer>
+    );
+});
 
-export { Player };
+const areEqual = (prevProps: any, nextProps: any) => {
+    console.log('Player prev', prevProps, 'Next', nextProps);
+    // if (prevProps.isSearching) {
+    //     return false;
+    // }
+    // if (prevProps.tracks.length && nextProps.tracks.length) {
+    //     console.log('PREVV PLAYER', prevProps, 'NExtt', nextProps);
+    //     return false;
+    // }
+
+    return false;
+};
+
+export default memo(Player, areEqual);
