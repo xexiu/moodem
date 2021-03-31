@@ -6,42 +6,17 @@ import PreLoader from './functional-components/PreLoader';
 const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const {
         currentSong,
-        tracks,
-        flatListRef,
-        player
+        songsListRef
     } = props;
 
-    const [flatList, setFlatLit] = useState(null);
     const [isBuffering, setIsBuffering] = useState(true);
-
-    useEffect(() => {
-        if (!isBuffering) {
-            setFlatLit(flatListRef);
-        }
-    }, [isBuffering, currentSong]);
 
     useImperativeHandle(ref, () => {
         return {
-            setIsBuffering,
-            onPressPlay
+            isBuffering,
+            setIsBuffering
         };
-    }, []);
-
-    const onPressPlay = (song = flatListItem) => {
-        player.current.markCurrentSong(song);
-        player.current.setAllValues((prevState: any) => {
-            return {
-                ...prevState,
-                currentSong: song
-            };
-        });
-    };
-
-    if (!flatList) {
-        return (<PreLoader size={58} containerStyle={{}} />);
-    }
-
-    const flatListItem = flatListRef.current._getItem(tracks, currentSong.index);
+    }, [isBuffering]);
 
     if (isBuffering) {
         return (<PreLoader
@@ -53,11 +28,8 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
                 borderColor: '#eee',
                 width: 110
             }}
-            borderWidth={3}
         />);
     }
-
-    console.log('Play/Pause', currentSong.index, 'BasePlayer', player.current);
 
     return (
         <Icon
@@ -71,15 +43,32 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
                 width: 50
             }}
             Component={TouchableScale}
-            name={!flatListItem.isPlaying ? 'play' : 'pause'}
-            type={!flatListItem.isPlaying ? 'foundation' : 'AntDesign'}
+            name={!currentSong.isPlaying ? 'play' : 'pause'}
+            type={!currentSong.isPlaying ? 'foundation' : 'AntDesign'}
             size={25}
             color='#dd0031'
             onPress={() => {
-                onPressPlay(flatListItem);
+                console.log('Pressed song', songsListRef.current.currentSong.id);
+                Object.assign(currentSong, {
+                    isPlaying: !currentSong.isPlaying
+                });
+                songsListRef.current.setAllValues((prevValues: any) => {
+                    return {
+                        ...prevValues,
+                        currentSong
+                    };
+                });
             }}
         />
     );
 });
 
-export default memo(PlayerControlPlayPause);
+const areEqual = (prevProps: any, nextProps: any) => {
+    if (nextProps.isRemovingSong || nextProps.isComingFromSearchingSong) {
+        return true;
+    }
+
+    return false; // toogle play/pause icon
+};
+
+export default memo(PlayerControlPlayPause, areEqual);

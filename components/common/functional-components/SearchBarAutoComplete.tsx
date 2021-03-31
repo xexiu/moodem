@@ -5,6 +5,8 @@ import { View } from 'react-native';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import SuggestionList from './SuggestionList';
 
+const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
+
 const SearchBarAutoComplete = (props: any) => {
     const {
         group,
@@ -12,46 +14,46 @@ const SearchBarAutoComplete = (props: any) => {
         songsOnGroup,
         navigation,
         media,
-        resetLoadingSongs
+        resetLoadingSongs,
+        setIsGoingToSearching
     } = props;
     const isFocused = useIsFocused();
     const [suggestions, setSuggestions] = useState([]);
     const source = axios.CancelToken.source();
 
     useEffect(() => {
-        // console.log('Effect SearchBar Autocomplete');
-
         if (isFocused) {
             setSuggestions([]);
         }
 
         return () => {
-            setSuggestions([]);
             source.cancel('SearchBarAutoComplete Component got unmounted');
-            // console.log('OFF SearchBar Autocomplete');
         };
     }, [isFocused]);
 
     async function onChangeText(text: string): Promise<void> {
-        const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
-        const res = await axios.get(GOOGLE_AC_URL, {
-            cancelToken: source.token,
-            params: {
-                client: 'youtube',
-                ds: 'yt',
-                q: text
+        try {
+            const response = await axios.get(GOOGLE_AC_URL, {
+                cancelToken: source.token,
+                params: {
+                    client: 'youtube',
+                    ds: 'yt',
+                    q: text
+                }
+            });
+            if (response.status !== 200) {
+                throw Error('Suggest API not 200!');
             }
-        });
-        if (res.status !== 200) {
-            throw Error('Suggest API not 200!');
+            const cleanResp = response.data.replace('window.google.ac.h(', '').replace(')', '');
+            const parsedData = JSON.parse(cleanResp);
+            const _suggestions = [] as any;
+            parsedData[1].map((item: any[]) => {
+                _suggestions.push(item[0]);
+            });
+            setSuggestions(_suggestions);
+        } catch (error) {
+            throw error;
         }
-        const cleanResp = res.data.replace('window.google.ac.h(', '').replace(')', '');
-        const parsedData = JSON.parse(cleanResp);
-        const _suggestions = [] as any;
-        parsedData[1].map((item: any[]) => {
-            _suggestions.push(item[0]);
-        });
-        setSuggestions(_suggestions);
     }
 
     return (
@@ -70,7 +72,12 @@ const SearchBarAutoComplete = (props: any) => {
                 cancelSearch={() => setSuggestions([])}
                 onChangeText={onChangeText}
                 onEndEditingSearch={(searchedText) => {
+                    navigation.setOptions({
+                        unmountInactiveRoutes: true
+                    });
+                    source.cancel('SearchBarAutoComplete Component got unmounted');
                     setSuggestions([]);
+                    setIsGoingToSearching(true);
                     navigation.navigate('SearchingSongsScreen', {
                         media,
                         group,

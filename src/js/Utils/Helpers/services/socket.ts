@@ -1,9 +1,14 @@
 export const IP = 'http://192.168.20.26:3000'; // Mobile --> http://172.20.10.9:3000 Wifi home --> 192.168.20.26:3000
 export const socketConf = {
-    transports: ['websocket'],
+    transports: ['websocket', 'polling'],
     jsonp: false,
+    reconnection: true,
+    // tslint:disable-next-line:max-line-length
+    reconnectionDelay: 2000, // starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
+    reconnectionDelayMax : 60000, // 1 minute maximum delay between connections
     reconnectionAttempts: 'Infinity',
-    timeout: 10000,
+    timeout: 10000000000,
+    upgrade: false,
     'force new connection': true,
     agent: false,
     perMessageDeflate: true,
@@ -12,5 +17,5 @@ export const socketConf = {
     ca: '-',
     ciphers: '-',
     rejectUnauthorized: false
-    //forceNode: true // Supres YellowBox Warning --> Docs: https://socket.io/docs/client-api/#new-Manager-url-options
+    // forceNode: true // Supres YellowBox Warning --> Docs: https://socket.io/docs/client-api/#new-Manager-url-options
 };

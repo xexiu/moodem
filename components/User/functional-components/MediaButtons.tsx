@@ -23,7 +23,8 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
                         song,
                         chatRoom: media.group.group_name,
                         user_id: media.user.uid,
-                        count: ++song.votes_count
+                        count: ++song.votes_count,
+                        voteUp: true
                     });
             }
         },
@@ -38,7 +39,8 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
                     {
                         song,
                         chatRoom: media.group.group_name,
-                        user_id: media.user.uid
+                        user_id: media.user.uid,
+                        isRemovingSong: true
                     });
             },
             isOwner: hasSongOrGroupOwner(media.user, song.user, media.group.user_owner_id)

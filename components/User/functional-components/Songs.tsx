@@ -1,25 +1,14 @@
 
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import BurgerMenuIcon from '../../common/BurgerMenuIcon';
-import BgImage from '../../common/functional-components/BgImage';
 import BodyContainer from '../../common/functional-components/BodyContainer';
-import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
-import Player from '../../common/Player';
 import { AppContext } from '../../User/functional-components/AppContext';
-import SearchedSongsList from './SearchedSongsList';
 import Song from './Song';
-
-function setMediaIndex(song: any, index: number) {
-    Object.assign(song, {
-        index,
-        isPlaying: false
-    });
-}
+import SongsList from './SongsList';
 
 const Songs = (props: any) => {
     const { media, navigation } = props;
@@ -27,39 +16,27 @@ const Songs = (props: any) => {
     const [allValues, setAllValues] = useState({
         songs: [],
         isLoading: true,
-        isComingFromSearchingSong: false
+        isComingFromSearchingSong: false,
+        isRemovingSong: false,
+        isSearching: false
     });
-    const player = useRef(null);
-    const basePlayer = useRef(null);
-    const flatListRef = useRef(null);
-    const repeatRef = useRef(null);
-    const playPauseRef = useRef(null);
-    const seekRef = useRef(null);
-    const playerInstance = (<Player
-        isSearching={allValues.isComingFromSearchingSong}
-        navigation={navigation}
-        ref={player}
-        player={player}
-        basePlayer={basePlayer}
-        flatListRef={flatListRef}
-        repeatRef={repeatRef}
-        playPauseRef={playPauseRef}
-        seekRef={seekRef}
-        renderItem={(item: any, index: number) => renderItem(item, index)}
-        media={media}
-        tracks={allValues.songs}
-    />);
+    const songsListRef = useRef(null);
 
     useEffect(() => {
-        console.log('Focused SOngs');
-        media.on('get-medias-group', ({ songs, isComingFromSearchingSong }: any) => {
-            songs.forEach(setMediaIndex);
+        media.on('get-medias-group', (data: any) => {
+            data.songs.forEach((song: any, index: number) => {
+                Object.assign(song, {
+                    id: index
+                });
+            });
+
             setAllValues(prev => {
                 return {
                     ...prev,
-                    songs: [...songs],
+                    songs: [...data.songs],
                     isLoading: false,
-                    isComingFromSearchingSong
+                    isComingFromSearchingSong: data.isComingFromSearchingSong || false,
+                    isRemovingSong: data.isRemovingSong || false
                 };
             });
         });
@@ -67,33 +44,21 @@ const Songs = (props: any) => {
 
         return () => {
             // media.destroy();
-            media.socket.off(media.on);
-            console.log('OFF Focused SOngs');
+            media.socket.off('emit-medias-group');
+            media.socket.off('get-medias-group');
         };
-    }, []);
-
-    const renderItem = useCallback((item, index) => {
-        return (<Song
-            player={media.player}
-            song={item}
-            media={media}
-            playPauseRef={playPauseRef}
-            flatListRef={flatListRef}
-        />);
     }, []);
 
     if (allValues.isLoading) {
         return (
-            <View>
-                <BgImage />
-                <PreLoader
-                    containerStyle={{
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                    size={50}
-                />
-            </View>
+            <PreLoader
+                containerStyle={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+                size={50}
+            />
         );
     }
 
@@ -108,6 +73,28 @@ const Songs = (props: any) => {
         });
     };
 
+    const setIsGoingToSearching = (isSearching) => {
+        setAllValues(prev => {
+            return {
+                ...prev,
+                isSearching
+            };
+        });
+    };
+
+    const renderItem = (item: any, handlePress: Function, currentSong: any) => {
+        return (<Song
+            group={group}
+            isSearching={allValues.isSearching}
+            isComingFromSearchingSong={allValues.isComingFromSearchingSong}
+            song={item}
+            isPlaying={item.isPlaying}
+            currentSong={currentSong}
+            media={media}
+            handlePress={handlePress}
+        />);
+    };
+
     return (
         <BodyContainer>
             <BurgerMenuIcon
@@ -115,14 +102,23 @@ const Songs = (props: any) => {
                     navigation.openDrawer();
                 }}
             />
+
             <SearchBarAutoComplete
                 group={group}
                 songsOnGroup={allValues.songs}
                 navigation={navigation}
                 media={media}
                 resetLoadingSongs={resetLoadingSongs}
+                setIsGoingToSearching={setIsGoingToSearching}
             />
-            {playerInstance}
+            <SongsList
+                ref={songsListRef}
+                isSearching={allValues.isSearching}
+                isComingFromSearchingSong={allValues.isComingFromSearchingSong}
+                isRemovingSong={allValues.isRemovingSong}
+                data={allValues}
+                renderItem={renderItem}
+            />
         </BodyContainer>
     );
 };

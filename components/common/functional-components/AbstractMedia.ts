@@ -45,8 +45,6 @@ export class AbstractMedia {
         this.group = group;
         this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
         this.playerRef = useRef(null);
-        this.basePlayer = useRef(null);
-        this.playPauseRef = useRef(null);
         this.searchRef = useRef();
         this.flatListRef = useRef(null);
         this.toastRef = useRef();
@@ -112,7 +110,7 @@ export class AbstractMedia {
     checkIfAlreadyOnList = (medias: string[], searchedMedias: string[]) => {
         medias.filter((song: any) => {
             return !searchedMedias.some((_song: any) => {
-                if (song.index === _song.index && song.isMediaOnList) {
+                if (song.videoDetails.videoId === _song.videoDetails.videoId && song.isMediaOnList) {
                     Object.assign(_song, {
                         isMediaOnList: true
                     });

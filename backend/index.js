@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
+
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -92,7 +94,7 @@ function buildMedia(data) {
     chatRooms[data.chatRoom] = {};
 
     Object.assign(chatRooms[data.chatRoom], {
-      songs: new Set([]),
+      songs: [],
       messages: [],
       uids: new Set([]),
     });
@@ -124,8 +126,9 @@ function setExtraAttrs(audios, uid) {
 
   audios.forEach((track, index) => {
     Object.assign(track, {
-      index,
+      id: index,
       isPlaying: false,
+      isMediaOnList: false,
       boosts_count: 0,
       votes_count: 0,
       voted_users: [],
@@ -154,11 +157,15 @@ io.on('connection', (socket) => {
 
     let audios = [];
     if (data.videoIds) {
-      audios = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
+      try {
+        audios = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
+      } catch (error) {
+        // send error to sentry or other server
+      }
     }
 
     io.to(data.chatRoom).emit('get-songs-from-youtube', {
-      audios: setExtraAttrs(audios, socket.uid),
+      songs: setExtraAttrs(audios, socket.uid),
     });
   });
 
@@ -178,12 +185,13 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    console.log('HEYY SEND MEDIA');
-
     if (data.song) {
-      chatRooms[data.chatRoom].songs.add(data.song);
+      chatRooms[data.chatRoom].songs.push(data.song);
     }
-    const songs = Array.from(chatRooms[data.chatRoom].songs);
+    console.log('HEYY SEND MEDIA', chatRooms[data.chatRoom].songs.length);
+
+    const { songs } = chatRooms[data.chatRoom];
+
     songs.sort(compareValues('votes_count'));
 
     const { isComingFromSearchingSong = false } = data;
@@ -196,39 +204,32 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    Array.from(chatRooms[data.chatRoom].songs)
-      .forEach((song) => {
-        const userHasVoted = song.voted_users.some((id) => id === data.user_id);
+    const { songs } = chatRooms[data.chatRoom];
 
-        if (song.id === data.song.id && !userHasVoted) {
-          song.voted_users.push(data.user_id);
-          song.votes_count = data.count;
-          const songs = Array.from(chatRooms[data.chatRoom].songs);
-          songs.sort(compareValues('votes_count'));
-          console.log('Vote UP', data.chatRoom, 'Data', data);
-          io.to(data.chatRoom).emit('get-medias-group', { songs });
-        }
-      });
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+      const userHasVoted = song.voted_users.some((id) => id === data.user_id);
+      if (song.id === data.song.id && !userHasVoted) {
+        song.voted_users.push(data.user_id);
+        song.votes_count = data.count;
+        songs.sort(compareValues('votes_count'));
+        const { voteUp = false } = data;
+        console.log('VOTE', song.id, 'Data Song', data.song.id);
+        io.to(data.chatRoom).emit('get-medias-group', { songs, voteUp });
+        break;
+      }
+    }
   });
 
   // Remove
   socket.on('send-message-remove-song', async (data) => {
     await socket.join(data.chatRoom);
 
-    console.log('HEYY REMOVE');
-
-    const removeMedia = () => {
-      Array.from(chatRooms[data.chatRoom].songs).forEach((song) => {
-        if (song.id === data.song.id) {
-          chatRooms[data.chatRoom].songs.delete(song);
-        }
-      });
-      const songs = Array.from(chatRooms[data.chatRoom].songs);
-      console.log('HEYYY REMOVE SONGS', songs, 'ChatRoom', data.chatRoom);
-      io.to(data.chatRoom).emit('get-medias-group', { songs });
-    };
-
-    removeMedia();
+    chatRooms[data.chatRoom].songs.splice(data.song.id, 1);
+    console.log('Remove Data Song', data.song.id);
+    console.log('Songs Left', chatRooms[data.chatRoom].songs);
+    const { isRemovingSong = false } = data;
+    io.to(data.chatRoom).emit('get-medias-group', { songs: chatRooms[data.chatRoom].songs, isRemovingSong });
   });
 
   socket.on('get-connected-users', async (data) => {
@@ -250,7 +251,7 @@ io.on('connection', (socket) => {
 
     buildMedia(data);
 
-    if (Array.from(chatRooms[data.chatRoom].messages).length) {
+    if (chatRooms[data.chatRoom].messages.length) {
       io.to(data.chatRoom).emit('moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
     }
   });

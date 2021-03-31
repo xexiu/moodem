@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { memo, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { FlatList } from 'react-native';
 
 const CommonFlatList = (props: any) => {
@@ -25,6 +26,19 @@ const CommonFlatList = (props: any) => {
         onViewableItemsChanged,
         style
     } = props;
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (data && data.length) {
+            setIsLoading(false);
+        }
+
+        return () => {};
+    }, []);
+
+    if (isLoading) {
+        return null;
+    }
 
     return (
         <FlatList
@@ -35,15 +49,16 @@ const CommonFlatList = (props: any) => {
             onContentSizeChange={onContentSizeChange}
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
-            initialNumToRender={12}
+            initialNumToRender={5}
+            maxToRenderPerBatch={10}
             scrollEventThrottle={15}
             ref={reference}
             inverted={inverted}
             ListEmptyComponent={emptyListComponent}
             ListHeaderComponent={headerComponent}
-            ListFooterComponentStyle={headerStyle}
+            ListHeaderComponentStyle={headerStyle}
             ItemSeparatorComponent={itemSeparatorComponent}
-            windowSize={12} // For performance (default - 21)
+            windowSize={5} // For performance (default - 21)
             keyboardShouldPersistTaps='always'
             horizontal={horizontal}
             numColumns={numColumns}
@@ -65,6 +80,8 @@ CommonFlatList.propTypes = {
     action: PropTypes.func,
     emptyListComponent: PropTypes.any,
     headerComponent: PropTypes.any,
+    footerComponent: PropTypes.any,
+    headerStyle: PropTypes.any,
     ref: PropTypes.any,
     onContentSizeChange: PropTypes.func,
     reference: PropTypes.any,

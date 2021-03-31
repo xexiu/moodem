@@ -1,45 +1,39 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
 import PreLoader from '../../components/common/functional-components/PreLoader';
 
-function showPoster(currentSong: any) {
-    return !currentSong.isPlaying ? currentSong.videoDetails.thumbnails[0].url : undefined;
-}
-
-const BasePlayer = (props: any) => {
+const BasePlayer = (props: any, ref: any) => {
     const {
         repeatRef,
         seekRef,
         playPauseRef,
         manageTrack,
         currentSong,
-        basePlayer
+        basePlayer,
+        isComingFromSearchingSong,
+        songsListRef
     } = props;
 
     const [isLoading, setIsLoading] = useState(true);
-    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        if (repeatRef.current) {
+        //console.log('UseEffect BasePlayer', isComingFromSearchingSong, 'basePlayer', basePlayer);
+        if (songsListRef.current) {
             setIsLoading(false);
         }
-        return () => { };
-    }, [currentSong]);
+        return () => {
+            //console.log('Off Effect BasePlayer');
+        };
+    }, []);
 
     if (isLoading) {
-        return (
-            <PreLoader
-                containerStyle={{
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-                size={50}
-            />
-        );
+        return null;
     }
 
-    console.log('BasePlayer', currentSong.index);
+    function showPoster() {
+        return !currentSong.isPlaying ? currentSong.videoDetails.thumbnails[0].url : undefined;
+    }
 
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
@@ -49,7 +43,7 @@ const BasePlayer = (props: any) => {
                         paused: !currentSong.isPlaying
                     });
                 }}
-                poster={showPoster(currentSong)}
+                poster={showPoster()}
                 audioOnly={true}
                 posterResizeMode='cover'
                 resizeMode='cover'
@@ -71,17 +65,18 @@ const BasePlayer = (props: any) => {
                 playWhenInactive
                 ignoreSilentSwitch='ignore'
                 onBuffer={(buffer) => {
-                    if (!buffer.isBuffering) {
-                        playPauseRef.current.setIsBuffering(buffer.isBuffering);
-                    }
+                    // console.log('IfBuffering', buffer.isBuffering);
+                    playPauseRef.current.setIsBuffering(buffer.isBuffering);
                 }}
                 onLoad={({ currentTime }) => {
+                    // console.log('OnLoad');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
                 }}
                 onLoadStart={() => {
+                    // console.log('OnLoadStart');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
@@ -92,6 +87,7 @@ const BasePlayer = (props: any) => {
                 }}
                 paused={!currentSong.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
+                    // console.log('onProgress', isPlaying, 'and currentsong isPlaying', currentSong.isPlaying);
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
@@ -112,7 +108,10 @@ const BasePlayer = (props: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    // console.log('Base Player prev', prevProps, 'Next', nextProps);
+    //console.log('Base Player prev', prevProps, 'Next', nextProps);
+    if (nextProps.isComingFromSearchingSong || nextProps.isRemovingSong) {
+        return true;
+    }
     return false;
     // if (!prevProps.currentSong.isPlaying && nextProps.currentSong.isPlaying) {
     //     return false;

@@ -37,11 +37,6 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     const [isSliding, setIsSliding] = useState(false);
     const sliderRef = useRef();
 
-    useEffect(() => {
-        setTrackCurrentTime(0);
-        return () => {};
-    }, []);
-
     useImperativeHandle(ref, () => {
         return {
             setTrackCurrentTime,
@@ -63,6 +58,7 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
                 </Text>
             </View>
             <Slider
+                // disabled={playPauseRef.current.isBuffering}
                 step={1}
                 ref={sliderRef}
                 maximumValue={Number(currentSong.videoDetails.lengthSeconds)}
@@ -84,19 +80,19 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     );
 });
 
-const prevNextSongIsPlaying = (prevProps: any, nextProps: any) => {
+const isNextSongIsPlaying = (prevProps: any, nextProps: any) => {
     return prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying;
 };
 
-const nextPrevSongIndex = (prevProps: any, nextProps: any) => {
+const isPrevSongIsPlaying= (prevProps: any, nextProps: any) => {
     return prevProps.currentSong.index !== nextProps.currentSong.index &&
     nextProps.currentSong.isPlaying;
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if (prevNextSongIsPlaying(prevProps, nextProps)) {
+    if (isNextSongIsPlaying(prevProps, nextProps)) {
         return false;
-    } else if (nextPrevSongIndex(prevProps, nextProps)) {
+    } else if (isPrevSongIsPlaying(prevProps, nextProps)) {
         return false;
     }
     return true;

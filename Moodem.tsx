@@ -20,15 +20,20 @@ const controller = new AbortController();
 const App = function Moodem() {
     const { dispatch, user }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
+    const [progressLoading, setProgressLoading] = useState(0.1);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
+        setProgressLoading(0.3);
+
         firebase.auth().onAuthStateChanged((_user: any) => {
             if (_user) {
+                setProgressLoading(0.7);
                 getGroups(_user)
                     .then((dbGroups) => {
                         dispatch({ type: 'groups', value: dbGroups as string[] });
+                        setProgressLoading(1);
                         setIsLoading(false);
                     })
                     .catch(err => console.log('Something happened', err));
@@ -54,6 +59,7 @@ const App = function Moodem() {
                         alignItems: 'center'
                     }}
                     size={50}
+                    progress={progressLoading}
                 />
             </View>
         );

@@ -39,13 +39,15 @@ const PlayerControl = (props: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if (prevProps.currentSong.index !== nextProps.currentSong.index &&
-        prevProps.action === 'next' && prevProps.action === 'next') {
-        return false;
-    } else if (prevProps.action === 'prev' && prevProps.action === 'prev') {
-        return false;
-    }
-    return true;
+    // if (prevProps.currentSong.index !== nextProps.currentSong.index &&
+    //     prevProps.action === 'next' && prevProps.action === 'next') {
+    //     return false;
+    // }
+    // if (prevProps.currentSong.index !== nextProps.currentSong.index &&
+    //     prevProps.action === 'prev' && prevProps.action === 'prev') {
+    //     return false;
+    // }
+    return false;
 };
 
 export default memo(PlayerControl, areEqual);

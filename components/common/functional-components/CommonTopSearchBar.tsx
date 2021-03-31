@@ -46,12 +46,10 @@ const CommonTopSearchBar = (props: any) => {
             onChangeText={(text: string) => {
                 setValue(text);
                 setShowLoadingSpin(true);
-                if (onChangeText && onChangeText(text)) {
-                    onChangeText(text)
+                onChangeText(text)
                     .then(() => {
                         setShowLoadingSpin(false);
                     });
-                }
             }}
             value={value}
             onClear={() => setShowLoadingSpin(false)}

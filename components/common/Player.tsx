@@ -17,7 +17,9 @@ import PlayerControl from './PlayerControl';
 
 const Player = forwardRef((props: any, ref: any) => {
     const {
+        isComingFromSearchingSong,
         isSearching,
+        isRemovingSong,
         navigation,
         basePlayer,
         seekRef,
@@ -28,57 +30,26 @@ const Player = forwardRef((props: any, ref: any) => {
         renderItem,
         media,
         tracks,
-        extraData
+        extraData,
+        children
     } = props;
     const [allValues, setAllValues] = useState({
-        currentSong: {
-            isPlaying: false
-        },
+        currentSong: tracks[0],
         isPlayerReady: false
     }) as any;
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('Use effect 1');
-        if (tracks && tracks.length) {
-            setAllValues((prevState: any) => {
+        if (isFocused && tracks.length) {
+            setAllValues(prevValues => {
                 return {
-                    ...prevState,
+                    ...prevValues,
                     currentSong: tracks[0],
                     isPlayerReady: true
                 };
             });
-        } else {
-            setAllValues((prevState: any) => {
-                return {
-                    ...prevState,
-                    isPlayerReady: false
-                };
-            });
         }
-    }, [tracks]);
-
-    // useEffect(() => {
-    //     console.log('Use effect 2');
-    //     if (Object.keys(currentSong).length) {
-    //         setCurrentSong({
-    //             ...tracks[songIndex]
-    //         });
-    //     }
-    // }, [songIndex]);
-
-    // useEffect(() => {
-    //     if (isSearching) {
-    //         console.log('Comming from Search');
-    //         setIsPlayerReady(true);
-    //     } else if (isPlayerReady) {
-    //         //console.log('Player Ready');
-    //     } else {
-    //         console.log('IsFocused Player');
-    //         setIsPlayerReady(true);
-    //         setCurrentSong({...tracks[0]});
-    //     }
-    // }, [!props.isSearching, currentSong]);
+    }, [isFocused]);
 
     useImperativeHandle(ref, () => {
         return {
@@ -140,18 +111,16 @@ const Player = forwardRef((props: any, ref: any) => {
         }
     };
 
-    const keyExtractor = (item: any) => item.index.toString();
-
-    if (!allValues.isPlayerReady) {
-        return (<MediaListEmpty />);
+    if (!allValues.isPlayerReady || !tracks.length) {
+        return null;
     }
 
-    // console.log('Render Player Ready. Has Songs And Tracks');
+    console.log('Render Player Ready. Has Songs And Tracks');
 
     return (
         <BodyContainer>
             <SongInfoContainer>
-                <PlayerControl
+                {/* <PlayerControl
                     iconStyle={{
                         textAlign: 'center',
                         backgroundColor: '#fff',
@@ -178,16 +147,20 @@ const Player = forwardRef((props: any, ref: any) => {
                     iconStyle={{ borderWidth: 1, borderColor: '#eee', borderRadius: 15, padding: 2, backgroundColor: '#fff' }}
                     action='shouldRepeat'
                     containerStyle={{ position: 'absolute', top: 70, left: 115, zIndex: 100 }}
-                />
-                <PlayerControlPlayPause
+                /> */}
+                {/* <PlayerControlPlayPause
+                    isSearching={isSearching}
                     ref={playPauseRef}
                     player={player}
+                    seekRef={seekRef}
                     basePlayer={basePlayer}
                     currentSong={allValues.currentSong}
                     tracks={tracks}
                     flatListRef={flatListRef}
-                />
-                <BasePlayer
+                    isComingFromSearchingSong={isComingFromSearchingSong}
+                    isRemovingSong={isRemovingSong}
+                /> */}
+                {/* <BasePlayer
                     repeatRef={repeatRef}
                     seekRef={seekRef}
                     playPauseRef={playPauseRef}
@@ -195,8 +168,8 @@ const Player = forwardRef((props: any, ref: any) => {
                     currentSong={allValues.currentSong}
                     basePlayer={basePlayer}
                     tracks={tracks}
-                />
-                <PlayerControl
+                /> */}
+                {/* <PlayerControl
                     iconStyle={{
                         textAlign: 'center',
                         backgroundColor: '#fff',
@@ -236,19 +209,19 @@ const Player = forwardRef((props: any, ref: any) => {
                     ref={seekRef}
                     basePlayer={basePlayer}
                     currentSong={allValues.currentSong}
-                />
+                /> */}
             </SongInfoContainer>
-            <CommonFlatList
+            {/* <CommonFlatList
                 style={{ marginTop: 20 }}
                 reference={flatListRef}
                 data={tracks}
                 extraData={extraData || tracks}
                 keyExtractor={keyExtractor}
-                action={({ item, index }) => {
-                    // console.log('Render Item', item);
-                    return renderItem(item, index, playPauseRef);
+                action={(params) => {
+                    // console.log('Render Item');
+                    return renderItem(params, allValues.currentSong);
                 }}
-            />
+            /> */}
             <Toast
                 position='top'
                 ref={media.toastRef}
@@ -258,16 +231,31 @@ const Player = forwardRef((props: any, ref: any) => {
 });
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    console.log('Player prev', prevProps, 'Next', nextProps);
-    // if (prevProps.isSearching) {
+    //console.log('PREVV PLAYER', prevProps, 'NExtt', nextProps);
+    // if (prevProps.tracks.length !== nextProps.tracks.length) {
+    //     console.log('PREVV PLAYER 1', prevProps, 'NExtt', nextProps);
     //     return false;
-    // }
-    // if (prevProps.tracks.length && nextProps.tracks.length) {
-    //     console.log('PREVV PLAYER', prevProps, 'NExtt', nextProps);
+    // } else if (nextProps.isSearching === !prevProps.isSearching) {
+    //     console.log('PREVV PLAYER 2', prevProps, 'NExtt', nextProps);
     //     return false;
+    // } else if (nextProps.isSearching) {
+    //     console.log('PREVV PLAYER 3', prevProps, 'NExtt', nextProps);
+    //     return true;
+    // } else if (!prevProps.isSearching) {
+    //     console.log('PREVV PLAYER 4', prevProps, 'NExtt', nextProps);
+    //     return true;
     // }
 
-    return false;
+    if (nextProps.isRemovingSong || nextProps.isComingFromSearchingSong) {
+        return true;
+    }
+
+    if (prevProps.tracks.length !== nextProps.tracks.length) {
+        console.log('PREVV PLAYER 1', prevProps, 'NExtt', nextProps);
+        return false;
+    }
+
+    return true;
 };
 
 export default memo(Player, areEqual);

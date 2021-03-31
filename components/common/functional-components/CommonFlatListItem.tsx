@@ -33,6 +33,7 @@ const CommonFlatListItem = (props: any) => {
         titleProps,
         subtitle,
         subtitleStyle,
+        subTitleProps,
         topDivider,
         rightTitle,
         contentContainerStyle = DEFAULT_CONTAINER_STYLE,
@@ -43,7 +44,8 @@ const CommonFlatListItem = (props: any) => {
         avatarStyle = DEFAULT_AVATAR_STYLE,
         buttonGroup,
         friction = 90,
-        tension = 100
+        tension = 200,
+        customView
     } = props;
 
     const myAvatar = (<FastImage
@@ -66,8 +68,9 @@ const CommonFlatListItem = (props: any) => {
         >
             {leftAvatar && myAvatar}
             <ListItem.Content>
-                <ListItem.Title style={titleStyle}>{title}</ListItem.Title>
-                <ListItem.Subtitle style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
+                <ListItem.Title {...titleProps} style={titleStyle}>{title}</ListItem.Title>
+                {customView}
+                <ListItem.Subtitle {...subTitleProps} style={subtitleStyle}>{subtitle}</ListItem.Subtitle>
             </ListItem.Content>
             {buttonGroup && <ListItem.ButtonGroup
                 innerBorderStyle={{ width: 0 }}
@@ -121,7 +124,9 @@ CommonFlatListItem.propTypes = {
     avatarStyle: PropTypes.object,
     buttonGroup: PropTypes.any,
     friction: PropTypes.number,
-    tension: PropTypes.number
+    tension: PropTypes.number,
+    customView: PropTypes.any,
+    subTitleProps: PropTypes.any
 };
 
 export default memo(CommonFlatListItem);

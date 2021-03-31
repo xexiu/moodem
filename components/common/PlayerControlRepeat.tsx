@@ -31,4 +31,8 @@ const PlayerControlRepeat = forwardRef((props: any, ref: any) => {
     );
 });
 
-export default memo(PlayerControlRepeat);
+const areEqual = (prevProps: any, nextProps: any) => {
+    return true;
+};
+
+export default memo(PlayerControlRepeat, areEqual);

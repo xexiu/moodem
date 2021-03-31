@@ -39,6 +39,7 @@
     "@react-navigation/stack": "^5.14.2",
     "abort-controller": "^3.0.0",
     "axios": "^0.21.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "events": "^3.3.0",
     "expo": "^40.0.1",
     "firebase": "^8.2.7",
@@ -77,6 +78,7 @@
     "socket.io-client": "^3.1.1",
     "superstruct": "^0.14.2",
     "tcomb-form-native": "^0.6.20",
+    "use-callback-ref": "^1.2.5",
     "yup": "^0.32.8"
   },
   "devDependencies": {
