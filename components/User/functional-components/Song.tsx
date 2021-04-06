@@ -4,19 +4,16 @@ import { MediaButtons } from './MediaButtons';
 
 const Song = (props: any) => {
     const {
-        currentSong,
         isPlaying,
         navigation,
-        resetLoadingSongs,
         song,
         media,
         isSearching = false,
         handlePress,
-        group,
-        sendSong
+        group
     } = props;
 
-    const sendMediaToServer = async (cb: Function) => {
+    const sendMediaToServer = async () => {
         Object.assign(song, {
             isMediaOnList: true,
             isPlaying: false
@@ -26,20 +23,13 @@ const Song = (props: any) => {
         navigation.navigate(group.group_name);
     };
 
-    const handlePressSong = () => {
-        if (resetLoadingSongs) {
-            resetLoadingSongs(true);
-        }
-        handlePress(song);
-    };
-
     return (
         <CommonFlatListItem
             bottomDivider
             title={song.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={song.videoDetails.author.name.replace('VEVO', '')}
+            subtitle={`${song.videoDetails.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {
@@ -57,13 +47,15 @@ const Song = (props: any) => {
                 type: 'AntDesign',
                 color: '#dd0031',
                 onPress: () => {
-                    return sendMediaToServer(sendSong);
+                    return sendMediaToServer();
                 },
                 size: 10,
                 raised: true,
                 iconStyle: { fontSize: 27, alignSelf: 'center' }
             }}
-            action={handlePressSong}
+            action={() => {
+                handlePress();
+            }}
         />
     );
 };

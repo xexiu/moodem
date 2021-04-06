@@ -18,25 +18,20 @@ const Songs = (props: any) => {
         isLoading: true,
         isComingFromSearchingSong: false,
         isRemovingSong: false,
-        isSearching: false
+        isVoting: false
     });
     const songsListRef = useRef(null);
 
     useEffect(() => {
         media.on('get-medias-group', (data: any) => {
-            data.songs.forEach((song: any, index: number) => {
-                Object.assign(song, {
-                    id: index
-                });
-            });
-
             setAllValues(prev => {
                 return {
                     ...prev,
                     songs: [...data.songs],
                     isLoading: false,
                     isComingFromSearchingSong: data.isComingFromSearchingSong || false,
-                    isRemovingSong: data.isRemovingSong || false
+                    isRemovingSong: data.isRemovingSong || false,
+                    isVoting: data.isVoting || false
                 };
             });
         });
@@ -62,8 +57,6 @@ const Songs = (props: any) => {
         );
     }
 
-    console.log('Render Songs');
-
     const resetLoadingSongs = (loading: boolean) => {
         setAllValues(prev => {
             return {
@@ -73,7 +66,7 @@ const Songs = (props: any) => {
         });
     };
 
-    const setIsGoingToSearching = (isSearching) => {
+    const setIsGoingToSearching = (isSearching: boolean) => {
         setAllValues(prev => {
             return {
                 ...prev,
@@ -85,13 +78,15 @@ const Songs = (props: any) => {
     const renderItem = (item: any, handlePress: Function, currentSong: any) => {
         return (<Song
             group={group}
-            isSearching={allValues.isSearching}
+            isSearching={false}
             isComingFromSearchingSong={allValues.isComingFromSearchingSong}
             song={item}
             isPlaying={item.isPlaying}
             currentSong={currentSong}
             media={media}
-            handlePress={handlePress}
+            handlePress={() => {
+                return handlePress(currentSong);
+            }}
         />);
     };
 
@@ -113,9 +108,10 @@ const Songs = (props: any) => {
             />
             <SongsList
                 ref={songsListRef}
-                isSearching={allValues.isSearching}
+                isSearching={false}
                 isComingFromSearchingSong={allValues.isComingFromSearchingSong}
                 isRemovingSong={allValues.isRemovingSong}
+                isVoting={allValues.isVoting}
                 data={allValues}
                 renderItem={renderItem}
             />

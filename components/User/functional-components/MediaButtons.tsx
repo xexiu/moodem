@@ -17,14 +17,14 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
             iconType: 'entypo',
             iconColor: '#90c520',
             iconSize: 9,
-            action: () => {
-                media.emit('send-message-vote-up',
+            action: async () => {
+                await media.emit('send-message-vote-up',
                     {
                         song,
                         chatRoom: media.group.group_name,
                         user_id: media.user.uid,
                         count: ++song.votes_count,
-                        voteUp: true
+                        isVoting: true
                     });
             }
         },
@@ -34,8 +34,8 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
             iconType: 'font-awesome',
             iconColor: '#dd0031',
             iconSize: 9,
-            action: () => {
-                media.emit('send-message-remove-song',
+            action: async () => {
+                await media.emit('send-message-remove-song',
                     {
                         song,
                         chatRoom: media.group.group_name,
@@ -53,7 +53,7 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
             return mediaMap[action].containerStyle;
         case 'disabled':
             return mediaMap[action].voted_users &&
-                    mediaMap[action].voted_users.some((id: number) => id === media.user.uid);
+            mediaMap[action].voted_users.some((id: number) => id === media.user.uid);
         case 'text':
             return mediaMap[action].votes_count;
         case 'iconName':
@@ -85,7 +85,7 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
     function createButton(action: string) {
         return {
             element: () => (
-                <View style={{marginBottom: 5 }}>
+                <View style={{ marginBottom: 5 }}>
                     <Button
                         containerStyle={getAction(action, 'containerStyle')}
                         disabled={getAction(action, 'disabled')}

@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
-import { Player } from '../../common/Player';
+import { Player } from '../../common/Player2';
 import { PlayerContainer } from '../../common/PlayerContainer';
 
 const SearchedSongsList = (props: any) => {

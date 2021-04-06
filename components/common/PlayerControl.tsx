@@ -12,7 +12,7 @@ const PlayerControl = (props: any) => {
         iconColor = '#dd0031',
         containerStyle,
         nextPrevSong,
-        tracks,
+        songs,
         onPressHandler,
         action
     } = props;
@@ -20,17 +20,17 @@ const PlayerControl = (props: any) => {
     return (
         <Icon
             containerStyle={[containerStyle]}
-            disabled={action !== 'full-screen' && tracks && !tracks[nextPrevSong]}
+            disabled={action !== 'full-screen' && songs && !songs[nextPrevSong]}
             raised={iconRaised}
             reverse={iconReverse}
             iconStyle={iconStyle}
             name={iconName}
             type={iconType}
-            color={action !== 'full-screen' && tracks && !tracks[nextPrevSong] ? '#777' : iconColor}
+            color={action !== 'full-screen' && songs && !songs[nextPrevSong] ? '#777' : iconColor}
             size={iconSize}
             onPress={() => {
-                if (tracks && tracks[nextPrevSong]) {
-                    return onPressHandler(tracks[nextPrevSong]);
+                if (songs && songs[nextPrevSong]) {
+                    return onPressHandler(songs[nextPrevSong]);
                 }
                 return onPressHandler();
             }}
@@ -39,15 +39,15 @@ const PlayerControl = (props: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    // if (prevProps.currentSong.index !== nextProps.currentSong.index &&
-    //     prevProps.action === 'next' && prevProps.action === 'next') {
-    //     return false;
-    // }
-    // if (prevProps.currentSong.index !== nextProps.currentSong.index &&
-    //     prevProps.action === 'prev' && prevProps.action === 'prev') {
-    //     return false;
-    // }
-    return false;
+    if (prevProps.currentSong.id !== nextProps.currentSong.id &&
+        prevProps.action === 'next' && prevProps.action === 'next') {
+        return false;
+    }
+    if (prevProps.currentSong.id !== nextProps.currentSong.id &&
+        prevProps.action === 'prev' && prevProps.action === 'prev') {
+        return false;
+    }
+    return true;
 };
 
 export default memo(PlayerControl, areEqual);

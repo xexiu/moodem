@@ -1,15 +1,11 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
-import { HeaderBackButton } from '@react-navigation/stack';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Text, TouchableHighlight, View } from 'react-native';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
-import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
-import Player from '../../../components/common/Player';
 import Song from '../../../components/User/functional-components/Song';
 import SongsList from '../../../components/User/functional-components/SongsList';
 
@@ -20,8 +16,7 @@ const SearchingSongsScreen = (props: any) => {
         user,
         searchedText,
         songsOnGroup,
-        resetLoadingSongs,
-        sendMediaToServer
+        resetLoadingSongs
     } = props.route.params;
     const songsListRef = useRef(null);
 
@@ -85,7 +80,7 @@ const SearchingSongsScreen = (props: any) => {
         }
 
         return () => {
-            console.log('OFF SEARCHED SCREEN');
+            // console.log('OFF SEARCHED SCREEN');
             source.cancel('SearchingSongsScreen Component got unmounted');
             media.socket.off('search-songs-on-youtube');
             media.socket.off('get-songs-from-youtube');
@@ -115,21 +110,25 @@ const SearchingSongsScreen = (props: any) => {
             media={media}
             isPlaying={item.isPlaying}
             currentSong={currentSong}
-            handlePress={handlePress}
             resetLoadingSongs={resetLoadingSongs}
+            handlePress={() => {
+                resetLoadingSongs(true);
+                return handlePress(currentSong);
+            }}
         />);
     };
 
-    console.log('Searchedsongs');
+    // console.log('Searchedsongs');
 
     return (
-        <BodyContainer customBodyContainerStyle={{ paddingTop: 10 }}>
+        <BodyContainer>
             <Icon
                 containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100}}
                 onPress={() => {
                     navigation.setOptions({
                         unmountInactiveRoutes: true
                     });
+                    resetLoadingSongs(false);
                     navigation.goBack();
                 }}
                 name={'arrow-back'}
@@ -149,10 +148,4 @@ const SearchingSongsScreen = (props: any) => {
     );
 };
 
-const areEqual = (prevProps: any, nextProps: any) => {
-    console.log('PREVV SearchingScreen', prevProps, 'NExtt', nextProps);
-
-    return true;
-};
-
-export default memo(SearchingSongsScreen, areEqual);
+export default memo(SearchingSongsScreen);

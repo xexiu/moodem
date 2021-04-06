@@ -5,8 +5,8 @@ import PreLoader from './functional-components/PreLoader';
 
 const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const {
-        currentSong,
-        songsListRef
+        onPressHandler,
+        currentSong
     } = props;
 
     const [isBuffering, setIsBuffering] = useState(true);
@@ -48,16 +48,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
             size={25}
             color='#dd0031'
             onPress={() => {
-                console.log('Pressed song', songsListRef.current.currentSong.id);
-                Object.assign(currentSong, {
-                    isPlaying: !currentSong.isPlaying
-                });
-                songsListRef.current.setAllValues((prevValues: any) => {
-                    return {
-                        ...prevValues,
-                        currentSong
-                    };
-                });
+                return onPressHandler();
             }}
         />
     );

@@ -187,8 +187,8 @@ io.on('connection', (socket) => {
 
     if (data.song) {
       chatRooms[data.chatRoom].songs.push(data.song);
+      chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     }
-    console.log('HEYY SEND MEDIA', chatRooms[data.chatRoom].songs.length);
 
     const { songs } = chatRooms[data.chatRoom];
 
@@ -213,9 +213,8 @@ io.on('connection', (socket) => {
         song.voted_users.push(data.user_id);
         song.votes_count = data.count;
         songs.sort(compareValues('votes_count'));
-        const { voteUp = false } = data;
-        console.log('VOTE', song.id, 'Data Song', data.song.id);
-        io.to(data.chatRoom).emit('get-medias-group', { songs, voteUp });
+        const { isVoting = false } = data;
+        io.to(data.chatRoom).emit('get-medias-group', { songs, isVoting });
         break;
       }
     }
@@ -226,9 +225,8 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
 
     chatRooms[data.chatRoom].songs.splice(data.song.id, 1);
-    console.log('Remove Data Song', data.song.id);
-    console.log('Songs Left', chatRooms[data.chatRoom].songs);
     const { isRemovingSong = false } = data;
+    chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     io.to(data.chatRoom).emit('get-medias-group', { songs: chatRooms[data.chatRoom].songs, isRemovingSong });
   });
 
@@ -256,8 +254,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('chat-messages', (data) => {
+  socket.on('chat-messages', async (data) => {
+    await socket.join(data.chatRoom);
     buildMedia(data);
+    console.log('SEEND MSG FROM SERVER', data);
 
     if (data.msg) {
       chatRooms[data.chatRoom].messages.push(data.msg);
@@ -296,9 +296,9 @@ io.on('connection', (socket) => {
   //   //io.to(socket.room).emit('server-send-message-users-connected-to-room', `${socket.username} has left`);
   // });
 
-  socket.on('disconnect', () => {
-    console.log('DISCONNNECT', socket.id);
-    socket.removeAllListeners();
+  socket.on('disconnect', (reason) => {
+    console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
+    // socket.removeAllListeners();
     delete socket.id;
     delete socket.uid;
   });

@@ -85,7 +85,7 @@ const isNextSongIsPlaying = (prevProps: any, nextProps: any) => {
 };
 
 const isPrevSongIsPlaying= (prevProps: any, nextProps: any) => {
-    return prevProps.currentSong.index !== nextProps.currentSong.index &&
+    return prevProps.currentSong.id !== nextProps.currentSong.id &&
     nextProps.currentSong.isPlaying;
 };
 

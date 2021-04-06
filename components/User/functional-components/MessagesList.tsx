@@ -31,6 +31,7 @@ const MessagesList = (props: any) => {
     };
 
     function renderItem(message: any) {
+        console.log('Render');
         return (
             <CommonFlatListItem
                 contentContainerStyle={{ position: 'relative' }}

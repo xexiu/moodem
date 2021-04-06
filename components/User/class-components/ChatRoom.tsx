@@ -29,11 +29,12 @@ const ChatRoom = (props: any) => {
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
-            media.destroy();
+            // media.destroy();
         };
     }, [messages.length, isFocused, group]);
 
     const getMessage = (msg: never) => {
+        console.log('Heyyy', msg);
         if (msg) {
             setMessages([msg, ...messages]);
         }

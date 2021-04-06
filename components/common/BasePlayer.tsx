@@ -1,31 +1,28 @@
-import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import React, { memo, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
-import PreLoader from '../../components/common/functional-components/PreLoader';
 
 const BasePlayer = (props: any, ref: any) => {
     const {
         repeatRef,
         seekRef,
         playPauseRef,
-        manageTrack,
         currentSong,
         basePlayer,
-        isComingFromSearchingSong,
+        songs,
         songsListRef
     } = props;
+    const isFocused = useIsFocused();
 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        //console.log('UseEffect BasePlayer', isComingFromSearchingSong, 'basePlayer', basePlayer);
         if (songsListRef.current) {
             setIsLoading(false);
         }
-        return () => {
-            //console.log('Off Effect BasePlayer');
-        };
-    }, []);
+        return () => {};
+    }, [isFocused]);
 
     if (isLoading) {
         return null;
@@ -33,6 +30,28 @@ const BasePlayer = (props: any, ref: any) => {
 
     function showPoster() {
         return !currentSong.isPlaying ? currentSong.videoDetails.thumbnails[0].url : undefined;
+    }
+
+    function handleOnEnd() {
+        if (repeatRef.current.shouldRepeat) {
+            basePlayer.current.seek(0);
+            return songsListRef.current.setAllValues((prevValues: any) => {
+                return {
+                    ...prevValues,
+                    currentSong
+                };
+            });
+        }
+        basePlayer.current.dismissFullscreenPlayer();
+        seekRef.current.setTrackCurrentTime(0);
+
+        const nextPrevIndex = songs.length ? currentSong.id + 1 : 0;
+
+        if (songs[nextPrevIndex]) {
+            return songsListRef.current.handlePressItem(songs[nextPrevIndex]);
+        } else {
+            return songsListRef.current.handlePressItem(currentSong);
+        }
     }
 
     return (
@@ -65,18 +84,15 @@ const BasePlayer = (props: any, ref: any) => {
                 playWhenInactive
                 ignoreSilentSwitch='ignore'
                 onBuffer={(buffer) => {
-                    // console.log('IfBuffering', buffer.isBuffering);
                     playPauseRef.current.setIsBuffering(buffer.isBuffering);
                 }}
                 onLoad={({ currentTime }) => {
-                    // console.log('OnLoad');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
                 }}
                 onLoadStart={() => {
-                    // console.log('OnLoadStart');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
@@ -87,19 +103,12 @@ const BasePlayer = (props: any, ref: any) => {
                 }}
                 paused={!currentSong.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
-                    // console.log('onProgress', isPlaying, 'and currentsong isPlaying', currentSong.isPlaying);
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
                 }}
                 onEnd={() => {
-                    console.log('end current song');
-                    if (repeatRef.current.shouldRepeat) {
-                        basePlayer.current.seek(0);
-                    }
-                    basePlayer.current.dismissFullscreenPlayer();
-                    seekRef.current.setTrackCurrentTime(0);
-                    manageTrack(currentSong, repeatRef.current.shouldRepeat);
+                    return handleOnEnd();
                 }}
                 repeat={repeatRef.current.shouldRepeat}
             />
@@ -108,22 +117,10 @@ const BasePlayer = (props: any, ref: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    //console.log('Base Player prev', prevProps, 'Next', nextProps);
     if (nextProps.isComingFromSearchingSong || nextProps.isRemovingSong) {
         return true;
     }
     return false;
-    // if (!prevProps.currentSong.isPlaying && nextProps.currentSong.isPlaying) {
-    //     return false;
-    // } else if (prevProps.currentSong.index !== nextProps.currentSong.index) {
-    //     return false;
-    // } else if (!prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying) {
-    //     return false;
-    // } else if (nextProps.tracks[nextProps.tracks.length - 1].index === nextProps.currentSong.index &&
-    //     !nextProps.repeatRef.current.shouldRepeat) {
-    //     return false;
-    // }
-    // return true;
 };
 
 export default memo(BasePlayer, areEqual);
