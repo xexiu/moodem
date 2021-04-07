@@ -45,7 +45,4 @@ target 'moodem' do
   use_native_modules!
 
 
-  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
-
-
 end
