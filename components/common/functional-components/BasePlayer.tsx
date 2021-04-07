@@ -3,22 +3,22 @@ import React, { memo, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
 
-const BasePlayer = (props: any, ref: any) => {
+const BasePlayer = (props: any) => {
     const {
         repeatRef,
         seekRef,
         playPauseRef,
-        currentSong,
+        item,
         basePlayer,
-        songs,
-        songsListRef
+        onClick,
+        items
     } = props;
     const isFocused = useIsFocused();
 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (songsListRef.current) {
+        if (playPauseRef.current) {
             setIsLoading(false);
         }
         return () => {};
@@ -29,28 +29,26 @@ const BasePlayer = (props: any, ref: any) => {
     }
 
     function showPoster() {
-        return !currentSong.isPlaying ? currentSong.videoDetails.thumbnails[0].url : undefined;
+        return !item.isPlaying ? item.videoDetails.thumbnails[0].url : undefined;
     }
 
     function handleOnEnd() {
         if (repeatRef.current.shouldRepeat) {
-            basePlayer.current.seek(0);
-            return songsListRef.current.setAllValues((prevValues: any) => {
-                return {
-                    ...prevValues,
-                    currentSong
-                };
+            Object.assign(item, {
+                isPlaying: false
             });
+            basePlayer.current.seek(0);
+            return onClick(item.id);
         }
         basePlayer.current.dismissFullscreenPlayer();
         seekRef.current.setTrackCurrentTime(0);
 
-        const nextPrevIndex = songs.length ? currentSong.id + 1 : 0;
+        const nextPrevIndex = items.length ? item.id + 1 : 0;
 
-        if (songs[nextPrevIndex]) {
-            return songsListRef.current.handlePressItem(songs[nextPrevIndex]);
+        if (items[nextPrevIndex]) {
+            return onClick(items[nextPrevIndex].id);
         } else {
-            return songsListRef.current.handlePressItem(currentSong);
+            return onClick(item.id);
         }
     }
 
@@ -59,7 +57,7 @@ const BasePlayer = (props: any, ref: any) => {
             <Video
                 onFullscreenPlayerWillDismiss={() => {
                     basePlayer.current.setNativeProps({
-                        paused: !currentSong.isPlaying
+                        paused: !item.isPlaying
                     });
                 }}
                 poster={showPoster()}
@@ -76,7 +74,7 @@ const BasePlayer = (props: any, ref: any) => {
                     bottom: 0,
                     right: 0
                 }}
-                source={{ uri: currentSong.url }}
+                source={{ uri: item.url }}
                 ref={basePlayer}
                 volume={1.0}
                 muted={false}
@@ -101,7 +99,7 @@ const BasePlayer = (props: any, ref: any) => {
                 onError={(error) => {
                     console.log('Error', error);
                 }}
-                paused={!currentSong.isPlaying}
+                paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);

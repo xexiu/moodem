@@ -2,10 +2,12 @@
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import MemoizedItems from '../../../components/common/functional-components/MemoizedItems';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
+import Player from '../../../components/common/functional-components/Player';
 import Song from '../../../components/User/functional-components/Song';
 import SongsList from '../../../components/User/functional-components/SongsList';
 
@@ -23,8 +25,13 @@ const SearchingSongsScreen = (props: any) => {
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
         songs: [],
+        indexItem: 0,
         isLoading: true
     });
+    const basePlayer = useRef(null);
+    const repeatRef = useRef(null);
+    const playPauseRef = useRef(null);
+    const seekRef = useRef(null);
     const source = axios.CancelToken.source();
     const isFocused = useIsFocused();
 
@@ -87,6 +94,33 @@ const SearchingSongsScreen = (props: any) => {
         };
     }, [isFocused]);
 
+    const sendMediaToServer = async (item: any) => {
+        Object.assign(item, {
+            isMediaOnList: true,
+            isPlaying: false
+        });
+
+        await media.emit('emit-medias-group', { item, chatRoom: group.group_name, isComingFromSearchingSong: true });
+        navigation.navigate(group.group_name);
+    };
+
+    const onClickUseCallBack = useCallback((index: number) => {
+        resetLoadingSongs(true);
+        setAllValues((prev: any) => {
+            if (prev.indexItem === index) {
+                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+            } else {
+                prev.songs[prev.indexItem].isPlaying = false;
+                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+            }
+            return {
+                ...prev,
+                indexItem: index,
+                songs: [...prev.songs]
+            };
+        });
+    }, []);
+
     if (allValues.isLoading) {
         return (
             <PreLoader
@@ -100,25 +134,43 @@ const SearchingSongsScreen = (props: any) => {
         );
     }
 
-    const renderItem = (item: any, handlePress: Function, currentSong: any) => {
-        return (<Song
-            navigation={navigation}
-            group={group}
-            isSearching={true}
-            isComingFromSearchingSong={false}
-            song={item}
-            media={media}
-            isPlaying={item.isPlaying}
-            currentSong={currentSong}
-            resetLoadingSongs={resetLoadingSongs}
-            handlePress={() => {
-                resetLoadingSongs(true);
-                return handlePress(currentSong);
-            }}
-        />);
-    };
+    // const renderItem = (item: any, handlePress: Function, currentSong: any) => {
+    //     return (<Song
+    //         navigation={navigation}
+    //         group={group}
+    //         isSearching={true}
+    //         isComingFromSearchingSong={false}
+    //         song={item}
+    //         media={media}
+    //         isPlaying={item.isPlaying}
+    //         currentSong={currentSong}
+    //         resetLoadingSongs={resetLoadingSongs}
+    //         handlePress={() => {
+    //             resetLoadingSongs(true);
+    //             return handlePress(currentSong);
+    //         }}
+    //     />);
+    // };
 
-    // console.log('Searchedsongs');
+    function renderPlayer() {
+        if (allValues.songs.length) {
+            return (
+                <Player
+                    repeatRef={repeatRef}
+                    playPauseRef={playPauseRef}
+                    songsListRef={songsListRef}
+                    basePlayer={basePlayer}
+                    seekRef={seekRef}
+                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
+                    item={allValues.songs[allValues.indexItem]}
+                    onClick={onClickUseCallBack}
+                />
+            );
+        }
+        return null;
+    }
+
+    console.log('Searchedsongs');
 
     return (
         <BodyContainer>
@@ -136,14 +188,22 @@ const SearchingSongsScreen = (props: any) => {
                 size={25}
                 color='#dd0031'
             />
-            <SongsList
+            { renderPlayer() }
+            <MemoizedItems
+                data={allValues.songs}
+                onClick={onClickUseCallBack}
+                media={media}
+                isSearching={true}
+                sendMediaToServer={sendMediaToServer}
+            />
+            {/* <SongsList
                 ref={songsListRef}
                 isSearching={true}
                 isComingFromSearchingSong={false}
                 isRemovingSong={false}
                 data={allValues}
                 renderItem={renderItem}
-            />
+            /> */}
         </BodyContainer>
     );
 };

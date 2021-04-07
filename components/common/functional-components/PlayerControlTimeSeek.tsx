@@ -2,7 +2,7 @@
 import Slider from '@react-native-community/slider';
 import React, { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
-import { styles } from '../../src/css/styles/playerControlTimeSeek';
+import { styles } from '../../../src/css/styles/playerControlTimeSeek';
 
 function timeFormat(time: number) {
     // Hours, minutes and seconds
@@ -24,13 +24,13 @@ function timeFormat(time: number) {
 
 type MyProps = {
     basePlayer: any,
-    currentSong: any
+    item: any
 };
 
 const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     const {
         basePlayer,
-        currentSong
+        item
     } = props;
 
     const [trackCurrentTime, setTrackCurrentTime] = useState(0);
@@ -54,14 +54,14 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
                 </Text>
                 <View style={{ flex: 1 }} />
                 <Text style={styles.text}>
-                    {timeFormat(Number(currentSong.videoDetails.lengthSeconds) - trackCurrentTime)}
+                    {timeFormat(Number(item.videoDetails.lengthSeconds) - trackCurrentTime)}
                 </Text>
             </View>
             <Slider
-                // disabled={playPauseRef.current.isBuffering}
+                disabled={!item.isPlaying}
                 step={1}
                 ref={sliderRef}
-                maximumValue={Number(currentSong.videoDetails.lengthSeconds)}
+                maximumValue={Number(item.videoDetails.lengthSeconds)}
                 minimumValue={0}
                 value={trackCurrentTime}
                 style={styles.slider}
@@ -80,22 +80,4 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
     );
 });
 
-const isNextSongIsPlaying = (prevProps: any, nextProps: any) => {
-    return prevProps.currentSong.isPlaying === nextProps.currentSong.isPlaying;
-};
-
-const isPrevSongIsPlaying= (prevProps: any, nextProps: any) => {
-    return prevProps.currentSong.id !== nextProps.currentSong.id &&
-    nextProps.currentSong.isPlaying;
-};
-
-const areEqual = (prevProps: any, nextProps: any) => {
-    if (isNextSongIsPlaying(prevProps, nextProps)) {
-        return false;
-    } else if (isPrevSongIsPlaying(prevProps, nextProps)) {
-        return false;
-    }
-    return true;
-};
-
-export default memo(PlayerControlTimeSeek, areEqual);
+export default memo(PlayerControlTimeSeek);

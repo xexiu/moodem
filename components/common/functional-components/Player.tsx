@@ -1,21 +1,23 @@
 import React, { memo } from 'react';
-import BasePlayer from '../common/BasePlayer';
-import PlayerControlPlayPause from '../common/PlayerControlPlayPause';
-import PlayerControlRepeat from '../common/PlayerControlRepeat';
-import PlayerControlTimeSeek from '../common/PlayerControlTimeSeek';
-import { SongInfoContainer } from '../common/SongInfoContainer';
-import SongInfoTitle from '../common/SongInfoTitle';
+import { Icon } from 'react-native-elements';
+import PlayerControlPlayPause from './PlayerControlPlayPause';
+import PlayerControlRepeat from './PlayerControlRepeat';
+import PlayerControlTimeSeek from './PlayerControlTimeSeek';
+import { SongInfoContainer } from './SongInfoContainer';
+import SongInfoTitle from './SongInfoTitle';
+import BasePlayer from './BasePlayer';
 import PlayerControl from './PlayerControl';
 
 const Player = (props: any) => {
     const {
         repeatRef,
         playPauseRef,
-        currentSong,
-        songsListRef,
         basePlayer,
         seekRef,
-        songs
+        items,
+        isPlaying,
+        item,
+        onClick
     } = props;
 
     return (
@@ -35,12 +37,10 @@ const Player = (props: any) => {
                 action='prev'
                 iconName='step-backward'
                 containerStyle={{ position: 'absolute', top: 20, left: 70, zIndex: 100 }}
-                nextPrevSong={currentSong.id - 1}
-                currentSong={currentSong}
-                songs={songs}
-                onPressHandler={(song: any) => {
-                    return songsListRef.current.handlePressItem(song);
-                }}
+                nextPrevSong={item.id - 1}
+                item={item}
+                items={items}
+                onClick={onClick}
             />
             <PlayerControlRepeat
                 ref={repeatRef}
@@ -56,20 +56,18 @@ const Player = (props: any) => {
             />
             <PlayerControlPlayPause
                 ref={playPauseRef}
-                currentSong={currentSong}
-                songsListRef={songsListRef}
-                onPressHandler={(song: any) => {
-                    return songsListRef.current.handlePressItem(currentSong);
-                }}
+                isPlaying={isPlaying}
+                item={item}
+                onClick={onClick}
             />
             <BasePlayer
                 repeatRef={repeatRef}
                 basePlayer={basePlayer}
                 seekRef={seekRef}
                 playPauseRef={playPauseRef}
-                currentSong={currentSong}
-                songs={songs}
-                songsListRef={songsListRef}
+                item={item}
+                onClick={onClick}
+                items={items}
             />
             <PlayerControl
                 iconStyle={{
@@ -86,15 +84,16 @@ const Player = (props: any) => {
                 action='next'
                 iconName='step-forward'
                 containerStyle={{ position: 'absolute', top: 20, right: 70, zIndex: 100 }}
-                nextPrevSong={currentSong.id + 1}
-                currentSong={currentSong}
-                songs={songs}
-                onPressHandler={(song: any) => {
-                    return songsListRef.current.handlePressItem(song);
-                }}
+                nextPrevSong={item.id + 1}
+                item={item}
+                items={items}
+                onClick={onClick}
             />
-            <SongInfoTitle songTitle={currentSong.videoDetails.title} />
-            <PlayerControl
+            <SongInfoTitle songTitle={item.videoDetails.title} />
+            <Icon
+                containerStyle={{ position: 'absolute', top: 70, right: 120, zIndex: 100 }}
+                raised={false}
+                reverse={false}
                 iconStyle={{
                     borderWidth: 1,
                     borderColor: '#eee',
@@ -102,21 +101,16 @@ const Player = (props: any) => {
                     padding: 5,
                     backgroundColor: '#fff'
                 }}
-                iconType='entypo'
-                iconSize={18}
-                action='full-screen'
-                iconName='resize-full-screen'
-                containerStyle={{ position: 'absolute', top: 70, right: 120, zIndex: 100 }}
-                currentSong={currentSong}
-                songs={songs}
-                onPressHandler={() => {
-                    basePlayer.current.presentFullscreenPlayer();
-                }}
+                name='resize-full-screen'
+                type='entypo'
+                color='#dd0031'
+                size={18}
+                onPress={() => basePlayer.current.presentFullscreenPlayer()}
             />
             <PlayerControlTimeSeek
                 ref={seekRef}
                 basePlayer={basePlayer}
-                currentSong={currentSong}
+                item={item}
             />
         </SongInfoContainer>
     );

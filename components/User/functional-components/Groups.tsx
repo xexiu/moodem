@@ -8,7 +8,7 @@ import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { createInvitedGroup, getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
-import BurgerMenuIcon from '../../common/BurgerMenuIcon';
+import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';

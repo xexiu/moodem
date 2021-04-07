@@ -1,9 +1,9 @@
 import NetInfo from '@react-native-community/netinfo';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
-import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
 import { MainContainer } from './components/common/functional-components/MainContainer';
-import { OfflineNotice } from './components/common/OfflineNotice';
+import { OfflineNotice } from './components/common/functional-components/OfflineNotice';
 import { AppContextProvider } from './components/User/functional-components/AppContext';
 import Moodem from './Moodem';
 

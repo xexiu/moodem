@@ -5,12 +5,12 @@ import React, { memo, useContext } from 'react';
 import Login from '../../../components/Guest/class-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
-import MediaItems from '../../../components/User/MediaItems';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import ChatRoom from '../../User/class-components/ChatRoom';
 import { AppContext } from '../../User/functional-components/AppContext';
 import { Groups } from '../../User/functional-components/Groups';
 import { Profile } from '../../User/functional-components/Profile';
+import WelcomeLanding from './WelcomeLanding';
 
 const Drawer = createDrawerNavigator();
 
@@ -51,7 +51,7 @@ const SideBarDrawer = (props: any) => {
             >
                 <Drawer.Screen
                     name={group.group_name}
-                    component={MediaItems}
+                    component={WelcomeLanding}
                     initialParams={{ user, group }}
                 />
                 <Drawer.Screen
@@ -87,7 +87,7 @@ const SideBarDrawer = (props: any) => {
         >
             <Drawer.Screen
                 name='Moodem'
-                component={MediaItems}
+                component={WelcomeLanding}
                 initialParams={{ user, group }}
             />
             <Drawer.Screen

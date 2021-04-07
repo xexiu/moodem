@@ -26,19 +26,6 @@ const CommonFlatList = (props: any) => {
         onViewableItemsChanged,
         style
     } = props;
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        if (data && data.length) {
-            setIsLoading(false);
-        }
-
-        return () => {};
-    }, []);
-
-    if (isLoading) {
-        return null;
-    }
 
     return (
         <FlatList

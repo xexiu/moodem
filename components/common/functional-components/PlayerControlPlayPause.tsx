@@ -1,12 +1,13 @@
 import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
-import PreLoader from './functional-components/PreLoader';
+import PreLoader from './PreLoader';
 
 const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const {
-        onPressHandler,
-        currentSong
+        isPlaying,
+        item,
+        onClick
     } = props;
 
     const [isBuffering, setIsBuffering] = useState(true);
@@ -43,12 +44,12 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
                 width: 50
             }}
             Component={TouchableScale}
-            name={!currentSong.isPlaying ? 'play' : 'pause'}
-            type={!currentSong.isPlaying ? 'foundation' : 'AntDesign'}
+            name={!isPlaying ? 'play' : 'pause'}
+            type={!isPlaying ? 'foundation' : 'AntDesign'}
             size={25}
             color='#dd0031'
             onPress={() => {
-                return onPressHandler();
+                return onClick(item.id);
             }}
         />
     );

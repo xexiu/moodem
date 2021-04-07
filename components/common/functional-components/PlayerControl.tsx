@@ -1,7 +1,23 @@
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
 
-const PlayerControl = (props: any) => {
+type MyProps = {
+    iconReverse: boolean,
+    iconRaised: boolean,
+    iconType: string,
+    iconSize: number,
+    iconName: string,
+    iconStyle: object,
+    iconColor: string,
+    containerStyle: object,
+    nextPrevSong: number,
+    item: any,
+    items: any,
+    onClick: Function,
+    action: string
+};
+
+const PlayerControl = (props: MyProps) => {
     const {
         iconReverse = false,
         iconRaised = false,
@@ -12,38 +28,32 @@ const PlayerControl = (props: any) => {
         iconColor = '#dd0031',
         containerStyle,
         nextPrevSong,
-        songs,
-        onPressHandler,
-        action
+        items,
+        onClick
     } = props;
 
     return (
         <Icon
             containerStyle={[containerStyle]}
-            disabled={action !== 'full-screen' && songs && !songs[nextPrevSong]}
+            disabled={items && !items[nextPrevSong]}
             raised={iconRaised}
             reverse={iconReverse}
             iconStyle={iconStyle}
             name={iconName}
             type={iconType}
-            color={action !== 'full-screen' && songs && !songs[nextPrevSong] ? '#777' : iconColor}
+            color={items && !items[nextPrevSong] ? '#777' : iconColor}
             size={iconSize}
-            onPress={() => {
-                if (songs && songs[nextPrevSong]) {
-                    return onPressHandler(songs[nextPrevSong]);
-                }
-                return onPressHandler();
-            }}
+            onPress={() => onClick(items[nextPrevSong].id)}
         />
     );
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if (prevProps.currentSong.id !== nextProps.currentSong.id &&
+    if (prevProps.item.id !== nextProps.item.id &&
         prevProps.action === 'next' && prevProps.action === 'next') {
         return false;
     }
-    if (prevProps.currentSong.id !== nextProps.currentSong.id &&
+    if (prevProps.item.id !== nextProps.item.id &&
         prevProps.action === 'prev' && prevProps.action === 'prev') {
         return false;
     }

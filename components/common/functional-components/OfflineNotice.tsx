@@ -1,10 +1,10 @@
 /* eslint-disable global-require */
 import React from 'react';
 import { Text, View } from 'react-native';
-import { btnShadow } from '../../src/css/styles/common';
-import { offlineContainer, offlineText } from '../../src/css/styles/offlineNotice';
-import BgImage from './functional-components/BgImage';
-import PreLoader from './functional-components/PreLoader';
+import { btnShadow } from '../../../src/css/styles/common';
+import { offlineContainer, offlineText } from '../../../src/css/styles/offlineNotice';
+import BgImage from './BgImage';
+import PreLoader from './PreLoader';
 
 export const OfflineNotice = () => {
     return (

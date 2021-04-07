@@ -1,30 +1,33 @@
 
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
-import BurgerMenuIcon from '../../common/BurgerMenuIcon';
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import BodyContainer from '../../common/functional-components/BodyContainer';
+import MemoizedItems from '../../common/functional-components/MemoizedItems';
+import Player from '../../common/functional-components/Player';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../../User/functional-components/AppContext';
-import Song from './Song';
-import SongsList from './SongsList';
 
 const Songs = (props: any) => {
-    const { media, navigation } = props;
+    const { media, navigation, isServerError } = props;
     const { group } = useContext(AppContext) as any;
     const [allValues, setAllValues] = useState({
         songs: [],
+        indexItem: 0,
         isLoading: true,
         isComingFromSearchingSong: false,
         isRemovingSong: false,
         isVoting: false
     });
-    const songsListRef = useRef(null);
+    const basePlayer = useRef(null);
+    const repeatRef = useRef(null);
+    const playPauseRef = useRef(null);
+    const seekRef = useRef(null);
 
     useEffect(() => {
         media.on('get-medias-group', (data: any) => {
-            setAllValues(prev => {
+            setAllValues((prev: any) => {
                 return {
                     ...prev,
                     songs: [...data.songs],
@@ -44,7 +47,23 @@ const Songs = (props: any) => {
         };
     }, []);
 
-    if (allValues.isLoading) {
+    const onClickUseCallBack = useCallback((index: number) => {
+        setAllValues((prev: any) => {
+            if (prev.indexItem === index) {
+                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+            } else {
+                prev.songs[prev.indexItem].isPlaying = false;
+                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+            }
+            return {
+                ...prev,
+                indexItem: index,
+                songs: [...prev.songs]
+            };
+        });
+    }, []);
+
+    if (allValues.isLoading && !isServerError) {
         return (
             <PreLoader
                 containerStyle={{
@@ -58,7 +77,7 @@ const Songs = (props: any) => {
     }
 
     const resetLoadingSongs = (loading: boolean) => {
-        setAllValues(prev => {
+        setAllValues((prev: any) => {
             return {
                 ...prev,
                 isLoading: loading
@@ -67,7 +86,7 @@ const Songs = (props: any) => {
     };
 
     const setIsGoingToSearching = (isSearching: boolean) => {
-        setAllValues(prev => {
+        setAllValues((prev: any) => {
             return {
                 ...prev,
                 isSearching
@@ -75,29 +94,28 @@ const Songs = (props: any) => {
         });
     };
 
-    const renderItem = (item: any, handlePress: Function, currentSong: any) => {
-        return (<Song
-            group={group}
-            isSearching={false}
-            isComingFromSearchingSong={allValues.isComingFromSearchingSong}
-            song={item}
-            isPlaying={item.isPlaying}
-            currentSong={currentSong}
-            media={media}
-            handlePress={() => {
-                return handlePress(currentSong);
-            }}
-        />);
-    };
+    console.log('songs updated');
+
+    function renderPlayer() {
+        if (allValues.songs.length) {
+            return (
+                <Player
+                    repeatRef={repeatRef}
+                    playPauseRef={playPauseRef}
+                    basePlayer={basePlayer}
+                    seekRef={seekRef}
+                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
+                    item={allValues.songs[allValues.indexItem]}
+                    onClick={onClickUseCallBack}
+                    items={allValues.songs}
+                />
+            );
+        }
+        return null;
+    }
 
     return (
         <BodyContainer>
-            <BurgerMenuIcon
-                action={() => {
-                    navigation.openDrawer();
-                }}
-            />
-
             <SearchBarAutoComplete
                 group={group}
                 songsOnGroup={allValues.songs}
@@ -106,14 +124,11 @@ const Songs = (props: any) => {
                 resetLoadingSongs={resetLoadingSongs}
                 setIsGoingToSearching={setIsGoingToSearching}
             />
-            <SongsList
-                ref={songsListRef}
-                isSearching={false}
-                isComingFromSearchingSong={allValues.isComingFromSearchingSong}
-                isRemovingSong={allValues.isRemovingSong}
-                isVoting={allValues.isVoting}
-                data={allValues}
-                renderItem={renderItem}
+            { renderPlayer() }
+            <MemoizedItems
+                data={allValues.songs}
+                onClick={onClickUseCallBack}
+                media={media}
             />
         </BodyContainer>
     );
@@ -121,7 +136,12 @@ const Songs = (props: any) => {
 
 Songs.propTypes = {
     media: PropTypes.any,
-    navigation: PropTypes.any
+    navigation: PropTypes.any,
+    isServerError: PropTypes.bool
+};
+
+Songs.defaultProps = {
+    isServerError: false
 };
 
 export default memo(Songs);

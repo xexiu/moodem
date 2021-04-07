@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
-import BurgerMenuIcon from '../../common/BurgerMenuIcon';
+import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { AppContext } from './AppContext';
 import { ProfileAvatar } from './ProfileAvatar';

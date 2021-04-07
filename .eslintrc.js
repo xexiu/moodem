@@ -1,6 +1,7 @@
 {
     "plugins": [
-        "react-hooks"
+        "react-hooks",
+        "plugin:react-hooks/recommended"
     ],
     "rules": {
         "react-hooks/rules-of-hooks": "error",

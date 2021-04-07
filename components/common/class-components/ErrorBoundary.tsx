@@ -1,5 +1,5 @@
 import React, { Component, ComponentType } from 'react';
-import { FallbackComponent, Props as FallbackComponentProps } from '../common/FallbackComponent';
+import { FallbackComponent, Props as FallbackComponentProps } from '../functional-components/FallbackComponent';
 
 type Props = {
     children: Node,
