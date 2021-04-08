@@ -9,17 +9,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>EXApplication.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>EXConstants.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>EXErrorRecovery.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -29,42 +19,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>EXFont.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>EXImageLoader.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>EXKeepAwake.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>EXLinearGradient.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>EXLocation.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>EXPermissions.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>EXSQLite.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>EXSecureStore.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

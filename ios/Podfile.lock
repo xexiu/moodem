@@ -1,39 +1,19 @@
 PODS:
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
-  - EXApplication (2.4.1):
-    - UMCore
   - EXConstants (9.3.5):
     - UMConstantsInterface
-    - UMCore
-  - EXErrorRecovery (1.4.0):
     - UMCore
   - EXFileSystem (9.3.0):
     - UMCore
     - UMFileSystemInterface
-  - EXFont (8.4.0):
-    - UMCore
-    - UMFontInterface
   - EXImageLoader (1.3.0):
     - React-Core
     - UMCore
     - UMImageLoaderInterface
-  - EXKeepAwake (8.4.0):
-    - UMCore
-  - EXLinearGradient (8.4.0):
-    - UMCore
-  - EXLocation (10.0.0):
-    - UMCore
-    - UMPermissionsInterface
-    - UMTaskManagerInterface
   - EXPermissions (10.0.0):
     - UMCore
     - UMPermissionsInterface
-  - EXSecureStore (9.3.0):
-    - UMCore
-  - EXSQLite (8.5.0):
-    - UMCore
-    - UMFileSystemInterface
   - FBLazyVector (0.64.0)
   - FBReactNativeSpec (0.64.0):
     - RCT-Folly (= 2020.01.13.00)
@@ -392,18 +372,10 @@ PODS:
 
 DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - EXApplication (from `../node_modules/expo-application/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
-  - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
-  - EXFont (from `../node_modules/expo-font/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
-  - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
-  - EXLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
-  - EXLocation (from `../node_modules/expo-location/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
-  - EXSecureStore (from `../node_modules/expo-secure-store/ios`)
-  - EXSQLite (from `../node_modules/expo-sqlite/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -469,30 +441,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
-  EXApplication:
-    :path: "../node_modules/expo-application/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
-  EXErrorRecovery:
-    :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: "../node_modules/expo-file-system/ios"
-  EXFont:
-    :path: "../node_modules/expo-font/ios"
   EXImageLoader:
     :path: "../node_modules/expo-image-loader/ios"
-  EXKeepAwake:
-    :path: "../node_modules/expo-keep-awake/ios"
-  EXLinearGradient:
-    :path: "../node_modules/expo-linear-gradient/ios"
-  EXLocation:
-    :path: "../node_modules/expo-location/ios"
   EXPermissions:
     :path: "../node_modules/expo-permissions/ios"
-  EXSecureStore:
-    :path: "../node_modules/expo-secure-store/ios"
-  EXSQLite:
-    :path: "../node_modules/expo-sqlite/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -601,18 +557,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
-  EXApplication: b61d007b4f23ab6aa3d7fe1f517ffd81ed962749
   EXConstants: 5874c3bf65601ce96049412e6e5f43d198c1cdaf
-  EXErrorRecovery: 595048e4ae93a70716b195f2ebc1849d63e0ee3f
   EXFileSystem: 7c4397042d9a3ae47e6c53c0ce0229d4b4204851
-  EXFont: 0f005a50e7d6d30b61e4680069c4025b9feeffe4
   EXImageLoader: b9f8ac1b2d9bcf9d929a6daf487c70b8425ea7d4
-  EXKeepAwake: cb0641970ea9c9a35759a5e3be23eca7e0c83b70
-  EXLinearGradient: e082a9b5ec21532b98acba28ee988f9e70b50119
-  EXLocation: 5689bbf163581eefb70978130611ec25d027bcf3
   EXPermissions: 55cadfd11547c07a5390ba7eea63bd998a71018d
-  EXSecureStore: 7cda998bd7c150b28021cb9c85b0747daa6a5ab5
-  EXSQLite: 98f4062e567a2facc80aa6a064be88fa1a9476b6
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
   FBReactNativeSpec: 88a47638abaff523587405dbea1496f23b75d09d
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
