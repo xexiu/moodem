@@ -26,6 +26,7 @@
     <!-- END OPTIONAL PERMISSIONS -->
 
     <application
+      android:usesCleartextTraffic="true"
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"

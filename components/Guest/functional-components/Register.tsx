@@ -36,7 +36,7 @@ const Register = (props: any) => {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
-    const { register, handleSubmit, errors, setValue } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: yupResolver(schema)
     });
 

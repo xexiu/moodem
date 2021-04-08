@@ -33,7 +33,7 @@ const Login = (props: any) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const [hasForgotPassword, sethasForgotPassword] = useState(false);
-    const { register, handleSubmit, errors, setValue } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: yupResolver(schema)
     });
 
