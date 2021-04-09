@@ -9,15 +9,14 @@ type PropsItem = {
     index: number
 };
 type PropsItems = {
-    data: string[],
+    data: (any | any)[],
     onClick: Function,
     sendMediaToServer?: Function,
-    media?: Function,
+    media?: any,
     isSearching?: boolean
 };
 
 const MemoizedItems = ({ data, onClick, sendMediaToServer, media, isSearching }: PropsItems) => {
-    console.log('rendering items', data);
     const renderItem = ({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}

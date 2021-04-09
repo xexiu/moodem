@@ -134,24 +134,6 @@ const SearchingSongsScreen = (props: any) => {
         );
     }
 
-    // const renderItem = (item: any, handlePress: Function, currentSong: any) => {
-    //     return (<Song
-    //         navigation={navigation}
-    //         group={group}
-    //         isSearching={true}
-    //         isComingFromSearchingSong={false}
-    //         song={item}
-    //         media={media}
-    //         isPlaying={item.isPlaying}
-    //         currentSong={currentSong}
-    //         resetLoadingSongs={resetLoadingSongs}
-    //         handlePress={() => {
-    //             resetLoadingSongs(true);
-    //             return handlePress(currentSong);
-    //         }}
-    //     />);
-    // };
-
     function renderPlayer() {
         if (allValues.songs.length) {
             return (
@@ -177,6 +159,13 @@ const SearchingSongsScreen = (props: any) => {
             <Icon
                 containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100}}
                 onPress={() => {
+                    setAllValues(prevValues => {
+                        return {
+                            ...prevValues,
+                            songs: [],
+                            isLoading: true
+                        };
+                    });
                     navigation.setOptions({
                         unmountInactiveRoutes: true
                     });
@@ -196,14 +185,6 @@ const SearchingSongsScreen = (props: any) => {
                 isSearching={true}
                 sendMediaToServer={sendMediaToServer}
             />
-            {/* <SongsList
-                ref={songsListRef}
-                isSearching={true}
-                isComingFromSearchingSong={false}
-                isRemovingSong={false}
-                data={allValues}
-                renderItem={renderItem}
-            /> */}
         </BodyContainer>
     );
 };

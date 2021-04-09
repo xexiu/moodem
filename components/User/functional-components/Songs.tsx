@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedItems from '../../common/functional-components/MemoizedItems';
 import Player from '../../common/functional-components/Player';
@@ -25,7 +27,7 @@ const Songs = (props: any) => {
     const playPauseRef = useRef(null);
     const seekRef = useRef(null);
 
-    useEffect(() => {
+    function getSongs() {
         media.on('get-medias-group', (data: any) => {
             setAllValues((prev: any) => {
                 return {
@@ -38,22 +40,53 @@ const Songs = (props: any) => {
                 };
             });
         });
+    }
+
+    function getRemovedSong() {
+        media.on('song-removed', (data: any) => {
+            setAllValues(prev => {
+                if (prev.songs[data.song.id]) {
+                    prev.songs.splice(data.song.id, 1);
+                    prev.songs.forEach((song: any, index: number) => Object.assign(song, { id: index }));
+                }
+                return {
+                    ...prev,
+                    songs: [...prev.songs],
+                    indexItem: prev.indexItem >= data.song.id && prev.songs.length ?
+                        prev.indexItem - 1 :
+                        prev.indexItem,
+                    isRemovingSong: data.isRemovingSong || false
+                };
+            });
+
+        });
+    }
+
+    useEffect(() => {
+        getSongs();
+        getRemovedSong();
         media.emit('emit-medias-group', { chatRoom: group.group_name });
 
         return () => {
             // media.destroy();
+            console.log('OFF EFFECTS SONGS');
             media.socket.off('emit-medias-group');
             media.socket.off('get-medias-group');
+            media.socket.off('song-removed');
         };
     }, []);
 
     const onClickUseCallBack = useCallback((index: number) => {
         setAllValues((prev: any) => {
-            if (prev.indexItem === index) {
-                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
-            } else {
-                prev.songs[prev.indexItem].isPlaying = false;
-                prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+            if (prev.songs && prev.songs.length) {
+                if (prev.indexItem === index) {
+                    prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+                } else {
+                    if (prev.songs[prev.indexItem]) {
+                        prev.songs[prev.indexItem].isPlaying = false;
+                    }
+                    prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
+                }
             }
             return {
                 ...prev,
@@ -97,8 +130,11 @@ const Songs = (props: any) => {
     console.log('songs updated');
 
     function renderPlayer() {
-        if (allValues.songs.length) {
-            return (
+        if (allValues.songs && !allValues.songs.length) {
+            return (<MediaListEmpty />);
+        }
+        return (
+            <View style={{ flex: 1 }}>
                 <Player
                     repeatRef={repeatRef}
                     playPauseRef={playPauseRef}
@@ -109,9 +145,13 @@ const Songs = (props: any) => {
                     onClick={onClickUseCallBack}
                     items={allValues.songs}
                 />
-            );
-        }
-        return null;
+                <MemoizedItems
+                    data={allValues.songs}
+                    onClick={onClickUseCallBack}
+                    media={media}
+                />
+            </View>
+        );
     }
 
     return (
@@ -125,11 +165,6 @@ const Songs = (props: any) => {
                 setIsGoingToSearching={setIsGoingToSearching}
             />
             { renderPlayer() }
-            <MemoizedItems
-                data={allValues.songs}
-                onClick={onClickUseCallBack}
-                media={media}
-            />
         </BodyContainer>
     );
 };

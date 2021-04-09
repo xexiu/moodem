@@ -61,7 +61,6 @@ const BasePlayer = (props: any) => {
                     });
                 }}
                 poster={showPoster()}
-                audioOnly={true}
                 posterResizeMode='cover'
                 resizeMode='cover'
                 style={{

@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
+import BasePlayer from './BasePlayer';
+import PlayerControl from './PlayerControl';
 import PlayerControlPlayPause from './PlayerControlPlayPause';
 import PlayerControlRepeat from './PlayerControlRepeat';
 import PlayerControlTimeSeek from './PlayerControlTimeSeek';
 import { SongInfoContainer } from './SongInfoContainer';
 import SongInfoTitle from './SongInfoTitle';
-import BasePlayer from './BasePlayer';
-import PlayerControl from './PlayerControl';
 
 const Player = (props: any) => {
     const {
@@ -36,7 +36,7 @@ const Player = (props: any) => {
                 iconSize={18}
                 action='prev'
                 iconName='step-backward'
-                containerStyle={{ position: 'absolute', top: 20, left: 70, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 20, left: 100, zIndex: 100 }}
                 nextPrevSong={item.id - 1}
                 item={item}
                 items={items}
@@ -52,7 +52,7 @@ const Player = (props: any) => {
                     backgroundColor: '#fff'
                 }}
                 action='shouldRepeat'
-                containerStyle={{ position: 'absolute', top: 70, left: 120, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 70, left: 140, zIndex: 100 }}
             />
             <PlayerControlPlayPause
                 ref={playPauseRef}
@@ -83,7 +83,7 @@ const Player = (props: any) => {
                 iconSize={18}
                 action='next'
                 iconName='step-forward'
-                containerStyle={{ position: 'absolute', top: 20, right: 70, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 20, right: 100, zIndex: 100 }}
                 nextPrevSong={item.id + 1}
                 item={item}
                 items={items}
@@ -91,7 +91,7 @@ const Player = (props: any) => {
             />
             <SongInfoTitle songTitle={item.videoDetails.title} />
             <Icon
-                containerStyle={{ position: 'absolute', top: 70, right: 120, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 70, right: 140, zIndex: 100 }}
                 raised={false}
                 reverse={false}
                 iconStyle={{

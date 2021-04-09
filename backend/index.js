@@ -57,7 +57,7 @@ async function getSongs(videoId) {
 
   if (audioMem && Object.keys(audioMem).length) {
     Object.assign(audioMem, {
-      isCachedInMemory: true,
+      isCachedInMemory: true
     });
     return audioMem;
   }
@@ -65,9 +65,9 @@ async function getSongs(videoId) {
   const info = await ytdl.getInfo(videoId, {
     requestOptions: {
       headers: {
-        Cookie: COOKIE,
-      },
-    },
+        Cookie: COOKIE
+      }
+    }
   });
   // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
   const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
@@ -96,7 +96,7 @@ function buildMedia(data) {
     Object.assign(chatRooms[data.chatRoom], {
       songs: [],
       messages: [],
-      uids: new Set([]),
+      uids: new Set([])
     });
   }
 }
@@ -134,8 +134,8 @@ function setExtraAttrs(audios, uid) {
       voted_users: [],
       boosted_users: [],
       user: {
-        uid,
-      },
+        uid
+      }
     });
     audiosArr.push(track);
   });
@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
     }
 
     io.to(data.chatRoom).emit('get-songs-from-youtube', {
-      songs: setExtraAttrs(audios, socket.uid),
+      songs: setExtraAttrs(audios, socket.uid)
     });
   });
 
@@ -176,7 +176,7 @@ io.on('connection', (socket) => {
 
     io.to(data.chatRoom).emit('get-message-welcomeMsg',
       {
-        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`,
+        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`
       });
   });
 
@@ -227,7 +227,7 @@ io.on('connection', (socket) => {
     chatRooms[data.chatRoom].songs.splice(data.song.id, 1);
     const { isRemovingSong = false } = data;
     chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
-    io.to(data.chatRoom).emit('get-medias-group', { songs: chatRooms[data.chatRoom].songs, isRemovingSong });
+    io.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
   });
 
   socket.on('get-connected-users', async (data) => {
