@@ -8,8 +8,6 @@ import BodyContainer from '../../../components/common/functional-components/Body
 import MemoizedItems from '../../../components/common/functional-components/MemoizedItems';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import Player from '../../../components/common/functional-components/Player';
-import Song from '../../../components/User/functional-components/Song';
-import SongsList from '../../../components/User/functional-components/SongsList';
 
 const SearchingSongsScreen = (props: any) => {
     const {
