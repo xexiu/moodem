@@ -15,7 +15,7 @@ import CommonTopSearchBar from '../../common/functional-components/CommonTopSear
 import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
-import { AppContext } from '../../User/functional-components/AppContext';
+import { AppContext } from '../store-context/AppContext';
 import { NewGroup } from './NewGroup';
 
 const Form = form.Form;

@@ -13,8 +13,9 @@ type MyProps = {
     nextPrevSong: number,
     item: any,
     items: any,
-    onClick: Function,
-    action: string
+    handleOnClickItem: Function,
+    action: string,
+    isRemovingSong: boolean
 };
 
 const PlayerControl = (props: MyProps) => {
@@ -29,7 +30,8 @@ const PlayerControl = (props: MyProps) => {
         containerStyle,
         nextPrevSong,
         items,
-        onClick
+        handleOnClickItem,
+        isRemovingSong
     } = props;
 
     return (
@@ -43,7 +45,7 @@ const PlayerControl = (props: MyProps) => {
             type={iconType}
             color={items && !items[nextPrevSong] ? '#777' : iconColor}
             size={iconSize}
-            onPress={() => onClick(items[nextPrevSong].id)}
+            onPress={() => handleOnClickItem(items[nextPrevSong].id)}
         />
     );
 };
@@ -57,7 +59,10 @@ const areEqual = (prevProps: any, nextProps: any) => {
         prevProps.action === 'prev' && prevProps.action === 'prev') {
         return false;
     }
+    if (nextProps.isRemovingSong) {
+        return false;
+    }
     return true;
 };
 
-export default memo(PlayerControl, areEqual);
+export default memo(PlayerControl);

@@ -114,7 +114,8 @@ const compareValues = (key) => (a, b) => {
 
   if (varA > varB) {
     return -1;
-  } if (varA < varB) {
+  }
+  if (varA < varB) {
     return 1;
   }
 
@@ -185,8 +186,8 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    if (data.item) {
-      chatRooms[data.chatRoom].songs.push(data.item);
+    if (data.song) {
+      chatRooms[data.chatRoom].songs.push(data.song);
       chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     }
 
@@ -194,9 +195,9 @@ io.on('connection', (socket) => {
 
     songs.sort(compareValues('votes_count'));
 
-    const { isComingFromSearchingSong = false } = data;
+    const { isAddingSong = false } = data;
 
-    io.to(data.chatRoom).emit('get-medias-group', { songs, isComingFromSearchingSong });
+    io.to(data.chatRoom).emit('get-medias-group', { songs, isAddingSong });
   });
 
   // Vote
@@ -214,13 +215,13 @@ io.on('connection', (socket) => {
         song.votes_count = data.count;
         songs.sort(compareValues('votes_count'));
         const { isVoting = false } = data;
-        io.to(data.chatRoom).emit('get-medias-group', { songs, isVoting });
+        io.to(data.chatRoom).emit('song-voted', { song, isVoting });
         break;
       }
     }
   });
 
-  // Remove
+  // Remove song
   socket.on('send-message-remove-song', async (data) => {
     await socket.join(data.chatRoom);
 
@@ -228,6 +229,18 @@ io.on('connection', (socket) => {
     const { isRemovingSong = false } = data;
     chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     io.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
+  });
+
+  // Add song
+  socket.on('send-message-add-song', async (data) => {
+    await socket.join(data.chatRoom);
+
+    if (data.song) {
+      chatRooms[data.chatRoom].songs.push(data.song);
+      chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
+    }
+    const { isAddingSong = false } = data;
+    io.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
   });
 
   socket.on('get-connected-users', async (data) => {

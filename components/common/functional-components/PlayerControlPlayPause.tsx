@@ -7,7 +7,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const {
         isPlaying,
         item,
-        onClick
+        handleOnClickItem
     } = props;
 
     const [isBuffering, setIsBuffering] = useState(true);
@@ -49,7 +49,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
             size={25}
             color='#dd0031'
             onPress={() => {
-                return onClick(item.id);
+                return handleOnClickItem(item.id);
             }}
         />
     );

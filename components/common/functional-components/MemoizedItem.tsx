@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import { MediaButtons } from '../../../components/User/functional-components/MediaButtons';
 import CommonFlatListItem from './CommonFlatListItem';
 
-const MemoizedItem = ({ index, item, isPlaying, onClick, sendMediaToServer, media, isSearching }: any) => {
-    console.log(`rendering item, selected=${isPlaying}`);
+const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions }: any) => {
+    console.log(`rendering item, selected=${String(item.isPlaying)} ${String(index)}`);
 
     return (
         <CommonFlatListItem
@@ -12,7 +12,7 @@ const MemoizedItem = ({ index, item, isPlaying, onClick, sendMediaToServer, medi
             title={item.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}`}
+            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')} ${String(item.isPlaying)} ${String(index)}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {
@@ -21,28 +21,20 @@ const MemoizedItem = ({ index, item, isPlaying, onClick, sendMediaToServer, medi
                         item.videoDetails.thumbnails[0].url
                 }
             }}
-            buttonGroup={
-                isSearching ? [] :
-                    MediaButtons(item, media, ['votes', 'remove'])
-            }
-            chevron={!item.isMediaOnList && {
-                name: 'arrow-right',
-                type: 'AntDesign',
-                color: '#dd0031',
-                onPress: () => {
-                    return sendMediaToServer(item);
-                },
-                size: 10,
-                raised: true,
-                iconStyle: { fontSize: 27, alignSelf: 'center' }
-            }}
-            action={() => onClick(index)}
+            buttonGroup={MediaButtons(item, media, buttonActions)}
+            action={() => handleOnClickItem(index)}
         />
     );
 };
 
 function areEqual(prevItem: any, nextItem: any) {
-    return prevItem.id === nextItem.id && prevItem.isPlaying === nextItem.isPlaying;
+    if (nextItem.isRemovingSong !== prevItem.isRemovingSong) {
+        return false;
+    }
+    if (nextItem.isAddingSong !== prevItem.isAddingSong) {
+        return false;
+    }
+    return (prevItem.index === nextItem.index && prevItem.isPlaying === nextItem.isPlaying);
 }
 
-export default memo(MemoizedItem, areEqual);
+export default memo(MemoizedItem);

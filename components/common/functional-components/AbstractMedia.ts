@@ -4,7 +4,7 @@ import { useContext, useRef } from 'react';
 import io from 'socket.io-client';
 import { SC_KEYS } from '../../../src/js/Utils/constants/api/apiKeys';
 import { IP, socketConf } from '../../../src/js/Utils/Helpers/services/socket';
-import { AppContext } from '../../User/functional-components/AppContext';
+import { AppContext } from '../../User/store-context/AppContext';
 
 const LIMIT_RESULT_SEARCHED_SONGS = 20;
 const SOUNDCLOUD_API = 'https://api.soundcloud.com/tracks/';

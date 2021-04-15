@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { Icon } from 'react-native-elements';
 import BasePlayer from './BasePlayer';
 import PlayerControl from './PlayerControl';
@@ -10,15 +10,17 @@ import SongInfoTitle from './SongInfoTitle';
 
 const Player = (props: any) => {
     const {
-        repeatRef,
-        playPauseRef,
-        basePlayer,
-        seekRef,
         items,
         isPlaying,
         item,
-        onClick
+        handleOnClickItem,
+        isRemovingSong
     } = props;
+
+    const repeatRef = useRef(null);
+    const playPauseRef = useRef(null);
+    const basePlayer = useRef(null);
+    const seekRef = useRef(null);
 
     return (
         <SongInfoContainer>
@@ -40,7 +42,8 @@ const Player = (props: any) => {
                 nextPrevSong={item.id - 1}
                 item={item}
                 items={items}
-                onClick={onClick}
+                handleOnClickItem={handleOnClickItem}
+                isRemovingSong={isRemovingSong}
             />
             <PlayerControlRepeat
                 ref={repeatRef}
@@ -58,7 +61,7 @@ const Player = (props: any) => {
                 ref={playPauseRef}
                 isPlaying={isPlaying}
                 item={item}
-                onClick={onClick}
+                handleOnClickItem={handleOnClickItem}
             />
             <BasePlayer
                 repeatRef={repeatRef}
@@ -66,8 +69,9 @@ const Player = (props: any) => {
                 seekRef={seekRef}
                 playPauseRef={playPauseRef}
                 item={item}
-                onClick={onClick}
+                handleOnClickItem={handleOnClickItem}
                 items={items}
+                isRemovingSong={isRemovingSong}
             />
             <PlayerControl
                 iconStyle={{
@@ -87,7 +91,7 @@ const Player = (props: any) => {
                 nextPrevSong={item.id + 1}
                 item={item}
                 items={items}
-                onClick={onClick}
+                handleOnClickItem={handleOnClickItem}
             />
             <SongInfoTitle songTitle={item.videoDetails.title} />
             <Icon
@@ -116,11 +120,4 @@ const Player = (props: any) => {
     );
 };
 
-const areEqual = (prevProps: any, nextProps: any) => {
-    if (nextProps.isSearching && !nextProps.isComingFromSearchingSong) {
-        return true;
-    }
-    return false;
-};
-
-export default memo(Player, areEqual);
+export default memo(Player);

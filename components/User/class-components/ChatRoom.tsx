@@ -7,11 +7,11 @@ import { AbstractMedia } from '../../common/functional-components/AbstractMedia'
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CommonTextInput from '../../common/functional-components/CommonTextInput';
-import { AppContext } from '../functional-components/AppContext';
 import HeaderChat from '../functional-components/HeaderChat';
 import HeaderChatTitle from '../functional-components/HeaderChatTitle';
 import HeaderChatUsers from '../functional-components/HeaderChatUsers';
 import MessagesList from '../functional-components/MessagesList';
+import { AppContext } from '../store-context/AppContext';
 
 const ChatRoom = (props: any) => {
     const { user, group }: any = useContext(AppContext);

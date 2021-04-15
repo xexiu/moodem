@@ -2,36 +2,55 @@
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import Toast, { DURATION } from 'react-native-easy-toast';
-import { AppContext } from '../../User/functional-components/AppContext';
 import Songs from '../../User/functional-components/Songs';
+import { AppContext } from '../../User/store-context/AppContext';
+import { SongsContextProvider } from '../../User/store-context/SongsContext';
 import { AbstractMedia } from './AbstractMedia';
 import BodyContainer from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
+
+let hasError = false;
 
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
     const { group }: any = useContext(AppContext);
     const media = new AbstractMedia();
     const toastRef = useRef(null);
-    const [isServerError, setIsServerError] = useState(false);
+    const [allValues, setAllValues] = useState({
+        isServerError: false,
+        isLoading: true
+    });
+
+    function resetLoading(serverError: boolean, loading: boolean) {
+        setAllValues((prev: any) => {
+            return {
+                ...prev,
+                isServerError: serverError,
+                isLoading: loading
+            };
+        });
+    }
 
     useEffect(() => {
         media.on('disconnect', () => {
-            console.log('Client HAS DISCONNECTEd');
+            console.log('Client HAS DISCONNECTED');
         });
         media.on('connect', () => {
-            console.log('Connected');
             media.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
         });
 
         media.on('get-message-welcomeMsg', (data: any) => {
-            toastRef.current.show(data.welcomeMsg, 1000, setIsServerError(false));
+            toastRef.current.show(data.welcomeMsg, 1000, () => resetLoading(false, false));
         });
 
         media.on('connect_error', (error: any) => {
             // Send error to sentry server to catch downsides of server
             console.log('Error connecting to server: ', error);
-            toastRef.current.show('Connecting to server...', DURATION.FOREVER, setIsServerError(true));
+            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
+            if (!hasError) {
+                hasError = true;
+                resetLoading(true, false);
+            }
         });
         return () => {
             // media.destroy();
@@ -41,18 +60,29 @@ const WelcomeLanding = (props: any) => {
         };
     }, [group.group_name]);
 
+    if (allValues.isLoading) {
+        return (
+            <Toast
+                position={allValues.isServerError ? 'bottom' : 'top'}
+                ref={toastRef}
+            />
+        );
+    }
+
     return (
         <BodyContainer>
             <BurgerMenuIcon
                 action={() => navigation.openDrawer()}
             />
-            <Songs
-                media={media}
-                navigation={navigation}
-                isServerError={isServerError}
-            />
+            <SongsContextProvider>
+                <Songs
+                    media={media}
+                    navigation={navigation}
+                    isServerError={allValues.isServerError}
+                />
+            </SongsContextProvider>
             <Toast
-                position={isServerError ? 'bottom' : 'top'}
+                position={allValues.isServerError ? 'bottom' : 'top'}
                 ref={toastRef}
             />
         </BodyContainer>

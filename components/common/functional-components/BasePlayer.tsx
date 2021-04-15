@@ -1,7 +1,8 @@
 import { useIsFocused } from '@react-navigation/native';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
+import { SongsContext } from '../../User/store-context/SongsContext';
 
 const BasePlayer = (props: any) => {
     const {
@@ -10,11 +11,11 @@ const BasePlayer = (props: any) => {
         playPauseRef,
         item,
         basePlayer,
-        onClick,
+        handleOnClickItem,
         items
     } = props;
     const isFocused = useIsFocused();
-
+    const { dispatch } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -38,7 +39,7 @@ const BasePlayer = (props: any) => {
                 isPlaying: false
             });
             basePlayer.current.seek(0);
-            return onClick(item.id);
+            return handleOnClickItem(item.id);
         }
         basePlayer.current.dismissFullscreenPlayer();
         seekRef.current.setTrackCurrentTime(0);
@@ -46,9 +47,9 @@ const BasePlayer = (props: any) => {
         const nextPrevIndex = items.length ? item.id + 1 : 0;
 
         if (items[nextPrevIndex]) {
-            return onClick(items[nextPrevIndex].id);
+            return handleOnClickItem(items[nextPrevIndex].id);
         } else {
-            return onClick(item.id);
+            dispatch({ type: 'update_song_reset'});
         }
     }
 
@@ -104,9 +105,7 @@ const BasePlayer = (props: any) => {
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
                 }}
-                onEnd={() => {
-                    return handleOnEnd();
-                }}
+                onEnd={handleOnEnd}
                 repeat={repeatRef.current.shouldRepeat}
             />
         </View>
@@ -114,10 +113,10 @@ const BasePlayer = (props: any) => {
 };
 
 const areEqual = (prevProps: any, nextProps: any) => {
-    if (nextProps.isComingFromSearchingSong || nextProps.isRemovingSong) {
+    if (nextProps.isAddingSong || nextProps.isRemovingSong) {
         return true;
     }
     return false;
 };
 
-export default memo(BasePlayer, areEqual);
+export default memo(BasePlayer);

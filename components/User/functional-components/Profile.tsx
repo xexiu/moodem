@@ -5,7 +5,7 @@ import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';
-import { AppContext } from './AppContext';
+import { AppContext } from '../store-context/AppContext';
 import { ProfileAvatar } from './ProfileAvatar';
 import { VerifyEmailMsg } from './VerifyEmailMsg';
 

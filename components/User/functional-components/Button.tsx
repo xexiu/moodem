@@ -19,6 +19,8 @@ const Button = (props: any) => {
         iconType,
         iconSize = 12,
         iconColor,
+        iconStyle,
+        iconReverse = true,
         disabled,
         containerStyle
     } = props;
@@ -34,7 +36,8 @@ const Button = (props: any) => {
             }}
         >
             <Icon
-                reverse
+                iconStyle={iconStyle}
+                reverse={iconReverse}
                 containerStyle={containerStyle}
                 disabled={disabled}
                 name={iconName}
@@ -43,7 +46,7 @@ const Button = (props: any) => {
                 color={disabled ? '#999' : iconColor}
                 onPress={action}
             />
-            <Text style={{marginRight: 4, marginLeft: 4, fontWeight: '600' }}>{formatCash(text)}</Text>
+            <Text style={{ marginRight: 4, marginLeft: 4, fontWeight: '600' }}>{formatCash(text)}</Text>
         </TouchableOpacity>
     );
 };
@@ -59,9 +62,9 @@ Button.propTypes = {
     iconType: PropTypes.string,
     iconColor: PropTypes.string,
     iconSize: PropTypes.number,
+    iconReverse: PropTypes.bool,
+    iconStyle: PropTypes.object,
     action: PropTypes.func
 };
 
-memo(Button);
-
-export { Button };
+export default memo(Button);

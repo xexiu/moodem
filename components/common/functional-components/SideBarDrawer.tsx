@@ -7,7 +7,7 @@ import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
 import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import ChatRoom from '../../User/class-components/ChatRoom';
-import { AppContext } from '../../User/functional-components/AppContext';
+import { AppContext } from '../../User/store-context/AppContext';
 import { Groups } from '../../User/functional-components/Groups';
 import { Profile } from '../../User/functional-components/Profile';
 import WelcomeLanding from './WelcomeLanding';

@@ -10,22 +10,26 @@ type PropsItem = {
 };
 type PropsItems = {
     data: (any | any)[],
-    onClick: Function,
-    sendMediaToServer?: Function,
+    handleOnClickItem: Function,
     media?: any,
-    isSearching?: boolean
+    buttonActions: string[],
+    isRemovingSong?: boolean,
+    isAddingSong?: boolean
 };
 
-const MemoizedItems = ({ data, onClick, sendMediaToServer, media, isSearching }: PropsItems) => {
+const MemoizedItems = ({ data, handleOnClickItem, media, buttonActions, isRemovingSong, isAddingSong }: PropsItems) => {
+    console.log('Render flatList songs');
     const renderItem = ({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
             item={item}
             isPlaying={item.isPlaying}
-            onClick={onClick}
-            sendMediaToServer={sendMediaToServer}
+            handleOnClickItem={handleOnClickItem}
             media={media}
-            isSearching={isSearching}
+            data={data}
+            buttonActions={buttonActions}
+            isRemovingSong={isRemovingSong}
+            isAddingSong={isAddingSong}
         />
     );
     return (
@@ -33,7 +37,6 @@ const MemoizedItems = ({ data, onClick, sendMediaToServer, media, isSearching }:
             emptyListComponent={<MediaListEmpty />}
             data={data}
             action={renderItem}
-            extraData={data}
             keyExtractor={(item) => item.id.toString()}
         />
     );
@@ -41,7 +44,7 @@ const MemoizedItems = ({ data, onClick, sendMediaToServer, media, isSearching }:
 
 MemoizedItems.propTypes = {
     data: PropTypes.array.isRequired,
-    onClick: PropTypes.func.isRequired
+    handleOnClickItem: PropTypes.func.isRequired
 };
 
 MemoizedItems.defaultProps = {

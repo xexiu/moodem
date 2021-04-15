@@ -4,30 +4,24 @@ type Props = {
     children: React.ReactNode;
 };
 
-type Context = {
+type State = {
     user: null;
     groups: string[];
     group: object;
 };
 
-const initialContext: Context = {
+const initialValue: State = {
     user: null,
     groups: [],
     group: {
         group_name: 'Moodem',
         group_id: 0
-    },
-    searchedSongs: {
-        userId: {
-            bla: [],
-            test: []
-        }
     }
 };
 
 const reducer = (state: any, action: any) => {
     if (action.type === 'reset') {
-        return initialContext;
+        return initialValue;
     }
 
     const result = { ...state };
@@ -35,13 +29,13 @@ const reducer = (state: any, action: any) => {
     return result;
 };
 
-const AppContext = createContext<Context>(initialContext);
+const AppContext = createContext<State>(initialValue);
 
 const AppContextProvider = ({ children }: Props): JSX.Element => {
-    const [state, dispatch] = useReducer(reducer, initialContext);
+    const [state, dispatch] = useReducer(reducer, initialValue);
 
     return (
-        <AppContext.Provider value={{ ...initialContext, ...state, dispatch }}>
+        <AppContext.Provider value={{ ...initialValue, ...state, dispatch }}>
             {children}
         </AppContext.Provider>
     );

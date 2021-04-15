@@ -92,16 +92,6 @@ const SearchingSongsScreen = (props: any) => {
         };
     }, [isFocused]);
 
-    const sendMediaToServer = async (item: any) => {
-        Object.assign(item, {
-            isMediaOnList: true,
-            isPlaying: false
-        });
-
-        await media.emit('emit-medias-group', { item, chatRoom: group.group_name, isComingFromSearchingSong: true });
-        navigation.navigate(group.group_name);
-    };
-
     const onClickUseCallBack = useCallback((index: number) => {
         resetLoadingSongs(true);
         setAllValues((prev: any) => {
@@ -178,10 +168,9 @@ const SearchingSongsScreen = (props: any) => {
             { renderPlayer() }
             <MemoizedItems
                 data={allValues.songs}
-                onClick={onClickUseCallBack}
+                handleOnClickItem={onClickUseCallBack}
                 media={media}
-                isSearching={true}
-                sendMediaToServer={sendMediaToServer}
+                buttonActions={['send_media']}
             />
         </BodyContainer>
     );

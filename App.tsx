@@ -4,7 +4,7 @@ import { LogBox } from 'react-native';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
 import { MainContainer } from './components/common/functional-components/MainContainer';
 import { OfflineNotice } from './components/common/functional-components/OfflineNotice';
-import { AppContextProvider } from './components/User/functional-components/AppContext';
+import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
 
 const controller = new AbortController();
@@ -14,17 +14,19 @@ LogBox.ignoreLogs([
     'Constants.manifest is null because the embedded app.config could not be read.'
 ]);
 
-interface App {
+type AppProps = {
     netinfoUnsubscribe: any;
     handleConnectivityChange: (param: any) => void;
     hasInternetConnection: boolean;
-}
+};
 
-interface State {
+type AppState = {
     hasInternetConnection: boolean;
-}
+};
 
-class App extends PureComponent<App, State> {
+class App extends PureComponent<AppProps, AppState> {
+    public netinfoUnsubscribe: any;
+
     constructor(props: any) {
         super(props);
         this.state = {

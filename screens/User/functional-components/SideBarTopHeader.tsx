@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 import { SideBarTopAvatar } from '../../../components/common/functional-components/SideBarTopAvatar';
-import { AppContext } from '../../../components/User/functional-components/AppContext';
+import { AppContext } from '../../../components/User/store-context/AppContext';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 
 export const SideBarTopHeader = (props: any) => {
