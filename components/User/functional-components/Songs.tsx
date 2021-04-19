@@ -15,10 +15,7 @@ const Songs = (props: any) => {
     const {
         dispatch,
         songs,
-        isLoading,
-        isRemovingSong,
-        isAddingSong,
-        isVoting
+        isLoading
     } = useContext(SongsContext) as any;
 
     function getSongs() {
@@ -28,9 +25,6 @@ const Songs = (props: any) => {
                 value: {
                     songs: [...data.songs],
                     isLoading: false,
-                    isAddingSong: false,
-                    isRemovingSong: false,
-                    isVoting: false,
                     removedSong: null,
                     votedSong: null,
                     addedSong: null
@@ -46,9 +40,6 @@ const Songs = (props: any) => {
                 value: {
                     addedSong: data.song,
                     isLoading: false,
-                    isAddingSong: data.isAddingSong,
-                    isRemovingSong: false,
-                    isVoting: false,
                     removedSong: null,
                     votedSong: null
                 }
@@ -63,9 +54,6 @@ const Songs = (props: any) => {
                 value: {
                     removedSong: data.song,
                     isLoading: false,
-                    isRemovingSong: data.isRemovingSong,
-                    isAddingSong: false,
-                    isVoting: false,
                     votedSong: null,
                     addedSong: null
                 }
@@ -80,9 +68,6 @@ const Songs = (props: any) => {
                 value: {
                     votedSong: data.song,
                     isLoading: false,
-                    isVoting: data.isVoting,
-                    isAddingSong: false,
-                    isRemovingSong: false,
                     addedSong: null,
                     removedSong: null
                 }
@@ -91,11 +76,13 @@ const Songs = (props: any) => {
     }
 
     useEffect(() => {
-        getSongs();
-        getSong();
-        getRemovedSong();
-        getVotedSong();
-        media.emit('emit-medias-group', { chatRoom: group.group_name });
+        if (!isServerError) {
+            getSongs();
+            getSong();
+            getRemovedSong();
+            getVotedSong();
+            media.emit('emit-medias-group', { chatRoom: group.group_name });
+        }
 
         return () => {
             console.log('OFF EFFECTS SONGS');
@@ -126,9 +113,6 @@ const Songs = (props: any) => {
                 data={songs}
                 media={media}
                 buttonActions={['votes', 'remove']}
-                isRemovingSong={isRemovingSong}
-                isAddingSong={isAddingSong}
-                isVoting={isVoting}
             />
         );
     }

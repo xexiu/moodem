@@ -36,6 +36,7 @@ const WelcomeLanding = (props: any) => {
             console.log('Client HAS DISCONNECTED');
         });
         media.on('connect', () => {
+            console.log('Connected BACK');
             media.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
         });
 

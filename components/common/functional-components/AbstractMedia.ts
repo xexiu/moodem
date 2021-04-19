@@ -43,7 +43,7 @@ export class AbstractMedia {
         const { user, group } = useContext(AppContext);
         this.user = user;
         this.group = group;
-        this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) });
+        this.socket = io(IP, { ...socketConf, query: getUserUidAndName(user) } as any);
         this.playerRef = useRef(null);
         this.searchRef = useRef();
         this.flatListRef = useRef(null);

@@ -195,9 +195,7 @@ io.on('connection', (socket) => {
 
     songs.sort(compareValues('votes_count'));
 
-    const { isAddingSong = false } = data;
-
-    io.to(data.chatRoom).emit('get-medias-group', { songs, isAddingSong });
+    io.to(data.chatRoom).emit('get-medias-group', { songs });
   });
 
   // Vote
@@ -209,16 +207,16 @@ io.on('connection', (socket) => {
 
     for (let i = 0; i < songs.length; i++) {
       const song = songs[i];
-      const userHasVoted = song.voted_users.some((id) => id === data.user_id);
+      const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
       if (song.id === data.song.id && !userHasVoted) {
+        data.song.voted_users.push(data.user_id);
         song.voted_users.push(data.user_id);
         song.votes_count = data.count;
-        songs.sort(compareValues('votes_count'));
-        const { isVoting = false } = data;
-        io.to(data.chatRoom).emit('song-voted', { song, isVoting });
+        data.song.votes_count = data.count;
         break;
       }
     }
+    io.to(data.chatRoom).emit('song-voted', { song: data.song });
   });
 
   // Remove song
@@ -226,9 +224,8 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
 
     chatRooms[data.chatRoom].songs.splice(data.song.id, 1);
-    const { isRemovingSong = false } = data;
     chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
-    io.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
+    io.to(data.chatRoom).emit('song-removed', { song: data.song });
   });
 
   // Add song

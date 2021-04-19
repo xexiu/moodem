@@ -13,12 +13,13 @@ type PropsItems = {
     handleOnClickItem: Function,
     media?: any,
     buttonActions: string[],
-    isRemovingSong?: boolean,
-    isAddingSong?: boolean
+    removedSong?: any,
+    votedSong?: any,
+    optionalCallback?: Function
 };
 
-const MemoizedItems = ({ data, handleOnClickItem, media, buttonActions, isRemovingSong, isAddingSong }: PropsItems) => {
-    console.log('Render flatList songs');
+// tslint:disable-next-line:max-line-length
+const MemoizedItems = ({ data, handleOnClickItem, media, buttonActions, optionalCallback, removedSong, votedSong }: PropsItems) => {
     const renderItem = ({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
@@ -26,10 +27,10 @@ const MemoizedItems = ({ data, handleOnClickItem, media, buttonActions, isRemovi
             isPlaying={item.isPlaying}
             handleOnClickItem={handleOnClickItem}
             media={media}
-            data={data}
             buttonActions={buttonActions}
-            isRemovingSong={isRemovingSong}
-            isAddingSong={isAddingSong}
+            removedSong={removedSong}
+            votedSong={votedSong}
+            optionalCallback={optionalCallback}
         />
     );
     return (

@@ -2,9 +2,7 @@ import React, { memo } from 'react';
 import { MediaButtons } from '../../../components/User/functional-components/MediaButtons';
 import CommonFlatListItem from './CommonFlatListItem';
 
-const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions }: any) => {
-    console.log(`rendering item, selected=${String(item.isPlaying)} ${String(index)}`);
-
+const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions, optionalCallback }: any) => {
     return (
         <CommonFlatListItem
             bottomDivider
@@ -12,7 +10,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions }: 
             title={item.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')} ${String(item.isPlaying)} ${String(index)}`}
+            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {
@@ -21,20 +19,37 @@ const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions }: 
                         item.videoDetails.thumbnails[0].url
                 }
             }}
-            buttonGroup={MediaButtons(item, media, buttonActions)}
+            buttonGroup={MediaButtons(item, media, buttonActions, optionalCallback)}
             action={() => handleOnClickItem(index)}
         />
     );
 };
 
-function areEqual(prevItem: any, nextItem: any) {
-    if (nextItem.isRemovingSong !== prevItem.isRemovingSong) {
+function areEqual(prevProps: any, nextProps: any) {
+    const { isPlaying, votedSong, removedSong } = nextProps;
+    const { isPlaying: prevIsPlaying, removedSong: prevSongRemoved } = prevProps;
+
+    const isPlayingEqual = isPlaying === prevIsPlaying;
+    const isRemovedSongEqual = removedSong && removedSong.id === prevSongRemoved && prevSongRemoved.id;
+
+    if (removedSong) {
+        if (!prevSongRemoved) {
+            if (removedSong.id < nextProps.index) {
+                return false;
+            }
+            return nextProps.index !== removedSong.id;
+        }
+        return isRemovedSongEqual;
+    }
+
+    if (votedSong && !removedSong) {
         return false;
     }
-    if (nextItem.isAddingSong !== prevItem.isAddingSong) {
-        return false;
+
+    if (isPlaying || prevIsPlaying) {
+        return isPlayingEqual;
     }
-    return (prevItem.index === nextItem.index && prevItem.isPlaying === nextItem.isPlaying);
+    return true;
 }
 
-export default memo(MemoizedItem);
+export default memo(MemoizedItem, areEqual);

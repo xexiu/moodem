@@ -13,8 +13,7 @@ const Player = (props: any) => {
         items,
         isPlaying,
         item,
-        handleOnClickItem,
-        isRemovingSong
+        handleOnClickItem
     } = props;
 
     const repeatRef = useRef(null);
@@ -43,7 +42,6 @@ const Player = (props: any) => {
                 item={item}
                 items={items}
                 handleOnClickItem={handleOnClickItem}
-                isRemovingSong={isRemovingSong}
             />
             <PlayerControlRepeat
                 ref={repeatRef}
@@ -71,7 +69,6 @@ const Player = (props: any) => {
                 item={item}
                 handleOnClickItem={handleOnClickItem}
                 items={items}
-                isRemovingSong={isRemovingSong}
             />
             <PlayerControl
                 iconStyle={{

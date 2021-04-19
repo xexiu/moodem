@@ -8,12 +8,12 @@ function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         mediaUser.uid === groupOwner);
 }
 
-export const MediaButtons = (song: any, media: any, actions: string[]) => {
+export const MediaButtons = (song: any, media: any, actions: string[], optionalCallback: Function) => {
     const navigation = useNavigation();
     const mediaMap = {
         send_media: {
             containerStyle: {
-                marginBottom: 10,
+                marginBottom: 35,
                 marginRight: -10
             },
             iconName: 'arrow-right',
@@ -33,7 +33,7 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
                     chatRoom: media.group.group_name,
                     isAddingSong: true
                 });
-                navigation.navigate(media.group.group_name);
+                optionalCallback && optionalCallback();
             }
         },
         votes: {
@@ -45,15 +45,12 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
-                const userHasVoted = song.voted_users.some((id: string) => id === media.user.uid);
-                if (!userHasVoted) {
-                    song.voted_users.push(media.user.uid);
-                    song.votes_count = ++song.votes_count;
-                }
                 await media.emit('send-message-vote-up',
                     {
                         song,
                         chatRoom: media.group.group_name,
+                        user_id: media.user.uid,
+                        count: ++song.votes_count,
                         isVoting: true
                     });
             }
@@ -65,15 +62,11 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
             iconColor: '#dd0031',
             iconSize: 9,
             action: async () => {
-                Object.assign(song, {
-                    isPlaying: false
-                });
                 await media.emit('send-message-remove-song',
                     {
                         song,
                         chatRoom: media.group.group_name,
-                        user_id: media.user.uid,
-                        isRemovingSong: true
+                        user_id: media.user.uid
                     });
             },
             isOwner: hasSongOrGroupOwner(media.user, song.user, media.group.user_owner_id)
@@ -124,7 +117,7 @@ export const MediaButtons = (song: any, media: any, actions: string[]) => {
     function createButton(action: string) {
         return {
             element: () => (
-                <View style={{ marginBottom: 5, position: 'relative' }}>
+                <View style={{ marginBottom: -5, position: 'relative' }}>
                     <Button
                         containerStyle={getAction(action, 'containerStyle')}
                         disabled={getAction(action, 'disabled')}

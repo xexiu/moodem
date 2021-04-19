@@ -65,14 +65,12 @@ const BasePlayer = (props: any) => {
                 posterResizeMode='cover'
                 resizeMode='cover'
                 style={{
-                    borderRadius: 50, borderWidth: 1, borderColor: '#ddd',
+                    backgroundColor: 'transparent',
+                    borderRadius: 50,
+                    borderWidth: 1,
+                    borderColor: '#ddd',
                     width: 100,
-                    height: 100,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0
+                    height: 100
                 }}
                 source={{ uri: item.url }}
                 ref={basePlayer}
@@ -110,13 +108,6 @@ const BasePlayer = (props: any) => {
             />
         </View>
     );
-};
-
-const areEqual = (prevProps: any, nextProps: any) => {
-    if (nextProps.isAddingSong || nextProps.isRemovingSong) {
-        return true;
-    }
-    return false;
 };
 
 export default memo(BasePlayer);

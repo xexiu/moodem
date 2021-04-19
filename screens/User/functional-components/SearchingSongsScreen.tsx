@@ -85,7 +85,6 @@ const SearchingSongsScreen = (props: any) => {
         }
 
         return () => {
-            // console.log('OFF SEARCHED SCREEN');
             source.cancel('SearchingSongsScreen Component got unmounted');
             media.socket.off('search-songs-on-youtube');
             media.socket.off('get-songs-from-youtube');
@@ -108,6 +107,21 @@ const SearchingSongsScreen = (props: any) => {
             };
         });
     }, []);
+
+    function resetSearchingScreen(){
+        setAllValues(prevValues => {
+            return {
+                ...prevValues,
+                songs: [],
+                isLoading: true
+            };
+        });
+        navigation.setOptions({
+            unmountInactiveRoutes: true
+        });
+        //resetLoadingSongs(false);
+        navigation.navigate(media.group.group_name);
+    }
 
     if (allValues.isLoading) {
         return (
@@ -146,20 +160,7 @@ const SearchingSongsScreen = (props: any) => {
         <BodyContainer>
             <Icon
                 containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100}}
-                onPress={() => {
-                    setAllValues(prevValues => {
-                        return {
-                            ...prevValues,
-                            songs: [],
-                            isLoading: true
-                        };
-                    });
-                    navigation.setOptions({
-                        unmountInactiveRoutes: true
-                    });
-                    resetLoadingSongs(false);
-                    navigation.goBack();
-                }}
+                onPress={resetSearchingScreen}
                 name={'arrow-back'}
                 type={'Ionicons'}
                 size={25}
@@ -171,6 +172,7 @@ const SearchingSongsScreen = (props: any) => {
                 handleOnClickItem={onClickUseCallBack}
                 media={media}
                 buttonActions={['send_media']}
+                optionalCallback={resetSearchingScreen}
             />
         </BodyContainer>
     );

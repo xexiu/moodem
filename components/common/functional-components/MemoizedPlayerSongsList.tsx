@@ -8,13 +8,15 @@ const MemoizedPlayerSongsList = (props: any) => {
     const {
         data,
         media,
-        buttonActions,
-        isRemovingSong,
-        isAddingSong,
-        isVoting
+        buttonActions
     } = props;
 
-    const { dispatch, indexItem } = useContext(SongsContext) as any;
+    const {
+        dispatch,
+        indexItem,
+        removedSong,
+        votedSong
+    } = useContext(SongsContext) as any;
 
     const handleOnClickItem = (index: number) => {
         dispatch({
@@ -33,15 +35,14 @@ const MemoizedPlayerSongsList = (props: any) => {
                 item={data[indexItem]}
                 handleOnClickItem={handleOnClickItem}
                 items={data}
-                isRemovingSong={isRemovingSong}
             />
             <MemoizedItems
                 data={data}
                 handleOnClickItem={handleOnClickItem}
                 media={media}
                 buttonActions={buttonActions}
-                isRemovingSong={isRemovingSong}
-                isAddingSong={isAddingSong}
+                removedSong={removedSong}
+                votedSong={votedSong}
             />
         </View>
     );

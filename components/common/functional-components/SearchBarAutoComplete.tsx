@@ -1,9 +1,7 @@
-import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { View } from 'react-native';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
-import { SongsContext } from '../../User/store-context/SongsContext';
 import SuggestionList from './SuggestionList';
 
 const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
@@ -16,25 +14,10 @@ const SearchBarAutoComplete = (props: any) => {
         navigation,
         media
     } = props;
-    const isFocused = useIsFocused();
     const [suggestions, setSuggestions] = useState([]);
     const source = axios.CancelToken.source();
-    const { dispatch, songs, isLoading } = useContext(SongsContext) as any;
-
-    // useEffect(() => {
-    //     if (isFocused) {
-    //         setSuggestions([]);
-    //     }
-
-    //     return () => {
-    //         source.cancel('SearchBarAutoComplete Component got unmounted');
-    //     };
-    // }, [isFocused]);
 
     function handleEndSearch(searchedText: string) {
-        navigation.setOptions({
-            unmountInactiveRoutes: true
-        });
         source.cancel('SearchBarAutoComplete Component got unmounted');
         setSuggestions([]);
         navigation.navigate('SearchingSongsScreen', {
@@ -70,8 +53,6 @@ const SearchBarAutoComplete = (props: any) => {
             throw error;
         }
     }
-
-    console.log('SearchBarAutocomplete');
 
     return (
         <View

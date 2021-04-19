@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, memo, useImperativeHandle, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
 import PreLoader from './PreLoader';
@@ -55,12 +55,4 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     );
 });
 
-const areEqual = (prevProps: any, nextProps: any) => {
-    if (nextProps.isRemovingSong || nextProps.isComingFromSearchingSong) {
-        return true;
-    }
-
-    return false; // toogle play/pause icon
-};
-
-export default memo(PlayerControlPlayPause, areEqual);
+export default memo(PlayerControlPlayPause);
