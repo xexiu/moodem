@@ -1,4 +1,5 @@
 import React, { createContext, useReducer } from 'react';
+import { LayoutAnimation, Platform, UIManager } from 'react-native';
 
 type videoDetailsType = {
     videoId: string
@@ -41,6 +42,30 @@ const initialValue: Context = {
     votedSong: null
 };
 
+if (Platform.OS === 'android') {
+    UIManager.setLayoutAnimationEnabledExperimental &&
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const CustomLayoutLinear = {
+    duration: 300,
+    create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity
+    },
+    update: {
+        type: LayoutAnimation.Types.easeInEaseOut
+    },
+    delete: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity
+    }
+};
+
+const setAnimation = () => {
+    LayoutAnimation.configureNext(CustomLayoutLinear);
+};
+
 const compareValues = (key: string) => (a: any, b: any) => {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
         return 0;
@@ -71,13 +96,14 @@ function removeSong(result: Context, action: actionType) {
         if (songs[removedSong.id].id === removedSong.id) {
             songs.splice(removedSong.id, 1);
             songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+            setAnimation();
         }
 
         if (song.isPlaying) {
             Object.assign(result, {
                 indexItem: indexItem === songs.length ?
-                0 :
-                song.id
+                    0 :
+                    song.id
             });
         } else {
             Object.assign(result, {
@@ -96,7 +122,9 @@ function addSong(result: Context, action: actionType) {
 
     if (addedSong) {
         songs.push(addedSong);
+        songs.sort(compareValues('votes_count'));
         songs.forEach((song, index) => Object.assign(song, { id: index }));
+        setAnimation();
     }
 
     return { ...result, ...value };
@@ -148,6 +176,7 @@ function setVotedSong(result: Context, action: actionType) {
 
         songs.sort(compareValues('votes_count'));
         songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+        setAnimation();
 
         if (song.isPlaying) {
             Object.assign(result, {

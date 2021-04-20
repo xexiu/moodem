@@ -175,7 +175,7 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    io.to(data.chatRoom).emit('get-message-welcomeMsg',
+    io.to(socket.id).emit('get-message-welcomeMsg',
       {
         welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`
       });

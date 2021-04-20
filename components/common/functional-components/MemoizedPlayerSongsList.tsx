@@ -1,4 +1,4 @@
-import React, { memo, useContext } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import { View } from 'react-native';
 import { SongsContext } from '../../User/store-context/SongsContext';
 import MemoizedItems from './MemoizedItems';
@@ -18,15 +18,18 @@ const MemoizedPlayerSongsList = (props: any) => {
         votedSong
     } = useContext(SongsContext) as any;
 
-    const handleOnClickItem = (index: number) => {
+    const handleOnClickItem = useCallback((index: number) => {
         dispatch({
             type: 'update_song_click_play_pause',
             value: {
                 indexItem: index,
-                index
+                index,
+                removedSong: null,
+                votedSong: null,
+                addedSong: null
             }
         });
-    };
+    }, []);
 
     return (
         <View style={{ flex: 1 }}>

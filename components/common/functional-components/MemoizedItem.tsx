@@ -30,26 +30,20 @@ function areEqual(prevProps: any, nextProps: any) {
     const { isPlaying: prevIsPlaying, removedSong: prevSongRemoved } = prevProps;
 
     const isPlayingEqual = isPlaying === prevIsPlaying;
-    const isRemovedSongEqual = removedSong && removedSong.id === prevSongRemoved && prevSongRemoved.id;
 
     if (removedSong) {
-        if (!prevSongRemoved) {
-            if (removedSong.id < nextProps.index) {
-                return false;
-            }
-            return nextProps.index !== removedSong.id;
+        if (nextProps.index === removedSong.id) {
+            return false;
+        } else if (nextProps.index > removedSong.id) {
+            return false;
         }
-        return isRemovedSongEqual;
     }
 
     if (votedSong && !removedSong) {
         return false;
     }
 
-    if (isPlaying || prevIsPlaying) {
-        return isPlayingEqual;
-    }
-    return true;
+    return nextProps.index === prevProps.index && isPlayingEqual;
 }
 
 export default memo(MemoizedItem, areEqual);
