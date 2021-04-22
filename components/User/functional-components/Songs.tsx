@@ -113,10 +113,11 @@ const Songs = (props: any) => {
     }
 
     if (isSongError) {
-        removeItem(group.group_name);
-        media.socket.off('emit-medias-group');
-        media.socket.off('get-medias-group');
-        convertVideosIdsCommon();
+        removeItem(group.group_name, () => {
+            media.socket.off('emit-medias-group');
+            media.socket.off('get-medias-group');
+            convertVideosIdsCommon();
+        });
     }
 
     if (isServerError && isLoading) {
@@ -177,8 +178,6 @@ const Songs = (props: any) => {
             />
         );
     }
-
-    console.log('Songs');
 
     return (
         <BodyContainer>

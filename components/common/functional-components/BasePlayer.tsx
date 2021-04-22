@@ -86,14 +86,12 @@ const BasePlayer = (props: any) => {
                     playPauseRef.current.setIsBuffering(buffer.isBuffering);
                 }}
                 onLoad={({ currentTime }) => {
-                    console.log('Onload');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
                 }}
                 onLoadStart={() => {
-                    console.log('OnloadStart');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
