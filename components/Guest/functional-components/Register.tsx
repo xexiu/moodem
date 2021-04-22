@@ -4,11 +4,16 @@ import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, Text, TextInput, View } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as yup from 'yup';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { registerText } from '../../../src/css/styles/register';
 import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
-import { registerNewUser, saveNewUserOnDB, updateProfile } from '../../../src/js/Utils/Helpers/actions/registerHandler';
+import {
+    registerNewUser,
+    saveNewUserOnDB,
+    updateProfile
+} from '../../../src/js/Utils/Helpers/actions/registerHandlers';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
@@ -74,13 +79,7 @@ const Register = (props: any) => {
                                 setIsLoading(false);
                                 setIsRegisterModalVisible(false);
                                 setErrorText('');
-                                saveNewUserOnDB(auth, dataInput);
-                                navigation.navigate('Drawer', {
-                                    screen: 'Moodem',
-                                    params: {
-                                        user
-                                    }
-                                });
+                                saveNewUserOnDB(user, dataInput);
                             }).catch((err: any) => {
                                 setIsLoading(false);
                                 setErrorText(err);
@@ -208,6 +207,9 @@ const Register = (props: any) => {
                     }
                 </CustomModal>
             </View>
+            <KeyboardSpacer
+                topSpacing={0}
+            />
         </ScrollView>
     );
 };

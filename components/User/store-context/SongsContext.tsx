@@ -1,17 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import { LayoutAnimation, Platform, UIManager } from 'react-native';
-
-type videoDetailsType = {
-    videoId: string
-};
-
-type songType = {
-    id?: number,
-    voted_users?: (string)[],
-    votes_count?: number,
-    isPlaying?: boolean,
-    videoDetails: videoDetailsType
-};
+import { songType } from '../../../src/js/typings/songs';
 
 type actionType = {
     value: Context,
@@ -25,6 +14,7 @@ type Props = {
 type Context = {
     songs: (songType | songType)[];
     isLoading: boolean;
+    isSongError: boolean;
     removedSong: songType,
     addedSong: songType,
     votedSong: songType,
@@ -37,6 +27,7 @@ const initialValue: Context = {
     indexItem: 0,
     index: 0,
     isLoading: true,
+    isSongError: false,
     removedSong: null,
     addedSong: null,
     votedSong: null
@@ -198,6 +189,9 @@ const MAP_ACTIONS = {
 } as any;
 
 function updateState(result: Context, action: actionType) {
+    if (action.type === 'song_error') {
+        return { ...result, ...action.value };
+    }
     return MAP_ACTIONS[action.type](result, action) || result;
 }
 
@@ -210,10 +204,10 @@ const reducer = (state: any, action: any) => {
 const SongsContext = createContext<Context>(initialValue);
 
 const SongsContextProvider = ({ children }: Props): JSX.Element => {
-    const [state, dispatch] = useReducer(reducer, initialValue);
+    const [state, dispatchContextSongs] = useReducer(reducer, initialValue);
 
     return (
-        <SongsContext.Provider value={{ ...initialValue, ...state, dispatch }}>
+        <SongsContext.Provider value={{ ...initialValue, ...state, dispatchContextSongs }}>
             {children}
         </SongsContext.Provider>
     );

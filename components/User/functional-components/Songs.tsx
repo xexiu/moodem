@@ -2,6 +2,8 @@
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect } from 'react';
 import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
+import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { convertVideoIdsFromDB, setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
 import PreLoader from '../../common/functional-components/PreLoader';
@@ -10,32 +12,67 @@ import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 
 const Songs = (props: any) => {
-    const { media, navigation, isServerError } = props;
-    const { group } = useContext(AppContext) as any;
+    const { media, navigation } = props;
+    const { group, user, isServerError } = useContext(AppContext) as any;
     const {
-        dispatch,
+        dispatchContextSongs,
         songs,
-        isLoading
+        isLoading,
+        isSongError
     } = useContext(SongsContext) as any;
+
+    function dispatchCommon(data: any) {
+        return dispatchContextSongs({
+            type: 'set_songs',
+            value: {
+                songs: [...data],
+                isLoading: false,
+                isSongError: false,
+                removedSong: null,
+                votedSong: null,
+                addedSong: null
+            }
+        });
+    }
+
+    async function convertVideosIdsCommon() {
+        const audios = await convertVideoIdsFromDB(group.group_videoIds);
+        setExtraAttrs(audios, user.uid);
+        saveOnLocalStorage(group.group_name, audios).then(() => dispatchCommon(audios));
+    }
 
     function getSongs() {
         media.on('get-medias-group', (data: any) => {
-            dispatch({
-                type: 'set_songs',
-                value: {
-                    songs: [...data.songs],
-                    isLoading: false,
-                    removedSong: null,
-                    votedSong: null,
-                    addedSong: null
-                }
-            });
+            const savedItem = loadFromLocalStorage(group.group_name);
+
+            savedItem
+                .then((_data: any) => {
+                    switch (_data) {
+                    case 'NotFoundError':
+                        if (!data.songs.length) {
+                            if (group.group_videoIds && group.group_videoIds.length) {
+                                media.socket.off('emit-medias-group');
+                                media.socket.off('get-medias-group');
+                                return convertVideosIdsCommon();
+                            }
+                        }
+                        return dispatchCommon(data.songs);
+                    case 'ExpiredError':
+                        return '';
+                    default:
+                        if (!data.songs.length) {
+                            media.emit('emit-set-medias', { chatRoom: group.group_name, songs: _data });
+                            removeItem(group.group_name);
+                        }
+                        return dispatchCommon(_data);
+                    }
+                });
         });
     }
 
     function getSong() {
         media.on('song-added', (data: any) => {
-            dispatch({
+            dispatchContextSongs({
                 type: 'set_added_song',
                 value: {
                     addedSong: data.song,
@@ -49,7 +86,7 @@ const Songs = (props: any) => {
 
     function getRemovedSong() {
         media.on('song-removed', (data: any) => {
-            dispatch({
+            dispatchContextSongs({
                 type: 'set_removed_song',
                 value: {
                     removedSong: data.song,
@@ -63,7 +100,7 @@ const Songs = (props: any) => {
 
     function getVotedSong() {
         media.on('song-voted', (data: any) => {
-            dispatch({
+            dispatchContextSongs({
                 type: 'set_voted_song',
                 value: {
                     votedSong: data.song,
@@ -72,6 +109,30 @@ const Songs = (props: any) => {
                     removedSong: null
                 }
             });
+        });
+    }
+
+    if (isSongError) {
+        removeItem(group.group_name);
+        media.socket.off('emit-medias-group');
+        media.socket.off('get-medias-group');
+        convertVideosIdsCommon();
+    }
+
+    if (isServerError && isLoading) {
+        const savedItem = loadFromLocalStorage(group.group_name);
+
+        savedItem.then((data) => {
+            switch (data) {
+            case 'NotFoundError':
+                media.socket.off('emit-medias-group');
+                media.socket.off('get-medias-group');
+                return convertVideosIdsCommon();
+            case 'ExpiredError':
+                return '';
+            default:
+                return dispatchCommon(data);
+            }
         });
     }
 
@@ -91,7 +152,7 @@ const Songs = (props: any) => {
         };
     }, []);
 
-    if (isLoading && !isServerError) {
+    if (isLoading) {
         return (
             <PreLoader
                 containerStyle={{
@@ -112,19 +173,24 @@ const Songs = (props: any) => {
             <MemoizedPlayerSongsList
                 data={songs}
                 media={media}
-                buttonActions={['votes', 'remove']}
+                buttonActions={isServerError ? [] : ['votes', 'remove']}
             />
         );
     }
 
+    console.log('Songs');
+
     return (
         <BodyContainer>
-            <SearchBarAutoComplete
-                group={group}
-                songsOnGroup={songs}
-                navigation={navigation}
-                media={media}
-            />
+            {
+                !isServerError &&
+                <SearchBarAutoComplete
+                    group={group}
+                    songsOnGroup={songs}
+                    navigation={navigation}
+                    media={media}
+                />
+            }
             { renderPlayer()}
         </BodyContainer>
     );

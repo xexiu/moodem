@@ -6,8 +6,9 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import MemoizedItems from '../../../components/common/functional-components/MemoizedItems';
-import PreLoader from '../../../components/common/functional-components/PreLoader';
 import Player from '../../../components/common/functional-components/Player';
+import PreLoader from '../../../components/common/functional-components/PreLoader';
+import { checkIfAlreadyOnList, cleanImageParams } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const SearchingSongsScreen = (props: any) => {
     const {
@@ -73,7 +74,7 @@ const SearchingSongsScreen = (props: any) => {
 
             media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
             media.on('get-songs-from-youtube', (data: any) => {
-                media.checkIfAlreadyOnList(songsOnGroup, data.songs);
+                checkIfAlreadyOnList(songsOnGroup, data.songs);
                 setAllValues(prevValues => {
                     return {
                         ...prevValues,
@@ -108,7 +109,7 @@ const SearchingSongsScreen = (props: any) => {
         });
     }, []);
 
-    function resetSearchingScreen(){
+    function resetSearchingScreen() {
         setAllValues(prevValues => {
             return {
                 ...prevValues,
@@ -119,7 +120,7 @@ const SearchingSongsScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
-        //resetLoadingSongs(false);
+        // resetLoadingSongs(false);
         navigation.navigate(media.group.group_name);
     }
 

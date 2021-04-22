@@ -1,4 +1,5 @@
 import React, { createContext, useReducer } from 'react';
+import { groupType } from '../../../src/js/typings/group';
 
 type Props = {
     children: React.ReactNode;
@@ -7,7 +8,9 @@ type Props = {
 type State = {
     user: null;
     groups: string[];
-    group: object;
+    group: groupType;
+    isServerError: boolean;
+    isLoading: boolean;
 };
 
 const initialValue: State = {
@@ -15,16 +18,26 @@ const initialValue: State = {
     groups: [],
     group: {
         group_name: 'Moodem',
-        group_id: 0
-    }
+        group_id: 0,
+        group_videoIds: []
+    },
+    isServerError: false,
+    isLoading: true
 };
 
 const reducer = (state: any, action: any) => {
+    const result = { ...state };
+
     if (action.type === 'reset') {
         return initialValue;
+    } else if (action.type === 'server_error') {
+        return { ...result, ...action.value };
+    } else if (action.type === 'user_groups') {
+        return { ...result, ...action.value };
+    } else if (action.type === 'guest') {
+        return { ...result, ...action.value };
     }
 
-    const result = { ...state };
     result[action.type] = action.value;
     return result;
 };
@@ -32,10 +45,10 @@ const reducer = (state: any, action: any) => {
 const AppContext = createContext<State>(initialValue);
 
 const AppContextProvider = ({ children }: Props): JSX.Element => {
-    const [state, dispatch] = useReducer(reducer, initialValue);
+    const [state, dispatchContextApp] = useReducer(reducer, initialValue);
 
     return (
-        <AppContext.Provider value={{ ...initialValue, ...state, dispatch }}>
+        <AppContext.Provider value={{ ...initialValue, ...state, dispatchContextApp }}>
             {children}
         </AppContext.Provider>
     );

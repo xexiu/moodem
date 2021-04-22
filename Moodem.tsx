@@ -18,28 +18,46 @@ const Stack = createStackNavigator();
 const controller = new AbortController();
 
 const App = function Moodem() {
-    const { dispatch, user }: any = useContext(AppContext);
-    const [isLoading, setIsLoading] = useState(true);
-    const [progressLoading, setProgressLoading] = useState(0.1);
+    const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
-        setProgressLoading(0.3);
-
         firebase.auth().onAuthStateChanged((_user: any) => {
             if (_user) {
-                setProgressLoading(0.7);
                 getGroups(_user)
-                    .then((dbGroups) => {
-                        dispatch({ type: 'groups', value: dbGroups as string[] });
-                        setProgressLoading(1);
-                        setIsLoading(false);
+                    .then((groups: any) => {
+                        return dispatchContextApp({
+                            type: 'user_groups',
+                            value: {
+                                user: _user,
+                                groups: groups.length === 1 ? [] : groups,
+                                group: groups[0],
+                                isLoading: false,
+                                isServerError
+                            }
+                        });
                     })
-                    .catch(err => console.log('Something happened', err));
-                dispatch({ type: 'user', value: _user });
+                    .catch(err => {
+                        console.log('Something happened', err);
+                        // send error to sentry
+                        return dispatchContextApp({
+                            type: 'error_user', value: {
+                                error: err,
+                                user: null,
+                                isLoading: true,
+                                isServerError
+                            }
+                        });
+                    });
             } else {
-                setIsLoading(false);
+                return dispatchContextApp({
+                    type: 'guest', value: {
+                        user: null,
+                        isLoading: false,
+                        isServerError
+                    }
+                });
             }
         });
 
@@ -59,7 +77,6 @@ const App = function Moodem() {
                         alignItems: 'center'
                     }}
                     size={50}
-                    progress={progressLoading}
                 />
             </View>
         );

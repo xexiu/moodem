@@ -12,14 +12,14 @@ const MemoizedPlayerSongsList = (props: any) => {
     } = props;
 
     const {
-        dispatch,
+        dispatchContextSongs,
         indexItem,
         removedSong,
         votedSong
     } = useContext(SongsContext) as any;
 
     const handleOnClickItem = useCallback((index: number) => {
-        dispatch({
+        dispatchContextSongs({
             type: 'update_song_click_play_pause',
             value: {
                 indexItem: index,

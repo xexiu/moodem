@@ -181,6 +181,18 @@ io.on('connection', (socket) => {
       });
   });
 
+  // set Medias
+
+  socket.on('emit-set-medias', async (data) => {
+    await socket.join(data.chatRoom);
+    buildMedia(data);
+
+    if (data.songs) {
+      chatRooms[data.chatRoom].songs = data.songs;
+      chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
+    }
+  });
+
   // Media
   socket.on('emit-medias-group', async (data) => {
     await socket.join(data.chatRoom);

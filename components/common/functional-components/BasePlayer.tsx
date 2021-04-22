@@ -2,6 +2,9 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
+import { saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { convertVideoIdsFromDB, setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
+import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
 const BasePlayer = (props: any) => {
@@ -15,14 +18,14 @@ const BasePlayer = (props: any) => {
         items
     } = props;
     const isFocused = useIsFocused();
-    const { dispatch } = useContext(SongsContext) as any;
+    const { dispatchContextSongs, isSongError } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (playPauseRef.current) {
             setIsLoading(false);
         }
-        return () => {};
+        return () => { };
     }, [isFocused]);
 
     if (isLoading) {
@@ -49,7 +52,7 @@ const BasePlayer = (props: any) => {
         if (items[nextPrevIndex]) {
             return handleOnClickItem(items[nextPrevIndex].id);
         } else {
-            dispatch({ type: 'update_song_reset'});
+            dispatchContextSongs({ type: 'update_song_reset' });
         }
     }
 
@@ -83,19 +86,29 @@ const BasePlayer = (props: any) => {
                     playPauseRef.current.setIsBuffering(buffer.isBuffering);
                 }}
                 onLoad={({ currentTime }) => {
+                    console.log('Onload');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
                 }}
                 onLoadStart={() => {
+                    console.log('OnloadStart');
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
                 }}
-                onError={(error) => {
-                    console.log('Error', error);
+                onError={async (error) => {
+                    // Send Error to Sentry
+                    if (!isSongError) {
+                        dispatchContextSongs({
+                            type: 'song_error',
+                            value: {
+                                isSongError: true
+                            }
+                        });
+                    }
                 }}
                 paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {

@@ -21,11 +21,13 @@ export function updateProfile(auth: any, data: any) {
         .catch((error: any) => console.warn(`Code: ${error}`));
 }
 
-export function saveNewUserOnDB(auth: any, validate: any) {
-    return firebase.database().ref(`Users/${auth.user.uid}`).set({
-        user_id: auth.user.uid,
+export function saveNewUserOnDB(user: any, validate: any) {
+    return firebase.database().ref(`Users/${user.uid}`).set({
+        user_id: user.uid,
         email: validate.email,
-        password: validate.password
+        password: validate.password,
+        displayName: user.displayName,
+        photoURL: user.photoURL
     }).catch((error: any) => {
         console.warn('error saving on DB ', error);
     });

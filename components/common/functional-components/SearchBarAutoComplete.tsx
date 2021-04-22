@@ -54,6 +54,8 @@ const SearchBarAutoComplete = (props: any) => {
         }
     }
 
+    console.log('SearchBarAutomcpleye', songsOnGroup);
+
     return (
         <View
             style={suggestions && suggestions.length && {

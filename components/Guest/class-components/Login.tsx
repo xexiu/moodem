@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as yup from 'yup';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import { CustomModal } from '../../../components/common/functional-components/CustomModal';
@@ -11,7 +12,7 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import { ResetPassword } from '../../../components/Guest/class-components/ResetPassword';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
-import { loginHandler } from '../../../src/js/Utils/Helpers/actions/loginHandler';
+import { loginHandler } from '../../../src/js/Utils/Helpers/actions/loginHandlers';
 
 const commonInputStyles = {
     height: 30,
@@ -56,17 +57,11 @@ const Login = (props: any) => {
 
         if (dataInput) {
             loginHandler(dataInput)
-                .then(user => {
+                .then(() => {
                     setIsLoading(false);
                     setIsLoginModalVisible(false);
                     setErrorText('');
                     sethasForgotPassword(false);
-                    navigation.navigate('Drawer', {
-                        screen: 'Moodem',
-                        params: {
-                            user
-                        }
-                    });
                 })
                 .catch(error => {
                     setIsLoading(false);
@@ -150,7 +145,15 @@ const Login = (props: any) => {
                 }
             </CustomModal>
 
-            {isResetPasswordModalVisible && <ResetPassword handlerResetPasswordModalVisible={setIsResetPasswordModalVisible} />}
+            {
+                isResetPasswordModalVisible &&
+                <ResetPassword
+                    handlerResetPasswordModalVisible={setIsResetPasswordModalVisible}
+                />
+            }
+            <KeyboardSpacer
+                topSpacing={0}
+            />
         </View>
     );
 };

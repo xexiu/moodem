@@ -6,7 +6,7 @@ import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, Text, View } from 'react-native';
 import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
-import { createInvitedGroup, getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
+import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
@@ -22,7 +22,7 @@ const Form = form.Form;
 
 const Groups = (props: any) => {
     const controller = new AbortController();
-    const { user, group, groups, dispatch } = useContext(AppContext) as any;
+    const { user, group, groups, dispatchContextApp } = useContext(AppContext) as any;
     const { navigation } = props;
     const [showModal, setModal] = useState(false);
     const [userGroup = null, setUserGroup] = useState(null);
@@ -122,14 +122,13 @@ const Groups = (props: any) => {
                         btnTitle='OK'
                         action={() => {
                             if (value && value.password === userGroup.group_password) {
-                                createInvitedGroup(user, userGroup);
                                 togglePasswordModal(false);
                                 setPasswordFormValue({ value: '' });
 
                                 if (isSearching) {
-                                    setGroups({
-                                        groups: [...groups, userGroup] as never
-                                    });
+                                    // setGroups({
+                                    //     groups: [...groups, userGroup] as never
+                                    // });
                                     setIsLoading(false);
                                     setIsSearching(false);
                                 } else {
@@ -206,7 +205,7 @@ const Groups = (props: any) => {
                             subtitle={item.group_id}
                             rightTitle={item.user_owner_id === user.uid ? 'Owner' : 'Invited'}
                             action={() => {
-                                dispatch({type: 'group', value: item });
+                                dispatchContextApp({type: 'group', value: item });
                                 setUserGroup(item);
                                 navigation.navigate(group.group_name);
                             }}

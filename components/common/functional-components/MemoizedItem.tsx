@@ -26,10 +26,18 @@ const MemoizedItem = ({ index, item, handleOnClickItem, media, buttonActions, op
 };
 
 function areEqual(prevProps: any, nextProps: any) {
+    // Should be fix when removed or voted causing multiples re-renders
     const { isPlaying, votedSong, removedSong } = nextProps;
     const { isPlaying: prevIsPlaying, removedSong: prevSongRemoved } = prevProps;
 
     const isPlayingEqual = isPlaying === prevIsPlaying;
+
+    if (prevProps.buttonActions.length === nextProps.buttonActions.length && !isPlayingEqual) {
+        return false;
+    }
+    if (prevProps.buttonActions.length !== nextProps.buttonActions.length && isPlayingEqual) {
+        return false;
+    }
 
     if (removedSong) {
         if (nextProps.index === removedSong.id) {

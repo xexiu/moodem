@@ -1,15 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
+import { removeVideoIdFromDB, saveVideoIdOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
+import { AppContext } from '../../User/store-context/AppContext';
+import { SongsContext } from '../../User/store-context/SongsContext';
 import Button from './Button';
 
-function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
-    return ((mediaUser && songUser.uid === mediaUser.uid) ||
-        mediaUser.uid === groupOwner);
-}
-
 export const MediaButtons = (song: any, media: any, actions: string[], optionalCallback: Function) => {
+    const { isServerError, user, group }: any = useContext(AppContext);
+    const { isSongError } = useContext(SongsContext) as any;
     const navigation = useNavigation();
+
+    function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
+        return ((mediaUser && songUser.uid === mediaUser.uid) ||
+            mediaUser.uid === groupOwner);
+    }
+
     const mediaMap = {
         send_media: {
             containerStyle: {
@@ -23,10 +29,15 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
             iconStyle: { alignSelf: 'flex-end', paddingBottom: 40, fontSize: 40 },
             iconReverse: false,
             action: async () => {
+                if (!user) {
+                    return navigation.navigate('Guest');
+                }
                 Object.assign(song, {
                     isMediaOnList: true,
                     isPlaying: false
                 });
+
+                saveVideoIdOnDb(song.videoDetails.videoId, user, group.group_name);
 
                 await media.emit('send-message-add-song', {
                     song,
@@ -45,11 +56,14 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
+                if (!user) {
+                    return navigation.navigate('Guest');
+                }
                 await media.emit('send-message-vote-up',
                     {
                         song,
-                        chatRoom: media.group.group_name,
-                        user_id: media.user.uid,
+                        chatRoom: group.group_name,
+                        user_id: user.uid,
                         count: ++song.votes_count,
                         isVoting: true
                     });
@@ -62,14 +76,15 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
             iconColor: '#dd0031',
             iconSize: 9,
             action: async () => {
+                removeVideoIdFromDB(song.videoDetails.videoId, user, group.group_name);
                 await media.emit('send-message-remove-song',
                     {
                         song,
-                        chatRoom: media.group.group_name,
-                        user_id: media.user.uid
+                        chatRoom: group.group_name,
+                        user_id: user.uid
                     });
             },
-            isOwner: hasSongOrGroupOwner(media.user, song.user, media.group.user_owner_id)
+            isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)
         }
     } as any;
 
@@ -78,8 +93,8 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
         case 'containerStyle':
             return mediaMap[action].containerStyle;
         case 'disabled':
-            return mediaMap[action].voted_users &&
-                    mediaMap[action].voted_users.some((id: number) => id === media.user.uid);
+            return user && mediaMap[action].voted_users &&
+                    mediaMap[action].voted_users.some((id: number) => id === user.uid);
         case 'text':
             return mediaMap[action].votes_count;
         case 'iconName':
@@ -157,6 +172,10 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
         });
 
         return buildedButtons;
+    }
+
+    if (isServerError || isSongError) {
+        return null;
     }
 
     return buildActionButton();

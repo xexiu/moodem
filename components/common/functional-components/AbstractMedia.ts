@@ -107,18 +107,6 @@ export class AbstractMedia {
         }
     }
 
-    checkIfAlreadyOnList = (medias: string[], searchedMedias: string[]) => {
-        medias.filter((song: any) => {
-            return !searchedMedias.some((_song: any) => {
-                if (song.videoDetails.videoId === _song.videoDetails.videoId && song.isMediaOnList) {
-                    Object.assign(_song, {
-                        isMediaOnList: true
-                    });
-                }
-            });
-        });
-    };
-
     destroy = () => {
         this.axios.Cancel();
         this.socket.disconnect();

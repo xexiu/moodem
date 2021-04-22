@@ -5,7 +5,7 @@ export const socketConf = {
     reconnection: true,
     // tslint:disable-next-line:max-line-length
     reconnectionDelay: 500, // starts with 0.30 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
-    reconnectionDelayMax: 3000, // 1 minute (60000) maximum delay between connections
+    reconnectionDelayMax: 5000, // 1 minute (60000) maximum delay between connections
     reconnectionAttempts: 'Infinity',
     timeout: 10000000000,
     pingInterval: 25000, // default - 25000

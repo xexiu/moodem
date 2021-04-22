@@ -37,7 +37,9 @@ export const SideBarTopHeader = (props: any) => {
                 resolve(true);
             });
             reset.then(() => {
-                navigation.navigate('Guest');
+                navigation.navigate('Drawer', {
+                    screen: 'Guest'
+                });
             });
         });
     };

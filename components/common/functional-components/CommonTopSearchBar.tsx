@@ -30,7 +30,7 @@ const CommonTopSearchBar = (props: any) => {
 
     return (
         <SearchBar
-            placeholderTextColor={'#ccc'}
+            placeholderTextColor='#ccc'
             ref={searchRef}
             autoCorrect={false}
             containerStyle={[commonTopSeachBarContainer, customStyleContainer]}
@@ -46,7 +46,7 @@ const CommonTopSearchBar = (props: any) => {
             onChangeText={(text: string) => {
                 setValue(text);
                 setShowLoadingSpin(true);
-                onChangeText(text)
+                onChangeText && onChangeText(text)
                     .then(() => {
                         setShowLoadingSpin(false);
                     });
@@ -72,7 +72,8 @@ CommonTopSearchBar.propTypes = {
     onEndEditingSearch: PropTypes.func,
     cancelSearch: PropTypes.func,
     searchRef: PropTypes.any,
-    customStyleContainer: PropTypes.object
+    customStyleContainer: PropTypes.object,
+    placeholderTextColor: PropTypes.any
 };
 
 export default memo(CommonTopSearchBar);

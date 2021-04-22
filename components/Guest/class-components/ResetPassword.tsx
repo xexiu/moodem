@@ -8,7 +8,7 @@ import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
-import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/resetPasswordHandler';
+import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/resetPasswordHandlers';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
