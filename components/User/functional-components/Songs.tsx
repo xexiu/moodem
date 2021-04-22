@@ -179,17 +179,24 @@ const Songs = (props: any) => {
         );
     }
 
-    return (
-        <BodyContainer>
-            {
-                !isServerError &&
-                <SearchBarAutoComplete
+    function renderSearchBar() {
+        if (isServerError || isSongError) {
+            return null;
+        }
+
+        return (
+            <SearchBarAutoComplete
                     group={group}
                     songsOnGroup={songs}
                     navigation={navigation}
                     media={media}
                 />
-            }
+        );
+    }
+
+    return (
+        <BodyContainer>
+            { renderSearchBar() }
             { renderPlayer()}
         </BodyContainer>
     );
