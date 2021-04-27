@@ -8,9 +8,8 @@ const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
 
 const SearchBarAutoComplete = (props: any) => {
     const {
-        group,
-        user,
-        songsOnGroup,
+        resetLoadingSongs,
+        songs,
         navigation,
         media
     } = props;
@@ -18,14 +17,12 @@ const SearchBarAutoComplete = (props: any) => {
     const source = axios.CancelToken.source();
 
     function handleEndSearch(searchedText: string) {
-        source.cancel('SearchBarAutoComplete Component got unmounted');
         setSuggestions([]);
         navigation.navigate('SearchingSongsScreen', {
+            resetLoadingSongs,
             media,
-            group,
-            user,
             searchedText,
-            songsOnGroup
+            songs
         });
     }
 
@@ -54,8 +51,6 @@ const SearchBarAutoComplete = (props: any) => {
         }
     }
 
-    console.log('SearchBarAutomcpleye', songsOnGroup);
-
     return (
         <View
             style={suggestions && suggestions.length && {
@@ -76,9 +71,7 @@ const SearchBarAutoComplete = (props: any) => {
             />
 
             <SuggestionList
-                songsOnGroup={songsOnGroup}
-                user={user}
-                group={group}
+                songs={songs}
                 navigation={navigation}
                 media={media}
                 suggestions={suggestions}
@@ -87,4 +80,8 @@ const SearchBarAutoComplete = (props: any) => {
     );
 };
 
-export default memo(SearchBarAutoComplete);
+function areEqual() {
+    return true;
+}
+
+export default memo(SearchBarAutoComplete, areEqual);

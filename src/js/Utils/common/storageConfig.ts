@@ -3,8 +3,7 @@ import Storage from 'react-native-storage';
 
 const ONE_DAY = 1000 * 3600 * 24;
 const FIVE_HOURS = ONE_DAY - 19;
-const THIRTY_DAYS = ONE_DAY + 30;
-const TEN_THOUSANDS = 1000;
+const TEN_THOUSANDS = 10000;
 
 const storage = new Storage({
     // maximum capacity, default 1000 key-ids
@@ -67,33 +66,14 @@ export async function removeItem(key: string, cb?: any): Promise<void> {
     return AsyncStorage.removeItem(key, cb);
 }
 
-export async function saveOnLocalStorage(key: string, value: any): Promise<void> {
+export async function saveOnLocalStorage(key: string, value: any, expires: number = FIVE_HOURS): Promise<void> {
     await storage.save(
         {
             key,
             data: value,
-            expires: FIVE_HOURS
+            expires
         });
     return;
 }
-
-// export function saveUserSearchedSongs(key: string, value: any, searchedText: string) {
-//     const saveNewUserSearchedSongs = {
-//         searchedSongs: {} as any
-//     };
-
-//     saveNewUserSearchedSongs.searchedSongs[searchedText] = value;
-
-//     storage.save(
-//         {
-//             key, // Note: Do not use underscore("_") in key!
-//             data: saveNewUserSearchedSongs,
-//             expires: THIRTY_DAYS
-//         })
-//         .then((data) => {
-//             console.log('Data saved in searchedsongs for user', key, 'Data', data);
-//             return;
-//         });
-// }
 
 export default storage;

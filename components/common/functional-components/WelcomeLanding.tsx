@@ -20,6 +20,7 @@ const WelcomeLanding = (props: any) => {
     useEffect(() => {
         media.on('disconnect', () => {
             if (isServerError) {
+                media.socket.open();
                 return dispatchContextApp({
                     type: 'server_error', value: {
                         isServerError: true

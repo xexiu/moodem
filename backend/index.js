@@ -188,6 +188,7 @@ io.on('connection', (socket) => {
     buildMedia(data);
 
     if (data.songs) {
+      chatRooms[data.chatRoom].songs = [];
       chatRooms[data.chatRoom].songs = data.songs;
       chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     }

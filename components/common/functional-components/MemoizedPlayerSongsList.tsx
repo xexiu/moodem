@@ -19,7 +19,7 @@ const MemoizedPlayerSongsList = (props: any) => {
     } = useContext(SongsContext) as any;
 
     const handleOnClickItem = useCallback((index: number) => {
-        dispatchContextSongs({
+        return dispatchContextSongs({
             type: 'update_song_click_play_pause',
             value: {
                 indexItem: index,

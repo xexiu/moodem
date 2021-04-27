@@ -2,9 +2,6 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
-import { saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
-import { convertVideoIdsFromDB, setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
-import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
 const BasePlayer = (props: any) => {
@@ -97,7 +94,7 @@ const BasePlayer = (props: any) => {
                     }
                     basePlayer.current.seek(0);
                 }}
-                onError={async (error) => {
+                onError={(error) => {
                     // Send Error to Sentry
                     if (!isSongError) {
                         dispatchContextSongs({

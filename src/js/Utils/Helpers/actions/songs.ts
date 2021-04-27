@@ -70,7 +70,7 @@ export async function convertVideoIdYtdl(videoId: string) {
     return {};
 }
 
-export async function convertVideoIdsFromDB(videoIds: string[]) {
+export async function convertVideoIdsFromDB(videoIds: string[] = []) {
     try {
         const audios = await Promise.all(videoIds.map(async (videoId: string) => convertVideoIdYtdl(videoId)));
         return audios;
@@ -80,11 +80,11 @@ export async function convertVideoIdsFromDB(videoIds: string[]) {
     }
 }
 
-export const saveVideoIdOnDb = (videoId: string, user: any, groupName: string) => {
+export const saveVideoIdOnDb = (videoId: string, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
-    refGroup.once('value', (snapshot: any) => {
+    return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
 
         if (dbgroup.group_videoIds) {
@@ -96,17 +96,18 @@ export const saveVideoIdOnDb = (videoId: string, user: any, groupName: string) =
 
         refGroup.update({
             group_videoIds: [...new Set(dbgroup.group_videoIds)]
-        });
+        })
+        .then(() => cb && cb());
     });
 };
 
-export const removeVideoIdFromDB = (videoId: string, user: any, groupName: string) => {
+export const removeVideoIdFromDB = (videoId: string, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
-    refGroup.once('value', (snapshot: any) => {
+    return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
-        const index = dbgroup.group_videoIds.indexOf(videoId);
+        const index = dbgroup.group_videoIds?.indexOf(videoId);
 
         if (index > -1) {
             dbgroup.group_videoIds.splice(index, 1);
@@ -114,6 +115,7 @@ export const removeVideoIdFromDB = (videoId: string, user: any, groupName: strin
 
         refGroup.update({
             group_videoIds: [...new Set(dbgroup.group_videoIds)]
-        });
+        })
+        .then(() => cb && cb());
     });
 };

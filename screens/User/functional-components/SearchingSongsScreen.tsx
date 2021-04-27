@@ -1,25 +1,26 @@
-/* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
-import PropTypes from 'prop-types';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import MemoizedItems from '../../../components/common/functional-components/MemoizedItems';
 import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
-import { checkIfAlreadyOnList, cleanImageParams } from '../../../src/js/Utils/Helpers/actions/songs';
+import { AppContext } from '../../../components/User/store-context/AppContext';
+import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { YOUTUBE_KEY } from '../../../src/js/Utils/constants/api/apiKeys';
+import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
+
+const THIRTY_DAYS = 1000 * 3600 * 24 * 30;
 
 const SearchingSongsScreen = (props: any) => {
     const {
         media,
-        group,
-        user,
+        songs,
         searchedText,
-        songsOnGroup,
         resetLoadingSongs
     } = props.route.params;
-    const songsListRef = useRef(null);
+    const { group } = useContext(AppContext) as any;
 
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
@@ -27,36 +28,52 @@ const SearchingSongsScreen = (props: any) => {
         indexItem: 0,
         isLoading: true
     });
-    const basePlayer = useRef(null);
-    const repeatRef = useRef(null);
-    const playPauseRef = useRef(null);
-    const seekRef = useRef(null);
     const source = axios.CancelToken.source();
     const isFocused = useIsFocused();
 
-    // async function getResultsForSearch(): Promise<string[]> {
-    //     const videoIds = ['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc'] as string[];
-    //     try {
-    //         // const { data } = await axios.get(
-    //         //     `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=3&videoCategoryId=10&type=video&key=AIzaSyCNAtpEYrSP4SCmk4FnXB0DxAw_JefBcGw`,
-    //         //     { cancelToken: source.token });
+    async function fetchResults() {
+        const videoIds = [] as string[];
+        try {
+            const { data } = await axios.get(
+                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=10&videoCategoryId=10&type=video&key=${YOUTUBE_KEY}`,
+                { cancelToken: source.token });
 
-    //         const { data } = await axios.get('http://dummy.com',
-    //             { cancelToken: source.token });
-    //         // const videos = data.items.filter((video: any) => video.id.videoId);
-    //         // videos.map((video: any) => {
-    //         //     videoIds.push(video.id.videoId);
-    //         // });
+            const videos = data.items.filter((video: any) => video.id.videoId);
+            videos.map((video: any) => {
+                videoIds.push(video.id.videoId);
+            });
+            return Promise.resolve(videoIds);
+        } catch (err) {
+            // Send error to sentry
+        }
+    }
 
-    //         console.log('Dataaa', data.replace(/(.*)/g, '').trim());
-    //         return Promise.resolve(videoIds);
-    //     } catch (err) {
-    //         return Promise.reject(videoIds);
-    //     }
-    // }
+    async function getResultsForSearch(): Promise<any> {
+        const sanitizedText = searchedText.replace(/\s+/g, '').toLowerCase();
+        const savedItem = loadFromLocalStorage(sanitizedText);
+
+        return savedItem.then(async (data) => {
+            switch (data) {
+            case 'NotFoundError':
+                const videoIds = await fetchResults();
+                saveOnLocalStorage(sanitizedText, videoIds, THIRTY_DAYS);
+                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
+                break;
+            case 'ExpiredError':
+                removeItem(sanitizedText, async () => {
+                    const videoIds_1 = await fetchResults();
+                    saveOnLocalStorage(sanitizedText, videoIds_1, THIRTY_DAYS);
+                    media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: videoIds_1 });
+                });
+                break;
+            default:
+                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: data });
+                break;
+            }
+        });
+    }
 
     useEffect(() => {
-        // console.log('4. Searching songs screen...', allValues.isLoading);
         navigation.setOptions({
             headerShown: false,
             headerMode: 'none',
@@ -66,19 +83,15 @@ const SearchingSongsScreen = (props: any) => {
         });
 
         if (isFocused) {
-            // getResultsForSearch()
-            //     .then(videoIds => {
-            //     });
+            getResultsForSearch();
 
-            const videoIds = ['8SbUC-UaAxE', 'tAGnKpE4NCI', 'aw_cmzF_uZY', 'iuTtlb2COtc', 'ElU-VcWEhRU', 'ieBvA3kMJB4', '2GhF2mPKnDg'] as string[];
-
-            media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
             media.on('get-songs-from-youtube', (data: any) => {
-                checkIfAlreadyOnList(songsOnGroup, data.songs);
+                checkIfAlreadyOnList(songs, data.songs);
                 setAllValues(prevValues => {
                     return {
                         ...prevValues,
                         songs: [...data.songs],
+                        indexItem: songs.indexItem || 0,
                         isLoading: false
                     };
                 });
@@ -107,7 +120,7 @@ const SearchingSongsScreen = (props: any) => {
                 songs: [...prev.songs]
             };
         });
-    }, []);
+    }, [searchedText]);
 
     function resetSearchingScreen() {
         setAllValues(prevValues => {
@@ -120,7 +133,6 @@ const SearchingSongsScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
-        // resetLoadingSongs(false);
         navigation.navigate(media.group.group_name);
     }
 
@@ -141,33 +153,31 @@ const SearchingSongsScreen = (props: any) => {
         if (allValues.songs.length) {
             return (
                 <Player
-                    repeatRef={repeatRef}
-                    playPauseRef={playPauseRef}
-                    songsListRef={songsListRef}
-                    basePlayer={basePlayer}
-                    seekRef={seekRef}
                     isPlaying={allValues.songs[allValues.indexItem].isPlaying}
                     item={allValues.songs[allValues.indexItem]}
-                    onClick={onClickUseCallBack}
+                    handleOnClickItem={onClickUseCallBack}
+                    items={allValues.songs}
                 />
             );
         }
         return null;
     }
 
-    console.log('Searchedsongs');
-
-    return (
-        <BodyContainer>
+    function renderBackButton() {
+        return (
             <Icon
-                containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100}}
+                containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100 }}
                 onPress={resetSearchingScreen}
                 name={'arrow-back'}
                 type={'Ionicons'}
                 size={25}
                 color='#dd0031'
             />
-            { renderPlayer() }
+        );
+    }
+
+    function renderItems() {
+        return (
             <MemoizedItems
                 data={allValues.songs}
                 handleOnClickItem={onClickUseCallBack}
@@ -175,6 +185,14 @@ const SearchingSongsScreen = (props: any) => {
                 buttonActions={['send_media']}
                 optionalCallback={resetSearchingScreen}
             />
+        );
+    }
+
+    return (
+        <BodyContainer>
+            { renderBackButton()}
+            { renderPlayer()}
+            { renderItems()}
         </BodyContainer>
     );
 };

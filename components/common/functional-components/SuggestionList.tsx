@@ -1,12 +1,9 @@
-import { useIsFocused } from '@react-navigation/native';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 const SuggestionList = (props: any) => {
     const {
-        songsOnGroup,
-        user,
-        group,
+        songs,
         navigation,
         media,
         suggestions
@@ -33,12 +30,10 @@ const SuggestionList = (props: any) => {
                         <TouchableOpacity
                             key={index}
                             onPress={() => {
-                                console.log('SuggestionList Player');
                                 navigation.navigate('SearchingSongsScreen', {
                                     media,
-                                    group,
-                                    user,
-                                    songsOnGroup
+                                    songs,
+                                    searchedText: suggestion
                                 });
                             }}
                         >
