@@ -38,8 +38,6 @@ function itemsDrawer(props: any, params: any) {
 const SideBarDrawer = (props: any) => {
     const { user, group }: any = useContext(AppContext);
 
-    console.log('Drawerr');
-
     if (user) {
         return (
             <Drawer.Navigator

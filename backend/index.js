@@ -215,7 +215,7 @@ serverIO.on('connection', (socket) => {
     songs.sort(compareValues('votes_count'));
     songs.forEach((song, index) => Object.assign(song, { id: index }));
 
-    socket.emit('get-medias-group', { songs }); // send message only to sender-client
+    serverIO.to(socket.id).emit('get-medias-group', { songs }); // send message only to sender-client
   });
 
   // Vote

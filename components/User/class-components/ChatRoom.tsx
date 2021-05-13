@@ -1,15 +1,23 @@
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect, useState } from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { Keyboard } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { GiftedChat, Send } from 'react-native-gifted-chat';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
-import CommonTextInput from '../../common/functional-components/CommonTextInput';
 import HeaderChat from '../functional-components/HeaderChat';
 import HeaderChatTitle from '../functional-components/HeaderChatTitle';
 import HeaderChatUsers from '../functional-components/HeaderChatUsers';
-import MessagesList from '../functional-components/MessagesList';
 import { AppContext } from '../store-context/AppContext';
+
+const styles = {
+    sendContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginRight: 15
+    }
+};
 
 const ChatRoom = (props: any) => {
     const { user, group, socket }: any = useContext(AppContext);
@@ -17,30 +25,56 @@ const ChatRoom = (props: any) => {
     const [messages = [], setMessages] = useState([]);
 
     useEffect(() => {
-        console.log('5. ChatRoom');
-        socket.on('chat-messages', getMessage);
         socket.on('moodem-chat', setMessageList);
+        socket.on('chat-messages', getMessage);
         socket.emit('moodem-chat',
             { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, user });
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
-            // socket.disconnect();
+            socket.close();
         };
     }, []);
-
-    console.log('CHATTT');
-
-    const getMessage = (msg: never) => {
-        console.log('Heyyy', msg);
-        if (msg) {
-            setMessages([msg, ...messages]);
-        }
-    };
 
     const setMessageList = (messagesList: never[]) => {
         setMessages([...messagesList]);
     };
+
+    function getMessage(msg: any) {
+        setMessages(previousMessages => GiftedChat.append(previousMessages, msg));
+    }
+
+    const renderSend = (propsSendBtn: any) => {
+        return (
+            <Send
+                {...propsSendBtn}
+                containerStyle={styles.sendContainer}
+            >
+                <Icon
+                    name='send-o'
+                    type='font-awesome'
+                    color='#1E90FF'
+                    size={20}
+                />
+            </Send>
+        );
+    };
+
+    const onSend = useCallback((message: any) => {
+        socket.emit('chat-messages',
+            {
+                chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`,
+                msg: {
+                    text: message.text,
+                    user: {
+                        _id: message.user._id,
+                        name: message.user.name
+                    },
+                    createdAt: message.createdAt,
+                    _id: message._id
+                }
+            });
+    }, []);
 
     return (
         <BodyContainer>
@@ -56,26 +90,25 @@ const ChatRoom = (props: any) => {
                     chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`}
                 />
             </HeaderChat>
-            <TouchableWithoutFeedback
-                onPress={Keyboard.dismiss}
-                accessible={false}
-            >
-                <View style={{ flex: 1 }}>
-                    <MessagesList messages={messages} />
-                </View>
-            </TouchableWithoutFeedback>
-            <View style={{ height: 50 }}>
-                <View style={{ position: 'absolute', bottom: 5, right: 0, left: 7, width: '96%', zIndex: 1 }}>
-                    <CommonTextInput
-                        navigation={navigation}
-                        user={user}
-                        group={group}
-                        socket={socket}
-                    />
-                </View>
-            </View>
-            <KeyboardSpacer
-                topSpacing={0}
+            <GiftedChat
+                // isTyping
+                loadEarlier
+                placeholder='Escribe algo...'
+                infiniteScroll
+                alwaysShowSend
+                renderUsernameOnMessage
+                showAvatarForEveryMessage
+                messages={messages}
+                renderSend={renderSend}
+                onSend={msgs => onSend(msgs[0])}
+                keyboardShouldPersistTaps='never'
+                showUserAvatar
+                inverted
+
+                user={{
+                    _id: user.uid,
+                    name: user.displayName
+                }}
             />
         </BodyContainer>
     );
