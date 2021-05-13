@@ -2,10 +2,10 @@
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
+import SideBarTopAvatar from '../../../components/common/functional-components/SideBarTopAvatar';
 import Login from '../../../components/Guest/class-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
-import { SideBarTopHeader } from '../../../screens/User/functional-components/SideBarTopHeader';
 import ChatRoom from '../../User/class-components/ChatRoom';
 import { Groups } from '../../User/functional-components/Groups';
 import { Profile } from '../../User/functional-components/Profile';
@@ -18,7 +18,7 @@ function itemsDrawer(props: any, params: any) {
     if (params.user) {
         return (
             <DrawerContentScrollView {...props} style={{ position: 'relative' }}>
-                <SideBarTopHeader navigation={props.navigation} params={params} group={params.group} />
+                <SideBarTopAvatar navigation={props.navigation} />
                 <DrawerItemList {...props} />
                 <SideBarFooter navigation={props.navigation} />
             </DrawerContentScrollView>
@@ -26,7 +26,7 @@ function itemsDrawer(props: any, params: any) {
     }
     return (
         <DrawerContentScrollView {...props} style={{ position: 'relative' }}>
-            <SideBarTopHeader navigation={props.navigation} params={params} group={params.group} />
+            <SideBarTopAvatar navigation={props.navigation} />
             <DrawerItemList {...props} />
             <Login btnTitle='Iniciar sesión' navigation={props.navigation} />
             <Register btnTitle='Registrarse ' btnStyle={{ backgroundColor: '#00b7e0' }} navigation={props.navigation} />
@@ -37,6 +37,8 @@ function itemsDrawer(props: any, params: any) {
 
 const SideBarDrawer = (props: any) => {
     const { user, group }: any = useContext(AppContext);
+
+    console.log('Drawerr');
 
     if (user) {
         return (
@@ -111,8 +113,4 @@ SideBarDrawer.propTypes = {
     navigation: PropTypes.object
 };
 
-memo(SideBarDrawer);
-
-export {
-    SideBarDrawer
-};
+export default memo(SideBarDrawer);

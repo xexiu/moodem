@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import { sideBarFooterContainer } from '../../../src/css/styles/sideBarFooter';
 import { About } from './About';
@@ -6,7 +6,7 @@ import { Copyright } from './Copyright';
 import { FAQ } from './FAQ';
 import { Privacy } from './Privacy';
 
-export const SideBarFooter = (props: any) => {
+export const SideBarFooter = memo((props: any) => {
     const {
         navigation
     } = props;
@@ -18,4 +18,4 @@ export const SideBarFooter = (props: any) => {
             <Privacy navigation={navigation} />
         </View>
     );
-};
+});

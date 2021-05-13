@@ -1,18 +1,17 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
+import { AppContext } from '../../../components/User/store-context/AppContext';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
 import { btnShadow } from '../../../src/css/styles/common';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import BgImage from './BgImage';
 
 const SideBarTopAvatar = (props: any) => {
-    const {
-        navigation,
-        user,
-        group
-    } = props;
+    const { navigation } = props;
+
+    const { user, group }: any = useContext(AppContext);
 
     function hangleUserNavigation() {
         if (user) {
@@ -49,8 +48,4 @@ SideBarTopAvatar.propTypes = {
     group: PropTypes.object
 };
 
-memo(SideBarTopAvatar);
-
-export {
-    SideBarTopAvatar
-};
+export default memo(SideBarTopAvatar);

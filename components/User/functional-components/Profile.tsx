@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
+import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { AppContext } from '../store-context/AppContext';
@@ -14,7 +15,7 @@ const Profile = (props: any) => {
     const [userPassword, setUserPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const { navigation } = props;
-    const { user } = useContext(AppContext) as any;
+    const { user, dispatchContextApp } = useContext(AppContext) as any;
     const toastRef = useRef(null);
 
     useEffect(() => {
@@ -56,6 +57,20 @@ const Profile = (props: any) => {
         });
     };
 
+    const handleLogOut = () => {
+        return firebase.auth().signOut().then(() => {
+            const reset = new Promise(resolve => {
+                dispatchContextApp({ type: 'reset' });
+                resolve(true);
+            });
+            reset.then(() => {
+                navigation.navigate('Drawer', {
+                    screen: 'Guest'
+                });
+            });
+        });
+    };
+
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <Toast
@@ -89,7 +104,7 @@ const Profile = (props: any) => {
                     />
                     <CustomButton
                         btnDisabled={loading}
-                        btnTitle= ''
+                        btnTitle=''
                         btnIcon={
                             (
                                 <Icon
@@ -210,6 +225,16 @@ const Profile = (props: any) => {
                     <Text style={{ fontSize: 18 }}>Grupos Externos</Text>
                     <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Próximamente...</Text>
                 </View>
+            </View>
+            <View>
+                <CustomButton
+                    btnTitle='Cerrar Sessión!'
+                    btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
+                    btnRaised={false}
+                    shadow={{}}
+                    btnTitleStyle={{ color: '#dd0031', fontSize: 16 }}
+                    action={() => handleLogOut()}
+                />
             </View>
         </View>
     );

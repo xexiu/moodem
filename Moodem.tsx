@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 import BgImage from './components/common/functional-components/BgImage';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
 import PreLoader from './components/common/functional-components/PreLoader';
-import { SideBarDrawer } from './components/common/functional-components/SideBarDrawer';
+import SideBarDrawer from './components/common/functional-components/SideBarDrawer';
 import { AppContext } from './components/User/store-context/AppContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
