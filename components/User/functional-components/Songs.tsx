@@ -18,8 +18,7 @@ const Songs = (props: any) => {
         dispatchContextSongs,
         songs,
         isLoading,
-        isSongError,
-        indexItem
+        isSongError
     } = useContext(SongsContext) as any;
 
     function dispatchCommon(data: any) {
@@ -156,9 +155,16 @@ const Songs = (props: any) => {
         );
     }
 
-    function resetLoadingSongs() {
-        return dispatchContextSongs({ type: 'update_song_reset' });
-    }
+    const resetLoadingSongs = (() => {
+        let executed = false;
+        return () => {
+            if (!executed) {
+                executed = true;
+                // do something
+                return dispatchContextSongs({ type: 'update_song_reset' });
+            }
+        };
+    })();
 
     function renderSearchBar() {
         if (isServerError || isSongError) {

@@ -19,10 +19,7 @@ export const CommonStackWrapper = (props: any) => {
                 <Stack.Screen name='Privacy' component={Privacy} />
                 <Stack.Screen name='FAQ' component={FAQ} />
                 <Stack.Screen name='About' component={About} />
-                <Stack.Screen
-                    name='SearchingSongsScreen'
-                    component={SearchingSongsScreen}
-                />
+                <Stack.Screen name='SearchingSongsScreen' component={SearchingSongsScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -26,7 +26,6 @@ const MemoizedPlayerSongsList = (props: any) => {
         }
     }), []);
 
-
     return (
         <View style={{ flex: 1 }}>
             <Player

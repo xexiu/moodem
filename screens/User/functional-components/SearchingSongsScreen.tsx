@@ -19,7 +19,7 @@ const SearchingSongsScreen = (props: any) => {
         searchedText,
         resetLoadingSongs
     } = props.route.params;
-    const { group, socket } = useContext(AppContext) as any;
+    const { group, socket, isServerError } = useContext(AppContext) as any;
 
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
@@ -104,6 +104,31 @@ const SearchingSongsScreen = (props: any) => {
         };
     }, [isFocused]);
 
+    const playerCallBack = useCallback(() => {
+        if (allValues.songs.length) {
+            return (
+                <Player
+                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
+                    item={allValues.songs[allValues.indexItem]}
+                    handleOnClickItem={onClickUseCallBack}
+                    items={allValues.songs}
+                />
+            );
+        }
+        return null;
+    }, [allValues.songs]);
+
+    const renderItemsCallBack = useCallback(() => {
+        return (
+            <MemoizedItems
+                data={allValues.songs}
+                handleOnClickItem={onClickUseCallBack}
+                buttonActions={isServerError ? [] : ['send_media']}
+                optionalCallback={resetSearchingScreen}
+            />
+        );
+    }, [allValues.songs]);
+
     const onClickUseCallBack = useCallback((index: number) => {
         resetLoadingSongs(true);
         setAllValues((prev: any) => {
@@ -148,20 +173,6 @@ const SearchingSongsScreen = (props: any) => {
         );
     }
 
-    function renderPlayer() {
-        if (allValues.songs.length) {
-            return (
-                <Player
-                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
-                    item={allValues.songs[allValues.indexItem]}
-                    handleOnClickItem={onClickUseCallBack}
-                    items={allValues.songs}
-                />
-            );
-        }
-        return null;
-    }
-
     function renderBackButton() {
         return (
             <Icon
@@ -175,22 +186,11 @@ const SearchingSongsScreen = (props: any) => {
         );
     }
 
-    function renderItems() {
-        return (
-            <MemoizedItems
-                data={allValues.songs}
-                handleOnClickItem={onClickUseCallBack}
-                buttonActions={['send_media']}
-                optionalCallback={resetSearchingScreen}
-            />
-        );
-    }
-
     return (
         <BodyContainer>
             { renderBackButton()}
-            { renderPlayer()}
-            { renderItems()}
+            { playerCallBack()}
+            { renderItemsCallBack()}
         </BodyContainer>
     );
 };
