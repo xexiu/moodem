@@ -96,9 +96,9 @@ export const saveVideoIdOnDb = (videoId: string, user: any, groupName: string, c
 
         refGroup.update({
             group_videoIds: [...new Set(dbgroup.group_videoIds)]
-        })
-        .then(() => cb && cb());
-    });
+        });
+    })
+    .then(cb);
 };
 
 export const removeVideoIdFromDB = (videoId: string, user: any, groupName: string, cb: Function) => {
@@ -115,7 +115,7 @@ export const removeVideoIdFromDB = (videoId: string, user: any, groupName: strin
 
         refGroup.update({
             group_videoIds: [...new Set(dbgroup.group_videoIds)]
-        })
-        .then(() => cb && cb());
-    });
+        });
+    })
+    .then(cb);
 };

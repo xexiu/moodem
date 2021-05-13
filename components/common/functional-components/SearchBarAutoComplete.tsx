@@ -10,8 +10,7 @@ const SearchBarAutoComplete = (props: any) => {
     const {
         resetLoadingSongs,
         songs,
-        navigation,
-        media
+        navigation
     } = props;
     const [suggestions, setSuggestions] = useState([]);
     const source = axios.CancelToken.source();
@@ -20,7 +19,6 @@ const SearchBarAutoComplete = (props: any) => {
         setSuggestions([]);
         navigation.navigate('SearchingSongsScreen', {
             resetLoadingSongs,
-            media,
             searchedText,
             songs
         });
@@ -67,21 +65,15 @@ const SearchBarAutoComplete = (props: any) => {
                 cancelSearch={() => setSuggestions([])}
                 onChangeText={onChangeText}
                 onEndEditingSearch={handleEndSearch}
-                searchRef={media.searchRef}
             />
 
             <SuggestionList
                 songs={songs}
                 navigation={navigation}
-                media={media}
                 suggestions={suggestions}
             />
         </View>
     );
 };
 
-function areEqual() {
-    return true;
-}
-
-export default memo(SearchBarAutoComplete, areEqual);
+export default memo(SearchBarAutoComplete);

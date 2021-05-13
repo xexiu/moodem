@@ -1,25 +1,25 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { AppState, Text } from 'react-native';
-import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
+import { AppContext } from '../../User/store-context/AppContext';
 
 const HeaderChatUsers = (props: any) => {
+    const { socket }: any = useContext(AppContext);
     const {
         chatRoom
     } = props;
     const isFocused = useIsFocused();
     const [usersConnected = 0, setUsersConnected] = useState(0);
-    const media = new AbstractMedia();
 
     const getInactiveUsers = (data: any) => {
         if (data !== 'active') {
-            media.socket.open();
-            media.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
+            socket.open();
+            socket.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
         } else {
-            media.socket.open();
-            media.emit('get-connected-users', { chatRoom });
+            socket.open();
+            socket.emit('get-connected-users', { chatRoom });
         }
     };
 
@@ -27,16 +27,16 @@ const HeaderChatUsers = (props: any) => {
         AppState.addEventListener('change', getInactiveUsers);
 
         if (isFocused) {
-            media.emit('get-connected-users', { chatRoom });
+            socket.emit('get-connected-users', { chatRoom });
         } else {
-            media.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
+            socket.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
         }
-        media.on('users-connected-to-room', setUsersConnected);
+        socket.on('users-connected-to-room', setUsersConnected);
 
         return () => {
             AppState.removeEventListener('change', getInactiveUsers);
-            media.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
-            media.destroy();
+            socket.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
+            socket.disconnect();
         };
     }, [isFocused]);
 

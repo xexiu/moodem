@@ -19,18 +19,20 @@ type Context = {
     addedSong: songType,
     votedSong: songType,
     indexItem: number,
-    index: number
+    index: number,
+    isVotingSong: boolean
 };
 
 const initialValue: Context = {
-    songs: [],
+    songs: [...new Set([])],
     indexItem: 0,
     index: 0,
     isLoading: true,
     isSongError: false,
     removedSong: null,
     addedSong: null,
-    votedSong: null
+    votedSong: null,
+    isVotingSong: false
 };
 
 if (Platform.OS === 'android') {
@@ -83,25 +85,12 @@ function removeSong(result: Context, action: actionType) {
     const { removedSong } = value;
     const song = songs[indexItem];
 
-    if (removedSong) {
-        if (songs[removedSong.id].id === removedSong.id) {
-            songs.splice(removedSong.id, 1);
-            songs.forEach((_song, index) => Object.assign(_song, { id: index }));
-            setAnimation();
-        }
-
-        if (song.isPlaying) {
-            Object.assign(result, {
-                indexItem: indexItem === songs.length ?
-                    0 :
-                    song.id
-            });
-        } else {
-            Object.assign(result, {
-                indexItem: 0
-            });
-        }
-    }
+    songs.splice(removedSong?.id, 1);
+    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+    Object.assign(result, {
+        indexItem: song?.isPlaying ? songs.length === 1 ? 0 : song.id : 0
+    });
+    setAnimation();
 
     return { ...result, ...value };
 }
@@ -111,12 +100,9 @@ function addSong(result: Context, action: actionType) {
     const { value } = action;
     const { addedSong } = value;
 
-    if (addedSong) {
-        songs.push(addedSong);
-        songs.sort(compareValues('votes_count'));
-        songs.forEach((song, index) => Object.assign(song, { id: index }));
-        setAnimation();
-    }
+    addedSong.id = songs.length;
+    songs.push(addedSong);
+    setAnimation();
 
     return { ...result, ...value };
 }
@@ -142,6 +128,7 @@ function updateSong(result: Context, action: actionType) {
 function resetSongs(result: Context) {
     const { songs, indexItem } = result;
     songs[indexItem].isPlaying = false;
+
     Object.assign(result, {
         indexItem: 0
     });
@@ -150,31 +137,36 @@ function resetSongs(result: Context) {
 }
 
 function setSongs(result: Context, action: actionType) {
-    return { ...result, ...action.value };
+    const { value } = action;
+
+    Object.assign(result, {
+        indexItem: 0
+    });
+
+    return { ...result, ...value };
 }
 
 function setVotedSong(result: Context, action: actionType) {
     const { songs, indexItem } = result;
     const { value } = action;
-    const { votedSong } = value;
+    const { votedSong, isVotingSong } = value;
     const song = songs[indexItem];
 
-    if (votedSong) {
+    if (songs[votedSong.id].id === votedSong.id) {
         Object.assign(songs[votedSong.id], {
             votes_count: votedSong.votes_count,
-            voted_users: votedSong.voted_users
+            voted_users: votedSong.voted_users,
+            isVotingSong
         });
-
-        songs.sort(compareValues('votes_count'));
-        songs.forEach((_song, index) => Object.assign(_song, { id: index }));
-        setAnimation();
-
-        if (song.isPlaying) {
-            Object.assign(result, {
-                indexItem: song.id
-            });
-        }
     }
+
+    songs.sort(compareValues('votes_count'));
+    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+    setAnimation();
+
+    Object.assign(result, {
+        indexItem: song.isPlaying ? song.id : 0
+    });
 
     return { ...result, ...value };
 }

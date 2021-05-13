@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
-import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
+import React, { memo, useCallback } from 'react';
+import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import CommonFlatList from './CommonFlatList';
 import MemoizedItem from './MemoizedItem';
 
@@ -13,32 +13,28 @@ type PropsItems = {
     handleOnClickItem: Function,
     media?: any,
     buttonActions: string[],
-    removedSong?: any,
-    votedSong?: any,
     optionalCallback?: Function
 };
 
-// tslint:disable-next-line:max-line-length
-const MemoizedItems = ({ data, handleOnClickItem, media, buttonActions, optionalCallback, removedSong, votedSong }: PropsItems) => {
-    const renderItem = ({ item, index }: PropsItem) => (
+const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallback }: PropsItems) => {
+    const renderItem = useCallback(({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
             item={item}
             isPlaying={item.isPlaying}
+            isVotingSong={item.isVotingSong}
             handleOnClickItem={handleOnClickItem}
-            media={media}
             buttonActions={buttonActions}
-            removedSong={removedSong}
-            votedSong={votedSong}
             optionalCallback={optionalCallback}
         />
-    );
+    ), []);
+
     return (
         <CommonFlatList
             emptyListComponent={<MediaListEmpty />}
             data={data}
             action={renderItem}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item: any) => item.id.toString()}
         />
     );
 };

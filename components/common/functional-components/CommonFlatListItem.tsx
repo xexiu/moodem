@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useRef } from 'react';
+import React, { memo } from 'react';
 import { ListItem } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import TouchableScale from 'react-native-touchable-scale';
@@ -22,7 +22,6 @@ const DEFAULT_CONTAINER_STYLE = {
     },
     shadowOpacity: 0.20,
     shadowRadius: 1.41,
-
     elevation: 2
 };
 

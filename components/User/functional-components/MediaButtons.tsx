@@ -5,13 +5,44 @@ import { removeVideoIdFromDB, saveVideoIdOnDb } from '../../../src/js/Utils/Help
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
-export const MediaButtons = (song: any, media: any, actions: string[], optionalCallback: Function) => {
-    const { isServerError, user, group }: any = useContext(AppContext);
+export const MediaButtons = (song: any, actions: string[], optionalCallback: Function) => {
+    const { isServerError, user, group, socket }: any = useContext(AppContext);
     const navigation = useNavigation();
 
     function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         return ((mediaUser && songUser.uid === mediaUser.uid) ||
             mediaUser.uid === groupOwner);
+    }
+
+    async function emitRemoveSong() {
+        await socket.emit('send-message-remove-song',
+            {
+                song,
+                chatRoom: group.group_name,
+                user_id: user.uid,
+                isRemovingSong: true
+            });
+    }
+
+    async function emitSendMedia() {
+        await socket.emit('send-message-add-song', {
+            song,
+            chatRoom: group.group_name,
+            isAddingSong: true
+        });
+
+        return optionalCallback && optionalCallback();
+    }
+
+    async function voteSong() {
+        await socket.emit('send-message-vote-up',
+            {
+                song,
+                chatRoom: group.group_name,
+                user_id: user.uid,
+                count: ++song.votes_count,
+                isVotingSong: true
+            });
     }
 
     const mediaMap = {
@@ -35,14 +66,7 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
                     isPlaying: false
                 });
 
-                saveVideoIdOnDb(song.videoDetails.videoId, user, group.group_name, async () => {
-                    await media.emit('send-message-add-song', {
-                        song,
-                        chatRoom: media.group.group_name,
-                        isAddingSong: true
-                    });
-                    return optionalCallback && optionalCallback();
-                });
+                await saveVideoIdOnDb(song.videoDetails.videoId, user, group.group_name, emitSendMedia);
             }
         },
         votes: {
@@ -57,14 +81,7 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
                 if (!user) {
                     return navigation.navigate('Guest');
                 }
-                await media.emit('send-message-vote-up',
-                    {
-                        song,
-                        chatRoom: group.group_name,
-                        user_id: user.uid,
-                        count: ++song.votes_count,
-                        isVoting: true
-                    });
+                await voteSong();
             }
         },
         remove: {
@@ -77,14 +94,7 @@ export const MediaButtons = (song: any, media: any, actions: string[], optionalC
                 if (!user) {
                     return navigation.navigate('Guest');
                 }
-                removeVideoIdFromDB(song.videoDetails.videoId, user, group.group_name, async () => {
-                    await media.emit('send-message-remove-song',
-                        {
-                            song,
-                            chatRoom: group.group_name,
-                            user_id: user.uid
-                        });
-                });
+                await removeVideoIdFromDB(song.videoDetails.videoId, user, group.group_name, emitRemoveSong);
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)
         }

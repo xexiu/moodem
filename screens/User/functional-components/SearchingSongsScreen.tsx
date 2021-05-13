@@ -15,12 +15,11 @@ const THIRTY_DAYS = 1000 * 3600 * 24 * 30;
 
 const SearchingSongsScreen = (props: any) => {
     const {
-        media,
         songs,
         searchedText,
         resetLoadingSongs
     } = props.route.params;
-    const { group } = useContext(AppContext) as any;
+    const { group, socket } = useContext(AppContext) as any;
 
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
@@ -57,17 +56,17 @@ const SearchingSongsScreen = (props: any) => {
             case 'NotFoundError':
                 const videoIds = await fetchResults();
                 saveOnLocalStorage(sanitizedText, videoIds, THIRTY_DAYS);
-                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
+                socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
                 break;
             case 'ExpiredError':
                 removeItem(sanitizedText, async () => {
                     const videoIds_1 = await fetchResults();
                     saveOnLocalStorage(sanitizedText, videoIds_1, THIRTY_DAYS);
-                    media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: videoIds_1 });
+                    socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: videoIds_1 });
                 });
                 break;
             default:
-                media.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: data });
+                socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: data });
                 break;
             }
         });
@@ -85,7 +84,7 @@ const SearchingSongsScreen = (props: any) => {
         if (isFocused) {
             getResultsForSearch();
 
-            media.on('get-songs-from-youtube', (data: any) => {
+            socket.on('get-songs-from-youtube', (data: any) => {
                 checkIfAlreadyOnList(songs, data.songs);
                 setAllValues(prevValues => {
                     return {
@@ -100,8 +99,8 @@ const SearchingSongsScreen = (props: any) => {
 
         return () => {
             source.cancel('SearchingSongsScreen Component got unmounted');
-            media.socket.off('search-songs-on-youtube');
-            media.socket.off('get-songs-from-youtube');
+            socket.off('search-songs-on-youtube');
+            socket.off('get-songs-from-youtube');
         };
     }, [isFocused]);
 
@@ -133,7 +132,7 @@ const SearchingSongsScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
-        navigation.navigate(media.group.group_name);
+        navigation.navigate(group.group_name);
     }
 
     if (allValues.isLoading) {
@@ -181,7 +180,6 @@ const SearchingSongsScreen = (props: any) => {
             <MemoizedItems
                 data={allValues.songs}
                 handleOnClickItem={onClickUseCallBack}
-                media={media}
                 buttonActions={['send_media']}
                 optionalCallback={resetSearchingScreen}
             />

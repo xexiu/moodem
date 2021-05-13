@@ -4,8 +4,8 @@
 /* eslint-disable no-plusplus */
 
 const app = require('express')();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const serverHTTP = require('http').Server(app);
+const serverIO = require('socket.io')(serverHTTP);
 const ytdl = require('ytdl-core');
 const mcache = require('memory-cache');
 
@@ -72,12 +72,22 @@ async function getSongs(videoId) {
   // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
   const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
 
+  Object.entries(info).forEach(([attr, value]) => {
+    if (attr !== 'videoDetails') {
+      delete info[attr];
+    }
+  });
+
+  Object.assign(info, {
+    url: audio[0].url
+  });
+
   cleanImageParams(info);
   cleanTitle(info);
 
   if (audio && audio.length) {
-    memCache.put(key, { ...info, ...audio[0] }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
-    return { ...info, ...audio[0] };
+    memCache.put(key, { ...info }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
+    return { ...info };
   }
 
   return {};
@@ -94,7 +104,7 @@ function buildMedia(data) {
     chatRooms[data.chatRoom] = {};
 
     Object.assign(chatRooms[data.chatRoom], {
-      songs: [],
+      songs: [...new Set([])],
       messages: [],
       uids: new Set([])
     });
@@ -129,6 +139,7 @@ function setExtraAttrs(audios, uid) {
     Object.assign(track, {
       id: index,
       isPlaying: false,
+      isVotingSong: false,
       isMediaOnList: false,
       boosts_count: 0,
       votes_count: 0,
@@ -144,13 +155,13 @@ function setExtraAttrs(audios, uid) {
   return audiosArr;
 }
 
-io.use((socket, next) => {
+serverIO.use((socket, next) => {
   socket.uid = socket.handshake.query.uid;
   socket.displayName = socket.handshake.query.displayName;
   next(null, true);
 });
 
-io.on('connection', (socket) => {
+serverIO.on('connection', (socket) => {
   // get songs
   socket.on('search-songs-on-youtube', async (data) => {
     await socket.join(data.chatRoom);
@@ -165,7 +176,7 @@ io.on('connection', (socket) => {
       }
     }
 
-    io.to(data.chatRoom).emit('get-songs-from-youtube', {
+    socket.emit('get-songs-from-youtube', { // send message only to sender-client
       songs: setExtraAttrs(audios, socket.uid)
     });
   });
@@ -175,7 +186,7 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    io.to(socket.id).emit('get-message-welcomeMsg',
+    serverIO.to(socket.id).emit('get-message-welcomeMsg',
       {
         welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`
       });
@@ -188,7 +199,7 @@ io.on('connection', (socket) => {
     buildMedia(data);
 
     if (data.songs) {
-      chatRooms[data.chatRoom].songs = [];
+      chatRooms[data.chatRoom].songs = [...new Set([])];
       chatRooms[data.chatRoom].songs = data.songs;
       chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     }
@@ -199,16 +210,12 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    if (data.song) {
-      chatRooms[data.chatRoom].songs.push(data.song);
-      chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
-    }
-
     const { songs } = chatRooms[data.chatRoom];
 
     songs.sort(compareValues('votes_count'));
+    songs.forEach((song, index) => Object.assign(song, { id: index }));
 
-    io.to(data.chatRoom).emit('get-medias-group', { songs });
+    socket.emit('get-medias-group', { songs }); // send message only to sender-client
   });
 
   // Vote
@@ -218,27 +225,35 @@ io.on('connection', (socket) => {
 
     const { songs } = chatRooms[data.chatRoom];
 
-    for (let i = 0; i < songs.length; i++) {
-      const song = songs[i];
-      const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
-      if (song.id === data.song.id && !userHasVoted) {
-        data.song.voted_users.push(data.user_id);
-        song.voted_users.push(data.user_id);
-        song.votes_count = data.count;
-        data.song.votes_count = data.count;
-        break;
-      }
+    const song = songs[data.song.id];
+
+    const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
+
+    if (song.id === data.song.id && !userHasVoted) {
+      song.voted_users.push(data.user_id);
+      song.votes_count = data.count;
+
+      data.song.voted_users.push(data.user_id);
+      data.song.votes_count = data.count;
     }
-    io.to(data.chatRoom).emit('song-voted', { song: data.song });
+
+    songs.sort(compareValues('votes_count'));
+    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+
+    const { isVotingSong = false } = data;
+    serverIO.to(data.chatRoom).emit('song-voted', { song: data.song, isVotingSong });
   });
 
   // Remove song
   socket.on('send-message-remove-song', async (data) => {
     await socket.join(data.chatRoom);
 
-    chatRooms[data.chatRoom].songs.splice(data.song.id, 1);
-    chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
-    io.to(data.chatRoom).emit('song-removed', { song: data.song });
+    const { songs } = chatRooms[data.chatRoom];
+
+    songs.splice(data.song.id, 1);
+    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+    const { isRemovingSong = false } = data;
+    serverIO.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
   });
 
   // Add song
@@ -246,11 +261,11 @@ io.on('connection', (socket) => {
     await socket.join(data.chatRoom);
 
     if (data.song) {
+      data.song.id = chatRooms[data.chatRoom].songs.length;
       chatRooms[data.chatRoom].songs.push(data.song);
-      chatRooms[data.chatRoom].songs.forEach((song, index) => Object.assign(song, { id: index }));
     }
     const { isAddingSong = false } = data;
-    io.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+    serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
   });
 
   socket.on('get-connected-users', async (data) => {
@@ -259,11 +274,11 @@ io.on('connection', (socket) => {
     if (data.leaveChatRoom) {
       await socket.leave(data.leaveChatRoom);
       chatRooms[data.chatRoom].uids.delete(socket.uid);
-      io.to(data.chatRoom).emit('users-connected-to-room', chatRooms[data.chatRoom].uids.size);
+      serverIO.to(data.chatRoom).emit('users-connected-to-room', chatRooms[data.chatRoom].uids.size);
     } else {
       await socket.join(data.chatRoom);
       chatRooms[data.chatRoom].uids.add(socket.uid);
-      io.to(data.chatRoom).emit('users-connected-to-room', chatRooms[data.chatRoom].uids.size);
+      serverIO.to(data.chatRoom).emit('users-connected-to-room', chatRooms[data.chatRoom].uids.size);
     }
   });
 
@@ -273,7 +288,7 @@ io.on('connection', (socket) => {
     buildMedia(data);
 
     if (chatRooms[data.chatRoom].messages.length) {
-      io.to(data.chatRoom).emit('moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
+      serverIO.to(data.chatRoom).emit('moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
     }
   });
 
@@ -284,7 +299,7 @@ io.on('connection', (socket) => {
 
     if (data.msg) {
       chatRooms[data.chatRoom].messages.push(data.msg);
-      io.to(data.chatRoom).emit('chat-messages', data.msg);
+      serverIO.to(data.chatRoom).emit('chat-messages', data.msg);
     }
   });
 
@@ -327,6 +342,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, '::', () => { // Digital Ocean Open Port
+serverHTTP.listen(3000, '::', () => { // Digital Ocean Open Port
   console.log('listening on *:3000');
 });

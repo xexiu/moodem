@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect } from 'react';
-import { MediaListEmpty } from '../../../screens/User/functional-components/MediaListEmpty';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
+import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
 import { convertVideoIdsFromDB, setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
@@ -12,13 +12,14 @@ import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 
 const Songs = (props: any) => {
-    const { media, navigation } = props;
-    const { group, user, isServerError } = useContext(AppContext) as any;
+    const { navigation } = props;
+    const { group, user, isServerError, socket } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs,
         isLoading,
-        isSongError
+        isSongError,
+        indexItem
     } = useContext(SongsContext) as any;
 
     function dispatchCommon(data: any) {
@@ -38,74 +39,60 @@ const Songs = (props: any) => {
     async function convertVideosIdsCommon() {
         const audios = await convertVideoIdsFromDB(group.group_videoIds);
         setExtraAttrs(audios, user.uid);
-        media.emit('emit-set-medias', { chatRoom: group.group_name, songs: audios });
+        socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: audios });
         saveOnLocalStorage(group.group_name, audios).then(() => dispatchCommon(audios));
     }
 
-    async function getSongs() {
-        await media.on('get-medias-group', (data: any) => {
-            media.socket.off('get-medias-group', getSongs);
+    function getSongs(data: any) {
+        const groupVideoIds = group.group_videoIds && group.group_videoIds.length;
 
-            const groupVideoIds = group.group_videoIds && group.group_videoIds.length;
+        if (data.songs.length !== groupVideoIds) {
+            removeItem(group.group_name);
+            return convertVideosIdsCommon();
+        }
+        return dispatchCommon(data.songs);
+    }
 
-            if (data.songs.length !== groupVideoIds) {
-                if (groupVideoIds) {
-                    removeItem(group.group_name);
-                    return convertVideosIdsCommon();
-                }
+    function getSong(data: any) {
+        return dispatchContextSongs({
+            type: 'set_added_song',
+            value: {
+                addedSong: data.song,
+                isLoading: false,
+                removedSong: null,
+                votedSong: null
             }
-            return dispatchCommon(data.songs);
         });
     }
 
-    async function getSong() {
-        await media.on('song-added', (data: any) => {
-            media.socket.off('song-added', getSong);
-            return dispatchContextSongs({
-                type: 'set_added_song',
-                value: {
-                    addedSong: data.song,
-                    isLoading: false,
-                    removedSong: null,
-                    votedSong: null
-                }
-            });
+    function getRemovedSong(data: any) {
+        return dispatchContextSongs({
+            type: 'set_removed_song',
+            value: {
+                removedSong: data.song,
+                isLoading: false,
+                votedSong: null,
+                addedSong: null
+            }
         });
     }
 
-    async function getRemovedSong() {
-        await media.on('song-removed', (data: any) => {
-            media.socket.off('song-removed', getRemovedSong);
-            return dispatchContextSongs({
-                type: 'set_removed_song',
-                value: {
-                    removedSong: data.song,
-                    isLoading: false,
-                    votedSong: null,
-                    addedSong: null
-                }
-            });
-        });
-    }
-
-    async function getVotedSong() {
-        await media.on('song-voted', (data: any) => {
-            media.socket.off('song-voted', getVotedSong);
-            return dispatchContextSongs({
-                type: 'set_voted_song',
-                value: {
-                    votedSong: data.song,
-                    isLoading: false,
-                    addedSong: null,
-                    removedSong: null
-                }
-            });
+    function getVotedSong(data: any) {
+        return dispatchContextSongs({
+            type: 'set_voted_song',
+            value: {
+                votedSong: data.song,
+                isVotingSong: data.isVotingSong,
+                isLoading: false,
+                addedSong: null,
+                removedSong: null
+            }
         });
     }
 
     if (isSongError) {
         removeItem(group.group_name, () => {
-            media.socket.off('get-medias-group', getSongs);
+            socket.socket.off('get-medias-group', getSongs);
             convertVideosIdsCommon();
         });
     }
@@ -116,7 +103,7 @@ const Songs = (props: any) => {
         savedItem.then((data) => {
             switch (data) {
             case 'NotFoundError':
-                media.socket.off('get-medias-group', getSongs);
+                socket.socket.off('get-medias-group', getSongs);
                 return convertVideosIdsCommon();
             case 'ExpiredError':
                 return convertVideosIdsCommon();
@@ -131,17 +118,30 @@ const Songs = (props: any) => {
 
     useEffect(() => {
         if (!isServerError) {
-            getSongs();
-            getSong();
-            getRemovedSong();
-            getVotedSong();
-            media.emit('emit-medias-group', { chatRoom: group.group_name });
+            socket.on('get-medias-group', getSongs);
+            socket.on('song-added', getSong);
+            socket.on('song-removed', getRemovedSong);
+            socket.on('song-voted', getVotedSong);
+            socket.emit('emit-medias-group', { chatRoom: group.group_name });
         }
 
         return () => {
-            media.socket.off('get-medias-group', getSongs);
+            socket.off('get-medias-group', getSongs);
         };
     }, []);
+
+    const memoizedPlayerSongsListCallBack = useCallback(() => {
+        if (songs && !songs.length) {
+            return (<MediaListEmpty />);
+        }
+
+        return (
+            <MemoizedPlayerSongsList
+                data={songs}
+                buttonActions={(isServerError || isSongError) ? [] : ['votes', 'remove']}
+            />
+        );
+    }, [songs]);
 
     if (isLoading) {
         return (
@@ -160,20 +160,6 @@ const Songs = (props: any) => {
         return dispatchContextSongs({ type: 'update_song_reset' });
     }
 
-    function renderPlayerSongsList() {
-        if (songs && !songs.length) {
-            return (<MediaListEmpty />);
-        }
-
-        return (
-            <MemoizedPlayerSongsList
-                data={songs}
-                media={media}
-                buttonActions={(isServerError || isSongError) ? [] : ['votes', 'remove']}
-            />
-        );
-    }
-
     function renderSearchBar() {
         if (isServerError || isSongError) {
             return null;
@@ -184,15 +170,16 @@ const Songs = (props: any) => {
                 resetLoadingSongs={resetLoadingSongs}
                 songs={songs}
                 navigation={navigation}
-                media={media}
             />
         );
     }
 
+    console.log('SONGS');
+
     return (
         <BodyContainer>
-            { renderSearchBar()}
-            { renderPlayerSongsList()}
+            { renderSearchBar() }
+            { memoizedPlayerSongsListCallBack() }
         </BodyContainer>
     );
 };

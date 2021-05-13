@@ -30,33 +30,31 @@ const MessagesList = (props: any) => {
         );
     };
 
-    function renderItem(message: any) {
-        console.log('Render');
-        return (
-            <CommonFlatListItem
-                contentContainerStyle={{ position: 'relative' }}
-                leftAvatar={{
-                    title: message.user && message.user.displayName[0],
-                    source: { uri: message.user && message.user.photoURL }
-                }}
-                avatarStyle={{ width: 30, height: 30, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 }}
-                topDivider={true}
-                title={setUserTitle(message)}
-                customView={createdAt()}
-                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                subtitle={message.text}
-                subtitleStyle={{ fontSize: 14, color: '#999', fontStyle: 'italic' }}
-                action={Keyboard.dismiss}
-            />
-        );
-    }
+    const renderItem = (message: any) => (
+        <CommonFlatListItem
+            contentContainerStyle={{ position: 'relative' }}
+            leftAvatar={{
+                title: message.user && message.user.displayName[0],
+                source: { uri: message.user && message.user.photoURL }
+            }}
+            avatarStyle={{ width: 30, height: 30, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 }}
+            topDivider={true}
+            title={setUserTitle(message)}
+            titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+            subtitle={message.text}
+            subtitleStyle={{ fontSize: 14, color: '#999', fontStyle: 'italic' }}
+            action={Keyboard.dismiss}
+        />
+    );
     return (
         <CommonFlatList
             data={messages}
-            extraData={messages}
             keyExtractor={item => String(item.id)}
             inverted
-            action={({ item }) => renderItem(item)}
+            action={({ item }) => {
+                console.log('Render');
+                return renderItem(item);
+            }}
         />
     );
 };

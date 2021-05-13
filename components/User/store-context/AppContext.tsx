@@ -11,6 +11,7 @@ type State = {
     group: groupType;
     isServerError: boolean;
     isLoading: boolean;
+    socket: any
 };
 
 const initialValue: State = {
@@ -22,7 +23,8 @@ const initialValue: State = {
         group_videoIds: []
     },
     isServerError: false,
-    isLoading: true
+    isLoading: true,
+    socket: null
 };
 
 const reducer = (state: any, action: any) => {

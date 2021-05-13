@@ -5,7 +5,7 @@ import { Text, TextInput, View } from 'react-native';
 
 const DEFAULT_LENGTH = 300;
 
-const CommonTextInput = ({ navigation, user, group, media }: any) => {
+const CommonTextInput = ({ navigation, user, group, socket }: any) => {
     const [value, onChangeText] = useState('');
     const [maxCharacters, updateMaxCharacters] = useState(DEFAULT_LENGTH);
     const inputRef = useRef(null);
@@ -49,7 +49,8 @@ const CommonTextInput = ({ navigation, user, group, media }: any) => {
                     } else if (value) {
                         onChangeText('');
                         updateMaxCharacters(DEFAULT_LENGTH);
-                        media.emit('chat-messages',
+                        console.log('EMIT CHAT MSG');
+                        socket.emit('chat-messages',
                             {
                                 chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`,
                                 msg: buildMsg(),
@@ -66,7 +67,7 @@ CommonTextInput.propTypes = {
     navigation: PropTypes.object,
     user: PropTypes.any,
     group: PropTypes.any,
-    media: PropTypes.any
+    socket: PropTypes.any
 };
 
 export default memo(CommonTextInput);

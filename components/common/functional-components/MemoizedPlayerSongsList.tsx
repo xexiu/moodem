@@ -7,29 +7,25 @@ import Player from './Player';
 const MemoizedPlayerSongsList = (props: any) => {
     const {
         data,
-        media,
         buttonActions
     } = props;
 
     const {
         dispatchContextSongs,
-        indexItem,
-        removedSong,
-        votedSong
+        indexItem
     } = useContext(SongsContext) as any;
 
-    const handleOnClickItem = useCallback((index: number) => {
-        return dispatchContextSongs({
-            type: 'update_song_click_play_pause',
-            value: {
-                indexItem: index,
-                index,
-                removedSong: null,
-                votedSong: null,
-                addedSong: null
-            }
-        });
-    }, []);
+    const handleOnClickItem = useCallback((index: number) => dispatchContextSongs({
+        type: 'update_song_click_play_pause',
+        value: {
+            indexItem: index,
+            index,
+            removedSong: null,
+            votedSong: null,
+            addedSong: null
+        }
+    }), []);
+
 
     return (
         <View style={{ flex: 1 }}>
@@ -42,10 +38,7 @@ const MemoizedPlayerSongsList = (props: any) => {
             <MemoizedItems
                 data={data}
                 handleOnClickItem={handleOnClickItem}
-                media={media}
                 buttonActions={buttonActions}
-                removedSong={removedSong}
-                votedSong={votedSong}
             />
         </View>
     );

@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
 import { View } from 'react-native';
 import 'react-native-gesture-handler';
+import io from 'socket.io-client';
 import BgImage from './components/common/functional-components/BgImage';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
 import PreLoader from './components/common/functional-components/PreLoader';
@@ -13,12 +14,25 @@ import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
 import { getGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
+import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';
 
 const Stack = createStackNavigator();
 const controller = new AbortController();
 
+function getUserUidAndName(user: any) {
+    let guid = Number(Math.random() * 36);
+    const guestUID = Date.now().toString(36) + (guid++ % 36).toString(36) + Math.random().toString(36).slice(2, 4);
+
+    if (user) {
+        return `uid=${user.uid}&displayName=${user.displayName}`;
+    }
+
+    return `uid=${guestUID}&displayName=Guest`;
+}
+
 const App = function Moodem() {
     const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
+    const socket = io(IP, { ...socketConf, query: getUserUidAndName(user) } as any);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
@@ -34,7 +48,8 @@ const App = function Moodem() {
                                 groups: groups.length === 1 ? [] : groups,
                                 group: groups[0],
                                 isLoading: false,
-                                isServerError
+                                isServerError,
+                                socket
                             }
                         });
                     })

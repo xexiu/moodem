@@ -5,7 +5,6 @@ const SuggestionList = (props: any) => {
     const {
         songs,
         navigation,
-        media,
         suggestions
     } = props;
 
@@ -31,7 +30,6 @@ const SuggestionList = (props: any) => {
                             key={index}
                             onPress={() => {
                                 navigation.navigate('SearchingSongsScreen', {
-                                    media,
                                     songs,
                                     searchedText: suggestion
                                 });

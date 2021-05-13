@@ -8,7 +8,7 @@ import { AppContext } from '../../../components/User/store-context/AppContext';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 
 export const SideBarTopHeader = (props: any) => {
-    const { dispatch }: any = useContext(AppContext);
+    const { dispatchContextApp }: any = useContext(AppContext);
     const {
         navigation,
         params
@@ -16,7 +16,7 @@ export const SideBarTopHeader = (props: any) => {
 
     const handlerGoHome = () => {
         const reset = new Promise(resolve => {
-            dispatch({
+            dispatchContextApp({
                 type: 'group', value: {
                     group_name: 'Moodem',
                     group_id: 0
@@ -33,7 +33,7 @@ export const SideBarTopHeader = (props: any) => {
     const handleLogOut = () => {
         return firebase.auth().signOut().then(() => {
             const reset = new Promise(resolve => {
-                dispatch({ type: 'reset' });
+                dispatchContextApp({ type: 'reset' });
                 resolve(true);
             });
             reset.then(() => {

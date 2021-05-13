@@ -1,9 +1,7 @@
-import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import { AbstractMedia } from '../../common/functional-components/AbstractMedia';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CommonTextInput from '../../common/functional-components/CommonTextInput';
@@ -14,24 +12,24 @@ import MessagesList from '../functional-components/MessagesList';
 import { AppContext } from '../store-context/AppContext';
 
 const ChatRoom = (props: any) => {
-    const { user, group }: any = useContext(AppContext);
-    const isFocused = useIsFocused();
+    const { user, group, socket }: any = useContext(AppContext);
     const { navigation } = props;
     const [messages = [], setMessages] = useState([]);
-    const media = new AbstractMedia();
 
     useEffect(() => {
         console.log('5. ChatRoom');
-        media.on('chat-messages', getMessage);
-        media.on('moodem-chat', setMessageList);
-        media.emit('moodem-chat',
+        socket.on('chat-messages', getMessage);
+        socket.on('moodem-chat', setMessageList);
+        socket.emit('moodem-chat',
             { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, user });
 
         return () => {
             console.log('5. OFF EFFECT ChatRoom');
-            // media.destroy();
+            // socket.disconnect();
         };
-    }, [messages.length, isFocused, group]);
+    }, []);
+
+    console.log('CHATTT');
 
     const getMessage = (msg: never) => {
         console.log('Heyyy', msg);
@@ -72,7 +70,7 @@ const ChatRoom = (props: any) => {
                         navigation={navigation}
                         user={user}
                         group={group}
-                        media={media}
+                        socket={socket}
                     />
                 </View>
             </View>

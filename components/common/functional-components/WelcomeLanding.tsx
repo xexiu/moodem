@@ -5,7 +5,6 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContextProvider } from '../../User/store-context/SongsContext';
-import { AbstractMedia } from './AbstractMedia';
 import BodyContainer from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
 
@@ -13,14 +12,13 @@ let firstServerError = false;
 
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
-    const { dispatchContextApp, group, isServerError }: any = useContext(AppContext);
-    const media = new AbstractMedia();
+    const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef(null);
 
     useEffect(() => {
-        media.on('disconnect', () => {
+        socket.on('disconnect', () => {
             if (isServerError) {
-                media.socket.open();
+                socket.open();
                 return dispatchContextApp({
                     type: 'server_error', value: {
                         isServerError: true
@@ -29,8 +27,8 @@ const WelcomeLanding = (props: any) => {
             }
         });
 
-        media.on('connect', () => {
-            media.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
+        socket.on('connect', () => {
+            socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
             if (isServerError) {
                 return dispatchContextApp({
                     type: 'server_error', value: {
@@ -40,11 +38,11 @@ const WelcomeLanding = (props: any) => {
             }
         });
 
-        media.on('get-message-welcomeMsg', (data: any) => {
+        socket.on('get-message-welcomeMsg', (data: any) => {
             toastRef.current.show(data.welcomeMsg, 1000);
         });
 
-        media.on('connect_error', (error: any) => {
+        socket.on('connect_error', (error: any) => {
             // Send error to sentry server to catch downsides of server
             toastRef.current.show('Connecting to server...', DURATION.FOREVER);
             if (!isServerError && !firstServerError) {
@@ -60,8 +58,8 @@ const WelcomeLanding = (props: any) => {
         });
         return () => {
             console.log('OFF Effect MediaItems');
-            media.socket.off('emit-message-welcomeMsg');
-            media.socket.off('get-message-welcomeMsg');
+            socket.off('emit-message-welcomeMsg');
+            socket.off('get-message-welcomeMsg');
         };
     }, [group.group_name, isServerError]);
 
@@ -72,7 +70,6 @@ const WelcomeLanding = (props: any) => {
             />
             <SongsContextProvider>
                 <Songs
-                    media={media}
                     navigation={navigation}
                 />
             </SongsContextProvider>
