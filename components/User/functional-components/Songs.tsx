@@ -180,8 +180,6 @@ const Songs = (props: any) => {
         );
     }
 
-    console.log('SONGS');
-
     return (
         <BodyContainer>
             { renderSearchBar() }
