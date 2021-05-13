@@ -10,7 +10,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalC
             title={item.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}  ${item.id}`}
+            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {

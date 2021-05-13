@@ -91,7 +91,7 @@ const Songs = (props: any) => {
 
     if (isSongError) {
         removeItem(group.group_name, () => {
-            socket.socket.off('get-medias-group', getSongs);
+            socket.off('get-medias-group', getSongs);
             convertVideosIdsCommon();
         });
     }
@@ -102,7 +102,7 @@ const Songs = (props: any) => {
         savedItem.then((data) => {
             switch (data) {
             case 'NotFoundError':
-                socket.socket.off('get-medias-group', getSongs);
+                socket.off('get-medias-group', getSongs);
                 return convertVideosIdsCommon();
             case 'ExpiredError':
                 return convertVideosIdsCommon();
