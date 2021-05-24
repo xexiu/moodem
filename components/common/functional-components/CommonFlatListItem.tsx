@@ -9,12 +9,10 @@ import { isEmpty } from '../../../src/js/Utils/common/checkers';
 const DEFAULT_AVATAR_STYLE = { width: 50, height: 50, borderRadius: 5, borderColor: '#ddd', borderWidth: 1 };
 const DEFAULT_CONTAINER_STYLE = {
     position: 'relative',
-    paddingTop: 5,
-    marginLeft: 10,
-    marginRight: 10,
+    padding: 5,
+    marginLeft: 5,
+    marginRight: 5,
     marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 0,
     shadowColor: '#000',
     shadowOffset: {
         width: 0,

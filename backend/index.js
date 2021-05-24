@@ -40,8 +40,7 @@ function cleanTitle(info) {
 }
 
 function cleanImageParams(info) {
-  if (info && info.videoDetails && info.videoDetails.thumbnails
-    && info.videoDetails.thumbnails.length) {
+  if (info.videoDetails && info.videoDetails.thumbnails) {
     if (info.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
       info.videoDetails.thumbnails[0].url = info.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
       return info.videoDetails.thumbnails[0].url;
@@ -50,7 +49,7 @@ function cleanImageParams(info) {
   return info.videoDetails.thumbnails[0].url;
 }
 
-async function getSongs(videoId) {
+async function getSong(videoId) {
   const key = `__youtube-songs__${videoId}`;
 
   const audioMem = memCache.get(key);
@@ -59,6 +58,7 @@ async function getSongs(videoId) {
     Object.assign(audioMem, {
       isCachedInMemory: true
     });
+
     return audioMem;
   }
 
@@ -72,22 +72,23 @@ async function getSongs(videoId) {
   // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
   const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
 
-  Object.entries(info).forEach(([attr, value]) => {
-    if (attr !== 'videoDetails') {
-      delete info[attr];
-    }
-  });
-
-  Object.assign(info, {
-    url: audio[0].url
-  });
-
-  cleanImageParams(info);
-  cleanTitle(info);
-
   if (audio && audio.length) {
-    memCache.put(key, { ...info }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
-    return { ...info };
+    // eslint-disable-next-line no-restricted-syntax
+    for (const attr in audio[0]) {
+      if (attr !== 'url') {
+        delete audio[0][attr];
+      }
+    }
+
+    Object.assign(audio[0], {
+      videoDetails: info.videoDetails
+    });
+
+    cleanImageParams(audio[0]);
+    cleanTitle(audio[0]);
+
+    memCache.put(key, { ...audio[0] }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
+    return { ...audio[0] };
   }
 
   return {};
@@ -170,7 +171,7 @@ serverIO.on('connection', (socket) => {
     let audios = [];
     if (data.videoIds) {
       try {
-        audios = await Promise.all(data.videoIds.map(async (videoId) => getSongs(videoId)));
+        audios = await Promise.all(data.videoIds.map(async (videoId) => getSong(videoId)));
       } catch (error) {
         // send error to sentry or other server
       }
@@ -218,6 +219,28 @@ serverIO.on('connection', (socket) => {
     serverIO.to(socket.id).emit('get-medias-group', { songs }); // send message only to sender-client
   });
 
+  //  Song Error
+  socket.on('send-song-error', async (data) => {
+    await socket.join(data.chatRoom);
+    buildMedia(data);
+
+    const audio = await getSong(data.song.videoDetails.videoId);
+    const { songs } = chatRooms[data.chatRoom];
+
+    const song = songs[data.song.id];
+
+    if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
+      Object.assign(song, {
+        url: audio.url
+      });
+      Object.assign(data.song, {
+        url: audio.url
+      });
+    }
+
+    serverIO.to(data.chatRoom).emit('song-error', { song: data.song });
+  });
+
   // Vote
   socket.on('send-message-vote-up', async (data) => {
     await socket.join(data.chatRoom);
@@ -247,6 +270,7 @@ serverIO.on('connection', (socket) => {
   // Remove song
   socket.on('send-message-remove-song', async (data) => {
     await socket.join(data.chatRoom);
+    buildMedia(data);
 
     const { songs } = chatRooms[data.chatRoom];
 
@@ -269,6 +293,7 @@ serverIO.on('connection', (socket) => {
   });
 
   socket.on('get-connected-users', async (data) => {
+    await socket.join(data.chatRoom);
     buildMedia(data);
 
     if (data.leaveChatRoom) {
@@ -284,7 +309,6 @@ serverIO.on('connection', (socket) => {
 
   socket.on('moodem-chat', async (data) => {
     await socket.join(data.chatRoom);
-
     buildMedia(data);
 
     if (chatRooms[data.chatRoom].messages.length) {
@@ -339,6 +363,7 @@ serverIO.on('connection', (socket) => {
     // socket.removeAllListeners();
     delete socket.id;
     delete socket.uid;
+    delete socket.displayName;
   });
 });
 

@@ -17,8 +17,7 @@ const Songs = (props: any) => {
     const {
         dispatchContextSongs,
         songs,
-        isLoading,
-        isSongError
+        isLoading
     } = useContext(SongsContext) as any;
 
     function dispatchCommon(data: any) {
@@ -27,10 +26,10 @@ const Songs = (props: any) => {
             value: {
                 songs: [...data],
                 isLoading: false,
-                isSongError: false,
                 removedSong: null,
                 votedSong: null,
-                addedSong: null
+                addedSong: null,
+                transformedSong: null
             }
         });
     }
@@ -59,6 +58,20 @@ const Songs = (props: any) => {
                 addedSong: data.song,
                 isLoading: false,
                 removedSong: null,
+                votedSong: null,
+                transformedSong: null
+            }
+        });
+    }
+
+    function getSongWithError(data: any) {
+        return dispatchContextSongs({
+            type: 'song_error',
+            value: {
+                transformedSong: data.song,
+                addedSong: null,
+                isLoading: false,
+                removedSong: null,
                 votedSong: null
             }
         });
@@ -84,15 +97,9 @@ const Songs = (props: any) => {
                 isVotingSong: data.isVotingSong,
                 isLoading: false,
                 addedSong: null,
-                removedSong: null
+                removedSong: null,
+                transformedSong: null
             }
-        });
-    }
-
-    if (isSongError) {
-        removeItem(group.group_name, () => {
-            socket.off('get-medias-group', getSongs);
-            convertVideosIdsCommon();
         });
     }
 
@@ -121,6 +128,7 @@ const Songs = (props: any) => {
             socket.on('song-added', getSong);
             socket.on('song-removed', getRemovedSong);
             socket.on('song-voted', getVotedSong);
+            socket.on('song-error', getSongWithError);
             socket.emit('emit-medias-group', { chatRoom: group.group_name });
         }
 
@@ -137,10 +145,10 @@ const Songs = (props: any) => {
         return (
             <MemoizedPlayerSongsList
                 data={songs}
-                buttonActions={(isServerError || isSongError) ? [] : ['votes', 'remove']}
+                buttonActions={['votes', 'remove']}
             />
         );
-    }, [songs]);
+    }, [songs.length, isServerError]);
 
     if (isLoading) {
         return (
@@ -167,7 +175,7 @@ const Songs = (props: any) => {
     })();
 
     function renderSearchBar() {
-        if (isServerError || isSongError) {
+        if (isServerError) {
             return null;
         }
 

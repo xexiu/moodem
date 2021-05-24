@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Icon } from 'react-native-elements';
 import BasePlayer from './BasePlayer';
 import PlayerControl from './PlayerControl';
@@ -117,4 +117,4 @@ const Player = (props: any) => {
     );
 };
 
-export default memo(Player);
+export default Player;

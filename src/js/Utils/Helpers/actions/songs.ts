@@ -11,15 +11,14 @@ export function cleanVideoTitle(info: any) {
     return info.videoDetails.title;
 }
 
-export function cleanVideoImageParams(info: any) {
-    if (info && info.videoDetails && info.videoDetails.thumbnails
-        && info.videoDetails.thumbnails.length) {
-        if (info.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
-            info.videoDetails.thumbnails[0].url = info.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
-            return info.videoDetails.thumbnails[0].url;
+export function cleanVideoImageParams(audio: any) {
+    if (audio.videoDetails && audio.videoDetails.thumbnails.length) {
+        if (audio.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
+            audio.videoDetails.thumbnails[0].url = audio.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
+            return audio.videoDetails.thumbnails[0].url;
         }
     }
-    return info.videoDetails.thumbnails[0].url;
+    return audio.videoDetails.thumbnails[0].url;
 }
 
 export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
@@ -41,6 +40,7 @@ export function setExtraAttrs(audios: any, uid: string) {
         Object.assign(track, {
             id: index,
             isPlaying: false,
+            isVotingSong: false,
             isMediaOnList: true,
             boosts_count: 0,
             votes_count: 0,
@@ -60,11 +60,22 @@ export async function convertVideoIdYtdl(videoId: string) {
     const info = await ytdl.getInfo(videoId);
     const audio = info.formats.filter((format: any) => format.hasAudio && format.hasVideo);
 
-    cleanVideoImageParams(info);
-    cleanVideoTitle(info);
-
     if (audio && audio.length) {
-        return { ...info, ...audio[0] };
+        // tslint:disable-next-line:forin
+        for (const attr in audio[0]) {
+            if (attr !== 'url') {
+                delete audio[0][attr];
+            }
+        }
+
+        Object.assign(audio[0], {
+            videoDetails: info.videoDetails
+        });
+
+        cleanVideoImageParams(audio[0]);
+        cleanVideoTitle(audio[0]);
+
+        return { ...audio[0] };
     }
 
     return {};

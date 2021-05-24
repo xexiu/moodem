@@ -2,6 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
+import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
 const BasePlayer = (props: any) => {
@@ -15,7 +16,8 @@ const BasePlayer = (props: any) => {
         items
     } = props;
     const isFocused = useIsFocused();
-    const { dispatchContextSongs, isSongError } = useContext(SongsContext) as any;
+    const { group, socket } = useContext(AppContext) as any;
+    const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -96,14 +98,8 @@ const BasePlayer = (props: any) => {
                 }}
                 onError={(error) => {
                     // Send Error to Sentry
-                    if (!isSongError) {
-                        dispatchContextSongs({
-                            type: 'song_error',
-                            value: {
-                                isSongError: true
-                            }
-                        });
-                    }
+                    console.log('Song Error', error);
+                    socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
                 }}
                 paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {

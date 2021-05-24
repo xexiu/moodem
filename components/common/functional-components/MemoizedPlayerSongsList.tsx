@@ -22,7 +22,8 @@ const MemoizedPlayerSongsList = (props: any) => {
             index,
             removedSong: null,
             votedSong: null,
-            addedSong: null
+            addedSong: null,
+            transformedSong: null
         }
     }), []);
 

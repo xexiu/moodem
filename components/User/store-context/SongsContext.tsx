@@ -14,10 +14,10 @@ type Props = {
 type Context = {
     songs: (songType | songType)[];
     isLoading: boolean;
-    isSongError: boolean;
     removedSong: songType,
     addedSong: songType,
     votedSong: songType,
+    transformedSong: songType,
     indexItem: number,
     index: number,
     isVotingSong: boolean
@@ -28,10 +28,10 @@ const initialValue: Context = {
     indexItem: 0,
     index: 0,
     isLoading: true,
-    isSongError: false,
     removedSong: null,
     addedSong: null,
     votedSong: null,
+    transformedSong:  null,
     isVotingSong: false
 };
 
@@ -171,20 +171,30 @@ function setVotedSong(result: Context, action: actionType) {
     return { ...result, ...value };
 }
 
+function transformSongWithError(result: Context, action: actionType) {
+    const { songs } = result;
+    const { value } = action;
+    const { transformedSong } = value;
+
+    Object.assign(songs[transformedSong.id], {
+        url: transformedSong.url
+    });
+
+    return { ...result, ...value };
+}
+
 const MAP_ACTIONS = {
     update_song_reset: resetSongs,
     set_songs: setSongs,
     set_removed_song: removeSong,
     set_added_song: addSong,
     set_voted_song: setVotedSong,
+    song_error: transformSongWithError,
     update_song_click_play_pause: updateSong
 } as any;
 
 function updateState(result: Context, action: actionType) {
-    if (action.type === 'song_error') {
-        return { ...result, ...action.value };
-    }
-    return MAP_ACTIONS[action.type](result, action) || result;
+    return MAP_ACTIONS[action.type](result, action) || { ...initialValue };
 }
 
 const reducer = (state: any, action: any) => {

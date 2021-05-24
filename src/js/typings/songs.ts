@@ -6,5 +6,6 @@ export type songType = {
     voted_users?: (string)[],
     votes_count?: number,
     isPlaying?: boolean,
-    videoDetails: videoDetailsType
+    videoDetails: videoDetailsType,
+    url: string
 };

@@ -19,7 +19,7 @@ const SearchingSongsScreen = (props: any) => {
         searchedText,
         resetLoadingSongs
     } = props.route.params;
-    const { group, socket, isServerError } = useContext(AppContext) as any;
+    const { group, socket } = useContext(AppContext) as any;
 
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
@@ -123,7 +123,7 @@ const SearchingSongsScreen = (props: any) => {
             <MemoizedItems
                 data={allValues.songs}
                 handleOnClickItem={onClickUseCallBack}
-                buttonActions={isServerError ? [] : ['send_media']}
+                buttonActions={['send_media']}
                 optionalCallback={resetSearchingScreen}
             />
         );

@@ -8,17 +8,20 @@ import { SongsContextProvider } from '../../User/store-context/SongsContext';
 import BodyContainer from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
 
-let firstServerError = false;
-
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef(null);
 
     useEffect(() => {
+        if (socket.disconnected) {
+            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
+        }
+
         socket.on('disconnect', () => {
-            if (isServerError) {
-                socket.open();
+            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
+
+            if (!isServerError) {
                 return dispatchContextApp({
                     type: 'server_error', value: {
                         isServerError: true
@@ -27,8 +30,11 @@ const WelcomeLanding = (props: any) => {
             }
         });
 
-        socket.on('connect', () => {
-            socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
+        socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
+
+        socket.on('get-message-welcomeMsg', (data: any) => {
+            toastRef.current.show(data.welcomeMsg, 1000);
+
             if (isServerError) {
                 return dispatchContextApp({
                     type: 'server_error', value: {
@@ -37,29 +43,12 @@ const WelcomeLanding = (props: any) => {
                 });
             }
         });
-
-        socket.on('get-message-welcomeMsg', (data: any) => {
-            toastRef.current.show(data.welcomeMsg, 1000);
-        });
-
-        socket.on('connect_error', (error: any) => {
-            // Send error to sentry server to catch downsides of server
-            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
-            if (!isServerError && !firstServerError) {
-                firstServerError = true;
-                console.log('Error connecting to server: ', error.message);
-
-                return dispatchContextApp({
-                    type: 'server_error', value: {
-                        isServerError: true
-                    }
-                });
-            }
-        });
         return () => {
             console.log('OFF Effect MediaItems');
             socket.off('emit-message-welcomeMsg');
             socket.off('get-message-welcomeMsg');
+            socket.off('disconnect');
+            socket.off('disconnect');
         };
     }, [group.group_name, isServerError]);
 

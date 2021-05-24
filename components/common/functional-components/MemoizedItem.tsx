@@ -3,12 +3,14 @@ import { MediaButtons } from '../../../components/User/functional-components/Med
 import CommonFlatListItem from './CommonFlatListItem';
 
 const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalCallback }: any) => {
+    console.log('Render Item');
     return (
         <CommonFlatListItem
             bottomDivider
             topDivider={true}
             title={item.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
+            titleStyle={{ paddingRight: 5, paddingBottom: 7}}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
             subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
