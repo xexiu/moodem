@@ -51,6 +51,8 @@ target 'moodem' do
   # react-native-cli autolinking
   use_native_modules!
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   post_install do |installer|
     flipper_post_install(installer)
     installer.pods_project.targets.each do |target|

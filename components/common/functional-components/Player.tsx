@@ -31,13 +31,14 @@ const Player = (props: any) => {
                     borderColor: '#eee',
                     padding: 10,
                     borderRadius: 20,
-                    width: 40
+                    width: 40,
+                    position: 'relative'
                 }}
                 iconType='font-awesome'
                 iconSize={18}
                 action='prev'
                 iconName='step-backward'
-                containerStyle={{ position: 'absolute', top: 20, left: 100, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 20, left: 80, zIndex: 100 }}
                 nextPrevSong={item.id - 1}
                 item={item}
                 items={items}
@@ -53,7 +54,7 @@ const Player = (props: any) => {
                     backgroundColor: '#fff'
                 }}
                 action='shouldRepeat'
-                containerStyle={{ position: 'absolute', top: 70, left: 140, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 70, left: 120, zIndex: 100 }}
             />
             <PlayerControlPlayPause
                 ref={playPauseRef}
@@ -84,7 +85,7 @@ const Player = (props: any) => {
                 iconSize={18}
                 action='next'
                 iconName='step-forward'
-                containerStyle={{ position: 'absolute', top: 20, right: 100, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 20, right: 80, zIndex: 100 }}
                 nextPrevSong={item.id + 1}
                 item={item}
                 items={items}
@@ -92,7 +93,7 @@ const Player = (props: any) => {
             />
             <SongInfoTitle songTitle={item.videoDetails.title} />
             <Icon
-                containerStyle={{ position: 'absolute', top: 70, right: 140, zIndex: 100 }}
+                containerStyle={{ position: 'absolute', top: 70, right: 120, zIndex: 100 }}
                 raised={false}
                 reverse={false}
                 iconStyle={{

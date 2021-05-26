@@ -3,7 +3,7 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
-const FAQ = (props: any) => {
+const FAQScreen = (props: any) => {
     const { navigation } = props;
     const isFocused = useIsFocused();
 
@@ -40,4 +40,4 @@ const FAQ = (props: any) => {
     );
 };
 
-export default memo(FAQ);
+export default memo(FAQScreen);

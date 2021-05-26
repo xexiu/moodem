@@ -98,6 +98,7 @@ const BasePlayer = (props: any) => {
                 }}
                 onError={(error) => {
                     // Send Error to Sentry
+                    playPauseRef.current.setIsBuffering(true);
                     console.log('Song Error', error);
                     socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
                 }}

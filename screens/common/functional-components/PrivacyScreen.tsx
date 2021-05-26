@@ -3,7 +3,7 @@ import { useIsFocused } from '@react-navigation/native';
 import React, {memo, useEffect} from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
-const Privacy = (props: any) => {
+const PrivacyScreen = (props: any) => {
     const { navigation } = props;
     const isFocused = useIsFocused();
 
@@ -36,4 +36,4 @@ const Privacy = (props: any) => {
     );
 };
 
-export default memo(Privacy);
+export default memo(PrivacyScreen);

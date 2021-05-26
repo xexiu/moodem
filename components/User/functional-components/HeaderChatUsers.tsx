@@ -36,7 +36,6 @@ const HeaderChatUsers = (props: any) => {
         return () => {
             AppState.removeEventListener('change', getInactiveUsers);
             socket.emit('get-connected-users', { leaveChatRoom: chatRoom, chatRoom });
-            socket.disconnect();
         };
     }, [isFocused]);
 

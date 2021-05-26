@@ -227,18 +227,22 @@ serverIO.on('connection', (socket) => {
     const audio = await getSong(data.song.videoDetails.videoId);
     const { songs } = chatRooms[data.chatRoom];
 
-    const song = songs[data.song.id];
-
-    if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
-      Object.assign(song, {
-        url: audio.url
-      });
-      Object.assign(data.song, {
-        url: audio.url
-      });
-    }
+    Object.assign(data.song, {
+      url: audio.url
+    });
 
     serverIO.to(data.chatRoom).emit('song-error', { song: data.song });
+
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+
+      if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
+        Object.assign(song, {
+          url: audio.url
+        });
+        break;
+      }
+    }
   });
 
   // Vote
@@ -313,13 +317,14 @@ serverIO.on('connection', (socket) => {
 
     if (chatRooms[data.chatRoom].messages.length) {
       serverIO.to(data.chatRoom).emit('moodem-chat', chatRooms[data.chatRoom].messages.slice().reverse());
+    } else {
+      serverIO.to(data.chatRoom).emit('moodem-chat', []);
     }
   });
 
   socket.on('chat-messages', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
-    console.log('SEEND MSG FROM SERVER', data);
 
     if (data.msg) {
       chatRooms[data.chatRoom].messages.push(data.msg);
@@ -359,7 +364,7 @@ serverIO.on('connection', (socket) => {
   // });
 
   socket.on('disconnect', (reason) => {
-    console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
+    // console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
     // socket.removeAllListeners();
     delete socket.id;
     delete socket.uid;
@@ -368,5 +373,5 @@ serverIO.on('connection', (socket) => {
 });
 
 serverHTTP.listen(3000, '::', () => { // Digital Ocean Open Port
-  console.log('listening on *:3000');
+  // console.log('listening on *:3000');
 });

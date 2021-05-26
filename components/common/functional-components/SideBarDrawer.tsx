@@ -6,7 +6,7 @@ import SideBarTopAvatar from '../../../components/common/functional-components/S
 import Login from '../../../components/Guest/class-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
-import ChatRoom from '../../User/class-components/ChatRoom';
+import ChatRoom from '../../User/functional-components/ChatRoom';
 import { Groups } from '../../User/functional-components/Groups';
 import { Profile } from '../../User/functional-components/Profile';
 import { AppContext } from '../../User/store-context/AppContext';

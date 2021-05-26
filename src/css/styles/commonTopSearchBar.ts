@@ -6,7 +6,7 @@ const {
 
 export const commonTopSeachBarContainer = {
     width: width - 50,
-    marginLeft: 40,
+    marginLeft: 35,
     padding: 0,
     backgroundColor: '#fff',
     borderRadius: 25,

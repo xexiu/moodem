@@ -37,16 +37,13 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
             containerStyle={{
                 position: 'absolute',
                 zIndex: 10,
-                top: 35,
-                borderWidth: 1,
-                borderColor: '#eee',
-                borderRadius: 50,
-                width: 50
+                top: 25,
+                width: 100
             }}
             Component={TouchableScale}
             name={!isPlaying ? 'play' : 'pause'}
             type={!isPlaying ? 'foundation' : 'AntDesign'}
-            size={25}
+            size={45}
             color='#dd0031'
             onPress={() => {
                 return handleOnClickItem(item.id);

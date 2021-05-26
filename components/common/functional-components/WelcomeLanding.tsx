@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
@@ -13,8 +14,19 @@ const WelcomeLanding = (props: any) => {
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef(null);
 
+    const getUserBackOnline = (data: any) => {
+        if (data !== 'active') {
+            socket.open();
+        } else {
+            socket.open();
+        }
+    };
+
     useEffect(() => {
+        AppState.addEventListener('change', getUserBackOnline);
+
         if (socket.disconnected) {
+            socket.open();
             toastRef.current.show('Connecting to server...', DURATION.FOREVER);
         }
 
@@ -44,7 +56,7 @@ const WelcomeLanding = (props: any) => {
             }
         });
         return () => {
-            console.log('OFF Effect MediaItems');
+            AppState.removeEventListener('change', getUserBackOnline);
             socket.off('emit-message-welcomeMsg');
             socket.off('get-message-welcomeMsg');
             socket.off('disconnect');

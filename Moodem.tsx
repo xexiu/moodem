@@ -31,7 +31,7 @@ function getUserUidAndName(user: any) {
 }
 
 const App = function Moodem() {
-    const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
+    const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');

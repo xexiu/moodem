@@ -6,7 +6,7 @@ import { getCurrentYear } from '../../../src/js/Utils/common/date';
 
 const year = getCurrentYear();
 
-const Copyright = (props: any) => {
+const CopyrightScreen = (props: any) => {
     const { navigation } = props;
     const isFocused = useIsFocused();
 
@@ -63,4 +63,4 @@ const Copyright = (props: any) => {
     );
 };
 
-export default memo(Copyright);
+export default memo(CopyrightScreen);
