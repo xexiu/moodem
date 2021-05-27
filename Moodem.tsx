@@ -12,7 +12,7 @@ import SideBarDrawer from './components/common/functional-components/SideBarDraw
 import { AppContext } from './components/User/store-context/AppContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
-import { getDefaultGroup, getGroups } from './src/js/Utils/Helpers/actions/groups';
+import { getGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';
 
