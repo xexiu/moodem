@@ -36,7 +36,7 @@ const Songs = (props: any) => {
 
     async function convertVideosIdsCommon() {
         const audios = await convertVideoIdsFromDB(group.group_videoIds);
-        setExtraAttrs(audios, user.uid);
+        setExtraAttrs(audios, user?.uid);
         socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: audios });
         saveOnLocalStorage(group.group_name, audios).then(() => dispatchCommon(audios));
     }

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as yup from 'yup';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import { CustomModal } from '../../../components/common/functional-components/CustomModal';
@@ -151,9 +150,6 @@ const Login = (props: any) => {
                     handlerResetPasswordModalVisible={setIsResetPasswordModalVisible}
                 />
             }
-            <KeyboardSpacer
-                topSpacing={0}
-            />
         </View>
     );
 };

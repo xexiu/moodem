@@ -73,15 +73,13 @@ export const getGroups = (user: any) => {
     const allUserGroups = [] as any;
     const refOwnedGroups = firebase.database().ref().child(`Groups/${user.uid}`);
 
-    return new Promise((resolve, reject): Promise<void> => {
-        return getDefaultGroup()
-        .then(defaultGroup => {
-            getOwnedGroupsFromDatabase(refOwnedGroups)
+    return new Promise(async (resolve, reject): Promise<void> => {
+        const defaultGroup = await getDefaultGroup();
+        getOwnedGroupsFromDatabase(refOwnedGroups)
             .then(groupsOwned => {
                 allUserGroups.push(defaultGroup, ...groupsOwned as any);
                 return resolve(allUserGroups);
             })
             .catch(err => reject(err));
-        });
     });
 };

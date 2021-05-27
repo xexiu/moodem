@@ -1,4 +1,5 @@
 import { useIsFocused } from '@react-navigation/native';
+import debounce from 'lodash.debounce';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
@@ -50,14 +51,14 @@ const BasePlayer = (props: any) => {
 
         if (items[nextPrevIndex]) {
             return handleOnClickItem(items[nextPrevIndex].id);
-        } else {
-            dispatchContextSongs({ type: 'update_song_reset' });
         }
+        return dispatchContextSongs({ type: 'update_song_reset' });
     }
 
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
             <Video
+                pictureInPicture
                 onFullscreenPlayerWillDismiss={() => {
                     basePlayer.current.setNativeProps({
                         paused: !item.isPlaying
@@ -108,7 +109,7 @@ const BasePlayer = (props: any) => {
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
                 }}
-                onEnd={handleOnEnd}
+                onEnd={debounce(handleOnEnd, 100)}
                 repeat={repeatRef.current.shouldRepeat}
             />
         </View>

@@ -2,6 +2,7 @@
 import React, { memo } from 'react';
 import { View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Modal from 'react-native-modal';
 
 const CustomModal = (props: any) => {
@@ -15,19 +16,20 @@ const CustomModal = (props: any) => {
 
     return (
         <Modal isVisible={isModalVisible} animationIn={'fadeInDownBig'} onBackdropPress={onBackdropPress} onModalHide={onModalHide}>
-            <View style={{ backgroundColor: '#fff', borderRadius: 10, padding: 10, paddingBottom: 20 }}>
-                <View style={{ alignSelf: 'flex-end' }}>
+            <View style={{ backgroundColor: '#fff', borderRadius: 10, padding: 10, paddingBottom: 20, position: 'relative' }}>
+                <View style={{ alignSelf: 'flex-end', position: 'absolute', top: -5, right: -5, padding: 5, zIndex: 100 }}>
                     {showRemoveIcon && <Icon
-                        containerStyle={{ width: 25 }}
+                        reverse
                         name={'remove'}
                         type={'font-awesome'}
-                        size={25}
+                        size={15}
                         color='#ddd'
                         onPress={action}
                     />}
                 </View>
                 {props.children}
             </View>
+            <KeyboardSpacer />
         </Modal>
     );
 };

@@ -24,7 +24,15 @@ const initialValue: State = {
     },
     isServerError: false,
     isLoading: true,
-    socket: null
+    socket: {
+        disconnected: false,
+        connected: true,
+        on: () => {},
+        off: () => {},
+        close: () => {},
+        disconnect: () => {},
+        emit: (str: string, param: any) => {}
+    }
 };
 
 const reducer = (state: any, action: any) => {

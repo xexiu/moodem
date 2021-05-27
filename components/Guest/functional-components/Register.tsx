@@ -3,8 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, TextInput, View } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { registerText } from '../../../src/css/styles/register';
@@ -94,123 +93,117 @@ const Register = (props: any) => {
             setIsLoading(false);
         }
     }
-
     return (
-        <ScrollView>
-            <View>
-                <CustomButton
-                    btnTitle={btnTitle}
-                    btnStyle={[btnStyleDefault, btnStyle]}
-                    action={toggleModal}
-                />
-
-                <CustomModal isModalVisible={isRegisterModalVisible} onBackdropPress={onBackdropPressHandler}>
-                    <View>
-                        <Text style={registerText}>Knock Knock!!</Text>
-                        <Text
-                            style={{
-                                marginTop: 5,
-                                fontSize: 15,
-                                fontWeight: '500'
-                            }}
-                        >Nombre (max. 30 carácteres)
-                        </Text>
-                        <TextInput
-                            style={[
-                                errors.name && errors.name.message ?
-                                    [commonInputStyles, { borderColor: '#D84A05' }] :
-                                    [commonInputStyles]]}
-                            onChangeText={text => {
-                                setValue('name', text);
-                            }}
-                            autoCorrect={false}
-                            autoFocus
-                            maxLength={30}
-                            placeholder={FORM_FIELDS_REGISTER.name.help}
-                        />
-                        <Text
-                            style={{
-                                color: '#D84A05',
-                                marginTop: 5,
-                                marginBottom: 5
-                            }}>{errors.name && errors.name.message}
-                        </Text>
-                        <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>E-Mail</Text>
-                        <TextInput
-                            style={[errors.email && errors.email.message ?
-                                [commonInputStyles, { borderColor: '#D84A05' }] :
-                                [commonInputStyles]]}
-                            onChangeText={text => {
-                                setValue('email', text);
-                            }}
-                            autoCorrect={false}
-                            autoCapitalize={'none'}
-                            placeholder={FORM_FIELDS_REGISTER.email.help}
-                        />
-                        <Text
-                            style={{
-                                color: '#D84A05',
-                                marginTop: 5,
-                                marginBottom: 5
-                            }}>{errors.email && errors.email.message}
-                        </Text>
-                        <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña</Text>
-                        <TextInput
-                            style={[errors.password && errors.password.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
-                            onChangeText={text => {
-                                setValue('password', text);
-                            }}
-                            autoCorrect={false}
-                            secureTextEntry
-                            placeholder={FORM_FIELDS_REGISTER.password.help}
-                        />
-                        <Text
-                            style={{
-                                color: '#D84A05',
-                                marginTop: 5,
-                                marginBottom: 5
-                            }}>{errors.password && errors.password.message}
-                        </Text>
-                        <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Confirmar Contraseña</Text>
-                        <TextInput
-                            style={[errors.confirm_password && errors.confirm_password.message ?
-                                [commonInputStyles, { borderColor: '#D84A05' }] :
-                                [commonInputStyles]]}
-                            onChangeText={text => {
-                                setValue('confirm_password', text);
-                            }}
-                            autoCorrect={false}
-                            secureTextEntry
-                        />
-                        <Text
-                            style={{
-                                color: '#D84A05',
-                                marginTop: 5,
-                                marginBottom: 5
-                            }}>{errors.confirm_password && errors.confirm_password.message}
-                        </Text>
-                    </View>
-
-                    {isLoading ?
-                        <PreLoader containerStyle={{ alignItems: 'center' }} /> :
-                        <CustomButton
-                            btnTitle='Registrarme'
-                            btnStyle={[btnStyleDefault, btnStyle, { marginTop: 15 }]}
-                            action={handleSubmit(onSubmit)}
-                        />
-                    }
-                    {
-                        !!errorText &&
-                        <View>
-                            <Text style={{ textAlign: 'center', margin: 10, color: '#222' }}>{errorText}</Text>
-                        </View>
-                    }
-                </CustomModal>
-            </View>
-            <KeyboardSpacer
-                topSpacing={0}
+        <View>
+            <CustomButton
+                btnTitle={btnTitle}
+                btnStyle={[btnStyleDefault, btnStyle]}
+                action={toggleModal}
             />
-        </ScrollView>
+
+            <CustomModal isModalVisible={isRegisterModalVisible} onBackdropPress={onBackdropPressHandler}>
+                <View>
+                    <Text style={registerText}>Knock Knock!!</Text>
+                    <Text
+                        style={{
+                            marginTop: 5,
+                            fontSize: 15,
+                            fontWeight: '500'
+                        }}
+                    >Nombre (max. 30 carácteres)
+                    </Text>
+                    <TextInput
+                        style={[
+                            errors.name && errors.name.message ?
+                                [commonInputStyles, { borderColor: '#D84A05' }] :
+                                [commonInputStyles]]}
+                        onChangeText={text => {
+                            setValue('name', text);
+                        }}
+                        autoCorrect={false}
+                        autoFocus
+                        maxLength={30}
+                        placeholder={FORM_FIELDS_REGISTER.name.help}
+                    />
+                    <Text
+                        style={{
+                            color: '#D84A05',
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>{errors.name && errors.name.message}
+                    </Text>
+                    <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>E-Mail</Text>
+                    <TextInput
+                        style={[errors.email && errors.email.message ?
+                            [commonInputStyles, { borderColor: '#D84A05' }] :
+                            [commonInputStyles]]}
+                        onChangeText={text => {
+                            setValue('email', text);
+                        }}
+                        autoCorrect={false}
+                        autoCapitalize={'none'}
+                        placeholder={FORM_FIELDS_REGISTER.email.help}
+                    />
+                    <Text
+                        style={{
+                            color: '#D84A05',
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>{errors.email && errors.email.message}
+                    </Text>
+                    <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña</Text>
+                    <TextInput
+                        style={[errors.password && errors.password.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
+                        onChangeText={text => {
+                            setValue('password', text);
+                        }}
+                        autoCorrect={false}
+                        secureTextEntry
+                        placeholder={FORM_FIELDS_REGISTER.password.help}
+                    />
+                    <Text
+                        style={{
+                            color: '#D84A05',
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>{errors.password && errors.password.message}
+                    </Text>
+                    <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Confirmar Contraseña</Text>
+                    <TextInput
+                        style={[errors.confirm_password && errors.confirm_password.message ?
+                            [commonInputStyles, { borderColor: '#D84A05' }] :
+                            [commonInputStyles]]}
+                        onChangeText={text => {
+                            setValue('confirm_password', text);
+                        }}
+                        autoCorrect={false}
+                        secureTextEntry
+                    />
+                    <Text
+                        style={{
+                            color: '#D84A05',
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>{errors.confirm_password && errors.confirm_password.message}
+                    </Text>
+                </View>
+
+                {isLoading ?
+                    <PreLoader containerStyle={{ alignItems: 'center' }} /> :
+                    <CustomButton
+                        btnTitle='Registrarme'
+                        btnStyle={[btnStyleDefault, btnStyle, { marginTop: 15 }]}
+                        action={handleSubmit(onSubmit)}
+                    />
+                }
+                {
+                    !!errorText &&
+                    <View>
+                        <Text style={{ textAlign: 'center', margin: 10, color: '#222' }}>{errorText}</Text>
+                    </View>
+                }
+            </CustomModal>
+        </View>
     );
 };
 

@@ -12,7 +12,7 @@ import SideBarDrawer from './components/common/functional-components/SideBarDraw
 import { AppContext } from './components/User/store-context/AppContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
-import { getGroups } from './src/js/Utils/Helpers/actions/groups';
+import { getDefaultGroup, getGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';
 
@@ -31,7 +31,7 @@ function getUserUidAndName(user: any) {
 }
 
 const App = function Moodem() {
-    const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
+    const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
@@ -62,7 +62,8 @@ const App = function Moodem() {
                                 error: err,
                                 user: null,
                                 isLoading: true,
-                                isServerError: socket.disconnected
+                                isServerError: socket.disconnected,
+                                socket
                             }
                         });
                     });
@@ -71,7 +72,8 @@ const App = function Moodem() {
                     type: 'guest', value: {
                         user: null,
                         isLoading: false,
-                        isServerError: socket.disconnected
+                        isServerError: socket.disconnected,
+                        socket
                     }
                 });
             }
