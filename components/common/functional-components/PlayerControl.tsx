@@ -43,7 +43,9 @@ const PlayerControl = (props: MyProps) => {
             type={iconType}
             color={items && !items[nextPrevSong] ? '#777' : iconColor}
             size={iconSize}
-            onPress={() => handleOnClickItem(items[nextPrevSong].id)}
+            onPress={() => {
+                return handleOnClickItem(items[nextPrevSong].id);
+            }}
         />
     );
 };

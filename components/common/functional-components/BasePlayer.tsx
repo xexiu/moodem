@@ -2,9 +2,19 @@ import { useIsFocused } from '@react-navigation/native';
 import debounce from 'lodash.debounce';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
+import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
+
+const updateSongDetailsOnControlCenter = (item: any) => {
+    MusicControl.setNowPlaying({
+        title: item.videoDetails.title,
+        artwork: item.videoDetails.thumbnails[0].url,
+        artist: item.videoDetails.media.artist,
+        duration: Number(item.videoDetails.lengthSeconds) // (Seconds)
+    });
+};
 
 const BasePlayer = (props: any) => {
     const {
@@ -22,6 +32,18 @@ const BasePlayer = (props: any) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        MusicControl.enableBackgroundMode(true);
+        MusicControl.handleAudioInterruptions(true);
+        MusicControl.enableControl('play', true);
+        MusicControl.enableControl('pause', true);
+        MusicControl.enableControl('nextTrack', true);
+        MusicControl.enableControl('previousTrack', true);
+
+        // Changing track position on lockscreen
+        MusicControl.enableControl('changePlaybackPosition', true);
+
+        updateSongDetailsOnControlCenter(item);
+
         if (playPauseRef.current) {
             setIsLoading(false);
         }
@@ -31,6 +53,44 @@ const BasePlayer = (props: any) => {
     if (isLoading) {
         return null;
     }
+
+    MusicControl.on(Command.changePlaybackPosition, (playbackPosition) => {
+        seekRef.current.setTrackCurrentTime(Math.floor(playbackPosition));
+        basePlayer.current.seek(Math.floor(playbackPosition));
+    });
+
+    MusicControl.on(Command.play, () => {
+        handleOnClickItem(item.id);
+        MusicControl.updatePlayback({
+            state: MusicControl.STATE_PLAYING,
+            elapsedTime: seekRef.current.trackCurrentTime
+        });
+    });
+    MusicControl.on(Command.pause, () => {
+        handleOnClickItem(item.id);
+        MusicControl.updatePlayback({
+            state: MusicControl.STATE_PAUSED,
+            elapsedTime: seekRef.current.trackCurrentTime
+        });
+    });
+
+    MusicControl.on(Command.nextTrack, () => {
+        const nextPrevIndex = items.length ? item.id + 1 : 0;
+
+        if (items[nextPrevIndex]) {
+            handleOnClickItem(items[nextPrevIndex].id);
+            updateSongDetailsOnControlCenter(items[nextPrevIndex]);
+        }
+    });
+
+    MusicControl.on(Command.previousTrack, () => {
+        const nextPrevIndex = items.length ? item.id - 1 : 0;
+
+        if (items[nextPrevIndex]) {
+            handleOnClickItem(items[nextPrevIndex].id);
+            updateSongDetailsOnControlCenter(items[nextPrevIndex]);
+        }
+    });
 
     function showPoster() {
         return !item.isPlaying ? item.videoDetails.thumbnails[0].url : undefined;
@@ -42,6 +102,7 @@ const BasePlayer = (props: any) => {
                 isPlaying: false
             });
             basePlayer.current.seek(0);
+            updateSongDetailsOnControlCenter(item);
             return handleOnClickItem(item.id);
         }
         basePlayer.current.dismissFullscreenPlayer();
@@ -50,6 +111,7 @@ const BasePlayer = (props: any) => {
         const nextPrevIndex = items.length ? item.id + 1 : 0;
 
         if (items[nextPrevIndex]) {
+            updateSongDetailsOnControlCenter(items[nextPrevIndex]);
             return handleOnClickItem(items[nextPrevIndex].id);
         }
         return dispatchContextSongs({ type: 'update_song_reset' });
@@ -105,6 +167,10 @@ const BasePlayer = (props: any) => {
                 }}
                 paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
+                    MusicControl.updatePlayback({
+                        elapsedTime: currentTime
+                    });
+
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
