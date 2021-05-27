@@ -1,6 +1,6 @@
 /* tslint:disable:no-bitwise */
 import Slider from '@react-native-community/slider';
-import React, { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, memo, useImperativeHandle, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { styles } from '../../../src/css/styles/playerControlTimeSeek';
 
