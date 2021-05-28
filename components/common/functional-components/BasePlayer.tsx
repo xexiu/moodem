@@ -55,8 +55,10 @@ const BasePlayer = (props: any) => {
     }
 
     MusicControl.on(Command.changePlaybackPosition, (playbackPosition) => {
-        seekRef.current.setTrackCurrentTime(Math.floor(playbackPosition));
-        basePlayer.current.seek(Math.floor(playbackPosition));
+        const currentTime = playbackPosition.replace(/(\.\d+)/g, '');
+
+        seekRef.current.setTrackCurrentTime(Number(currentTime));
+        basePlayer.current.seek(Number(currentTime));
     });
 
     MusicControl.on(Command.play, () => {
@@ -66,6 +68,7 @@ const BasePlayer = (props: any) => {
             elapsedTime: seekRef.current.trackCurrentTime
         });
     });
+    
     MusicControl.on(Command.pause, () => {
         handleOnClickItem(item.id);
         MusicControl.updatePlayback({
@@ -152,12 +155,18 @@ const BasePlayer = (props: any) => {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
+                    MusicControl.updatePlayback({
+                        elapsedTime: 0
+                    });
                 }}
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
+                    MusicControl.updatePlayback({
+                        elapsedTime: 0
+                    });
                 }}
                 onError={(error) => {
                     // Send Error to Sentry
@@ -167,11 +176,10 @@ const BasePlayer = (props: any) => {
                 }}
                 paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
-                    MusicControl.updatePlayback({
-                        elapsedTime: currentTime
-                    });
-
                     if (!seekRef.current.isSliding) {
+                        MusicControl.updatePlayback({
+                            elapsedTime: currentTime
+                        });
                         seekRef.current.setTrackCurrentTime(currentTime);
                     }
                 }}
