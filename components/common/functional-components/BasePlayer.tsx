@@ -32,16 +32,6 @@ const BasePlayer = (props: any) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        MusicControl.enableBackgroundMode(true);
-        MusicControl.handleAudioInterruptions(true);
-        MusicControl.enableControl('play', true);
-        MusicControl.enableControl('pause', true);
-        MusicControl.enableControl('nextTrack', true);
-        MusicControl.enableControl('previousTrack', true);
-
-        // Changing track position on lockscreen
-        MusicControl.enableControl('changePlaybackPosition', true);
-
         updateSongDetailsOnControlCenter(item);
 
         if (playPauseRef.current) {
@@ -68,7 +58,7 @@ const BasePlayer = (props: any) => {
             elapsedTime: seekRef.current.trackCurrentTime
         });
     });
-    
+
     MusicControl.on(Command.pause, () => {
         handleOnClickItem(item.id);
         MusicControl.updatePlayback({
@@ -155,22 +145,22 @@ const BasePlayer = (props: any) => {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
-                    MusicControl.updatePlayback({
-                        elapsedTime: 0
-                    });
+                    updateSongDetailsOnControlCenter(item);
                 }}
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
-                    MusicControl.updatePlayback({
-                        elapsedTime: 0
-                    });
+                    updateSongDetailsOnControlCenter(item);
                 }}
                 onError={(error) => {
                     // Send Error to Sentry
                     playPauseRef.current.setIsBuffering(true);
+                    MusicControl.updatePlayback({
+                        state: MusicControl.STATE_PAUSED,
+                        elapsedTime: 0
+                    });
                     console.log('Song Error', error);
                     socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
                 }}
