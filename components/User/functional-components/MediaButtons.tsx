@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { removeSongFromDB, saveSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
@@ -7,7 +6,6 @@ import Button from './Button';
 
 export const MediaButtons = (song: any, actions: string[], optionalCallback: Function) => {
     const { isServerError, user, group, socket }: any = useContext(AppContext);
-    const navigation = useNavigation();
 
     function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         return ((mediaUser && songUser.uid === mediaUser.uid) ||

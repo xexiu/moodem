@@ -6,9 +6,10 @@ import AboutScreen from '../../../screens/common/functional-components/AboutScre
 import CopyrightScreen from '../../../screens/common/functional-components/CopyrightScreen';
 import FAQScreen from '../../../screens/common/functional-components/FAQScreen';
 import PrivacyScreen from '../../../screens/common/functional-components/PrivacyScreen';
-import SearchingSongsScreen from '../../../screens/Guest/functional-components/SearchingSongsScreen';
 import PrivateMessagesScreen from '../../../screens/User/functional-components/PrivateMessagesScreen';
 import PrivateUserMessageScreen from '../../../screens/User/functional-components/PrivateUserMessageScreen';
+import SearchGroupSongScreen from '../../../screens/User/functional-components/SearchGroupSongScreen';
+import SearchSongScreen from '../../../screens/User/functional-components/SearchSongScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,9 +22,10 @@ export const CommonStackWrapper = (props: any) => {
                 <Stack.Screen name='Privacy' component={PrivacyScreen} />
                 <Stack.Screen name='FAQ' component={FAQScreen} />
                 <Stack.Screen name='About' component={AboutScreen} />
-                <Stack.Screen name='SearchingSongsScreen' component={SearchingSongsScreen} />
+                <Stack.Screen name='SearchSongScreen' component={SearchSongScreen} />
                 <Stack.Screen name='PrivateMessagesScreen' component={PrivateMessagesScreen} />
                 <Stack.Screen name='PrivateUserMessageScreen' component={PrivateUserMessageScreen} />
+                <Stack.Screen name='SearchGroupSongScreen' component={SearchGroupSongScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

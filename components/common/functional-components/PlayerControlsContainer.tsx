@@ -1,15 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const SongInfoContainer = (props: any) => {
+const PlayerControlsContainer = (props: any) => {
     return (
         <View
             style={{
-                height: 200,
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 220,
+                height: 110,
                 position: 'relative',
-                marginBottom: 5
+                alignItems: 'center'
             }}
         >
             {props.children}
@@ -17,4 +16,4 @@ const SongInfoContainer = (props: any) => {
     );
 };
 
-export { SongInfoContainer };
+export { PlayerControlsContainer };

@@ -13,7 +13,7 @@ import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/song
 
 const THIRTY_DAYS = 1000 * 3600 * 24 * 30;
 
-const SearchingSongsScreen = (props: any) => {
+const SearchSongScreen = (props: any) => {
     const {
         songs,
         searchedText,
@@ -98,7 +98,7 @@ const SearchingSongsScreen = (props: any) => {
         }
 
         return () => {
-            source.cancel('SearchingSongsScreen Component got unmounted');
+            source.cancel('SearchSongScreen Component got unmounted');
             socket.off('search-songs-on-youtube');
             socket.off('get-songs-from-youtube');
         };
@@ -162,14 +162,17 @@ const SearchingSongsScreen = (props: any) => {
 
     if (allValues.isLoading) {
         return (
-            <PreLoader
-                containerStyle={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-                size={50}
-            />
+            <BodyContainer>
+                { renderBackButton()}
+                <PreLoader
+                    containerStyle={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+            </BodyContainer>
         );
     }
 
@@ -195,4 +198,4 @@ const SearchingSongsScreen = (props: any) => {
     );
 };
 
-export default memo(SearchingSongsScreen);
+export default memo(SearchSongScreen);

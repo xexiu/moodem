@@ -17,7 +17,7 @@ const SearchBarAutoComplete = (props: any) => {
 
     function handleEndSearch(searchedText: string) {
         setSuggestions([]);
-        navigation.navigate('SearchingSongsScreen', {
+        navigation.navigate('SearchSongScreen', {
             resetLoadingSongs,
             searchedText,
             songs

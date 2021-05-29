@@ -7,14 +7,23 @@ import Video from 'react-native-video';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
-const updateSongDetailsOnControlCenter = (item: any) => {
+function updateSongDetailsOnControlCenter(item: any) {
     MusicControl.setNowPlaying({
         title: item.videoDetails.title,
         artwork: item.videoDetails.thumbnails[0].url,
         artist: item.videoDetails.media.artist,
         duration: Number(item.videoDetails.lengthSeconds) // (Seconds)
     });
-};
+}
+
+function configMusicControl() {
+    MusicControl.enableControl('play', true);
+    MusicControl.enableControl('pause', true);
+    MusicControl.enableControl('nextTrack', true);
+    MusicControl.enableControl('previousTrack', true);
+    MusicControl.enableControl('changePlaybackPosition', true);
+    MusicControl.handleAudioInterruptions(true);
+}
 
 const BasePlayer = (props: any) => {
     const {
@@ -32,7 +41,7 @@ const BasePlayer = (props: any) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        updateSongDetailsOnControlCenter(item);
+        configMusicControl();
 
         if (playPauseRef.current) {
             setIsLoading(false);
@@ -139,26 +148,28 @@ const BasePlayer = (props: any) => {
                 ignoreSilentSwitch='ignore'
                 onBuffer={(buffer) => {
                     playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    MusicControl.updatePlayback({
+                        elapsedTime: 0
+                    });
                 }}
                 onLoad={({ currentTime }) => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
-                    updateSongDetailsOnControlCenter(item);
                 }}
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
+                        updateSongDetailsOnControlCenter(item);
                     }
                     basePlayer.current.seek(0);
-                    updateSongDetailsOnControlCenter(item);
                 }}
                 onError={(error) => {
                     // Send Error to Sentry
                     playPauseRef.current.setIsBuffering(true);
                     MusicControl.updatePlayback({
-                        state: MusicControl.STATE_PAUSED,
+                        state: MusicControl.STATE_ERROR,
                         elapsedTime: 0
                     });
                     console.log('Song Error', error);

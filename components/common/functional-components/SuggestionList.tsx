@@ -29,7 +29,7 @@ const SuggestionList = (props: any) => {
                         <TouchableOpacity
                             key={index}
                             onPress={() => {
-                                navigation.navigate('SearchingSongsScreen', {
+                                navigation.navigate('SearchSongScreen', {
                                     songs,
                                     searchedText: suggestion
                                 });

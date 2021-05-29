@@ -1,10 +1,13 @@
 
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
+import { View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
 import { convertVideoIdsFromDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
+import CustomButton from '../../common/functional-components/CustomButton';
 import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
@@ -160,10 +163,31 @@ const Songs = (props: any) => {
         }
 
         return (
-            <MemoizedPlayerSongsList
-                data={songs}
-                buttonActions={['votes', 'remove']}
-            />
+            <View style={{ flex: 1 }}>
+                <View style={{ position: 'absolute', left: -15, top: -10, zIndex: 100 }}>
+                    <CustomButton
+                        btnStyle={{ width: 50, height: 50 }}
+                        btnCustomStyle={{ backgroundColor: 'transparent' }}
+                        shadow={{}}
+                        btnIcon={<Icon
+                            name='music-note'
+                            type='FontAwesome'
+                            color='#dd0031'
+                            size={12}
+                        />}
+                        btnTitle={songs.length}
+                        btnTitleStyle={{ color: '#666', fontSize: 12 }}
+                        action={() => {
+                            return navigation.navigate('SearchGroupSongScreen');
+                        }}
+                        // when pressed, should go to songs screen in order to search a song in the list
+                    />
+                </View>
+                <MemoizedPlayerSongsList
+                    data={songs}
+                    buttonActions={['votes', 'remove']}
+                />
+            </View>
         );
     }, [songs.length, isServerError]);
 

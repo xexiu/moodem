@@ -1,21 +1,21 @@
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
 
-type MyProps = {
-    iconReverse: boolean,
-    iconRaised: boolean,
-    iconType: string,
-    iconSize: number,
-    iconName: string,
-    iconStyle: object,
-    iconColor: string,
-    containerStyle: object,
-    nextPrevSong: number,
-    item: any,
-    items: any,
-    handleOnClickItem: Function,
-    action: string
-};
+interface MyProps {
+    iconStyle: object;
+    iconType: string;
+    iconSize: number;
+    iconName: string;
+    containerStyle?: object;
+    nextPrevSong: number;
+    item: any;
+    items: any;
+    iconReverse?: boolean;
+    iconRaised?: boolean;
+    iconColor?: string;
+    handleOnClickItem?: Function;
+    action: string;
+}
 
 const PlayerControl = (props: MyProps) => {
     const {
