@@ -164,7 +164,11 @@ const Songs = (props: any) => {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ position: 'absolute', left: -15, top: -10, zIndex: 100 }}>
+                <View style={
+                    isServerError ?
+                    { position: 'absolute', left: -15, top: 20, zIndex: 100 } :
+                    { position: 'absolute', left: -15, top: -10, zIndex: 100 }
+                }>
                     <CustomButton
                         btnStyle={{ width: 50, height: 50 }}
                         btnCustomStyle={{ backgroundColor: 'transparent' }}
