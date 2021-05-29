@@ -20,8 +20,10 @@
             <option value="$PROJECT_DIR$/../node_modules/expo-file-system/android" />
             <option value="$PROJECT_DIR$/../node_modules/expo-image-loader/android" />
             <option value="$PROJECT_DIR$/../node_modules/expo-permissions/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-device-info/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-fast-image/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-music-control/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-reanimated/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-screens/android" />

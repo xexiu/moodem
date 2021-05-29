@@ -11,6 +11,8 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+// react-native-video
+import com.brentvatne.react.ReactVideoPackage;
 // @react-native-async-storage/async-storage
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 // @react-native-community/art
@@ -21,10 +23,14 @@ import org.reactnative.maskedview.RNCMaskedViewPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 // @react-native-community/slider
 import com.reactnativecommunity.slider.ReactSliderPackage;
+// react-native-device-info
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 // react-native-fast-image
 import com.dylanvann.fastimage.FastImageViewPackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+// react-native-music-control
+import com.tanguyantoine.react.MusicControl;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
 // react-native-safe-area-context
@@ -33,8 +39,6 @@ import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 // react-native-vector-icons
 import com.oblador.vectoricons.VectorIconsPackage;
-// react-native-video
-import com.brentvatne.react.ReactVideoPackage;
 
 public class PackageList {
   private Application application;
@@ -80,18 +84,20 @@ public class PackageList {
   public ArrayList<ReactPackage> getPackages() {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
+      new ReactVideoPackage(),
       new AsyncStoragePackage(),
       new ARTPackage(),
       new RNCMaskedViewPackage(),
       new NetInfoPackage(),
       new ReactSliderPackage(),
+      new RNDeviceInfo(),
       new FastImageViewPackage(),
       new RNGestureHandlerPackage(),
+      new MusicControl(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
-      new VectorIconsPackage(),
-      new ReactVideoPackage()
+      new VectorIconsPackage()
     ));
   }
 }

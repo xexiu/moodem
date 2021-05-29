@@ -1,29 +1,31 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/hermes-debug.aar/e43b2510eac67869543912ae7d8d334f/AndroidManifest.xml:2:1-7:12
-MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/react-native-reanimated-64.aar/0d5d60cdedfdef8006566cdc11b21243/AndroidManifest.xml:2:1-11:12
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/539f89e98640c7aec51e2a922fb01865/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.multidex:multidex:2.0.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/e7e0672309b48f2d5fdf833e3920a5f4/AndroidManifest.xml:17:1-22:12
+MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/61a92cb1eac59921e8608bcff4b40937/AndroidManifest.xml:2:1-11:12
 MERGED from [:@react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:@react-native-community_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
-MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-12:12
-MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-async-storage_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-community_art] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/art/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-community_masked-view] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-12:12
 MERGED from [:react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-25:12
+MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-gesture-handler] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-safe-area-context] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-vector-icons] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [com.facebook.react:react-native:0.64.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-react-native-0.64.0.aar/cd5c137d7ba37ddca80891672c7183d1/AndroidManifest.xml:2:1-13:12
-MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-1.2.0.aar/daaca13b3fcae82c5cb32567748f046e/AndroidManifest.xml:17:1-24:12
+MERGED from [com.facebook.react:react-native:0.64.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c7f6725c6969e9bc3d6cbb7b2b68a642/AndroidManifest.xml:2:1-13:12
+MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b7b86429b6d28cec9081f39829b15d22/AndroidManifest.xml:17:1-24:12
 MERGED from [:expo-constants] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-constants/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-29:12
 MERGED from [:expo-image-loader] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-image-loader/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
@@ -39,69 +41,82 @@ MERGED from [:unimodules-file-system-interface] /Users/sergiumironescuiancu1/Des
 MERGED from [:unimodules-font-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-font-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:unimodules-image-loader-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-image-loader-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:unimodules-sensors-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-sensors-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/b36141f034b85e8167e066bff8d2a906/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/6f5e74cef4b9ce676fc86775cf7179e5/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/8103db28899fd14918eb21ec06a3e290/AndroidManifest.xml:17:1-22:12
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:2:1-16:12
-MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/glide-4.11.0.aar/493f4c1399edccec49ac0eb11ad52ae7/AndroidManifest.xml:2:1-12:12
-MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager2-1.0.0.aar/fd276a45eef131ba42744eb0892bdf22/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fragment-1.2.1.aar/cb2911b9042f096e77ff27b5300e4d7d/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.1.0.aar/4861d28f67316f5c0e3c59ce082ec528/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.2.0.aar/f737055a7591b4ad6ab6f1fc5fb2977b/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/a657c1b32d10936852d4902ee59f8fee/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/a8a61c85deb6b78776df0a4962eaeec1/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media:media:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/e329c41e6cdb79cbb881b5f88b9f8ece/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/47359ffee34198fd2fcb9b61676281de/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/342225e9d7d01c5205a3813afe0db765/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/7fdff81a08c6450fa25220777d69a59f/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/4c8eb4c9d957b262a91de9b6ff12150c/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/activity-1.1.0.aar/35d3c7a3b61fdee04475f2b5e3d21f50/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/55dcad4a72b1c29de31cb75c45631cbf/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/recyclerview-1.1.0.aar/6c9bc2b17491df8d2854d127d5e85ab3/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/1c2c66768eef76e3db3a368250fee843/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/transition-1.2.0.aar/07f84b377fced742983bcc54d83e16e6/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/dda591f79f4464a3c37da90cb31161e9/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/4a1738008c0bd817f90c1b5f02348e0b/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:17:1-26:12
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/ff5833fa34ee346deb7327fdce077ddd/AndroidManifest.xml:17:1-22:12
-MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/gifdecoder-4.11.0.aar/83e67fd1994b30c24363d958efaf2ba7/AndroidManifest.xml:2:1-11:12
-MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/exifinterface-1.0.0.aar/4037b82ee8d177efb497696e69c70b2e/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/3f1f05139491ddac314da5ed39675d06/AndroidManifest.xml:17:1-27:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-savedstate-2.2.0.aar/d212c8f921c94cc4fcbc99de0dcaff32/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.2.0.aar/f22cb068df1cb3892b22a2d78c91861e/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cardview-1.0.0.aar/2e9d626f8893ac14773cac1d2b74b9f4/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/e4084748e29e438c0f944358606b25d0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/9f1a7cc798478900110aaa35bb9153a5/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/afac5ab4039765b889ce7db05f3aa7fd/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.2.0.aar/74ae63634d1170497841eb30b25284c4/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/1cc1a00ee136789522ab8df74936b9c2/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/50325b7cad0226913d729342b5da4079/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.2.0.aar/82473fce1fe3e785d56bf3eaa9be1d5d/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-runtime-2.1.0.aar/e87a69e5906251b34a3c93a84c2e3793/AndroidManifest.xml:17:1-24:12
-MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fresco-2.0.0.aar/866f3ec83f854c98fdf374b1a191f490/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-okhttp3-2.0.0.aar/51a7334a3cf9b1a5dcd968eff9724d74/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawee-2.0.0.aar/f26c0189a603e6ef682d3f71e8ca0401/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagefilters-2.0.0.aar/f17712294fa00b9f43b59a8bcb0a3a04/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-2.0.0.aar/85d0b74a9353fb656eb1a2fcc0a9ebcc/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagetranscoder-2.0.0.aar/87020c771b89bf16102ee06744ca3766/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-base-2.0.0.aar/7395122aa76d529856abe7e5c1e726cc/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/soloader-0.9.0.aar/f4b4f6979e01e455e783256496eb3f75/AndroidManifest.xml:2:1-13:12
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-android-scalablevideoview-1.0.4.aar/666f8fbf3a333f920a5a51fa12f097b1/AndroidManifest.xml:2:1-12:12
-MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-fbcore-2.0.0.aar/5ceab6a47b959227c18cf038e0f009d0/AndroidManifest.xml:2:1-9:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
+MERGED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/98ff7c04b1890bcc41296e8024e1c24a/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0dc49a32d6a7b78ae56c12a059224437/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf770d9bf9de0243a6cd2b071f99b3b4/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1813bda77014481abc1794757adad55c/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:2:1-16:12
+MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/76829cf3589319bda9c0ba0f9bd86d44/AndroidManifest.xml:2:1-12:12
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:17:1-28:12
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:17:1-29:12
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6d524463c0fceab559d71207acb563b6/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/921a2ef3927b647441531ff07e51c8c3/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5063cfc319e7985dbcb5e0162b01c042/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7bf6f583d28e71b57f1f1d88b9813143/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9642c688847fb740a6059766426d5e42/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c8277c0224d540d068d04b398e00dacb/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35e1d3c7f5886a9c47fad2398dfa7677/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/271a5ce8675455575093a84648a8e1ef/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/03638517fe98c4f55194bf2840f88a2a/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:exoplayer:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/ad8df17eb8b9f05564c68dd2dc637343/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bce2c317043fd37f59f6c56c1564190f/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.media:media:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/374626ffdd1199fad7dc4c0d73e6b692/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf72ba790eb2ce87d8e859f644511b84/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/068225384c6b1a72075f821461619789/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4593f504f38513a75b5548b42a5b9ded/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9ae617c9cfa506589662ff76a81c75e8/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bdaa7c9719b56fd6a562caf9008789cd/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35f41df686ed32762227f09f4eb6b3c9/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35c3dc8a04b198419b2477bfa505c87d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/01d9727a6416f312d27ab621757c3998/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b6f862c8a9a32b533e203f867dc6b4af/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0b9453cdeddf36d81acc2849508a57e8/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cddacfc9c23291eeb2a36889a0d8eaf0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4df1ea362b5df7da2d6d30a7016e82e0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/2961dbeb5a7382d591e245e47f12cb91/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5923d16e8218160ae66473306bd7e0b8/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c59480e30d0bb75e5b2895f11314f566/AndroidManifest.xml:17:1-26:12
+MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7a794731d018b073ee667649bae84666/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1a43812632d3cb192e697fe7ed5db87d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3e240c5f764095f93e8ad43ac43f6e3f/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/495e8eb4b09dc6199ab3f4803acd9645/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/391755027fdfb571b64a7e4bf78ef819/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/dfe3b5d5718c897a8d4e32c8419dda21/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3a8e4f308f8f52f16f24ad127ea8e38b/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/02e5a6f7c0aa3461d2f9b87a347ac9d9/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0341c68abcc7c3651f19329d266bb698/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/28e261c93805c8238312a55c3ee50cd5/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/961b4d16821c8d06fa605614d3f5c8bb/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/34500afd270accc48ccc4ffbfb9aa45a/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1329dab72e08d9abc178bd335a500aab/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d72382b81844aea5891186869fe734fd/AndroidManifest.xml:17:1-24:12
+MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/86b535ccf31b10b22cd10981cf29aeb1/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1890b7668bcbe2477915f71fb3e5ac7e/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/8082dabf7c2f2e8a5335053c13dffc94/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6be48df41833879a4ffb558223f09aba/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b2b01dbbca8124ecd09ce044bc10cf84/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/277e92ccafee24d8d9ec26894823c90b/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6ade69d693024327a1f98c6ff17e0dfe/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/a168a353b9de70f2231dbc4c0fa0060c/AndroidManifest.xml:2:1-13:12
+MERGED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:2:1-13:12
+MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d9f9110546f4489db79b04fc308c6442/AndroidManifest.xml:2:1-9:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
+INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
 	package
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:2:5-25
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-49:12
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:1-51:12
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:1:11-69
@@ -109,6 +124,8 @@ uses-permission#android.permission.INTERNET
 ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:4:5-67
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-67
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-67
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:24:5-67
 	android:name
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:4:22-64
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
@@ -139,156 +156,182 @@ uses-permission#android.permission.MODIFY_AUDIO_SETTINGS
 ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:13:5-80
 	android:name
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:13:22-77
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:14:5-77
+	android:name
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:14:22-74
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:16:5-81
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:17:5-81
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:16:22-78
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:17:22-78
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:17:5-79
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:18:5-79
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:17:22-76
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:18:22-76
 uses-permission#android.permission.CAMERA
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:18:5-65
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:19:5-65
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:18:22-62
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:19:22-62
 uses-permission#android.permission.READ_CONTACTS
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:19:5-72
-	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:19:22-69
-uses-permission#android.permission.READ_CALENDAR
 ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:20:5-72
 	android:name
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:20:22-69
+uses-permission#android.permission.READ_CALENDAR
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:21:5-72
+	android:name
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:21:22-69
 uses-permission#android.permission.WRITE_CALENDAR
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:21:5-73
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:22:5-73
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:21:22-70
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:22:22-70
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:22:5-80
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:23:5-80
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:5-80
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:5-80
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:22:22-77
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:23:22-77
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:23:5-71
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:24:5-71
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:23:22-68
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:24:22-68
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:24:5-81
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:25:5-81
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-81
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-81
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:24:22-78
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:25:22-78
 uses-permission#android.permission.WRITE_SETTINGS
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:25:5-73
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:26:5-73
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:25:22-70
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:26:22-70
 application
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:28:5-47:19
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:29:5-49:19
 MERGED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
 MERGED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
-MERGED from [com.facebook.react:react-native:0.64.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-react-native-0.64.0.aar/cd5c137d7ba37ddca80891672c7183d1/AndroidManifest.xml:11:5-20
-MERGED from [com.facebook.react:react-native:0.64.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-react-native-0.64.0.aar/cd5c137d7ba37ddca80891672c7183d1/AndroidManifest.xml:11:5-20
-MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/AndroidManifest.xml:22:5-20
+MERGED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-23:19
+MERGED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-23:19
+MERGED from [com.facebook.react:react-native:0.64.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c7f6725c6969e9bc3d6cbb7b2b68a642/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.react:react-native:0.64.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c7f6725c6969e9bc3d6cbb7b2b68a642/AndroidManifest.xml:11:5-20
+MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/AndroidManifest.xml:22:5-20
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:16:5-27:19
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:16:5-27:19
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:10:5-14:19
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:10:5-14:19
-MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/glide-4.11.0.aar/493f4c1399edccec49ac0eb11ad52ae7/AndroidManifest.xml:10:5-20
-MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/glide-4.11.0.aar/493f4c1399edccec49ac0eb11ad52ae7/AndroidManifest.xml:10:5-20
-MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:24:5-89
-MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:24:5-89
-MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/gifdecoder-4.11.0.aar/83e67fd1994b30c24363d958efaf2ba7/AndroidManifest.xml:9:5-20
-MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/gifdecoder-4.11.0.aar/83e67fd1994b30c24363d958efaf2ba7/AndroidManifest.xml:9:5-20
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/3f1f05139491ddac314da5ed39675d06/AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/3f1f05139491ddac314da5ed39675d06/AndroidManifest.xml:24:5-25:19
-MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/soloader-0.9.0.aar/f4b4f6979e01e455e783256496eb3f75/AndroidManifest.xml:11:5-20
-MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/soloader-0.9.0.aar/f4b4f6979e01e455e783256496eb3f75/AndroidManifest.xml:11:5-20
+MERGED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
+MERGED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:10:5-14:19
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:10:5-14:19
+MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/76829cf3589319bda9c0ba0f9bd86d44/AndroidManifest.xml:10:5-20
+MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/76829cf3589319bda9c0ba0f9bd86d44/AndroidManifest.xml:10:5-20
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:26:5-20
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:26:5-20
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6d524463c0fceab559d71207acb563b6/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6d524463c0fceab559d71207acb563b6/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/921a2ef3927b647441531ff07e51c8c3/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/921a2ef3927b647441531ff07e51c8c3/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:24:5-89
+MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7a794731d018b073ee667649bae84666/AndroidManifest.xml:9:5-20
+MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7a794731d018b073ee667649bae84666/AndroidManifest.xml:9:5-20
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3e240c5f764095f93e8ad43ac43f6e3f/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3e240c5f764095f93e8ad43ac43f6e3f/AndroidManifest.xml:24:5-25:19
+MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/a168a353b9de70f2231dbc4c0fa0060c/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/a168a353b9de70f2231dbc4c0fa0060c/AndroidManifest.xml:11:5-20
+MERGED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:11:5-20
+MERGED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:11:5-20
 	android:appComponentFactory
-		ADDED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:24:18-86
+		ADDED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:24:18-86
 	android:label
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:31:7-39
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:32:7-39
 	android:roundIcon
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:33:7-52
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:34:7-52
 	android:icon
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:32:7-41
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:33:7-41
 	android:allowBackup
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:34:7-33
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:35:7-33
 	android:theme
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:35:7-38
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:36:7-38
 	android:usesCleartextTraffic
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:29:7-42
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:30:7-42
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:30:7-38
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:31:7-38
 activity#com.moodem.MainActivity
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:36:7-45:18
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:37:7-47:18
 	android:label
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:38:9-41
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:39:9-41
+	android:launchMode
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:40:9-40
 	android:windowSoftInputMode
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:40:9-51
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:42:9-51
 	android:configChanges
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:39:9-79
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:41:9-79
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:37:9-37
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:38:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:41:9-44:25
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:43:9-46:25
 action#android.intent.action.MAIN
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:42:13-65
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:44:13-65
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:42:21-62
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:44:21-62
 category#android.intent.category.LAUNCHER
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:43:13-73
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:45:13-73
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:43:23-70
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:45:23-70
 activity#com.facebook.react.devsupport.DevSettingsActivity
-ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:46:7-84
+ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:48:7-84
 	android:name
-		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:46:17-81
+		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml:48:17-81
 uses-sdk
 INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
-MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/hermes-debug.aar/e43b2510eac67869543912ae7d8d334f/AndroidManifest.xml:5:5-44
-MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/hermes-debug.aar/e43b2510eac67869543912ae7d8d334f/AndroidManifest.xml:5:5-44
-MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/react-native-reanimated-64.aar/0d5d60cdedfdef8006566cdc11b21243/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/react-native-reanimated-64.aar/0d5d60cdedfdef8006566cdc11b21243/AndroidManifest.xml:7:5-9:41
+MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/539f89e98640c7aec51e2a922fb01865/AndroidManifest.xml:5:5-44
+MERGED from [hermes-debug.aar] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/539f89e98640c7aec51e2a922fb01865/AndroidManifest.xml:5:5-44
+MERGED from [androidx.multidex:multidex:2.0.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/e7e0672309b48f2d5fdf833e3920a5f4/AndroidManifest.xml:20:5-43
+MERGED from [androidx.multidex:multidex:2.0.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/e7e0672309b48f2d5fdf833e3920a5f4/AndroidManifest.xml:20:5-43
+MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/61a92cb1eac59921e8608bcff4b40937/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-reanimated] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/61a92cb1eac59921e8608bcff4b40937/AndroidManifest.xml:7:5-9:41
 MERGED from [:@react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:@react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:@react-native-community_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:@react-native-community_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
-MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
-MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
-MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-async-storage_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-async-storage_async-storage] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_art] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/art/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_art] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/art/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_masked-view] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_masked-view] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_slider] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/slider/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-10:41
+MERGED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-10:41
+MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-fast-image] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-fast-image/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-gesture-handler] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-gesture-handler] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-safe-area-context] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-safe-area-context] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-screens] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-vector-icons] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-vector-icons] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-video] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-video/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.64.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-react-native-0.64.0.aar/cd5c137d7ba37ddca80891672c7183d1/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.64.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-react-native-0.64.0.aar/cd5c137d7ba37ddca80891672c7183d1/AndroidManifest.xml:7:5-9:41
-MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-1.2.0.aar/daaca13b3fcae82c5cb32567748f046e/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-1.2.0.aar/daaca13b3fcae82c5cb32567748f046e/AndroidManifest.xml:20:5-22:41
+MERGED from [com.facebook.react:react-native:0.64.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c7f6725c6969e9bc3d6cbb7b2b68a642/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.react:react-native:0.64.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c7f6725c6969e9bc3d6cbb7b2b68a642/AndroidManifest.xml:7:5-9:41
+MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:expo-permissions] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b7b86429b6d28cec9081f39829b15d22/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b7b86429b6d28cec9081f39829b15d22/AndroidManifest.xml:20:5-22:41
 MERGED from [:expo-constants] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-constants/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:expo-constants] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-constants/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-10:41
@@ -319,104 +362,130 @@ MERGED from [:unimodules-image-loader-interface] /Users/sergiumironescuiancu1/De
 MERGED from [:unimodules-image-loader-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-image-loader-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:unimodules-sensors-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-sensors-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:unimodules-sensors-interface] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/unimodules-sensors-interface/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/b36141f034b85e8167e066bff8d2a906/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/b36141f034b85e8167e066bff8d2a906/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/6f5e74cef4b9ce676fc86775cf7179e5/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/6f5e74cef4b9ce676fc86775cf7179e5/AndroidManifest.xml:20:5-44
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/8103db28899fd14918eb21ec06a3e290/AndroidManifest.xml:20:5-44
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/8103db28899fd14918eb21ec06a3e290/AndroidManifest.xml:20:5-44
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/glide-4.11.0.aar/493f4c1399edccec49ac0eb11ad52ae7/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/glide-4.11.0.aar/493f4c1399edccec49ac0eb11ad52ae7/AndroidManifest.xml:6:5-8:41
-MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager2-1.0.0.aar/fd276a45eef131ba42744eb0892bdf22/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager2-1.0.0.aar/fd276a45eef131ba42744eb0892bdf22/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fragment-1.2.1.aar/cb2911b9042f096e77ff27b5300e4d7d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fragment-1.2.1.aar/cb2911b9042f096e77ff27b5300e4d7d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.1.0.aar/4861d28f67316f5c0e3c59ce082ec528/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.1.0.aar/4861d28f67316f5c0e3c59ce082ec528/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.2.0.aar/f737055a7591b4ad6ab6f1fc5fb2977b/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.2.0.aar/f737055a7591b4ad6ab6f1fc5fb2977b/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/a657c1b32d10936852d4902ee59f8fee/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/a657c1b32d10936852d4902ee59f8fee/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/a8a61c85deb6b78776df0a4962eaeec1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/a8a61c85deb6b78776df0a4962eaeec1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/e329c41e6cdb79cbb881b5f88b9f8ece/AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/e329c41e6cdb79cbb881b5f88b9f8ece/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/47359ffee34198fd2fcb9b61676281de/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/47359ffee34198fd2fcb9b61676281de/AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/342225e9d7d01c5205a3813afe0db765/AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/342225e9d7d01c5205a3813afe0db765/AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/7fdff81a08c6450fa25220777d69a59f/AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/7fdff81a08c6450fa25220777d69a59f/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/4c8eb4c9d957b262a91de9b6ff12150c/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/4c8eb4c9d957b262a91de9b6ff12150c/AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/activity-1.1.0.aar/35d3c7a3b61fdee04475f2b5e3d21f50/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/activity-1.1.0.aar/35d3c7a3b61fdee04475f2b5e3d21f50/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/55dcad4a72b1c29de31cb75c45631cbf/AndroidManifest.xml:20:5-44
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/55dcad4a72b1c29de31cb75c45631cbf/AndroidManifest.xml:20:5-44
-MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/recyclerview-1.1.0.aar/6c9bc2b17491df8d2854d127d5e85ab3/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/recyclerview-1.1.0.aar/6c9bc2b17491df8d2854d127d5e85ab3/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/1c2c66768eef76e3db3a368250fee843/AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/1c2c66768eef76e3db3a368250fee843/AndroidManifest.xml:20:5-44
-MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/transition-1.2.0.aar/07f84b377fced742983bcc54d83e16e6/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/transition-1.2.0.aar/07f84b377fced742983bcc54d83e16e6/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/dda591f79f4464a3c37da90cb31161e9/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/dda591f79f4464a3c37da90cb31161e9/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/4a1738008c0bd817f90c1b5f02348e0b/AndroidManifest.xml:20:5-44
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/4a1738008c0bd817f90c1b5f02348e0b/AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-1.3.0.aar/cc7809fd2489bd36ab0511ee4b695a0d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/ff5833fa34ee346deb7327fdce077ddd/AndroidManifest.xml:20:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/ff5833fa34ee346deb7327fdce077ddd/AndroidManifest.xml:20:5-44
-MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/gifdecoder-4.11.0.aar/83e67fd1994b30c24363d958efaf2ba7/AndroidManifest.xml:5:5-7:41
-MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/gifdecoder-4.11.0.aar/83e67fd1994b30c24363d958efaf2ba7/AndroidManifest.xml:5:5-7:41
-MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/exifinterface-1.0.0.aar/4037b82ee8d177efb497696e69c70b2e/AndroidManifest.xml:20:5-44
-MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/exifinterface-1.0.0.aar/4037b82ee8d177efb497696e69c70b2e/AndroidManifest.xml:20:5-44
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/3f1f05139491ddac314da5ed39675d06/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/3f1f05139491ddac314da5ed39675d06/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-savedstate-2.2.0.aar/d212c8f921c94cc4fcbc99de0dcaff32/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-savedstate-2.2.0.aar/d212c8f921c94cc4fcbc99de0dcaff32/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.2.0.aar/f22cb068df1cb3892b22a2d78c91861e/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.2.0.aar/f22cb068df1cb3892b22a2d78c91861e/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cardview-1.0.0.aar/2e9d626f8893ac14773cac1d2b74b9f4/AndroidManifest.xml:20:5-44
-MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/cardview-1.0.0.aar/2e9d626f8893ac14773cac1d2b74b9f4/AndroidManifest.xml:20:5-44
-MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/e4084748e29e438c0f944358606b25d0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/e4084748e29e438c0f944358606b25d0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/9f1a7cc798478900110aaa35bb9153a5/AndroidManifest.xml:20:5-44
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/9f1a7cc798478900110aaa35bb9153a5/AndroidManifest.xml:20:5-44
-MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/afac5ab4039765b889ce7db05f3aa7fd/AndroidManifest.xml:20:5-44
-MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/afac5ab4039765b889ce7db05f3aa7fd/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.2.0.aar/74ae63634d1170497841eb30b25284c4/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.2.0.aar/74ae63634d1170497841eb30b25284c4/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/1cc1a00ee136789522ab8df74936b9c2/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/1cc1a00ee136789522ab8df74936b9c2/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/50325b7cad0226913d729342b5da4079/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/50325b7cad0226913d729342b5da4079/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.2.0.aar/82473fce1fe3e785d56bf3eaa9be1d5d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.2.0.aar/82473fce1fe3e785d56bf3eaa9be1d5d/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-runtime-2.1.0.aar/e87a69e5906251b34a3c93a84c2e3793/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/core-runtime-2.1.0.aar/e87a69e5906251b34a3c93a84c2e3793/AndroidManifest.xml:20:5-22:41
-MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fresco-2.0.0.aar/866f3ec83f854c98fdf374b1a191f490/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/fresco-2.0.0.aar/866f3ec83f854c98fdf374b1a191f490/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-okhttp3-2.0.0.aar/51a7334a3cf9b1a5dcd968eff9724d74/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-okhttp3-2.0.0.aar/51a7334a3cf9b1a5dcd968eff9724d74/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawee-2.0.0.aar/f26c0189a603e6ef682d3f71e8ca0401/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/drawee-2.0.0.aar/f26c0189a603e6ef682d3f71e8ca0401/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagefilters-2.0.0.aar/f17712294fa00b9f43b59a8bcb0a3a04/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagefilters-2.0.0.aar/f17712294fa00b9f43b59a8bcb0a3a04/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-2.0.0.aar/85d0b74a9353fb656eb1a2fcc0a9ebcc/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-2.0.0.aar/85d0b74a9353fb656eb1a2fcc0a9ebcc/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagetranscoder-2.0.0.aar/87020c771b89bf16102ee06744ca3766/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/nativeimagetranscoder-2.0.0.aar/87020c771b89bf16102ee06744ca3766/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-base-2.0.0.aar/7395122aa76d529856abe7e5c1e726cc/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/imagepipeline-base-2.0.0.aar/7395122aa76d529856abe7e5c1e726cc/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/soloader-0.9.0.aar/f4b4f6979e01e455e783256496eb3f75/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/soloader-0.9.0.aar/f4b4f6979e01e455e783256496eb3f75/AndroidManifest.xml:7:5-9:41
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-android-scalablevideoview-1.0.4.aar/666f8fbf3a333f920a5a51fa12f097b1/AndroidManifest.xml:8:5-10:41
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-android-scalablevideoview-1.0.4.aar/666f8fbf3a333f920a5a51fa12f097b1/AndroidManifest.xml:8:5-10:41
-MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-fbcore-2.0.0.aar/5ceab6a47b959227c18cf038e0f009d0/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/jetified-fbcore-2.0.0.aar/5ceab6a47b959227c18cf038e0f009d0/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/98ff7c04b1890bcc41296e8024e1c24a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/98ff7c04b1890bcc41296e8024e1c24a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0dc49a32d6a7b78ae56c12a059224437/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0dc49a32d6a7b78ae56c12a059224437/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf770d9bf9de0243a6cd2b071f99b3b4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf770d9bf9de0243a6cd2b071f99b3b4/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1813bda77014481abc1794757adad55c/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1813bda77014481abc1794757adad55c/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:6:5-8:41
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:6:5-8:41
+MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/76829cf3589319bda9c0ba0f9bd86d44/AndroidManifest.xml:6:5-8:41
+MERGED from [com.github.bumptech.glide:glide:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/76829cf3589319bda9c0ba0f9bd86d44/AndroidManifest.xml:6:5-8:41
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6d524463c0fceab559d71207acb563b6/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6d524463c0fceab559d71207acb563b6/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/921a2ef3927b647441531ff07e51c8c3/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/921a2ef3927b647441531ff07e51c8c3/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5063cfc319e7985dbcb5e0162b01c042/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5063cfc319e7985dbcb5e0162b01c042/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7bf6f583d28e71b57f1f1d88b9813143/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.2.1] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7bf6f583d28e71b57f1f1d88b9813143/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9642c688847fb740a6059766426d5e42/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9642c688847fb740a6059766426d5e42/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c8277c0224d540d068d04b398e00dacb/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c8277c0224d540d068d04b398e00dacb/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35e1d3c7f5886a9c47fad2398dfa7677/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35e1d3c7f5886a9c47fad2398dfa7677/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/271a5ce8675455575093a84648a8e1ef/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/271a5ce8675455575093a84648a8e1ef/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/03638517fe98c4f55194bf2840f88a2a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/03638517fe98c4f55194bf2840f88a2a/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:exoplayer:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/ad8df17eb8b9f05564c68dd2dc637343/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/ad8df17eb8b9f05564c68dd2dc637343/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bce2c317043fd37f59f6c56c1564190f/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bce2c317043fd37f59f6c56c1564190f/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/374626ffdd1199fad7dc4c0d73e6b692/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/374626ffdd1199fad7dc4c0d73e6b692/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf72ba790eb2ce87d8e859f644511b84/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cf72ba790eb2ce87d8e859f644511b84/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/068225384c6b1a72075f821461619789/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/068225384c6b1a72075f821461619789/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4593f504f38513a75b5548b42a5b9ded/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4593f504f38513a75b5548b42a5b9ded/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9ae617c9cfa506589662ff76a81c75e8/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/9ae617c9cfa506589662ff76a81c75e8/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bdaa7c9719b56fd6a562caf9008789cd/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/bdaa7c9719b56fd6a562caf9008789cd/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35f41df686ed32762227f09f4eb6b3c9/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35f41df686ed32762227f09f4eb6b3c9/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35c3dc8a04b198419b2477bfa505c87d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/35c3dc8a04b198419b2477bfa505c87d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/01d9727a6416f312d27ab621757c3998/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/01d9727a6416f312d27ab621757c3998/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b6f862c8a9a32b533e203f867dc6b4af/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b6f862c8a9a32b533e203f867dc6b4af/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0b9453cdeddf36d81acc2849508a57e8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0b9453cdeddf36d81acc2849508a57e8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3ac0cabfb211c26b3daf6ba8ae422e83/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cddacfc9c23291eeb2a36889a0d8eaf0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/cddacfc9c23291eeb2a36889a0d8eaf0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4df1ea362b5df7da2d6d30a7016e82e0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/4df1ea362b5df7da2d6d30a7016e82e0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/2961dbeb5a7382d591e245e47f12cb91/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/2961dbeb5a7382d591e245e47f12cb91/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5923d16e8218160ae66473306bd7e0b8/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5923d16e8218160ae66473306bd7e0b8/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c59480e30d0bb75e5b2895f11314f566/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c59480e30d0bb75e5b2895f11314f566/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7a794731d018b073ee667649bae84666/AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/7a794731d018b073ee667649bae84666/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1a43812632d3cb192e697fe7ed5db87d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1a43812632d3cb192e697fe7ed5db87d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3e240c5f764095f93e8ad43ac43f6e3f/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3e240c5f764095f93e8ad43ac43f6e3f/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/495e8eb4b09dc6199ab3f4803acd9645/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/495e8eb4b09dc6199ab3f4803acd9645/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/391755027fdfb571b64a7e4bf78ef819/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/391755027fdfb571b64a7e4bf78ef819/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/dfe3b5d5718c897a8d4e32c8419dda21/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/dfe3b5d5718c897a8d4e32c8419dda21/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3a8e4f308f8f52f16f24ad127ea8e38b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/3a8e4f308f8f52f16f24ad127ea8e38b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/02e5a6f7c0aa3461d2f9b87a347ac9d9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/02e5a6f7c0aa3461d2f9b87a347ac9d9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0341c68abcc7c3651f19329d266bb698/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/0341c68abcc7c3651f19329d266bb698/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/28e261c93805c8238312a55c3ee50cd5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/28e261c93805c8238312a55c3ee50cd5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/961b4d16821c8d06fa605614d3f5c8bb/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/961b4d16821c8d06fa605614d3f5c8bb/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/34500afd270accc48ccc4ffbfb9aa45a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/34500afd270accc48ccc4ffbfb9aa45a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1329dab72e08d9abc178bd335a500aab/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1329dab72e08d9abc178bd335a500aab/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d72382b81844aea5891186869fe734fd/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d72382b81844aea5891186869fe734fd/AndroidManifest.xml:20:5-22:41
+MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/86b535ccf31b10b22cd10981cf29aeb1/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fresco:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/86b535ccf31b10b22cd10981cf29aeb1/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1890b7668bcbe2477915f71fb3e5ac7e/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1890b7668bcbe2477915f71fb3e5ac7e/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/8082dabf7c2f2e8a5335053c13dffc94/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:drawee:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/8082dabf7c2f2e8a5335053c13dffc94/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6be48df41833879a4ffb558223f09aba/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:nativeimagefilters:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6be48df41833879a4ffb558223f09aba/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b2b01dbbca8124ecd09ce044bc10cf84/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b2b01dbbca8124ecd09ce044bc10cf84/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/277e92ccafee24d8d9ec26894823c90b/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:nativeimagetranscoder:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/277e92ccafee24d8d9ec26894823c90b/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6ade69d693024327a1f98c6ff17e0dfe/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-base:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6ade69d693024327a1f98c6ff17e0dfe/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/a168a353b9de70f2231dbc4c0fa0060c/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.soloader:soloader:0.9.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/a168a353b9de70f2231dbc4c0fa0060c/AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d9f9110546f4489db79b04fc308c6442/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:2.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/d9f9110546f4489db79b04fc308c6442/AndroidManifest.xml:5:5-7:41
 INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 	android:targetSdkVersion
@@ -427,20 +496,40 @@ INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moo
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 		ADDED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/src/main/AndroidManifest.xml
-uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-79
-	android:name
-		ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:9:22-76
-uses-permission#android.permission.ACCESS_WIFI_STATE
-ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-76
-	android:name
-		ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:22-73
 meta-data#org.unimodules.core.AppLoader#react-native-headless
 ADDED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-14:91
 	android:value
 		ADDED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-88
 	android:name
 		ADDED from [:unimodules-react-native-adapter] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@unimodules/react-native-adapter/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-79
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-79
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c59480e30d0bb75e5b2895f11314f566/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.11.4] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c59480e30d0bb75e5b2895f11314f566/AndroidManifest.xml:24:5-79
+	android:name
+		ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:9:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-76
+	android:name
+		ADDED from [:react-native-community_netinfo] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/@react-native-community/netinfo/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:22-73
+receiver#com.learnium.RNDeviceInfo.RNDeviceReceiver
+ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:9-22:20
+	android:enabled
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-35
+	android:exported
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-36
+	tools:ignore
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:13-44
+	android:permission
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:13-69
+	android:name
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-70
+intent-filter#action:name:com.android.vending.INSTALL_REFERRER
+ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:13-21:29
+action#com.android.vending.INSTALL_REFERRER
+ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:17-79
+	android:name
+		ADDED from [:react-native-device-info] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-device-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:25-76
 provider#expo.modules.filesystem.FileSystemFileProvider
 ADDED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:9-26:20
 	android:grantUriPermissions
@@ -459,9 +548,37 @@ ADDED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React
 		ADDED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:25:17-67
 	android:name
 		ADDED from [:expo-file-system] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/expo-file-system/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:24:17-67
-meta-data#com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
-ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:11:9-13:43
-	android:value
-		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:13:13-40
+service#com.tanguyantoine.react.MusicControlNotification$NotificationService
+ADDED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-14:43
+	android:stopWithTask
+		ADDED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-40
 	android:name
-		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/okhttp3-integration-4.11.0.aar/eb9dce72149bcba180e8d4076c41e3c6/AndroidManifest.xml:12:13-84
+		ADDED from [:react-native-music-control] /Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/node_modules/react-native-music-control/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-96
+meta-data#com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
+ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:11:9-13:43
+	android:value
+		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:13:13-40
+	android:name
+		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.11.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/c81d574bf9ac4636dbe4c2008f0e2b98/AndroidManifest.xml:12:13-84
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:23:5-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/1dddbf72d7c0715b5eb43bdf108d0958/AndroidManifest.xml:23:22-79
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:23:9-26:75
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:25:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:26:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/5d0bba93fccd65bbb7fdabbac3d50ac0/AndroidManifest.xml:24:13-79
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:23:9-25:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:25:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/965c8d644722da73518767ec74de63c2/AndroidManifest.xml:24:13-58
+uses-permission#com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE
+ADDED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:9:5-110
+	android:name
+		ADDED from [com.android.installreferrer:installreferrer:1.1.2] /Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/6674fee54e0244773d150ecfd413468a/AndroidManifest.xml:9:22-107

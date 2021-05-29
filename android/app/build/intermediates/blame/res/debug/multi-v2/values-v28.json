@@ -4,7 +4,7 @@
             "outputFile": "/Users/sergiumironescuiancu1/Desktop/Sergio/React/React_Native/moodem/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v28/values-v28.xml",
             "map": [
                 {
-                    "source": "/Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/material-1.1.0.aar/af07567acf750e7b8b67051ad22339cf/res/values-v28/values-v28.xml",
+                    "source": "/Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/020c037e9d976ae9568931a2a177997c/res/values-v28/values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/Users/sergiumironescuiancu1/.gradle/caches/transforms-1/files-1.1/appcompat-1.2.0.aar/daaca13b3fcae82c5cb32567748f046e/res/values-v28/values-v28.xml",
+                    "source": "/Users/sergiumironescuiancu1/.gradle/caches/transforms-2/files-2.1/b7b86429b6d28cec9081f39829b15d22/res/values-v28/values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,8",
                         "startColumns": "4,4,4,4",

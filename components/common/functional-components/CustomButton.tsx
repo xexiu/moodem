@@ -19,7 +19,7 @@ const CustomButton = (props: any) => {
         btnRaised = false,
         btnType = 'solid',
         btnIcon,
-        shadow = btnShadow,
+        shadow = {}, //btnShadow,
         btnViewComponent,
         action = defaultAction.bind(this)
     } = props;

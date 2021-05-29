@@ -54,7 +54,7 @@ const SearchBarAutoComplete = (props: any) => {
             style={suggestions && suggestions.length && {
                 position: 'absolute',
                 flex: 1,
-                zIndex: 100,
+                zIndex: 1000,
                 left: 4,
                 right: 0,
                 top: 0

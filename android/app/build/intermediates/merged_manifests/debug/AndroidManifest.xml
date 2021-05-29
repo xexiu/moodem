@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <!-- These require runtime permissions on M -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -31,7 +32,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- END OPTIONAL PERMISSIONS -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" /> <!-- END OPTIONAL PERMISSIONS -->
     <application
         android:name="com.moodem.MainApplication"
         android:allowBackup="true"
@@ -46,6 +49,7 @@
             android:name="com.moodem.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,6 +63,16 @@
             android:name="org.unimodules.core.AppLoader#react-native-headless"
             android:value="org.unimodules.adapters.react.apploader.RNHeadlessAppLoader" />
 
+        <receiver
+            android:name="com.learnium.RNDeviceInfo.RNDeviceReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INSTALL_PACKAGES" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="expo.modules.filesystem.FileSystemFileProvider"
             android:authorities="com.moodem.FileSystemFileProvider"
@@ -69,9 +83,22 @@
                 android:resource="@xml/file_system_provider_paths" />
         </provider>
 
+        <service
+            android:name="com.tanguyantoine.react.MusicControlNotification$NotificationService"
+            android:stopWithTask="true" />
+
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />
+
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

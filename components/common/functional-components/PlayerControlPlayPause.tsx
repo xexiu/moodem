@@ -22,6 +22,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     if (isBuffering) {
         return (<PreLoader
             size={100}
+            borderWidth={2}
             containerStyle={{
                 position: 'absolute',
                 zIndex: 10,
