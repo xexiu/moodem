@@ -36,6 +36,8 @@
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
+    "@sentry/react-native": "^2.4.3",
+    "@sentry/wizard": "^1.2.8",
     "abort-controller": "^3.0.0",
     "axios": "^0.21.1",
     "eslint-plugin-react-hooks": "^4.2.0",

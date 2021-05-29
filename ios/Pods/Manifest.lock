@@ -348,6 +348,9 @@ PODS:
   - RNScreens (3.3.0):
     - React-Core
     - React-RCTImage
+  - RNSentry (2.4.3):
+    - React-Core
+    - Sentry (= 6.1.4)
   - RNVectorIcons (8.1.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -356,6 +359,9 @@ PODS:
   - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.7)
+  - Sentry (6.1.4):
+    - Sentry/Core (= 6.1.4)
+  - Sentry/Core (6.1.4)
   - UMAppLoader (2.1.0)
   - UMBarCodeScannerInterface (6.1.0):
     - UMCore
@@ -427,6 +433,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
@@ -449,6 +456,7 @@ SPEC REPOS:
     - libwebp
     - SDWebImage
     - SDWebImageWebPCoder
+    - Sentry
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -539,6 +547,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   UMAppLoader:
@@ -617,9 +627,11 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: bf59f17fbf001f1025243eeed5f19419d3c11ef2
+  RNSentry: 6f8f9ee7e4c939dcd35e5633b94d0e3782888e46
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
+  Sentry: 9d055e2de30a77685e86b219acf02e59b82091fc
   UMAppLoader: aae896b81e3fcaa6528992e2e19ec8db38c2cedd
   UMBarCodeScannerInterface: 96a01d81ff0c7febbfefc2d7396db9e7462d8c68
   UMCameraInterface: 8ad433fdadca22703ebeb614d42b814092d38d69
