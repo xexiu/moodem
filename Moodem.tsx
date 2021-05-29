@@ -31,7 +31,7 @@ function getUserUidAndName(user: any) {
 }
 
 const App = function Moodem() {
-    const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
+    const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
@@ -49,7 +49,7 @@ const App = function Moodem() {
                                 groups: groups.length === 1 ? [] : groups,
                                 group: groups[0],
                                 isLoading: false,
-                                isServerError: socket.disconnected,
+                                isServerError: false,
                                 socket
                             }
                         });
@@ -62,7 +62,7 @@ const App = function Moodem() {
                                 error: err,
                                 user: null,
                                 isLoading: true,
-                                isServerError: socket.disconnected,
+                                isServerError: false,
                                 socket
                             }
                         });
@@ -72,7 +72,7 @@ const App = function Moodem() {
                     type: 'guest', value: {
                         user: null,
                         isLoading: false,
-                        isServerError: socket.disconnected,
+                        isServerError: false,
                         socket
                     }
                 });

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
-import { convertVideoIdsFromDB, setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
+import { convertVideoIdsFromDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
 import PreLoader from '../../common/functional-components/PreLoader';
@@ -13,14 +13,31 @@ import { SongsContext } from '../store-context/SongsContext';
 
 const Songs = (props: any) => {
     const { navigation } = props;
-    const { group, user, isServerError, socket } = useContext(AppContext) as any;
+    const { group, isServerError, socket } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs,
         isLoading
     } = useContext(SongsContext) as any;
 
-    function dispatchCommon(data: any) {
+    useEffect(() => {
+        if (!isServerError) {
+            socket.on('get-medias-group', getSongs);
+            socket.on('song-added', getSong);
+            socket.on('song-removed', getRemovedSong);
+            socket.on('song-voted', getVotedSong);
+            socket.on('song-error', getSongWithError);
+            socket.emit('emit-medias-group', { chatRoom: group.group_name });
+        }
+
+        return () => {
+            console.log('OFF SONGS');
+            socket.off('get-medias-group', getSongs);
+            socket.off('emit-medias-group');
+        };
+    }, []);
+
+    function dispatchCommon(data: any = []) {
         return dispatchContextSongs({
             type: 'set_songs',
             value: {
@@ -35,19 +52,43 @@ const Songs = (props: any) => {
     }
 
     async function convertVideosIdsCommon() {
-        const audios = await convertVideoIdsFromDB(group.group_videoIds);
-        setExtraAttrs(audios, user?.uid);
-        socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: audios });
+        const audios = await convertVideoIdsFromDB(group.group_songs);
         saveOnLocalStorage(group.group_name, audios).then(() => dispatchCommon(audios));
     }
 
-    function getSongs(data: any) {
-        const groupVideoIds = group.group_videoIds && group.group_videoIds.length;
+    async function getSongsFromStorageOrConvert() {
+        const songsFromStorage = await loadFromLocalStorage(group.group_name) || [];
 
-        if (data.songs.length !== groupVideoIds) {
-            removeItem(group.group_name);
+        switch (songsFromStorage) {
+        case 'NotFoundError':
             return convertVideosIdsCommon();
+        case 'ExpiredError':
+            return convertVideosIdsCommon();
+        default:
+            const groupSongsLen = group.group_songs && group.group_songs.length;
+
+            if (songsFromStorage.length !== groupSongsLen) {
+                return removeItem(group.group_name, () => {
+                    return convertVideosIdsCommon();
+                });
+            }
+
+            return songsFromStorage || [];
         }
+    }
+
+    async function getSongs(data: any) {
+        const groupSongsLen = group.group_songs && group.group_songs.length;
+
+        if (data.songs.length !== groupSongsLen) {
+            const songsFromStorage = await getSongsFromStorageOrConvert() || [];
+
+            socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: songsFromStorage });
+            socket.off('get-medias-group', getSongs);
+            return dispatchCommon(songsFromStorage);
+
+        }
+        socket.off('get-medias-group', getSongs);
         return dispatchCommon(data.songs);
     }
 
@@ -103,39 +144,15 @@ const Songs = (props: any) => {
         });
     }
 
-    if (isServerError && isLoading) {
-        const savedItem = loadFromLocalStorage(group.group_name);
+    async function handleServerError() {
+        const songsFromStorage = await getSongsFromStorageOrConvert() || [];
 
-        savedItem.then((data) => {
-            switch (data) {
-            case 'NotFoundError':
-                socket.off('get-medias-group', getSongs);
-                return convertVideosIdsCommon();
-            case 'ExpiredError':
-                return convertVideosIdsCommon();
-            default:
-                if (data.length !== (group.group_videoIds && group.group_videoIds.length)) {
-                    return convertVideosIdsCommon();
-                }
-                return dispatchCommon(data);
-            }
-        });
+        return dispatchCommon(songsFromStorage);
     }
 
-    useEffect(() => {
-        if (!isServerError) {
-            socket.on('get-medias-group', getSongs);
-            socket.on('song-added', getSong);
-            socket.on('song-removed', getRemovedSong);
-            socket.on('song-voted', getVotedSong);
-            socket.on('song-error', getSongWithError);
-            socket.emit('emit-medias-group', { chatRoom: group.group_name });
-        }
-
-        return () => {
-            socket.off('get-medias-group', getSongs);
-        };
-    }, []);
+    if (isServerError && isLoading) {
+        handleServerError();
+    }
 
     const memoizedPlayerSongsListCallBack = useCallback(() => {
         if (songs && !songs.length) {
@@ -190,8 +207,8 @@ const Songs = (props: any) => {
 
     return (
         <BodyContainer>
-            { renderSearchBar() }
-            { memoizedPlayerSongsListCallBack() }
+            { renderSearchBar()}
+            { memoizedPlayerSongsListCallBack()}
         </BodyContainer>
     );
 };
@@ -200,10 +217,6 @@ Songs.propTypes = {
     media: PropTypes.any,
     navigation: PropTypes.any,
     isServerError: PropTypes.bool
-};
-
-Songs.defaultProps = {
-    isServerError: false
 };
 
 export default memo(Songs);

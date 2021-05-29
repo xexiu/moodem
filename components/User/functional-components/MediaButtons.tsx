@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
-import { removeVideoIdFromDB, saveVideoIdOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
+import { removeSongFromDB, saveSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
@@ -58,15 +58,12 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconStyle: { alignSelf: 'flex-end', paddingBottom: 40, fontSize: 40 },
             iconReverse: false,
             action: async () => {
-                if (!user) {
-                    return navigation.navigate('Guest');
-                }
                 Object.assign(song, {
                     isMediaOnList: true,
                     isPlaying: false
                 });
 
-                await saveVideoIdOnDb(song.videoDetails.videoId, user, group.group_name, emitSendMedia);
+                await saveSongOnDb(song, user, group.group_name, emitSendMedia);
             }
         },
         votes: {
@@ -78,9 +75,8 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
-                if (!user) {
-                    return navigation.navigate('Guest');
-                }
+
+                // updateSongVoteOnDb
                 await voteSong();
             }
         },
@@ -91,10 +87,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconColor: '#dd0031',
             iconSize: 9,
             action: async () => {
-                if (!user) {
-                    return navigation.navigate('Guest');
-                }
-                await removeVideoIdFromDB(song.videoDetails.videoId, user, group.group_name, emitRemoveSong);
+                await removeSongFromDB(song, user, group.group_name, emitRemoveSong);
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)
         }

@@ -14,13 +14,9 @@ const SideBarTopAvatar = (props: any) => {
     const { user, group }: any = useContext(AppContext);
 
     function hangleUserNavigation() {
-        if (user) {
-            navigation.navigate('Profile', {
-                params: group
-            });
-        } else {
-            navigation.navigate('Guest');
-        }
+        return navigation.navigate('Profile', {
+            params: group
+        });
     }
 
     return (

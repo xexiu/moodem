@@ -1,3 +1,4 @@
+import chunk from 'lodash';
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
 import firebase from '../services/firebase';
@@ -33,29 +34,6 @@ export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     });
 }
 
-export function setExtraAttrs(audios: any, uid: string) {
-    const audiosArr = [] as any;
-
-    audios.forEach((track: any, index: number) => {
-        Object.assign(track, {
-            id: index,
-            isPlaying: false,
-            isVotingSong: false,
-            isMediaOnList: true,
-            boosts_count: 0,
-            votes_count: 0,
-            voted_users: [],
-            boosted_users: [],
-            user: {
-                uid
-            }
-        });
-        audiosArr.push(track);
-    });
-
-    return audiosArr;
-}
-
 export async function convertVideoIdYtdl(videoId: string) {
     const info = await ytdl.getInfo(videoId);
     const audio = info.formats.filter((format: any) => format.hasAudio && format.hasVideo);
@@ -81,9 +59,13 @@ export async function convertVideoIdYtdl(videoId: string) {
     return {};
 }
 
-export async function convertVideoIdsFromDB(videoIds: string[] = []) {
+export async function convertVideoIdsFromDB(songs: [] = []) {
     try {
-        const audios = await Promise.all(videoIds.map(async (videoId: string) => convertVideoIdYtdl(videoId)));
+        const audios = await Promise.all(songs.map(async (song: any) => {
+            const convertedSong = await convertVideoIdYtdl(song.videoDetails.videoId);
+            Object.assign(song, convertedSong);
+            return song;
+        }));
         return audios;
     } catch (error) {
         // send error to sentry or other server
@@ -91,41 +73,58 @@ export async function convertVideoIdsFromDB(videoIds: string[] = []) {
     }
 }
 
-export const saveVideoIdOnDb = (videoId: string, user: any, groupName: string, cb: Function) => {
+export const saveSongOnDb = (song: any, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
 
-        if (dbgroup.group_videoIds) {
-            dbgroup.group_videoIds.push(videoId);
+        if (dbgroup.group_songs) {
+            song.id = dbgroup.group_songs.length;
+            dbgroup.group_songs.push(song);
         } else {
-            dbgroup.group_videoIds = [];
-            dbgroup.group_videoIds.push(videoId);
+            song.id = 0;
+            dbgroup.group_songs = [song];
+        }
+
+        if (dbgroup.group_users) {
+            dbgroup.group_users.push({
+                user_uid: user.uid,
+                group_owner: false,
+                group_admin: false
+            });
+        } else {
+            dbgroup.group_users = [{
+                user_uid: user.uid,
+                group_owner: false,
+                group_admin: false
+            }];
         }
 
         refGroup.update({
-            group_videoIds: [...new Set(dbgroup.group_videoIds)]
+            // tslint:disable-next-line:max-line-length
+            group_users: [...new Map(dbgroup.group_users.map((groupUser: any) => [groupUser.user_uid, groupUser])).values()],
+            // tslint:disable-next-line:max-line-length
+            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.videoDetails.videoId, groupSong])).values()]
         });
     })
     .then(cb);
 };
 
-export const removeVideoIdFromDB = (videoId: string, user: any, groupName: string, cb: Function) => {
+export const removeSongFromDB = (song: any, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
-        const index = dbgroup.group_videoIds?.indexOf(videoId);
 
-        if (index > -1) {
-            dbgroup.group_videoIds.splice(index, 1);
-        }
+        // tslint:disable-next-line:max-line-length
+        const filterDbgroupSongs = dbgroup.group_songs.filter((dbSong: any) => dbSong.videoDetails.videoId !== song.videoDetails.videoId);
+        filterDbgroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
 
         refGroup.update({
-            group_videoIds: [...new Set(dbgroup.group_videoIds)]
+            group_songs: [...new Set(filterDbgroupSongs)]
         });
     })
     .then(cb);

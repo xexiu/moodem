@@ -9,16 +9,16 @@ export const createGroupHandler = (validate: any, user: any) => new Promise((res
         return;
     }
     firebase.database().ref(`Groups/${user.uid}`).push({
-        group_videoIds: [],
+        group_songs: [],
         group_name: `${validate.group_name}-${user.uid}`,
         group_password: validate.group_password,
-        isAdmin: true,
-        isOwner: true,
-        user_owner_id: user.uid,
+        group_user_owner_id: user.uid,
         group_avatar: DEFAULT_GROUP_AVATAR,
-        group_users_count: {
-            users: [user.uid]
-        }
+        group_users: [{
+            user_uid: user.uid,
+            group_owner: true,
+            group_admin: true
+        }]
     })
         .then((data: any) => {
             data.ref.update({ group_id: data.key });

@@ -7,28 +7,15 @@ const app = require('express')();
 const serverHTTP = require('http').Server(app);
 const serverIO = require('socket.io')(serverHTTP);
 const ytdl = require('ytdl-core');
-const mcache = require('memory-cache');
+const NodeCache = require('node-cache');
 
 // memory-cache docs -> https://github.com/ptarjan/node-cache
 // Socket.io do -> https://socket.io/docs/server-api/#socket-id
 
+const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
+const FIVE_HOURS = ttl * 5;
 const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFmmF2swRgIhALFkP9EgTxgWwh8_Dx3Fa2g-WN-K4umS1JQyzndTP5DLAiEAyHfgMQ2jMlNpvltT8LdxKqTle8a4ZSjODYq-svrKlVA:QUQ3MjNmemFvaS1aNkFXVURieUYtMUtWbnR5bFMzRnJfa21CUXdhSTV4QXNPVnNfQWlabDBUZU1qaC1oMnh1eVNwa2pxVWxkN3duYWdhbkk5aHM1ai1JNHFORy1ZVHNvMWw3X2RBdlhKMGZaamFaa3JfeUZzVmhqTnFLS1BETlJTOFRfTmZ6TVQyd0tfUktlcEQ5X1hiNmROcU5hSEt6NC13; VISITOR_INFO1_LIVE=Foji98RNGoc; HSID=AFT92MyweZvASBFc8; SSID=Adqw7Q8srjSE8qVwE; APISID=aS1BdrF_061pvnJi/AK-F-FrDdaxvZ2M9S; SAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; __Secure-3PAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; SID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQvrjB2Ws224CKFU_q-xDu6g.; __Secure-3PSID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQyzg_CthnHmIDweLdzl7x6w.; _gcl_au=1.1.1092345076.1615207146; PREF=tz=America.Bogota&f4=4000000&volume=100; SIDCC=AJi4QfHEidaBriNX7zfdqwhYttDNMZaRIs2EiVR8sxQEsgzh5tlYaBOoAUn9tNTUrmuHbD37LA; __Secure-3PSIDCC=AJi4QfHpDx-igRwtg57bWL78ZZK45bEB4srtDgZAfdcKm4cmO1a5l7jiJ0EVDsAKQlM_meAlN60';
-const memCache = new mcache.Cache();
-
-const cacheMiddleware = (duration) => (req, res, next) => {
-  const key = `__youtube-songs__${req.originalUrl}` || req.url;
-  const cacheContent = memCache.get(key);
-  if (cacheContent) {
-    res.send(cacheContent);
-  } else {
-    res.sendResponse = res.send;
-    res.send = (body) => {
-      memCache.put(key, body, duration * 1000);
-      res.sendResponse(body);
-    };
-    next();
-  }
-};
+const myCache = new NodeCache();
 
 function cleanTitle(info) {
   if (info && info.videoDetails && info.videoDetails.title) {
@@ -52,7 +39,7 @@ function cleanImageParams(info) {
 async function getSong(videoId) {
   const key = `__youtube-songs__${videoId}`;
 
-  const audioMem = memCache.get(key);
+  const audioMem = myCache.get(key);
 
   if (audioMem && Object.keys(audioMem).length) {
     Object.assign(audioMem, {
@@ -87,14 +74,14 @@ async function getSong(videoId) {
     cleanImageParams(audio[0]);
     cleanTitle(audio[0]);
 
-    memCache.put(key, { ...audio[0] }, 20000); // seconds 1000 -> 1 sec / 20000 seconds -> 5.5 hours
+    myCache.set(key, { ...audio[0] }, FIVE_HOURS);
     return { ...audio[0] };
   }
 
   return {};
 }
 
-app.get('/', cacheMiddleware(30), (req, res) => {
+app.get('/', (req, res) => {
   res.sendfile('index.html');
 });
 
@@ -168,18 +155,17 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    let audios = [];
     if (data.videoIds) {
       try {
-        audios = await Promise.all(data.videoIds.map(async (videoId) => getSong(videoId)));
+        const songsCoverted = await Promise.all(data.videoIds.map(async (videoId) => getSong(videoId)));
+
+        socket.emit('get-songs-from-youtube', { // send message only to sender-client
+          songs: [...setExtraAttrs(songsCoverted, socket.uid)]
+        });
       } catch (error) {
         // send error to sentry or other server
       }
     }
-
-    socket.emit('get-songs-from-youtube', { // send message only to sender-client
-      songs: setExtraAttrs(audios, socket.uid)
-    });
   });
 
   // Welcome Msg
@@ -207,7 +193,7 @@ serverIO.on('connection', (socket) => {
   });
 
   // Media
-  socket.on('emit-medias-group', async (data) => {
+  socket.once('emit-medias-group', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
@@ -287,13 +273,26 @@ serverIO.on('connection', (socket) => {
   // Add song
   socket.on('send-message-add-song', async (data) => {
     await socket.join(data.chatRoom);
+    let duplicatedSong = false;
+
+    const { songs } = chatRooms[data.chatRoom];
 
     if (data.song) {
-      data.song.id = chatRooms[data.chatRoom].songs.length;
-      chatRooms[data.chatRoom].songs.push(data.song);
+      for (let i = 0; i < songs.length; i++) {
+        const song = songs[i];
+        if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
+          duplicatedSong = true;
+          break;
+        }
+      }
     }
-    const { isAddingSong = false } = data;
-    serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+    if (!duplicatedSong) {
+      data.song.id = songs.length;
+      songs.push(data.song);
+
+      const { isAddingSong = false } = data;
+      serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+    }
   });
 
   socket.on('get-connected-users', async (data) => {
@@ -364,8 +363,8 @@ serverIO.on('connection', (socket) => {
   // });
 
   socket.on('disconnect', (reason) => {
-    // console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
-    // socket.removeAllListeners();
+    console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
+    socket.offAny();
     delete socket.id;
     delete socket.uid;
     delete socket.displayName;
@@ -373,5 +372,5 @@ serverIO.on('connection', (socket) => {
 });
 
 serverHTTP.listen(3000, '::', () => { // Digital Ocean Open Port
-  // console.log('listening on *:3000');
+  console.log('listening on *:3000');
 });

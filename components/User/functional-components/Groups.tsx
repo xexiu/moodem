@@ -75,9 +75,7 @@ const Groups = (props: any) => {
 
     const searchGroups = (text: string) => getAllGroups().then((data: any) => {
         const testGroups = [] as any;
-        if (!user) {
-            navigation.navigate('Guest');
-        }
+
         for (const _group of data) {
             if (_group.group_name.indexOf(text) >= 0) {
                 if (user.uid !== _group.user_owner_id && _group.group_users_count.users.indexOf(user.uid) < 0) {

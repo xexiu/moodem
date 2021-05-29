@@ -127,7 +127,10 @@ function updateSong(result: Context, action: actionType) {
 
 function resetSongs(result: Context) {
     const { songs, indexItem } = result;
-    songs[indexItem].isPlaying = false;
+
+    if (songs.length) {
+        songs[indexItem].isPlaying = false;
+    }
 
     Object.assign(result, {
         indexItem: 0

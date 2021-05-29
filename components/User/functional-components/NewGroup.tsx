@@ -40,10 +40,7 @@ export const NewGroup = (props: any) => {
     const handleCreateGroup = () => {
         const validate = refGroupForm.current.getValue();
 
-        if (!user) {
-            toggleModal(false);
-            navigation.navigate('Guest');
-        } else if (validate) {
+        if (validate) {
             // setNewGroup({ isLoading: true, value });
             createGroupHandler(validate, user)
                 .then(data => {

@@ -9,9 +9,11 @@ import { SongsContextProvider } from '../../User/store-context/SongsContext';
 import BodyContainer from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
 
+let serverError = false;
+
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
-    const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
+    const { dispatchContextApp, group, isServerError, isLoading, socket }: any = useContext(AppContext);
     const toastRef = useRef(null);
 
     const getUserBackOnline = (data: any) => {
@@ -25,44 +27,61 @@ const WelcomeLanding = (props: any) => {
     useEffect(() => {
         AppState.addEventListener('change', getUserBackOnline);
 
-        if (socket.disconnected) {
-            socket.open();
-            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
-        }
-
-        socket.on('disconnect', () => {
-            toastRef.current.show('Connecting to server...', DURATION.FOREVER);
-
-            if (!isServerError) {
-                return dispatchContextApp({
-                    type: 'server_error', value: {
-                        isServerError: true
-                    }
-                });
-            }
-        });
-
+        socket.on('connect_error', getConnectionError);
+        socket.on('get-message-welcomeMsg', getWelcomeMsg);
+        socket.on('connect', setServerConnectedBack);
         socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
 
-        socket.on('get-message-welcomeMsg', (data: any) => {
-            toastRef.current.show(data.welcomeMsg, 1000);
-
-            if (isServerError) {
-                return dispatchContextApp({
-                    type: 'server_error', value: {
-                        isServerError: false
-                    }
-                });
-            }
-        });
         return () => {
+            console.log('OFF WELCOME');
             AppState.removeEventListener('change', getUserBackOnline);
             socket.off('emit-message-welcomeMsg');
             socket.off('get-message-welcomeMsg');
+            socket.off('emit-set-medias');
+            socket.off('get-medias-group');
+            socket.off('connect_error', getConnectionError);
             socket.off('disconnect');
-            socket.off('disconnect');
+
         };
     }, [group.group_name, isServerError]);
+
+    function setServerConnectedBack() {
+        // Server has connected back from error.
+        if (serverError) {
+            serverError = false;
+            return dispatchContextApp({
+                type: 'server_error', value: {
+                    isServerError: false
+                }
+            });
+        }
+    }
+
+    function getConnectionError(error: any) {
+        toastRef.current.show('Connecting to server...', DURATION.FOREVER);
+
+        if (!serverError) {
+                // Send error to sentry
+            serverError = true;
+            return dispatchContextApp({
+                type: 'server_error', value: {
+                    isServerError: true
+                }
+            });
+        }
+    }
+
+    function getWelcomeMsg({ welcomeMsg }: any) {
+        toastRef.current.show(welcomeMsg, 1000);
+
+        if (isServerError) {
+            return dispatchContextApp({
+                type: 'server_error', value: {
+                    isServerError: false
+                }
+            });
+        }
+    }
 
     return (
         <BodyContainer>

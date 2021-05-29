@@ -20,7 +20,7 @@ const initialValue: State = {
     group: {
         group_name: 'Moodem',
         group_id: 0,
-        group_videoIds: []
+        group_songs: []
     },
     isServerError: false,
     isLoading: true,

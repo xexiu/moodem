@@ -34,7 +34,7 @@ const SearchingSongsScreen = (props: any) => {
         const videoIds = [] as string[];
         try {
             const { data } = await axios.get(
-                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=10&videoCategoryId=10&type=video&key=${YOUTUBE_KEY}`,
+                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=15&videoCategoryId=10&type=video&key=${YOUTUBE_KEY}`,
                 { cancelToken: source.token });
 
             const videos = data.items.filter((video: any) => video.id.videoId);
