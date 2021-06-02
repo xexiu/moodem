@@ -1,3 +1,4 @@
+import { YOUTUBE_KEY } from '@env';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
@@ -8,7 +9,6 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
-import { YOUTUBE_KEY } from '../../../src/js/Utils/constants/api/apiKeys';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const THIRTY_DAYS = 1000 * 3600 * 24 * 30;

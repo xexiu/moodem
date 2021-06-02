@@ -149,6 +149,7 @@ const BasePlayer = (props: any) => {
                     MusicControl.updatePlayback({
                         elapsedTime: seekRef.current.trackCurrentTime
                     });
+                    seekRef.current.setTrackCurrentTime(seekRef.current.trackCurrentTime);
                 }}
                 onLoad={({ currentTime }) => {
                     if (!seekRef.current.isSliding) {
@@ -170,6 +171,7 @@ const BasePlayer = (props: any) => {
                         state: MusicControl.STATE_ERROR,
                         elapsedTime: 0
                     });
+                    seekRef.current.setTrackCurrentTime(0);
 
                     if (!isServerError) {
                         console.log('Song Error', error);

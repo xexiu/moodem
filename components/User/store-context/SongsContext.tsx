@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import { LayoutAnimation, Platform, UIManager } from 'react-native';
-import { songType } from '../../../src/js/typings/songs';
+import { songType } from '../../../src/types/songs';
 
 type actionType = {
     value: Context,

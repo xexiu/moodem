@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from 'react';
-import { groupType } from '../../../src/js/typings/group';
+import { groupType } from '../../../src/types/group';
 
 type Props = {
     children: React.ReactNode;
