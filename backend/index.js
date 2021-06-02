@@ -8,9 +8,20 @@ const serverHTTP = require('http').Server(app);
 const serverIO = require('socket.io')(serverHTTP);
 const ytdl = require('ytdl-core');
 const NodeCache = require('node-cache');
+const terminate = require('./Utils/terminate');
 
 // memory-cache docs -> https://github.com/ptarjan/node-cache
 // Socket.io do -> https://socket.io/docs/server-api/#socket-id
+
+const exitHandler = terminate(serverHTTP, {
+  coredump: false,
+  timeout: 500
+});
+
+process.on('SIGTERM', exitHandler(0, 'SIGTERM'));
+process.on('beforeExit', exitHandler(0, 'beforeExit')); //
+process.on('uncaughtException', exitHandler(0, 'Unexpected Error')); //
+process.on('unhandledRejection', exitHandler(0, 'Unhandled Promise'));
 
 const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
 const ONE_DAY = ttl * 24;
