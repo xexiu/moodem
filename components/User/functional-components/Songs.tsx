@@ -1,13 +1,8 @@
 
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
-import { View } from 'react-native';
-import { Icon } from 'react-native-elements';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
-import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
-import { convertVideoIdsFromDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
-import CustomButton from '../../common/functional-components/CustomButton';
 import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
@@ -20,23 +15,26 @@ const Songs = (props: any) => {
     const {
         dispatchContextSongs,
         songs,
-        isLoading
+        isLoading,
+        indexItem
     } = useContext(SongsContext) as any;
 
     useEffect(() => {
+        dispatchCommon(group.group_songs);
+
         if (!isServerError) {
-            socket.on('get-medias-group', getSongs);
+            socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: group.group_songs });
             socket.on('song-added', getSong);
             socket.on('song-removed', getRemovedSong);
             socket.on('song-voted', getVotedSong);
             socket.on('song-error', getSongWithError);
-            socket.emit('emit-medias-group', { chatRoom: group.group_name });
         }
 
         return () => {
             console.log('OFF SONGS');
-            socket.off('get-medias-group', getSongs);
-            socket.off('emit-medias-group');
+            socket.off('emit-set-medias');
+            socket.off('send-song-error', getSongWithError);
+            socket.off('song-error', getSongWithError);
         };
     }, []);
 
@@ -54,52 +52,11 @@ const Songs = (props: any) => {
         });
     }
 
-    async function convertVideosIdsCommon() {
-        const audios = await convertVideoIdsFromDB(group.group_songs);
-        saveOnLocalStorage(group.group_name, audios).then(() => dispatchCommon(audios));
-    }
-
-    async function getSongsFromStorageOrConvert() {
-        const songsFromStorage = await loadFromLocalStorage(group.group_name) || [];
-
-        switch (songsFromStorage) {
-        case 'NotFoundError':
-            return convertVideosIdsCommon();
-        case 'ExpiredError':
-            return convertVideosIdsCommon();
-        default:
-            const groupSongsLen = group.group_songs && group.group_songs.length;
-
-            if (songsFromStorage.length !== groupSongsLen) {
-                return removeItem(group.group_name, () => {
-                    return convertVideosIdsCommon();
-                });
-            }
-
-            return songsFromStorage || [];
-        }
-    }
-
-    async function getSongs(data: any) {
-        const groupSongsLen = group.group_songs && group.group_songs.length;
-
-        if (data.songs.length !== groupSongsLen) {
-            const songsFromStorage = await getSongsFromStorageOrConvert() || [];
-
-            socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: songsFromStorage });
-            socket.off('get-medias-group', getSongs);
-            return dispatchCommon(songsFromStorage);
-
-        }
-        socket.off('get-medias-group', getSongs);
-        return dispatchCommon(data.songs);
-    }
-
-    function getSong(data: any) {
+    function getSong({ song }: any) {
         return dispatchContextSongs({
             type: 'set_added_song',
             value: {
-                addedSong: data.song,
+                addedSong: song,
                 isLoading: false,
                 removedSong: null,
                 votedSong: null,
@@ -128,7 +85,8 @@ const Songs = (props: any) => {
                 removedSong: data.song,
                 isLoading: false,
                 votedSong: null,
-                addedSong: null
+                addedSong: null,
+                transformedSong: null
             }
         });
     }
@@ -147,15 +105,15 @@ const Songs = (props: any) => {
         });
     }
 
-    async function handleServerError() {
-        const songsFromStorage = await getSongsFromStorageOrConvert() || [];
-
-        return dispatchCommon(songsFromStorage);
-    }
-
-    if (isServerError && isLoading) {
-        handleServerError();
-    }
+    const resetLoadingSongs = useCallback((() => {
+        let executed = false;
+        return () => {
+            if (!executed) {
+                executed = true;
+                return dispatchContextSongs({ type: 'update_song_reset' });
+            }
+        };
+    })(), []);
 
     const memoizedPlayerSongsListCallBack = useCallback(() => {
         if (songs && !songs.length) {
@@ -163,37 +121,13 @@ const Songs = (props: any) => {
         }
 
         return (
-            <View style={{ flex: 1 }}>
-                <View style={
-                    isServerError ?
-                    { position: 'absolute', left: -15, top: 20, zIndex: 100 } :
-                    { position: 'absolute', left: -15, top: -10, zIndex: 100 }
-                }>
-                    <CustomButton
-                        btnStyle={{ width: 50, height: 50 }}
-                        btnCustomStyle={{ backgroundColor: 'transparent' }}
-                        shadow={{}}
-                        btnIcon={<Icon
-                            name='music-note'
-                            type='FontAwesome'
-                            color='#dd0031'
-                            size={12}
-                        />}
-                        btnTitle={songs.length}
-                        btnTitleStyle={{ color: '#666', fontSize: 12 }}
-                        action={() => {
-                            return navigation.navigate('SearchGroupSongScreen');
-                        }}
-                        // when pressed, should go to songs screen in order to search a song in the list
-                    />
-                </View>
-                <MemoizedPlayerSongsList
-                    data={songs}
-                    buttonActions={['votes', 'remove']}
-                />
-            </View>
+            <MemoizedPlayerSongsList
+                data={songs}
+                buttonActions={['votes', 'remove']}
+                indexItem={indexItem}
+            />
         );
-    }, [songs.length, isServerError]);
+    }, [songs.length, indexItem]);
 
     if (isLoading) {
         return (
@@ -208,17 +142,6 @@ const Songs = (props: any) => {
         );
     }
 
-    const resetLoadingSongs = (() => {
-        let executed = false;
-        return () => {
-            if (!executed) {
-                executed = true;
-                // do something
-                return dispatchContextSongs({ type: 'update_song_reset' });
-            }
-        };
-    })();
-
     function renderSearchBar() {
         if (isServerError) {
             return null;
@@ -232,8 +155,6 @@ const Songs = (props: any) => {
             />
         );
     }
-
-    console.log('Songs');
 
     return (
         <BodyContainer>

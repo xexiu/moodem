@@ -47,7 +47,9 @@ const App = function Moodem() {
                             value: {
                                 user: _user,
                                 groups: groups.length === 1 ? [] : groups,
-                                group: groups[0],
+                                group: Object.assign(groups[0], {
+                                    group_songs: groups[0].group_songs || []
+                                }),
                                 isLoading: false,
                                 isServerError: false,
                                 socket

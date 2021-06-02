@@ -86,6 +86,7 @@ export class CreateGroup extends Component {
                                 const validate = this.refForm.current.getValue();
 
                                 if (validate) {
+                                    validate.group_name = encodeURIComponent(validate.group_name);
                                     this.setState({ isLoading: true });
 
                                     createGroupHandler(validate, user)

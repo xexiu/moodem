@@ -31,7 +31,7 @@ const initialValue: Context = {
     removedSong: null,
     addedSong: null,
     votedSong: null,
-    transformedSong:  null,
+    transformedSong: null,
     isVotingSong: false
 };
 

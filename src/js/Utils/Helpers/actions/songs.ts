@@ -1,7 +1,26 @@
-import chunk from 'lodash';
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
 import firebase from '../services/firebase';
+
+const compareValues = (key: string) => (a: any, b: any) => {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        return 0;
+    }
+
+    const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+    const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+
+    if (varA > varB) {
+        return -1;
+    }
+    if (varA < varB) {
+        return 1;
+    }
+
+    return 0;
+};
 
 export function cleanVideoTitle(info: any) {
     if (info && info.videoDetails && info.videoDetails.title) {
@@ -63,7 +82,11 @@ export async function convertVideoIdsFromDB(songs: [] = []) {
     try {
         const audios = await Promise.all(songs.map(async (song: any) => {
             const convertedSong = await convertVideoIdYtdl(song.videoDetails.videoId);
-            Object.assign(song, convertedSong);
+            Object.assign(song, {
+                ...convertedSong,
+                voted_users: song.voted_users || [],
+                boosted_users: song.boosted_users || []
+            });
             return song;
         }));
         return audios;
@@ -109,7 +132,45 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb: Functi
             group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.videoDetails.videoId, groupSong])).values()]
         });
     })
-    .then(cb);
+        .then(cb);
+};
+
+export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb: Function) => {
+    const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
+    const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
+
+    return refGroup.once('value', (snapshot: any) => {
+        const dbgroup = snapshot.val() || [];
+
+        // tslint:disable-next-line:max-line-length
+        const songDB = dbgroup.group_songs[song.id];
+
+        if (songDB.voted_users) {
+            const userHasVoted = songDB.voted_users.some((id: number) => id === songDB.user.uid);
+
+            if (songDB.id === song.id && !userHasVoted) {
+                songDB.votes_count = ++songDB.votes_count;
+                songDB.voted_users.push(song.user.uid);
+
+                Object.assign(songDB, {
+                    isVotingSong: true
+                });
+            }
+        } else {
+            songDB.voted_users = [];
+            songDB.votes_count = ++songDB.votes_count;
+            songDB.voted_users.push(song.user.uid);
+        }
+
+        dbgroup.group_songs.sort(compareValues('votes_count'));
+        dbgroup.group_songs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
+
+        refGroup.update({
+            // tslint:disable-next-line:max-line-length
+            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.videoDetails.videoId, groupSong])).values()]
+        });
+    })
+        .then(cb);
 };
 
 export const removeSongFromDB = (song: any, user: any, groupName: string, cb: Function) => {
@@ -127,5 +188,5 @@ export const removeSongFromDB = (song: any, user: any, groupName: string, cb: Fu
             group_songs: [...new Set(filterDbgroupSongs)]
         });
     })
-    .then(cb);
+        .then(cb);
 };

@@ -7,25 +7,25 @@ import Player from './Player';
 const MemoizedPlayerSongsList = (props: any) => {
     const {
         data,
-        buttonActions
+        buttonActions,
+        handleOnClickItem = useCallback((index: number) => dispatchContextSongs({
+            type: 'update_song_click_play_pause',
+            value: {
+                indexItem: index,
+                index,
+                removedSong: null,
+                votedSong: null,
+                addedSong: null,
+                transformedSong: null
+            }
+        }), []),
+        optionalCallback,
+        indexItem
     } = props;
 
     const {
-        dispatchContextSongs,
-        indexItem
+        dispatchContextSongs
     } = useContext(SongsContext) as any;
-
-    const handleOnClickItem = useCallback((index: number) => dispatchContextSongs({
-        type: 'update_song_click_play_pause',
-        value: {
-            indexItem: index,
-            index,
-            removedSong: null,
-            votedSong: null,
-            addedSong: null,
-            transformedSong: null
-        }
-    }), []);
 
     return (
         <View style={{ flex: 1 }}>
@@ -39,6 +39,7 @@ const MemoizedPlayerSongsList = (props: any) => {
                 data={data}
                 handleOnClickItem={handleOnClickItem}
                 buttonActions={buttonActions}
+                optionalCallback={optionalCallback}
             />
         </View>
     );

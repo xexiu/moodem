@@ -7,11 +7,17 @@ import { OfflineNotice } from './components/common/functional-components/Offline
 import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
 
+import { CaptureConsole } from '@sentry/integrations';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
     dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
-    debug: __DEV__ ? true : false,
+    debug: __DEV__ ? false : false,
+    integrations: [
+        new CaptureConsole({
+            levels: ['error']
+        })
+    ],
     attachStacktrace: true
 });
 

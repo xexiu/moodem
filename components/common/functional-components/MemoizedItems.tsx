@@ -29,12 +29,14 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
         />
     ), []);
 
+    const keyExtractor = useCallback((item: any) => item.id.toString(), []);
+
     return (
         <CommonFlatList
             emptyListComponent={<MediaListEmpty />}
             data={data}
             action={renderItem}
-            keyExtractor={(item: any) => item.id.toString()}
+            keyExtractor={keyExtractor}
         />
     );
 };

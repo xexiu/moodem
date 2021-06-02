@@ -28,7 +28,7 @@ export const createGroupHandler = (validate: any, user: any) => new Promise((res
 });
 
 export const getOwnedGroupsFromDatabase = (ref: any) => new Promise((resolve) => {
-    return ref.on('value', (snapshot: any) => {
+    return ref.once('value', (snapshot: any) => {
         const groups = snapshot.val() || [];
         resolve(Object.values(groups));
     });
@@ -63,7 +63,7 @@ export const getAllGroups = () => new Promise(resolve => {
 
 export const getDefaultGroup = () => new Promise(resolve => {
     const refGroup = firebase.database().ref('Groups/Moodem');
-    refGroup.on('value', (snapshot: any) => {
+    refGroup.once('value', (snapshot: any) => {
         const group = snapshot.val() || [];
         resolve(group);
     });

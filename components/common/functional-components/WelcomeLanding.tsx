@@ -89,9 +89,7 @@ const WelcomeLanding = (props: any) => {
                 action={() => navigation.openDrawer()}
             />
             <SongsContextProvider>
-                <Songs
-                    navigation={navigation}
-                />
+                <Songs navigation={navigation} />
             </SongsContextProvider>
             <Toast
                 position={isServerError ? 'bottom' : 'top'}

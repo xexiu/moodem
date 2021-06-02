@@ -3,6 +3,7 @@ import { MediaButtons } from '../../../components/User/functional-components/Med
 import CommonFlatListItem from './CommonFlatListItem';
 
 const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalCallback }: any) => {
+    console.log('Render Item');
     return (
         <CommonFlatListItem
             bottomDivider

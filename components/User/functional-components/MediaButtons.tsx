@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View } from 'react-native';
-import { removeSongFromDB, saveSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
+import { removeSongFromDB, saveSongOnDb, saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
@@ -20,6 +20,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 user_id: user.uid,
                 isRemovingSong: true
             });
+        socket.off('send-message-remove-song');
     }
 
     async function emitSendMedia() {
@@ -29,10 +30,12 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             isAddingSong: true
         });
 
+        socket.off('send-message-add-song');
+
         return optionalCallback && optionalCallback();
     }
 
-    async function voteSong() {
+    async function emitVotedSong() {
         await socket.emit('send-message-vote-up',
             {
                 song,
@@ -41,6 +44,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 count: ++song.votes_count,
                 isVotingSong: true
             });
+        socket.off('send-message-vote-up');
     }
 
     const mediaMap = {
@@ -58,7 +62,8 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             action: async () => {
                 Object.assign(song, {
                     isMediaOnList: true,
-                    isPlaying: false
+                    isPlaying: false,
+                    isSearching: false
                 });
 
                 await saveSongOnDb(song, user, group.group_name, emitSendMedia);
@@ -73,9 +78,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
-
-                // updateSongVoteOnDb
-                await voteSong();
+                await saveVotesForSongOnDb(song, user, group.group_name, emitVotedSong);
             }
         },
         remove: {

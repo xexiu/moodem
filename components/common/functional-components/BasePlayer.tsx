@@ -1,4 +1,3 @@
-import { useIsFocused } from '@react-navigation/native';
 import debounce from 'lodash.debounce';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -35,8 +34,7 @@ const BasePlayer = (props: any) => {
         handleOnClickItem,
         items
     } = props;
-    const isFocused = useIsFocused();
-    const { group, socket } = useContext(AppContext) as any;
+    const { group, socket, isServerError } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
 
@@ -47,7 +45,7 @@ const BasePlayer = (props: any) => {
             setIsLoading(false);
         }
         return () => { };
-    }, [isFocused]);
+    }, []);
 
     if (isLoading) {
         return null;
@@ -149,7 +147,7 @@ const BasePlayer = (props: any) => {
                 onBuffer={(buffer) => {
                     playPauseRef.current.setIsBuffering(buffer.isBuffering);
                     MusicControl.updatePlayback({
-                        elapsedTime: 0
+                        elapsedTime: seekRef.current.trackCurrentTime
                     });
                 }}
                 onLoad={({ currentTime }) => {
@@ -172,8 +170,13 @@ const BasePlayer = (props: any) => {
                         state: MusicControl.STATE_ERROR,
                         elapsedTime: 0
                     });
-                    console.log('Song Error', error);
-                    socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+
+                    if (!isServerError) {
+                        console.log('Song Error', error);
+                        item.isSearching ?
+                        socket.emit('send-song-error-searching', { chatRoom: group.group_name, song: item }) :
+                        socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+                    }
                 }}
                 paused={!item.isPlaying}
                 onProgress={({ currentTime, playableDuration }) => {
