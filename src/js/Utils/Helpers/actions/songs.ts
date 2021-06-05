@@ -199,14 +199,16 @@ export const removeSongFromDB = (song: any, user: any, groupName: string, cb?: F
         const dbgroup = snapshot.val() || [];
         const dbGroupSongs = dbgroup.group_songs;
 
-        if (dbGroupSongs[song.id].id === song.id) {
-            dbGroupSongs.splice(song.id, 1);
+        if (dbGroupSongs.length) {
+            if (dbGroupSongs[song.id].id === song.id) {
+                dbGroupSongs.splice(song.id, 1);
+            }
+
+            dbGroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
         }
 
-        dbGroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
-
         refGroup.update({
-            group_songs: [...new Set(dbGroupSongs)]
+            group_songs: [...new Set(dbGroupSongs || [])]
         });
     })
         .then(cb);

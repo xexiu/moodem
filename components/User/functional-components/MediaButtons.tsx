@@ -62,6 +62,8 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconStyle: { alignSelf: 'flex-end', paddingBottom: 40, fontSize: 40 },
             iconReverse: false,
             action: async () => {
+                setIsLoading(true);
+
                 Object.assign(song, {
                     isMediaOnList: true,
                     isPlaying: false,
@@ -69,9 +71,10 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     voted_users: song.voted_users || [],
                     boosted_users: song.boosted_users || []
                 });
-                emitSendMedia();
+                await emitSendMedia();
 
                 await saveSongOnDb(song, user, group.group_name, () => {
+                    setIsLoading(false);
                     controller.abort();
                 });
             }
@@ -80,35 +83,38 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             containerStyle: {},
             votes_count: song.votes_count,
             voted_users: song.voted_users,
-            iconName: 'thumbs-up',
+            iconName: isLoading ? 'cloud' : 'thumbs-up',
             iconType: 'entypo',
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
+                setIsLoading(true);
+
                 Object.assign(song, {
                     voted_users: song.voted_users || [],
                     boosted_users: song.boosted_users || []
                 });
-                emitVotedSong();
-                setIsLoading(true);
+                await emitVotedSong();
+
                 await saveVotesForSongOnDb(song, user, group.group_name, () => {
-                    controller.abort();
                     setIsLoading(false);
+                    controller.abort();
                 });
             }
         },
         remove: {
             containerStyle: {},
-            iconName: 'remove',
+            iconName: isLoading ? 'cloud' : 'remove',
             iconType: 'font-awesome',
             iconColor: '#dd0031',
             iconSize: 9,
             action: async () => {
-                emitRemoveSong();
                 setIsLoading(true);
+                await emitRemoveSong();
+
                 await removeSongFromDB(song, user, group.group_name, () => {
-                    controller.abort();
                     setIsLoading(false);
+                    controller.abort();
                 });
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)
