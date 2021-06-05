@@ -8,6 +8,7 @@ import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import { formValidationGroup } from '../../../src/js/Utils/Helpers/validators/formValidator';
+import BodyContainer from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
@@ -28,15 +29,15 @@ const Groups = (props: any) => {
     const [userGroup = null, setUserGroup] = useState(null);
     const [showPasswordModal, setPasswordModal] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
-    const [ isLoading, setIsLoading] = useState(true);
-    const [{ searchedGroups }, setSearchedGroups] = useState({searchedGroups: []});
-    const [{ value }, setPasswordFormValue] = useState({ value: ''});
+    const [isLoading, setIsLoading] = useState(true);
+    const [{ searchedGroups }, setSearchedGroups] = useState({ searchedGroups: [] });
+    const [{ value }, setPasswordFormValue] = useState({ value: '' });
     const refPassWordForm = React.createRef();
     const [isSearching, setIsSearching] = useState(false);
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('3. Groups');
+        console.log('3. Groups', groups);
         if (isFocused) {
             setIsLoading(false);
         }
@@ -103,8 +104,26 @@ const Groups = (props: any) => {
     console.log('HEYYYYY', user);
 
     return (
-        <View style={{ marginTop: 35, padding: 10, position: 'relative', flex: 1, backgroundColor: 'transparent' }}>
-            <View>
+        <BodyContainer>
+            <BurgerMenuIcon
+                action={() => {
+                    navigation.openDrawer();
+                    Keyboard.dismiss();
+                    setIsSearching(false);
+                    setIsLoading(false);
+                }
+                }
+            />
+            <CommonTopSearchBar
+                placeholder='Search group...'
+                cancelSearch={() => {
+                    setIsSearching(false);
+                    setSearchedGroups([] as never);
+                    setIsLoading(false);
+                }}
+                onEndEditingSearch={searchGroups}
+            />
+            {/* <View>
                 <CustomModal isModalVisible={showPasswordModal} onBackdropPress={() => togglePasswordModal(false)}>
                     <Form
                         ref={refPassWordForm}
@@ -164,63 +183,42 @@ const Groups = (props: any) => {
                     />
                     <Text style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>{errorPassword}</Text>
                 </CustomModal>
-            </View>
+            </View> */}
 
-            <View>
-                <BurgerMenuIcon
-                    action={() => {
-                        navigation.openDrawer();
-                        Keyboard.dismiss();
-                        setIsSearching(false);
-                        setIsLoading(false);
-                    }
-                    }
+            <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} />
+            {isSearching ?
+                <CommonFlatList
+                    emptyListComponent={GroupEmpty}
+                    data={searchedGroups}
+                    action={({ item }) => renderItem(item)}
+                /> :
+                <CommonFlatList
+                    emptyListComponent={GroupEmpty}
+                    headerComponent={<View style={{ alignSelf: 'center', marginBottom: 10 }}><CustomButton btnTitle='Create Group' action={() => toggleModal(true)} /></View>}
+                    data={groups}
+                    action={({ item }) => (<CommonFlatListItem
+                        bottomDivider
+                        title={item.group_name}
+                        subtitle={item.group_id}
+                        rightTitle={item.user_owner_id === user.uid ? 'Owner' : 'Invited'}
+                        action={() => {
+                            dispatchContextApp({ type: 'group', value: item });
+                            setUserGroup(item);
+                            navigation.navigate(group.group_name);
+                        }}
+                    />)}
                 />
-                <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} />
-                <CommonTopSearchBar
-                    placeholder='Search group...'
-                    cancelSearch={() => {
-                        setIsSearching(false);
-                        setSearchedGroups([] as never);
-                        setIsLoading(false);
-                    }}
-                    onEndEditingSearch={searchGroups}
-                    customStyleContainer={{ width: '85%', marginLeft: 55 }}
-                />
-                {isSearching ?
-                    <CommonFlatList
-                        emptyListComponent={GroupEmpty}
-                        data={searchedGroups}
-                        action={({ item }) => renderItem(item)}
-                    /> :
-                    <CommonFlatList
-                        emptyListComponent={GroupEmpty}
-                        headerComponent={<View style={{ alignSelf: 'center', marginBottom: 10 }}><CustomButton btnTitle='Create Group' action={() => toggleModal(true)} /></View>}
-                        data={groups}
-                        action={({ item }) => (<CommonFlatListItem
-                            bottomDivider
-                            title={item.group_name}
-                            subtitle={item.group_id}
-                            rightTitle={item.user_owner_id === user.uid ? 'Owner' : 'Invited'}
-                            action={() => {
-                                dispatchContextApp({type: 'group', value: item });
-                                setUserGroup(item);
-                                navigation.navigate(group.group_name);
-                            }}
-                        />)}
-                    />
-                }
-            </View>
-        </View>
+            }
+        </BodyContainer>
     );
 };
 
-Groups.navigationOptions = ({ route }) => {
-    // console.log('Groups Navigation Options', route);
-    return {
-        title: 'Mis Grupos'
-    };
-};
+// Groups.navigationOptions = ({ route }) => {
+//     // console.log('Groups Navigation Options', route);
+//     return {
+//         title: 'Mis Grupos'
+//     };
+// };
 
 Groups.propTypes = {
     navigation: PropTypes.object

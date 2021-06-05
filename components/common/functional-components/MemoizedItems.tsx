@@ -21,8 +21,6 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
         <MemoizedItem
             index={index}
             item={item}
-            isPlaying={item.isPlaying}
-            isVotingSong={item.isVotingSong}
             handleOnClickItem={handleOnClickItem}
             buttonActions={buttonActions}
             optionalCallback={optionalCallback}

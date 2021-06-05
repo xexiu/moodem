@@ -10,13 +10,10 @@ import BgImage from './BgImage';
 
 const SideBarTopAvatar = (props: any) => {
     const { navigation } = props;
-
-    const { user, group }: any = useContext(AppContext);
+    const { user }: any = useContext(AppContext);
 
     function hangleUserNavigation() {
-        return navigation.navigate('Profile', {
-            params: group
-        });
+        return navigation.navigate('Profile');
     }
 
     return (
@@ -30,7 +27,7 @@ const SideBarTopAvatar = (props: any) => {
                         style={{ marginTop: 10, fontSize: 20, color: '#777', textAlign: 'center', width: 145 }}
                         ellipsizeMode='tail'
                         numberOfLines={1}
-                    >Hi! {user ? user.displayName : 'Guest'}
+                    >Hi! {user.displayName}
                     </Text>
                 </BgImage>
             </TouchableHighlight>

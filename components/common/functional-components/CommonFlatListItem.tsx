@@ -105,7 +105,10 @@ const CommonFlatListItem = (props: any) => {
 CommonFlatListItem.propTypes = {
     title: PropTypes.string,
     titleStyle: PropTypes.object,
-    subtitle: PropTypes.string,
+    subtitle: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     subtitleStyle: PropTypes.object,
     leftAvatar: PropTypes.object,
     bottomDivider: PropTypes.bool,

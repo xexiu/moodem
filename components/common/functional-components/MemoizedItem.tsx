@@ -4,6 +4,7 @@ import CommonFlatListItem from './CommonFlatListItem';
 
 const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalCallback }: any) => {
     console.log('Render Item');
+
     return (
         <CommonFlatListItem
             bottomDivider
@@ -16,9 +17,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalC
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {
-                    uri: item.isPlaying ?
-                        'https://thumbs.gfycat.com/DifficultAjarJanenschia-small.gif' :
-                        item.videoDetails.thumbnails[0].url
+                    uri: item.videoDetails.thumbnails[0].url
                 }
             }}
             buttonGroup={MediaButtons(item, buttonActions, optionalCallback)}

@@ -8,10 +8,11 @@ import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
+import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs'
 
 const Songs = (props: any) => {
     const { navigation } = props;
-    const { group, isServerError, socket } = useContext(AppContext) as any;
+    const { group, isServerError, socket, user } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs,
@@ -65,24 +66,26 @@ const Songs = (props: any) => {
         });
     }
 
-    function getSongWithError(data: any) {
-        return dispatchContextSongs({
-            type: 'song_error',
-            value: {
-                transformedSong: data.song,
-                addedSong: null,
-                isLoading: false,
-                removedSong: null,
-                votedSong: null
-            }
+    function getSongWithError({ song }: any) {
+        return updateSongExpiredOnDB(song, user, group.group_name, () => {
+            return dispatchContextSongs({
+                type: 'song_error',
+                value: {
+                    transformedSong: song,
+                    addedSong: null,
+                    isLoading: false,
+                    removedSong: null,
+                    votedSong: null
+                }
+            });
         });
     }
 
-    function getRemovedSong(data: any) {
+    function getRemovedSong({ song }: any) {
         return dispatchContextSongs({
             type: 'set_removed_song',
             value: {
-                removedSong: data.song,
+                removedSong: song,
                 isLoading: false,
                 votedSong: null,
                 addedSong: null,
@@ -91,12 +94,11 @@ const Songs = (props: any) => {
         });
     }
 
-    function getVotedSong(data: any) {
+    function getVotedSong({ song }: any) {
         return dispatchContextSongs({
             type: 'set_voted_song',
             value: {
-                votedSong: data.song,
-                isVotingSong: data.isVotingSong,
+                votedSong: song,
                 isLoading: false,
                 addedSong: null,
                 removedSong: null,

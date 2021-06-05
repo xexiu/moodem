@@ -85,6 +85,7 @@ async function getSong(videoId, hasExpired = false) {
     }
 
     Object.assign(audio[0], {
+      hasExpired: false,
       videoDetails: info.videoDetails,
       isCachedInServerNode: false
     });
@@ -146,12 +147,12 @@ function setExtraAttrs(audios, uid, isSearching = false) {
       id: index,
       isSearching,
       isPlaying: false,
-      isVotingSong: false,
       isMediaOnList: false,
       boosts_count: 0,
       votes_count: 0,
       voted_users: [],
       boosted_users: [],
+      hasExpired: false,
       user: {
         uid
       }
@@ -169,19 +170,20 @@ serverIO.use((socket, next) => {
 });
 
 serverIO.on('connection', (socket) => {
-  // get songs
   socket.on('search-songs-on-youtube', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
     if (data.videoIds) {
       try {
-        const songsCoverted = await Promise.all(data.videoIds.map(async (videoId) => getSong(videoId)));
+        let songsCoverted = await Promise.allSettled(data.videoIds.map(async (videoId) => getSong(videoId)));
+        songsCoverted.filter((songConverted) => songConverted.status !== 'rejected' && songsCoverted.push(songConverted.value), songsCoverted = []);
 
         serverIO.to(socket.id).emit('get-songs-from-youtube', { // send message only to sender-client
           songs: [...setExtraAttrs(songsCoverted, socket.uid, true)]
         });
       } catch (error) {
+        console.log('Error converting allSongs', error);
         // send error to sentry or other server
       }
     }
@@ -199,7 +201,6 @@ serverIO.on('connection', (socket) => {
   });
 
   // Set Medias on landing
-
   socket.on('emit-set-medias', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
@@ -209,7 +210,11 @@ serverIO.on('connection', (socket) => {
       chatRooms[data.chatRoom].songs = data.songs;
       const { songs } = chatRooms[data.chatRoom];
       songs.sort(compareValues('votes_count'));
-      songs.forEach((song, index) => Object.assign(song, { id: index }));
+      songs.forEach((song, index) => Object.assign(song, {
+        id: index,
+        voted_users: song.voted_users || [],
+        boosted_users: song.boosted_users || []
+      }));
     }
   });
 
@@ -218,10 +223,11 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.videoDetails.videoId, true);
+    const audio = await getSong(data.song.videoDetails.videoId, data.song.hasExpired);
     const { songs } = chatRooms[data.chatRoom];
 
     Object.assign(data.song, {
+      hasExpired: false,
       url: audio.url
     });
 
@@ -232,7 +238,8 @@ serverIO.on('connection', (socket) => {
 
       if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
         Object.assign(song, {
-          url: audio.url
+          url: audio.url,
+          hasExpired: false
         });
         break;
       }
@@ -244,9 +251,10 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.videoDetails.videoId, true);
+    const audio = await getSong(data.song.videoDetails.videoId, data.song.hasExpired);
 
     Object.assign(data.song, {
+      hasExpired: false,
       url: audio.url
     });
 

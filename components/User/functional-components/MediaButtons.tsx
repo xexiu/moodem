@@ -1,11 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { View } from 'react-native';
 import { removeSongFromDB, saveSongOnDb, saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
+const controller = new AbortController();
+
 export const MediaButtons = (song: any, actions: string[], optionalCallback: Function) => {
     const { isServerError, user, group, socket }: any = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState(false);
 
     function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         return ((mediaUser && songUser.uid === mediaUser.uid) ||
@@ -41,8 +44,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 song,
                 chatRoom: group.group_name,
                 user_id: user.uid,
-                count: ++song.votes_count,
-                isVotingSong: true
+                count: ++song.votes_count
             });
         socket.off('send-message-vote-up');
     }
@@ -63,10 +65,15 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 Object.assign(song, {
                     isMediaOnList: true,
                     isPlaying: false,
-                    isSearching: false
+                    isSearching: false,
+                    voted_users: song.voted_users || [],
+                    boosted_users: song.boosted_users || []
                 });
+                emitSendMedia();
 
-                await saveSongOnDb(song, user, group.group_name, emitSendMedia);
+                await saveSongOnDb(song, user, group.group_name, () => {
+                    controller.abort();
+                });
             }
         },
         votes: {
@@ -78,7 +85,16 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconColor: '#90c520',
             iconSize: 9,
             action: async () => {
-                await saveVotesForSongOnDb(song, user, group.group_name, emitVotedSong);
+                Object.assign(song, {
+                    voted_users: song.voted_users || [],
+                    boosted_users: song.boosted_users || []
+                });
+                emitVotedSong();
+                setIsLoading(true);
+                await saveVotesForSongOnDb(song, user, group.group_name, () => {
+                    controller.abort();
+                    setIsLoading(false);
+                });
             }
         },
         remove: {
@@ -88,7 +104,12 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconColor: '#dd0031',
             iconSize: 9,
             action: async () => {
-                await removeSongFromDB(song, user, group.group_name, emitRemoveSong);
+                emitRemoveSong();
+                setIsLoading(true);
+                await removeSongFromDB(song, user, group.group_name, () => {
+                    controller.abort();
+                    setIsLoading(false);
+                });
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)
         }
@@ -100,7 +121,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             return mediaMap[action].containerStyle;
         case 'disabled':
             return user && mediaMap[action].voted_users &&
-                    mediaMap[action].voted_users.some((id: number) => id === user.uid);
+                    mediaMap[action].voted_users.some((id: number) => id === user.uid) || isLoading;
         case 'text':
             return mediaMap[action].votes_count;
         case 'iconName':

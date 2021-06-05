@@ -3,8 +3,6 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '
 import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
 import SideBarTopAvatar from '../../../components/common/functional-components/SideBarTopAvatar';
-import Login from '../../../components/Guest/class-components/Login';
-import Register from '../../../components/Guest/functional-components/Register';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
 import ChatRoom from '../../User/functional-components/ChatRoom';
 import { Groups } from '../../User/functional-components/Groups';
@@ -14,67 +12,19 @@ import WelcomeLanding from './WelcomeLanding';
 
 const Drawer = createDrawerNavigator();
 
-function itemsDrawer(props: any, params: any) {
-    if (params.user) {
-        return (
-            <DrawerContentScrollView {...props} style={{ position: 'relative' }}>
-                <SideBarTopAvatar navigation={props.navigation} />
-                <DrawerItemList {...props} />
-                <SideBarFooter navigation={props.navigation} />
-            </DrawerContentScrollView>
-        );
-    }
+function itemsDrawer(props: any) {
     return (
         <DrawerContentScrollView {...props} style={{ position: 'relative' }}>
             <SideBarTopAvatar navigation={props.navigation} />
             <DrawerItemList {...props} />
-            <Login btnTitle='Iniciar sesión' navigation={props.navigation} />
-            <Register btnTitle='Registrarse ' btnStyle={{ backgroundColor: '#00b7e0' }} navigation={props.navigation} />
             <SideBarFooter navigation={props.navigation} />
         </DrawerContentScrollView>
     );
 }
 
 const SideBarDrawer = (props: any) => {
-    const { user, group }: any = useContext(AppContext);
+    const { group }: any = useContext(AppContext);
 
-    if (user) {
-        return (
-            <Drawer.Navigator
-                drawerContentOptions={{
-                    activeTintColor: '#dd0031',
-                    itemStyle: { marginVertical: 0 }
-                }}
-                initialRouteName={group.group_name}
-                drawerType='slide'
-                drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
-            >
-                <Drawer.Screen
-                    name={group.group_name}
-                    component={WelcomeLanding}
-                    initialParams={{ user, group }}
-                />
-                <Drawer.Screen
-                    name={`${group.group_name} Chat`}
-                    component={ChatRoom}
-                    initialParams={({ user, group })}
-                />
-                <Drawer.Screen
-                    name='Groups'
-                    component={Groups}
-                    options={Groups.navigationOptions}
-                    initialParams={{ user, group }}
-                />
-                <Drawer.Screen
-                    name='Profile'
-                    component={Profile}
-                    options={Profile.navigationOptions}
-                    initialParams={{ group }}
-                />
-                {props.children}
-            </Drawer.Navigator>
-        );
-    }
     return (
         <Drawer.Navigator
             drawerContentOptions={{
@@ -83,24 +33,13 @@ const SideBarDrawer = (props: any) => {
             }}
             initialRouteName={group.group_name}
             drawerType='slide'
-            drawerContent={(_props) => itemsDrawer({ ..._props }, { user, group })}
+            drawerContent={(_props) => itemsDrawer({ ..._props })}
         >
-            <Drawer.Screen
-                name='Moodem'
-                component={WelcomeLanding}
-                initialParams={{ user, group }}
-            />
-            <Drawer.Screen
-                name='ChatRoom'
-                component={ChatRoom}
-                initialParams={{ user, group }}
-            />
-            <Drawer.Screen
-                name='Groups'
-                component={Groups}
-                options={Groups.navigationOptions}
-                initialParams={{ user, group }}
-            />
+            <Drawer.Screen name={group.group_name} component={WelcomeLanding} />
+            <Drawer.Screen name={'ChatRoom'} component={ChatRoom} options={{ headerShown: false, title: `${group.group_name} Chat` }} />
+            <Drawer.Screen name='Groups' component={Groups} options={{ headerShown: false, title: 'Mis Grupos' }} />
+            <Drawer.Screen name='Profile' component={Profile} options={{ headerShown: false, title: 'Mi Perfil' }} />
+
             {props.children}
         </Drawer.Navigator>
     );

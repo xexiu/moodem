@@ -57,7 +57,7 @@ export default class CommonFlatList extends Component<CommonFlatListProps> {
                 onContentSizeChange={onContentSizeChange}
                 keyboardDismissMode='on-drag'
                 keyboardShouldPersistTaps='always'
-                initialNumToRender={3}
+                initialNumToRender={5}
                 maxToRenderPerBatch={1}
                 scrollEventThrottle={15}
                 ref={reference}

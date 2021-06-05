@@ -19,8 +19,7 @@ type Context = {
     votedSong: songType,
     transformedSong: songType,
     indexItem: number,
-    index: number,
-    isVotingSong: boolean
+    index: number
 };
 
 const initialValue: Context = {
@@ -31,8 +30,7 @@ const initialValue: Context = {
     removedSong: null,
     addedSong: null,
     votedSong: null,
-    transformedSong: null,
-    isVotingSong: false
+    transformedSong: null
 };
 
 if (Platform.OS === 'android') {
@@ -152,14 +150,13 @@ function setSongs(result: Context, action: actionType) {
 function setVotedSong(result: Context, action: actionType) {
     const { songs, indexItem } = result;
     const { value } = action;
-    const { votedSong, isVotingSong } = value;
+    const { votedSong } = value;
     const song = songs[indexItem];
 
     if (songs[votedSong.id].id === votedSong.id) {
         Object.assign(songs[votedSong.id], {
             votes_count: votedSong.votes_count,
-            voted_users: votedSong.voted_users,
-            isVotingSong
+            voted_users: votedSong.voted_users
         });
     }
 

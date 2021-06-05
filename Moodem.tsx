@@ -29,46 +29,46 @@ function getUserUidAndName(user: any) {
 
     return `uid=${guestUID}&displayName=Guest`;
 }
-
 const App = function Moodem() {
-    const { dispatchContextApp, user, isLoading, isServerError }: any = useContext(AppContext);
+    const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
-        firebase.auth().onAuthStateChanged((_user: any) => {
+        firebase.auth().onAuthStateChanged(async (_user: any) => {
             const socket = io(IP, { ...socketConf, query: getUserUidAndName(_user) } as any);
 
             if (_user) {
-                getGroups(_user)
-                    .then((groups: any) => {
-                        return dispatchContextApp({
-                            type: 'user_groups',
-                            value: {
-                                user: _user,
-                                groups: groups.length === 1 ? [] : groups,
-                                group: Object.assign(groups[0], {
-                                    group_songs: groups[0].group_songs || []
-                                }),
-                                isLoading: false,
-                                isServerError: false,
-                                socket
-                            }
-                        });
-                    })
-                    .catch(err => {
-                        console.log('Something happened', err);
-                        // send error to sentry
-                        return dispatchContextApp({
-                            type: 'error_user', value: {
-                                error: err,
-                                user: null,
-                                isLoading: true,
-                                isServerError: false,
-                                socket
-                            }
-                        });
+                try {
+                    const groups = await getGroups(_user) as any;
+                    const group = groups[0];
+
+                    return dispatchContextApp({
+                        type: 'user_groups',
+                        value: {
+                            user: _user,
+                            groups,
+                            group: Object.assign(group, {
+                                group_songs: group.group_songs || []
+                            }),
+                            isLoading: false,
+                            isServerError: false,
+                            socket
+                        }
                     });
+                } catch (error) {
+                    console.log('Something happened', error);
+                    // send error to sentry
+                    return dispatchContextApp({
+                        type: 'error_user', value: {
+                            error,
+                            user: null,
+                            isLoading: true,
+                            isServerError: false,
+                            socket
+                        }
+                    });
+                }
             } else {
                 return dispatchContextApp({
                     type: 'guest', value: {

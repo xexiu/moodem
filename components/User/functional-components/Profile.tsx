@@ -240,12 +240,6 @@ const Profile = (props: any) => {
     );
 };
 
-Profile.navigationOptions = ({ route }) => ({
-    headerMode: 'none',
-    headerShown: false,
-    title: 'Mi Perfil'
-});
-
 export {
     Profile
 };

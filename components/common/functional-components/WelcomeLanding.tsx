@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useContext, useEffect, useRef } from 'react';
-import { AppState } from 'react-native';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import { AppState, DevSettings } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
+import PreLoader from '../../common/functional-components/PreLoader';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContextProvider } from '../../User/store-context/SongsContext';
@@ -13,7 +14,8 @@ let serverError = false;
 
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
-    const { dispatchContextApp, group, isServerError, isLoading, socket }: any = useContext(AppContext);
+    const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState(true);
     const toastRef = useRef(null);
 
     const getUserBackOnline = (data: any) => {
@@ -49,6 +51,7 @@ const WelcomeLanding = (props: any) => {
         // Server has connected back from error.
         if (serverError) {
             serverError = false;
+            DevSettings.reload();
             return dispatchContextApp({
                 type: 'server_error', value: {
                     isServerError: false
@@ -61,8 +64,9 @@ const WelcomeLanding = (props: any) => {
         toastRef.current.show('Connecting to server...', DURATION.FOREVER);
 
         if (!serverError) {
-                // Send error to sentry
+            // Send error to sentry
             serverError = true;
+            setIsLoading(false);
             return dispatchContextApp({
                 type: 'server_error', value: {
                     isServerError: true
@@ -72,7 +76,9 @@ const WelcomeLanding = (props: any) => {
     }
 
     function getWelcomeMsg({ welcomeMsg }: any) {
-        toastRef.current.show(welcomeMsg, 1000);
+        toastRef.current.show(welcomeMsg, 1000, () => {
+            setIsLoading(false);
+        });
 
         if (isServerError) {
             return dispatchContextApp({
@@ -81,6 +87,25 @@ const WelcomeLanding = (props: any) => {
                 }
             });
         }
+    }
+
+    if (isLoading) {
+        return (
+            <BodyContainer>
+                <PreLoader
+                    containerStyle={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+                <Toast
+                    position={isServerError ? 'bottom' : 'top'}
+                    ref={toastRef}
+                />
+            </BodyContainer>
+        );
     }
 
     return (

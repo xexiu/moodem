@@ -96,7 +96,7 @@ export async function convertVideoIdsFromDB(songs: [] = []) {
     }
 }
 
-export const saveSongOnDb = (song: any, user: any, groupName: string, cb: Function) => {
+export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
@@ -135,31 +135,49 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb: Functi
         .then(cb);
 };
 
-export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb: Function) => {
+export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
 
-        // tslint:disable-next-line:max-line-length
+        const dbGroupSong = dbgroup.group_songs[song.id];
+
+        if (dbGroupSong.id === song.id && dbGroupSong.videoDetails.videoId === song.videoDetails.videoId) {
+            Object.assign(dbGroupSong, {
+                url: song.url,
+                hasExpired: false
+            });
+        }
+
+        refGroup.update({
+            // tslint:disable-next-line:max-line-length
+            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.url, groupSong])).values()]
+        });
+    })
+        .then(cb);
+};
+
+export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb?: Function) => {
+    const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
+    const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
+
+    return refGroup.once('value', (snapshot: any) => {
+        const dbgroup = snapshot.val() || [];
         const songDB = dbgroup.group_songs[song.id];
 
         if (songDB.voted_users) {
-            const userHasVoted = songDB.voted_users.some((id: number) => id === songDB.user.uid);
+            const userHasVoted = songDB.voted_users.some((id: number) => id === user.uid);
 
             if (songDB.id === song.id && !userHasVoted) {
                 songDB.votes_count = ++songDB.votes_count;
-                songDB.voted_users.push(song.user.uid);
-
-                Object.assign(songDB, {
-                    isVotingSong: true
-                });
+                songDB.voted_users.push(user.uid);
             }
         } else {
             songDB.voted_users = [];
             songDB.votes_count = ++songDB.votes_count;
-            songDB.voted_users.push(song.user.uid);
+            songDB.voted_users.push(user.uid);
         }
 
         dbgroup.group_songs.sort(compareValues('votes_count'));
@@ -173,19 +191,22 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
         .then(cb);
 };
 
-export const removeSongFromDB = (song: any, user: any, groupName: string, cb: Function) => {
+export const removeSongFromDB = (song: any, user: any, groupName: string, cb?: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
+        const dbGroupSongs = dbgroup.group_songs;
 
-        // tslint:disable-next-line:max-line-length
-        const filterDbgroupSongs = dbgroup.group_songs.filter((dbSong: any) => dbSong.videoDetails.videoId !== song.videoDetails.videoId);
-        filterDbgroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
+        if (dbGroupSongs[song.id].id === song.id) {
+            dbGroupSongs.splice(song.id, 1);
+        }
+
+        dbGroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
 
         refGroup.update({
-            group_songs: [...new Set(filterDbgroupSongs)]
+            group_songs: [...new Set(dbGroupSongs)]
         });
     })
         .then(cb);

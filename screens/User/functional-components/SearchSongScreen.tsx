@@ -39,9 +39,8 @@ const SearchSongScreen = (props: any) => {
                 { cancelToken: source.token });
 
             const videos = data.items.filter((video: any) => video.id.videoId);
-            videos.map((video: any) => {
-                videoIds.push(video.id.videoId);
-            });
+            videos.map((video: any) => videoIds.push(video.id.videoId));
+
             return Promise.resolve(videoIds);
         } catch (err) {
             // Send error to sentry
@@ -88,6 +87,7 @@ const SearchSongScreen = (props: any) => {
         }
 
         return () => {
+            console.log('OFF SEARCHE SCREEN');
             source.cancel('SearchSongScreen Component got unmounted');
             socket.off('search-songs-on-youtube', getSongs);
             socket.off('get-songs-from-youtube', getSongs);

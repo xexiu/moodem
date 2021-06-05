@@ -7,7 +7,7 @@ import TouchableScale from 'react-native-touchable-scale';
 const DEFAULT_CONTAINER_STYLE = {
     position: 'absolute',
     zIndex: 1000,
-    top: 10,
+    top: 7,
     left: 5,
     width: 30,
     height: 30,
@@ -25,12 +25,10 @@ const BurgerMenuIcon = (props: any) => {
           containerStyle={[
               DEFAULT_CONTAINER_STYLE
             , customStyle]}
-          iconStyle={{ fontSize: 25 }}
           Component={TouchableScale}
           name='menu'
           type='simple-line-icons'
-
-          size={15}
+          size={35}
           color='#444'
           onPress={action}
       />

@@ -10,7 +10,7 @@ function updateSongDetailsOnControlCenter(item: any) {
     MusicControl.setNowPlaying({
         title: item.videoDetails.title,
         artwork: item.videoDetails.thumbnails[0].url,
-        artist: item.videoDetails.media.artist,
+        artist: item.videoDetails.author.name,
         duration: Number(item.videoDetails.lengthSeconds) // (Seconds)
     });
 }
@@ -172,6 +172,10 @@ const BasePlayer = (props: any) => {
                         elapsedTime: 0
                     });
                     seekRef.current.setTrackCurrentTime(0);
+
+                    Object.assign(item, {
+                        hasExpired: true
+                    });
 
                     if (!isServerError) {
                         console.log('Song Error', error);
