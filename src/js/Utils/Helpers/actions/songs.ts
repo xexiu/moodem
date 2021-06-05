@@ -23,28 +23,28 @@ const compareValues = (key: string) => (a: any, b: any) => {
 };
 
 export function cleanVideoTitle(info: any) {
-    if (info && info.videoDetails && info.videoDetails.title) {
-        info.videoDetails.title = info.videoDetails.title.replace('(Official Music Video)', '')
+    if (info && info.details && info.details.title) {
+        info.details.title = info.details.title.replace('(Official Music Video)', '')
             .replace('(Official Video)', '');
-        return info.videoDetails.title;
+        return info.details.title;
     }
-    return info.videoDetails.title;
+    return info.details.title;
 }
 
 export function cleanVideoImageParams(audio: any) {
-    if (audio.videoDetails && audio.videoDetails.thumbnails.length) {
-        if (audio.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
-            audio.videoDetails.thumbnails[0].url = audio.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
-            return audio.videoDetails.thumbnails[0].url;
+    if (audio.details && audio.details.thumbnails.length) {
+        if (audio.details.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
+            audio.details.thumbnails[0].url = audio.details.thumbnails[0].url.replace(/(\?.*)/g, '');
+            return audio.details.thumbnails[0].url;
         }
     }
-    return audio.videoDetails.thumbnails[0].url;
+    return audio.details.thumbnails[0].url;
 }
 
 export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     songs.filter((song: any) => {
         return !searchedSongs.some((searchedSong: any) => {
-            if (song.videoDetails.videoId === searchedSong.videoDetails.videoId && song.isMediaOnList) {
+            if (song.id === searchedSong.id && song.isMediaOnList) {
                 Object.assign(searchedSong, {
                     isMediaOnList: true
                 });
@@ -66,7 +66,8 @@ export async function convertVideoIdYtdl(videoId: string) {
         }
 
         Object.assign(audio[0], {
-            videoDetails: info.videoDetails
+            id: info.videoDetails.videoId,
+            details: info.videoDetails
         });
 
         cleanVideoImageParams(audio[0]);
@@ -81,7 +82,7 @@ export async function convertVideoIdYtdl(videoId: string) {
 export async function convertVideoIdsFromDB(songs: [] = []) {
     try {
         const audios = await Promise.all(songs.map(async (song: any) => {
-            const convertedSong = await convertVideoIdYtdl(song.videoDetails.videoId);
+            const convertedSong = await convertVideoIdYtdl(song.id);
             Object.assign(song, {
                 ...convertedSong,
                 voted_users: song.voted_users || [],
@@ -104,10 +105,8 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Funct
         const dbgroup = snapshot.val() || [];
 
         if (dbgroup.group_songs) {
-            song.id = dbgroup.group_songs.length;
             dbgroup.group_songs.push(song);
         } else {
-            song.id = 0;
             dbgroup.group_songs = [song];
         }
 
@@ -129,7 +128,7 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Funct
             // tslint:disable-next-line:max-line-length
             group_users: [...new Map(dbgroup.group_users.map((groupUser: any) => [groupUser.user_uid, groupUser])).values()],
             // tslint:disable-next-line:max-line-length
-            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.videoDetails.videoId, groupSong])).values()]
+            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()]
         });
     })
         .then(cb);
@@ -141,11 +140,12 @@ export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, c
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
+        const dbGroupSongs = dbgroup.group_songs;
+        const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
+        const songDB = dbGroupSongs[indexInArray];
 
-        const dbGroupSong = dbgroup.group_songs[song.id];
-
-        if (dbGroupSong.id === song.id && dbGroupSong.videoDetails.videoId === song.videoDetails.videoId) {
-            Object.assign(dbGroupSong, {
+        if (songDB.id === song.id) {
+            Object.assign(songDB, {
                 url: song.url,
                 hasExpired: false
             });
@@ -165,7 +165,9 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
 
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = snapshot.val() || [];
-        const songDB = dbgroup.group_songs[song.id];
+        const dbGroupSongs = dbgroup.group_songs;
+        const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
+        const songDB = dbGroupSongs[indexInArray];
 
         if (songDB.voted_users) {
             const userHasVoted = songDB.voted_users.some((id: number) => id === user.uid);
@@ -181,11 +183,10 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
         }
 
         dbgroup.group_songs.sort(compareValues('votes_count'));
-        dbgroup.group_songs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
 
         refGroup.update({
             // tslint:disable-next-line:max-line-length
-            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.videoDetails.videoId, groupSong])).values()]
+            group_songs: [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()]
         });
     })
         .then(cb);
@@ -200,11 +201,8 @@ export const removeSongFromDB = (song: any, user: any, groupName: string, cb?: F
         const dbGroupSongs = dbgroup.group_songs;
 
         if (dbGroupSongs.length) {
-            if (dbGroupSongs[song.id].id === song.id) {
-                dbGroupSongs.splice(song.id, 1);
-            }
-
-            dbGroupSongs.forEach((_song: any, index: number) => Object.assign(_song, { id: index }));
+            const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
+            dbGroupSongs.splice(indexInArray, 1);
         }
 
         refGroup.update({

@@ -54,14 +54,14 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
                 </Text>
                 <View style={{ flex: 1 }} />
                 <Text style={styles.text}>
-                    {timeFormat(Number(item.videoDetails.lengthSeconds) - trackCurrentTime)}
+                    {timeFormat(Number(item.details.lengthSeconds) - trackCurrentTime)}
                 </Text>
             </View>
             <Slider
                 disabled={!item.isPlaying}
                 step={1}
                 ref={sliderRef}
-                maximumValue={Number(item.videoDetails.lengthSeconds)}
+                maximumValue={Number(item.details.lengthSeconds)}
                 minimumValue={0}
                 value={trackCurrentTime}
                 style={styles.slider}

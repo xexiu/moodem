@@ -8,7 +8,6 @@ interface MyProps {
     iconName: string;
     containerStyle?: object;
     nextPrevSong: number;
-    item: any;
     items: any;
     iconReverse?: boolean;
     iconRaised?: boolean;
@@ -44,7 +43,7 @@ const PlayerControl = (props: MyProps) => {
             color={items && !items[nextPrevSong] ? '#777' : iconColor}
             size={iconSize}
             onPress={() => {
-                return handleOnClickItem(items[nextPrevSong].id);
+                return handleOnClickItem(nextPrevSong);
             }}
         />
     );

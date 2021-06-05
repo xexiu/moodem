@@ -158,6 +158,7 @@ const SearchSongScreen = (props: any) => {
         setAllValues(prevValues => {
             return {
                 ...prevValues,
+                indexItem: 0,
                 songs: [],
                 isLoading: true
             };
@@ -165,7 +166,7 @@ const SearchSongScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
-        navigation.navigate(group.group_name);
+        return navigation.navigate(group.group_name);
     }
 
     if (allValues.isLoading) {

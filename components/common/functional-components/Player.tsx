@@ -14,7 +14,8 @@ const Player = (props: any) => {
         items,
         isPlaying,
         item,
-        handleOnClickItem
+        handleOnClickItem,
+        indexItem
     } = props;
 
     const repeatRef = useRef(null);
@@ -41,8 +42,7 @@ const Player = (props: any) => {
                     action='prev'
                     iconName='step-backward'
                     containerStyle={{ position: 'absolute', top: 20, left: 0, zIndex: 100 }}
-                    nextPrevSong={item.id - 1}
-                    item={item}
+                    nextPrevSong={indexItem - 1}
                     items={items}
                     handleOnClickItem={handleOnClickItem}
                 />
@@ -61,8 +61,8 @@ const Player = (props: any) => {
                 <PlayerControlPlayPause
                     ref={playPauseRef}
                     isPlaying={isPlaying}
-                    item={item}
                     handleOnClickItem={handleOnClickItem}
+                    indexItem={indexItem}
                 />
                 <BasePlayer
                     repeatRef={repeatRef}
@@ -72,6 +72,7 @@ const Player = (props: any) => {
                     item={item}
                     handleOnClickItem={handleOnClickItem}
                     items={items}
+                    indexItem={indexItem}
                 />
                 <PlayerControl
                     iconStyle={{
@@ -88,8 +89,7 @@ const Player = (props: any) => {
                     action='next'
                     iconName='step-forward'
                     containerStyle={{ position: 'absolute', top: 20, right: 0, zIndex: 100 }}
-                    nextPrevSong={item.id + 1}
-                    item={item}
+                    nextPrevSong={indexItem + 1}
                     items={items}
                     handleOnClickItem={handleOnClickItem}
                 />
@@ -111,7 +111,7 @@ const Player = (props: any) => {
                     onPress={() => basePlayer.current.presentFullscreenPlayer()}
                 />
             </PlayerControlsContainer>
-            <SongInfoTitle songTitle={item.videoDetails.title} />
+            <SongInfoTitle songTitle={item.details.title} />
             <PlayerControlTimeSeek
                 ref={seekRef}
                 basePlayer={basePlayer}

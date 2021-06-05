@@ -1,4 +1,4 @@
-import { videoDetailsType } from './videoDetails';
+import { details } from './details';
 
 export type songType = {
     id?: number,
@@ -6,6 +6,6 @@ export type songType = {
     voted_users?: (string)[],
     votes_count?: number,
     isPlaying?: boolean,
-    videoDetails: videoDetailsType,
+    details: details,
     url: string
 };

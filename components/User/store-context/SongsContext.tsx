@@ -83,12 +83,18 @@ function removeSong(result: Context, action: actionType) {
     const { removedSong } = value;
     const song = songs[indexItem];
 
-    songs.splice(removedSong?.id, 1);
-    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
-    Object.assign(result, {
-        indexItem: song?.isPlaying ? songs.length === 1 ? 0 : song.id : 0
-    });
+    const indexInArray = songs.findIndex(_song => _song.id === removedSong.id);
+    if (indexInArray > -1) {
+        songs.splice(indexInArray, 1);
+    }
+
     setAnimation();
+
+    const newIndexItem = songs.findIndex(_song => _song.id === song.id);
+
+    Object.assign(result, {
+        indexItem: song?.isPlaying ? newIndexItem !== -1 ? newIndexItem : 0 : 0
+    });
 
     return { ...result, ...value };
 }
@@ -98,9 +104,12 @@ function addSong(result: Context, action: actionType) {
     const { value } = action;
     const { addedSong } = value;
 
-    addedSong.id = songs.length;
-    songs.push(addedSong);
-    setAnimation();
+    const indexInArray = songs.findIndex((song) => song.id === addedSong.id);
+
+    if (indexInArray === -1) {
+        songs.push(addedSong);
+        setAnimation();
+    }
 
     return { ...result, ...value };
 }
@@ -152,20 +161,21 @@ function setVotedSong(result: Context, action: actionType) {
     const { value } = action;
     const { votedSong } = value;
     const song = songs[indexItem];
+    const indexInArray = songs.findIndex(_song => _song.id === votedSong.id);
 
-    if (songs[votedSong.id].id === votedSong.id) {
-        Object.assign(songs[votedSong.id], {
+    if (songs[indexInArray].id === votedSong.id) {
+        Object.assign(songs[indexInArray], {
             votes_count: votedSong.votes_count,
             voted_users: votedSong.voted_users
         });
     }
 
     songs.sort(compareValues('votes_count'));
-    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
     setAnimation();
+    const newIndexItem = songs.findIndex(_song => _song.id === song.id);
 
     Object.assign(result, {
-        indexItem: song.isPlaying ? song.id : 0
+        indexItem: song.isPlaying ? newIndexItem : 0
     });
 
     return { ...result, ...value };
@@ -176,7 +186,9 @@ function transformSongWithError(result: Context, action: actionType) {
     const { value } = action;
     const { transformedSong } = value;
 
-    Object.assign(songs[transformedSong.id], {
+    const indexInArray = songs.findIndex(_song => _song.id === transformedSong.id);
+
+    Object.assign(songs[indexInArray], {
         url: transformedSong.url
     });
 

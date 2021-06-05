@@ -27,7 +27,7 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
         />
     ), []);
 
-    const keyExtractor = useCallback((item: any) => item.id.toString(), []);
+    const keyExtractor = useCallback((item: any) => item.id, []);
 
     return (
         <CommonFlatList

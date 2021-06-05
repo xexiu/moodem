@@ -6,8 +6,8 @@ import PreLoader from './PreLoader';
 const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
     const {
         isPlaying,
-        item,
-        handleOnClickItem
+        handleOnClickItem,
+        indexItem
     } = props;
 
     const [isBuffering, setIsBuffering] = useState(true);
@@ -47,7 +47,7 @@ const PlayerControlPlayPause = forwardRef((props: any, ref: any) => {
             size={45}
             color='#dd0031'
             onPress={() => {
-                return handleOnClickItem(item.id);
+                return handleOnClickItem(indexItem);
             }}
         />
     );

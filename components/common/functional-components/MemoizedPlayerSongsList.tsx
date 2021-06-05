@@ -34,6 +34,7 @@ const MemoizedPlayerSongsList = (props: any) => {
                 item={data[indexItem]}
                 handleOnClickItem={handleOnClickItem}
                 items={data}
+                indexItem={indexItem}
             />
             <MemoizedItems
                 data={data}

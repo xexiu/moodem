@@ -2,13 +2,13 @@
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
+import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
-import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs'
 
 const Songs = (props: any) => {
     const { navigation } = props;

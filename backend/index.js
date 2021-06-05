@@ -30,23 +30,23 @@ const ONE_YEAR = THIRTY_DAYS * 365;
 const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFmmF2swRgIhALFkP9EgTxgWwh8_Dx3Fa2g-WN-K4umS1JQyzndTP5DLAiEAyHfgMQ2jMlNpvltT8LdxKqTle8a4ZSjODYq-svrKlVA:QUQ3MjNmemFvaS1aNkFXVURieUYtMUtWbnR5bFMzRnJfa21CUXdhSTV4QXNPVnNfQWlabDBUZU1qaC1oMnh1eVNwa2pxVWxkN3duYWdhbkk5aHM1ai1JNHFORy1ZVHNvMWw3X2RBdlhKMGZaamFaa3JfeUZzVmhqTnFLS1BETlJTOFRfTmZ6TVQyd0tfUktlcEQ5X1hiNmROcU5hSEt6NC13; VISITOR_INFO1_LIVE=Foji98RNGoc; HSID=AFT92MyweZvASBFc8; SSID=Adqw7Q8srjSE8qVwE; APISID=aS1BdrF_061pvnJi/AK-F-FrDdaxvZ2M9S; SAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; __Secure-3PAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; SID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQvrjB2Ws224CKFU_q-xDu6g.; __Secure-3PSID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQyzg_CthnHmIDweLdzl7x6w.; _gcl_au=1.1.1092345076.1615207146; PREF=tz=America.Bogota&f4=4000000&volume=100; SIDCC=AJi4QfHEidaBriNX7zfdqwhYttDNMZaRIs2EiVR8sxQEsgzh5tlYaBOoAUn9tNTUrmuHbD37LA; __Secure-3PSIDCC=AJi4QfHpDx-igRwtg57bWL78ZZK45bEB4srtDgZAfdcKm4cmO1a5l7jiJ0EVDsAKQlM_meAlN60';
 const myCache = new NodeCache();
 
-function cleanTitle(info) {
-  if (info && info.videoDetails && info.videoDetails.title) {
-    info.videoDetails.title = info.videoDetails.title.replace('(Official Music Video)', '')
+function cleanTitle(audio) {
+  if (audio.details && audio.details.title) {
+    audio.details.title = audio.details.title.replace('(Official Music Video)', '')
       .replace('(Official Video)', '');
-    return info.videoDetails.title;
+    return audio.details.title;
   }
-  return info.videoDetails.title;
+  return audio.details.title;
 }
 
-function cleanImageParams(info) {
-  if (info.videoDetails && info.videoDetails.thumbnails) {
-    if (info.videoDetails.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
-      info.videoDetails.thumbnails[0].url = info.videoDetails.thumbnails[0].url.replace(/(\?.*)/g, '');
-      return info.videoDetails.thumbnails[0].url;
+function cleanImageParams(audio) {
+  if (audio.details && audio.details.thumbnails) {
+    if (audio.details.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
+      audio.details.thumbnails[0].url = audio.details.thumbnails[0].url.replace(/(\?.*)/g, '');
+      return audio.details.thumbnails[0].url;
     }
   }
-  return info.videoDetails.thumbnails[0].url;
+  return audio.details.thumbnails[0].url;
 }
 
 async function getSong(videoId, hasExpired = false) {
@@ -69,7 +69,13 @@ async function getSong(videoId, hasExpired = false) {
   const info = await ytdl.getInfo(videoId, {
     requestOptions: {
       headers: {
-        Cookie: COOKIE
+        Cookie: COOKIE,
+        'x-youtube-client-version': '2.20191008.04.01',
+        'x-youtube-client-name': '1',
+        'x-client-data': '',
+        'x-youtube-identity-token': 'QUFFLUhqbWtBX080QlRLNkQ3R2E2RXBWZGtXZFVjd1JuZ3w\u003d',
+        Accept: 'application/json, text/plain, */*',
+        Range: 'bytes=0-10380331'
       }
     }
   });
@@ -85,8 +91,9 @@ async function getSong(videoId, hasExpired = false) {
     }
 
     Object.assign(audio[0], {
+      id: info.videoDetails.videoId,
       hasExpired: false,
-      videoDetails: info.videoDetails,
+      details: info.videoDetails,
       isCachedInServerNode: false
     });
 
@@ -142,9 +149,10 @@ const compareValues = (key) => (a, b) => {
 function setExtraAttrs(audios, uid, isSearching = false) {
   const audiosArr = [];
 
-  audios.forEach((track, index) => {
+  audios.forEach((track) => {
     Object.assign(track, {
-      id: index,
+      id: track.id,
+      details: track.details,
       isSearching,
       isPlaying: false,
       isMediaOnList: false,
@@ -210,8 +218,7 @@ serverIO.on('connection', (socket) => {
       chatRooms[data.chatRoom].songs = data.songs;
       const { songs } = chatRooms[data.chatRoom];
       songs.sort(compareValues('votes_count'));
-      songs.forEach((song, index) => Object.assign(song, {
-        id: index,
+      songs.forEach((song) => Object.assign(song, {
         voted_users: song.voted_users || [],
         boosted_users: song.boosted_users || []
       }));
@@ -223,7 +230,7 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.videoDetails.videoId, data.song.hasExpired);
+    const audio = await getSong(data.song.details.videoId, data.song.hasExpired);
     const { songs } = chatRooms[data.chatRoom];
 
     Object.assign(data.song, {
@@ -236,7 +243,7 @@ serverIO.on('connection', (socket) => {
     for (let i = 0; i < songs.length; i++) {
       const song = songs[i];
 
-      if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
+      if (song.id === data.song.id) {
         Object.assign(song, {
           url: audio.url,
           hasExpired: false
@@ -251,7 +258,7 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.videoDetails.videoId, data.song.hasExpired);
+    const audio = await getSong(data.song.id, data.song.hasExpired);
 
     Object.assign(data.song, {
       hasExpired: false,
@@ -268,7 +275,8 @@ serverIO.on('connection', (socket) => {
 
     const { songs } = chatRooms[data.chatRoom];
 
-    const song = songs[data.song.id];
+    const indexInArray = songs.findIndex((song) => song.id === data.song.id);
+    const song = songs[indexInArray];
 
     const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
 
@@ -281,7 +289,6 @@ serverIO.on('connection', (socket) => {
     }
 
     songs.sort(compareValues('votes_count'));
-    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
 
     const { isVotingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-voted', { song: data.song, isVotingSong });
@@ -294,8 +301,10 @@ serverIO.on('connection', (socket) => {
 
     const { songs } = chatRooms[data.chatRoom];
 
-    songs.splice(data.song.id, 1);
-    songs.forEach((_song, index) => Object.assign(_song, { id: index }));
+    if (songs.length) {
+      const indexInArray = songs.findIndex((song) => song.id === data.song.id);
+      songs.splice(indexInArray, 1);
+    }
     const { isRemovingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
   });
@@ -303,25 +312,18 @@ serverIO.on('connection', (socket) => {
   // Add song
   socket.on('send-message-add-song', async (data) => {
     await socket.join(data.chatRoom);
-    let duplicatedSong = false;
 
     const { songs } = chatRooms[data.chatRoom];
 
     if (data.song) {
-      for (let i = 0; i < songs.length; i++) {
-        const song = songs[i];
-        if (song.videoDetails.videoId === data.song.videoDetails.videoId) {
-          duplicatedSong = true;
-          break;
-        }
-      }
-    }
-    if (!duplicatedSong) {
-      data.song.id = songs.length;
-      songs.push(data.song);
+      const indexInArray = songs.findIndex((song) => song.id === data.song.id);
 
-      const { isAddingSong = false } = data;
-      serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+      if (indexInArray === -1) {
+        songs.push(data.song);
+
+        const { isAddingSong = false } = data;
+        serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+      }
     }
   });
 

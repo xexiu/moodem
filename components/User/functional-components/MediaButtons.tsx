@@ -24,6 +24,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 isRemovingSong: true
             });
         socket.off('send-message-remove-song');
+        controller.abort();
     }
 
     async function emitSendMedia() {
@@ -34,6 +35,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
         });
 
         socket.off('send-message-add-song');
+        controller.abort();
 
         return optionalCallback && optionalCallback();
     }
@@ -47,6 +49,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 count: ++song.votes_count
             });
         socket.off('send-message-vote-up');
+        controller.abort();
     }
 
     const mediaMap = {
@@ -75,7 +78,6 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
 
                 await saveSongOnDb(song, user, group.group_name, () => {
                     setIsLoading(false);
-                    controller.abort();
                 });
             }
         },
@@ -98,7 +100,6 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
 
                 await saveVotesForSongOnDb(song, user, group.group_name, () => {
                     setIsLoading(false);
-                    controller.abort();
                 });
             }
         },
@@ -114,7 +115,6 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
 
                 await removeSongFromDB(song, user, group.group_name, () => {
                     setIsLoading(false);
-                    controller.abort();
                 });
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)

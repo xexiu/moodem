@@ -8,10 +8,10 @@ import { SongsContext } from '../../User/store-context/SongsContext';
 
 function updateSongDetailsOnControlCenter(item: any) {
     MusicControl.setNowPlaying({
-        title: item.videoDetails.title,
-        artwork: item.videoDetails.thumbnails[0].url,
-        artist: item.videoDetails.author.name,
-        duration: Number(item.videoDetails.lengthSeconds) // (Seconds)
+        title: item.details.title,
+        artwork: item.details.thumbnails[0].url,
+        artist: item.details.author.name,
+        duration: Number(item.details.lengthSeconds) // (Seconds)
     });
 }
 
@@ -32,7 +32,8 @@ const BasePlayer = (props: any) => {
         item,
         basePlayer,
         handleOnClickItem,
-        items
+        items,
+        indexItem
     } = props;
     const { group, socket, isServerError } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
@@ -59,7 +60,7 @@ const BasePlayer = (props: any) => {
     });
 
     MusicControl.on(Command.play, () => {
-        handleOnClickItem(item.id);
+        handleOnClickItem(indexItem);
         MusicControl.updatePlayback({
             state: MusicControl.STATE_PLAYING,
             elapsedTime: seekRef.current.trackCurrentTime
@@ -67,7 +68,7 @@ const BasePlayer = (props: any) => {
     });
 
     MusicControl.on(Command.pause, () => {
-        handleOnClickItem(item.id);
+        handleOnClickItem(indexItem);
         MusicControl.updatePlayback({
             state: MusicControl.STATE_PAUSED,
             elapsedTime: seekRef.current.trackCurrentTime
@@ -75,25 +76,25 @@ const BasePlayer = (props: any) => {
     });
 
     MusicControl.on(Command.nextTrack, () => {
-        const nextPrevIndex = items.length ? item.id + 1 : 0;
+        const nextPrevIndex = items.length ? indexItem + 1 : 0;
 
         if (items[nextPrevIndex]) {
-            handleOnClickItem(items[nextPrevIndex].id);
+            handleOnClickItem(nextPrevIndex);
             updateSongDetailsOnControlCenter(items[nextPrevIndex]);
         }
     });
 
     MusicControl.on(Command.previousTrack, () => {
-        const nextPrevIndex = items.length ? item.id - 1 : 0;
+        const nextPrevIndex = items.length ? indexItem - 1 : 0;
 
         if (items[nextPrevIndex]) {
-            handleOnClickItem(items[nextPrevIndex].id);
+            handleOnClickItem(nextPrevIndex);
             updateSongDetailsOnControlCenter(items[nextPrevIndex]);
         }
     });
 
     function showPoster() {
-        return !item.isPlaying ? item.videoDetails.thumbnails[0].url : undefined;
+        return !item.isPlaying ? item.details.thumbnails[0].url : undefined;
     }
 
     function handleOnEnd() {
@@ -103,16 +104,16 @@ const BasePlayer = (props: any) => {
             });
             basePlayer.current.seek(0);
             updateSongDetailsOnControlCenter(item);
-            return handleOnClickItem(item.id);
+            return handleOnClickItem(indexItem);
         }
         basePlayer.current.dismissFullscreenPlayer();
         seekRef.current.setTrackCurrentTime(0);
 
-        const nextPrevIndex = items.length ? item.id + 1 : 0;
+        const nextPrevIndex = items.length ? indexItem + 1 : 0;
 
         if (items[nextPrevIndex]) {
             updateSongDetailsOnControlCenter(items[nextPrevIndex]);
-            return handleOnClickItem(items[nextPrevIndex].id);
+            return handleOnClickItem(nextPrevIndex);
         }
         return dispatchContextSongs({ type: 'update_song_reset' });
     }

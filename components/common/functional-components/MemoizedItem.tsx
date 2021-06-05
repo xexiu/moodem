@@ -9,15 +9,15 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions, optionalC
         <CommonFlatListItem
             bottomDivider
             topDivider={true}
-            title={item.videoDetails.title}
+            title={item.details.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             titleStyle={{ paddingRight: 5, paddingBottom: 7}}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.videoDetails.author.name.replace('VEVO', '')}`}
+            subtitle={`${item.details.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
             leftAvatar={{
                 source: {
-                    uri: item.videoDetails.thumbnails[0].url
+                    uri: item.details.thumbnails[0].url
                 }
             }}
             buttonGroup={MediaButtons(item, buttonActions, optionalCallback)}
