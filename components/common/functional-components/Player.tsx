@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import { Icon } from 'react-native-elements';
 import BasePlayer from './BasePlayer';
 import PlayerControl from './PlayerControl';
+import PlayerControlFullScreen from './PlayerControlFullScreen';
 import PlayerControlPlayPause from './PlayerControlPlayPause';
 import PlayerControlRepeat from './PlayerControlRepeat';
 import { PlayerControlsContainer } from './PlayerControlsContainer';
@@ -22,6 +22,8 @@ const Player = (props: any) => {
     const playPauseRef = useRef(null);
     const basePlayer = useRef(null);
     const seekRef = useRef(null);
+
+    console.log('PLAYER');
 
     return (
         <SongInfoContainer>
@@ -93,23 +95,7 @@ const Player = (props: any) => {
                     items={items}
                     handleOnClickItem={handleOnClickItem}
                 />
-                <Icon
-                    containerStyle={{ position: 'absolute', top: 70, right: 50, zIndex: 100 }}
-                    raised={false}
-                    reverse={false}
-                    iconStyle={{
-                        borderWidth: 1,
-                        borderColor: '#eee',
-                        borderRadius: 15,
-                        padding: 5,
-                        backgroundColor: '#fff'
-                    }}
-                    name='resize-full-screen'
-                    type='entypo'
-                    color='#dd0031'
-                    size={18}
-                    onPress={() => basePlayer.current.presentFullscreenPlayer()}
-                />
+                <PlayerControlFullScreen basePlayer={basePlayer} />
             </PlayerControlsContainer>
             <SongInfoTitle songTitle={item.details.title} />
             <PlayerControlTimeSeek

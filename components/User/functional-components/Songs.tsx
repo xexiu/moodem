@@ -4,7 +4,8 @@ import React, { memo, useCallback, useContext, useEffect } from 'react';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
-import MemoizedPlayerSongsList from '../../common/functional-components/MemoizedPlayerSongsList';
+import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
+import Player from '../../common/functional-components/Player';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../store-context/AppContext';
@@ -117,19 +118,41 @@ const Songs = (props: any) => {
         };
     })(), []);
 
+    const onClickUseCallBack = useCallback((index: number) => dispatchContextSongs({
+        type: 'update_song_click_play_pause',
+        value: {
+            indexItem: index,
+            index,
+            removedSong: null,
+            votedSong: null,
+            addedSong: null,
+            transformedSong: null
+        }
+    }), []);
+
     const memoizedPlayerSongsListCallBack = useCallback(() => {
         if (songs && !songs.length) {
             return (<MediaListEmpty />);
         }
 
         return (
-            <MemoizedPlayerSongsList
-                data={songs}
-                buttonActions={['votes', 'remove']}
-                indexItem={indexItem}
-            />
+            <BodyContainer>
+                <Player
+                    isPlaying={songs[indexItem].isPlaying}
+                    item={songs[indexItem]}
+                    handleOnClickItem={onClickUseCallBack}
+                    items={songs}
+                    indexItem={indexItem}
+                />
+                <MemoizedSongsList
+                    data={songs}
+                    buttonActions={['votes', 'remove']}
+                    indexItem={indexItem}
+                    handleOnClickItem={onClickUseCallBack}
+                />
+            </BodyContainer>
         );
-    }, [songs.length, indexItem]);
+    }, [songs, indexItem]);
 
     if (isLoading) {
         return (
@@ -157,6 +180,8 @@ const Songs = (props: any) => {
             />
         );
     }
+
+    console.log('SONGS');
 
     return (
         <BodyContainer>

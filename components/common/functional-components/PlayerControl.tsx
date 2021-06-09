@@ -49,4 +49,8 @@ const PlayerControl = (props: MyProps) => {
     );
 };
 
-export default memo(PlayerControl);
+function areEqual(prevState: any, nextState: any) {
+    return prevState.nextPrevSong === nextState.nextPrevSong;
+}
+
+export default memo(PlayerControl, areEqual);

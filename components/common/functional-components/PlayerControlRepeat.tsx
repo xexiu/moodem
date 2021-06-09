@@ -31,7 +31,7 @@ const PlayerControlRepeat = forwardRef((props: any, ref: any) => {
     );
 });
 
-const areEqual = (prevProps: any, nextProps: any) => {
+const areEqual = () => {
     return true;
 };
 

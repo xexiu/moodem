@@ -123,7 +123,7 @@ const BasePlayer = (props: any) => {
             <Video
                 pictureInPicture
                 onFullscreenPlayerWillDismiss={() => {
-                    basePlayer.current.setNativeProps({
+                    return basePlayer.current.setNativeProps({
                         paused: !item.isPlaying
                     });
                 }}

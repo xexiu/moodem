@@ -4,7 +4,8 @@ import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
-import MemoizedPlayerSongsList from '../../../components/common/functional-components/MemoizedPlayerSongsList';
+import MemoizedSongsList from '../../../components/common/functional-components/MemoizedSongsList';
+import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
@@ -149,13 +150,22 @@ const SearchSongScreen = (props: any) => {
         }
 
         return (
-            <MemoizedPlayerSongsList
-                data={allValues.songs}
-                buttonActions={['send_media']}
-                handleOnClickItem={onClickUseCallBack}
-                optionalCallback={resetSearchingScreen}
-                indexItem={allValues.indexItem}
-            />
+            <BodyContainer>
+                <Player
+                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
+                    item={allValues.songs[allValues.indexItem]}
+                    handleOnClickItem={onClickUseCallBack}
+                    items={songs}
+                    indexItem={allValues.indexItem}
+                />
+                <MemoizedSongsList
+                    data={allValues.songs}
+                    buttonActions={['send_media']}
+                    handleOnClickItem={onClickUseCallBack}
+                    optionalCallback={resetSearchingScreen}
+                    indexItem={allValues.indexItem}
+                />
+            </BodyContainer>
         );
     }, [allValues.songs, allValues.indexItem]);
 
