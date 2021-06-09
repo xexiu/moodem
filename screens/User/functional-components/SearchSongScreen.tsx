@@ -35,7 +35,7 @@ const SearchSongScreen = (props: any) => {
         const videoIds = [] as string[];
         try {
             const { data } = await axios.get(
-                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=15&videoCategoryId=10&type=video&key=${YOUTUBE_KEY}`,
+                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=15&type=video&key=${YOUTUBE_KEY}`,
                 { cancelToken: source.token });
 
             const videos = data.items.filter((video: any) => video.id.videoId);
@@ -97,9 +97,14 @@ const SearchSongScreen = (props: any) => {
 
     function getSongWithError({ song }: any) {
         return setAllValues(prev => {
-            Object.assign(prev.songs[song.id], {
-                url: song.url
-            });
+            const indexInArray = prev.songs.findIndex(_song => _song.id === song.id);
+
+            if (indexInArray > -1) {
+                Object.assign(prev.songs[indexInArray], {
+                    url: song.url
+                });
+            }
+
             return {
                 ...prev,
                 songs: [...prev.songs]

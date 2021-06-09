@@ -79,7 +79,7 @@ async function getSong(videoId, hasExpired = false) {
       }
     }
   });
-  // const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+  // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
   const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
 
   if (audio && audio.length) {
@@ -230,7 +230,7 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.details.videoId, data.song.hasExpired);
+    const audio = await getSong(data.song.id, true);
     const { songs } = chatRooms[data.chatRoom];
 
     Object.assign(data.song, {
@@ -258,7 +258,7 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.id, data.song.hasExpired);
+    const audio = await getSong(data.song.id, true);
 
     Object.assign(data.song, {
       hasExpired: false,
@@ -303,7 +303,9 @@ serverIO.on('connection', (socket) => {
 
     if (songs.length) {
       const indexInArray = songs.findIndex((song) => song.id === data.song.id);
-      songs.splice(indexInArray, 1);
+      if (indexInArray > -1) {
+        songs.splice(indexInArray, 1);
+      }
     }
     const { isRemovingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
