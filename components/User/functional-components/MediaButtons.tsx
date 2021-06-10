@@ -1,6 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { View } from 'react-native';
-import { removeSongFromDB, saveSongOnDb, saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
+import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import {
+    removeSongFromDB,
+    removeSongFromLocalStorage,
+    saveSongOnDb,
+    saveSongOnLocalStorage,
+    saveVotesForSongOnDb,
+    saveVotesForSongOnLocalStorage
+} from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
@@ -36,8 +44,6 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
 
         socket.off('send-message-add-song');
         controller.abort();
-
-        return optionalCallback && optionalCallback();
     }
 
     async function emitVotedSong() {
@@ -45,8 +51,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             {
                 song,
                 chatRoom: group.group_name,
-                user_id: user.uid,
-                count: ++song.votes_count
+                user_id: user.uid
             });
         socket.off('send-message-vote-up');
         controller.abort();
@@ -74,16 +79,18 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     voted_users: song.voted_users || [],
                     boosted_users: song.boosted_users || []
                 });
-                await emitSendMedia();
 
-                await saveSongOnDb(song, user, group.group_name, () => {
+                await saveSongOnLocalStorage(song, user, group.group_name);
+                await saveSongOnDb(song, user, group.group_name, async () => {
                     setIsLoading(false);
+                    await emitSendMedia();
+                    return optionalCallback && optionalCallback();
                 });
             }
         },
         votes: {
             containerStyle: {},
-            votes_count: song.votes_count,
+            votes_count: song.voted_users ? song.voted_users.length : 0,
             voted_users: song.voted_users,
             iconName: isLoading ? 'cloud' : 'thumbs-up',
             iconType: 'entypo',
@@ -97,8 +104,8 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     boosted_users: song.boosted_users || []
                 });
                 await emitVotedSong();
-
-                await saveVotesForSongOnDb(song, user, group.group_name, () => {
+                await saveVotesForSongOnLocalStorage(song, user, group.group_name);
+                await saveVotesForSongOnDb(song, user, group.group_name, async () => {
                     setIsLoading(false);
                 });
             }
@@ -111,10 +118,10 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconSize: 9,
             action: async () => {
                 setIsLoading(true);
-                await emitRemoveSong();
-
-                await removeSongFromDB(song, user, group.group_name, () => {
+                await removeSongFromLocalStorage(song, user, group.group_name);
+                await removeSongFromDB(song, user, group.group_name, async () => {
                     setIsLoading(false);
+                    await emitRemoveSong();
                 });
             },
             isOwner: user && hasSongOrGroupOwner(user, song.user, group.user_owner_id)

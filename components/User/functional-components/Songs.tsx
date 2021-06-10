@@ -1,8 +1,9 @@
 
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useContext, useEffect } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
+import Toast, { DURATION } from 'react-native-easy-toast';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
-import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
+import { updateSongExipredOnLocalStorage, updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
 import Player from '../../common/functional-components/Player';
@@ -20,12 +21,15 @@ const Songs = (props: any) => {
         isLoading,
         indexItem
     } = useContext(SongsContext) as any;
+    const toastRef = useRef(null);
 
     useEffect(() => {
         dispatchCommon(group.group_songs);
 
         if (!isServerError) {
             socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: group.group_songs });
+            socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
+            socket.on('get-message-welcomeMsg', getWelcomeMsg);
             socket.on('song-added', getSong);
             socket.on('song-removed', getRemovedSong);
             socket.on('song-voted', getVotedSong);
@@ -34,11 +38,17 @@ const Songs = (props: any) => {
 
         return () => {
             console.log('OFF SONGS');
+            socket.off('emit-message-welcomeMsg');
+            socket.off('get-message-welcomeMsg');
             socket.off('emit-set-medias');
             socket.off('send-song-error', getSongWithError);
             socket.off('song-error', getSongWithError);
         };
     }, []);
+
+    function getWelcomeMsg({ welcomeMsg }: any) {
+        toastRef.current.show(welcomeMsg, 1000);
+    }
 
     function dispatchCommon(data: any = []) {
         return dispatchContextSongs({
@@ -67,7 +77,8 @@ const Songs = (props: any) => {
         });
     }
 
-    function getSongWithError({ song }: any) {
+    async function getSongWithError({ song }: any) {
+        await updateSongExipredOnLocalStorage(song, user, group.group_name);
         return updateSongExpiredOnDB(song, user, group.group_name, () => {
             return dispatchContextSongs({
                 type: 'song_error',
@@ -181,12 +192,14 @@ const Songs = (props: any) => {
         );
     }
 
-    console.log('SONGS');
-
     return (
         <BodyContainer>
             { renderSearchBar()}
             { memoizedPlayerSongsListCallBack()}
+            <Toast
+                position={isServerError ? 'bottom' : 'top'}
+                ref={toastRef}
+            />
         </BodyContainer>
     );
 };

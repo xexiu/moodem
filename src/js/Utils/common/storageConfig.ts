@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Storage from 'react-native-storage';
 
 const ONE_DAY = 1000 * 3600 * 24;
+const NINTY_DAYS = ONE_DAY * 90;
 const FIVE_HOURS = ONE_DAY - 19;
 const TEN_THOUSANDS = 10000;
 
@@ -15,7 +16,7 @@ const storage = new Storage({
 
     // expire time, default: 1 day (1000 * 3600 * 24 milliseconds).
     // can be null, which means never expire.
-    defaultExpires: ONE_DAY,
+    defaultExpires: NINTY_DAYS,
 
     // cache data in the memory. default is true.
     enableCache: true,

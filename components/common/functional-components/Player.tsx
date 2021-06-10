@@ -23,8 +23,6 @@ const Player = (props: any) => {
     const basePlayer = useRef(null);
     const seekRef = useRef(null);
 
-    console.log('PLAYER');
-
     return (
         <SongInfoContainer>
             <PlayerControlsContainer>

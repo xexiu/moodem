@@ -57,26 +57,6 @@ const setAnimation = () => {
     LayoutAnimation.configureNext(CustomLayoutLinear);
 };
 
-const compareValues = (key: string) => (a: any, b: any) => {
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-        return 0;
-    }
-
-    const varA = (typeof a[key] === 'string')
-        ? a[key].toUpperCase() : a[key];
-    const varB = (typeof b[key] === 'string')
-        ? b[key].toUpperCase() : b[key];
-
-    if (varA > varB) {
-        return -1;
-    }
-    if (varA < varB) {
-        return 1;
-    }
-
-    return 0;
-};
-
 function removeSong(result: Context, action: actionType) {
     const { songs, indexItem } = result;
     const { value } = action;
@@ -165,12 +145,13 @@ function setVotedSong(result: Context, action: actionType) {
 
     if (songs[indexInArray].id === votedSong.id) {
         Object.assign(songs[indexInArray], {
-            votes_count: votedSong.votes_count,
             voted_users: votedSong.voted_users
         });
     }
-
-    songs.sort(compareValues('votes_count'));
+    
+    songs.sort((a: any, b: any) => {
+        return b.voted_users.length - a.voted_users.length;
+    });
     setAnimation();
     const newIndexItem = songs.findIndex(_song => _song.id === song.id);
 

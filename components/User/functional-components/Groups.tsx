@@ -3,7 +3,8 @@ import { useIsFocused } from '@react-navigation/native';
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
+import { Dimensions, Keyboard, Text, View } from 'react-native';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
@@ -18,6 +19,32 @@ import { CustomModal } from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../store-context/AppContext';
 import { NewGroup } from './NewGroup';
+
+const FirstRoute = () => (
+    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
+);
+
+const SecondRoute = () => (
+    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
+);
+
+const ThirdRoute = () => (
+    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
+);
+
+const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute
+});
+
+const renderTabBar = props => (
+    <TabBar
+        {...props}
+        indicatorStyle={{ backgroundColor: 'transparent' }}
+        style={{ backgroundColor: 'pink' }}
+    />
+);
 
 const Form = form.Form;
 
@@ -35,6 +62,12 @@ const Groups = (props: any) => {
     const refPassWordForm = React.createRef();
     const [isSearching, setIsSearching] = useState(false);
     const isFocused = useIsFocused();
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'first', title: 'Grupos Administrados' },
+        { key: 'second', title: 'Grupos Públicos' },
+        { key: 'third', title: 'Grupos Privados' }
+    ]);
 
     useEffect(() => {
         console.log('3. Groups', groups);
@@ -122,6 +155,17 @@ const Groups = (props: any) => {
                     setIsLoading(false);
                 }}
                 onEndEditingSearch={searchGroups}
+            />
+            <TabView
+                renderTabBar={renderTabBar}
+                indicatorStyle={{ backgroundColor: 'black' }}
+                style={{ backgroundColor: 'red' }}
+                sceneContainerStyle={{ backgroundColor: 'green' }}
+                tabStyle={{ backgroundColor: 'pink' }}
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: Dimensions.get('window').width }}
             />
             {/* <View>
                 <CustomModal isModalVisible={showPasswordModal} onBackdropPress={() => togglePasswordModal(false)}>

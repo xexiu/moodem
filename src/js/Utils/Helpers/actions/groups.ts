@@ -1,14 +1,16 @@
 import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
 import firebase from '../services/firebase';
 
-export const getGroupName = (groupName: string, screenName: string) => (groupName === 'Moodem' ? `My ${screenName}` : `${groupName}`);
+const refAllGroups = firebase.database().ref('Groups');
+const refGroupMoodem = firebase.database().ref('Groups/Moodem');
 
-export const createGroupHandler = (validate: any, user: any) => new Promise((resolve, reject) => {
+export const createGroupHandler = async (validate: any, user: any) => {
     if (validate.group_name === 'Moodem') {
         console.log('Group Name Moodem is reserved', 'Error: ', validate.group_name);
         return;
     }
-    firebase.database().ref(`Groups/${user.uid}`).push({
+
+    const newGroup = await firebase.database().ref(`Groups/${user.uid}`).push({
         group_songs: [],
         group_name: `${validate.group_name}-${user.uid}`,
         group_password: validate.group_password,
@@ -19,67 +21,57 @@ export const createGroupHandler = (validate: any, user: any) => new Promise((res
             group_owner: true,
             group_admin: true
         }]
-    })
-        .then((data: any) => {
-            data.ref.update({ group_id: data.key });
-            return resolve(data);
-        })
-        .catch((error: any) => reject(error));
-});
-
-export const getOwnedGroupsFromDatabase = (ref: any) => new Promise((resolve) => {
-    return ref.once('value', (snapshot: any) => {
-        const groups = snapshot.val() || [];
-        resolve(Object.values(groups));
     });
-});
+    newGroup.ref.update({ group_id: newGroup.key });
 
-export const getAllGroups = () => new Promise(resolve => {
-    const ref = firebase.database().ref('Groups');
+    return newGroup;
+};
 
-    ref.once('value')
-        .then((snapshot: any) => {
-            if (snapshot.val()) {
-                const data = Object.values(snapshot.val()) || [];
-                const groups = [] as any;
+export const getOwnedGroupsFromDatabase = async (user: any) => {
+    const refOwnedGroups = firebase.database().ref().child(`Groups/${user.uid}`);
+    const snapshot = await refOwnedGroups.once('value');
 
-                data.forEach((group: any) => {
-                    if (group && group.group_name !== 'Moodem') {
-                        const groupObj = Object.values(group)[0];
-                        groups.push(groupObj);
-                    }
-                });
+    return Object.values(snapshot.val() || []);
+};
 
-                for (let i = 0; i < groups.length; i++) {
-                    if (i === (groups.length - 1)) {
-                        resolve(groups);
-                    }
-                }
-            } else {
-                resolve([]);
+export const getAllGroups = () => new Promise(async resolve => {
+    const snapshot = await refAllGroups.once('value');
+
+    if (snapshot.val()) {
+        const data = Object.values(snapshot.val()) || [];
+        const groups = [] as any;
+
+        data.forEach((group: any) => {
+            if (group && group.group_name !== 'Moodem') {
+                const groupObj = Object.values(group)[0];
+                groups.push(groupObj);
             }
         });
+
+        for (let i = 0; i < groups.length; i++) {
+            if (i === (groups.length - 1)) {
+                resolve(groups);
+            }
+        }
+    } else {
+        resolve([]);
+    }
 });
 
-export const getDefaultGroup = () => new Promise(resolve => {
-    const refGroup = firebase.database().ref('Groups/Moodem');
-    refGroup.once('value', (snapshot: any) => {
-        const group = snapshot.val() || [];
-        resolve(group);
-    });
-});
+export const getDefaultGroup = async () => {
+    const snapshot = await refGroupMoodem.once('value');
+    return Object.values(snapshot.val() || []);
+};
 
-export const getGroups = (user: any) => {
-    const allUserGroups = [] as any;
-    const refOwnedGroups = firebase.database().ref().child(`Groups/${user.uid}`);
-
-    return new Promise(async (resolve, reject): Promise<void> => {
+export const getUserGroups = async (user: any) => {
+    try {
         const defaultGroup = await getDefaultGroup();
-        getOwnedGroupsFromDatabase(refOwnedGroups)
-            .then(groupsOwned => {
-                allUserGroups.push(defaultGroup, ...groupsOwned as any);
-                return resolve(allUserGroups);
-            })
-            .catch(err => reject(err));
-    });
+        const ownedGroups = await getOwnedGroupsFromDatabase(user);
+
+        return [...defaultGroup, ...ownedGroups as any];
+
+    } catch (error) {
+        // Send error to sentry
+        throw error;
+    }
 };
