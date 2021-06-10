@@ -125,27 +125,6 @@ function buildMedia(data) {
   }
 }
 
-const compareValues = (key) => (a, b) => {
-  // eslint-disable-next-line no-prototype-builtins
-  if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-    return 0;
-  }
-
-  const varA = (typeof a[key] === 'string')
-    ? a[key].toUpperCase() : a[key];
-  const varB = (typeof b[key] === 'string')
-    ? b[key].toUpperCase() : b[key];
-
-  if (varA > varB) {
-    return -1;
-  }
-  if (varA < varB) {
-    return 1;
-  }
-
-  return 0;
-};
-
 function setExtraAttrs(audios, uid, isSearching = false) {
   const audiosArr = [];
 
@@ -157,7 +136,6 @@ function setExtraAttrs(audios, uid, isSearching = false) {
       isPlaying: false,
       isMediaOnList: false,
       boosts_count: 0,
-      votes_count: 0,
       voted_users: [],
       boosted_users: [],
       hasExpired: false,
@@ -217,11 +195,12 @@ serverIO.on('connection', (socket) => {
       chatRooms[data.chatRoom].songs = [...new Set([])];
       chatRooms[data.chatRoom].songs = data.songs;
       const { songs } = chatRooms[data.chatRoom];
-      songs.sort(compareValues('votes_count'));
       songs.forEach((song) => Object.assign(song, {
         voted_users: song.voted_users || [],
         boosted_users: song.boosted_users || []
       }));
+
+      songs.sort((a, b) => b.voted_users.length - a.voted_users.length);
     }
   });
 
@@ -281,14 +260,16 @@ serverIO.on('connection', (socket) => {
     const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
 
     if (song.id === data.song.id && !userHasVoted) {
-      song.voted_users.push(data.user_id);
-      song.votes_count = data.count;
+      if (song.voted_users.indexOf(data.user_uid) === -1) {
+        song.voted_users.push(data.user_id);
+      }
 
-      data.song.voted_users.push(data.user_id);
-      data.song.votes_count = data.count;
+      if (data.song.voted_users.indexOf(data.user_uid) === -1) {
+        data.song.voted_users.push(data.user_id);
+      }
     }
 
-    songs.sort(compareValues('votes_count'));
+    songs.sort((a, b) => b.voted_users.length - a.voted_users.length);
 
     const { isVotingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-voted', { song: data.song, isVotingSong });
