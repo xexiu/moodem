@@ -8,20 +8,41 @@ const serverHTTP = require('http').Server(app);
 const serverIO = require('socket.io')(serverHTTP);
 const ytdl = require('ytdl-core');
 const NodeCache = require('node-cache');
-const terminate = require('./Utils/terminate');
+const Sentry = require('@sentry/node');
+const { CaptureConsole } = require('@sentry/integrations');
+
+Sentry.init({
+  dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
+  debug: false,
+  integrations: [
+    new CaptureConsole({
+      levels: ['error']
+    })
+  ],
+  attachStacktrace: true
+});
+
+const MAP_ERRORS = {
+  SIGUSR1: 'server kill PID or nodemon restart.',
+  SIGUSR2: 'server kill PID or nodemon restart.',
+  SIGINT: 'CTRL + C was clicked and stopped the server.',
+  uncaughtException: 'Unexpected Error Exception on Server.',
+  unhandledRejection: 'Unhandled Promise on Server.',
+  exit: 'Server was disconnected.'
+};
 
 // memory-cache docs -> https://github.com/ptarjan/node-cache
 // Socket.io do -> https://socket.io/docs/server-api/#socket-id
 
-const exitHandler = terminate(serverHTTP, {
-  coredump: false,
-  timeout: 500
-});
+function handleServerError(eventType) {
+  const error = MAP_ERRORS[eventType];
 
-process.on('SIGTERM', exitHandler(0, 'SIGTERM'));
-process.on('beforeExit', exitHandler(0, 'beforeExit')); //
-process.on('uncaughtException', exitHandler(0, 'Unexpected Error')); //
-process.on('unhandledRejection', exitHandler(0, 'Unhandled Promise'));
+  console.error('Server Error:', error);
+}
+
+['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'unhandledRejection', 'SIGTERM'].forEach((eventType) => {
+  process.on(eventType, handleServerError);
+});
 
 const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
 const FIVE_HOURS = ttl * 5;
@@ -119,7 +140,6 @@ function buildMedia(data) {
     chatRooms[data.chatRoom] = {};
 
     Object.assign(chatRooms[data.chatRoom], {
-      songs: [...new Set([])],
       messages: [],
       uids: new Set([])
     });
@@ -170,8 +190,7 @@ serverIO.on('connection', (socket) => {
           songs: [...setExtraAttrs(songsCoverted, socket.uid, true)]
         });
       } catch (error) {
-        console.log('Error converting allSongs', error);
-        // send error to sentry or other server
+        console.error('Error converting allSongs on search-songs-on-youtube', JSON.stringify(error));
       }
     }
   });
@@ -187,36 +206,8 @@ serverIO.on('connection', (socket) => {
       });
   });
 
-  // Set Medias on landing
-  socket.on('emit-set-medias', async (data) => {
-    await socket.join(data.chatRoom);
-    buildMedia(data);
-
-    if (data.songs) {
-      chatRooms[data.chatRoom].songs = [...new Set([])];
-      chatRooms[data.chatRoom].songs = data.songs;
-      const { songs } = chatRooms[data.chatRoom];
-
-      songs.sort((a, b) => {
-        if (!a.voted_users || !a.boosted_users) {
-          Object.assign(a, {
-            voted_users: a.voted_users || [],
-            boosted_users: a.boosted_users || []
-          });
-        }
-        if (!b.voted_users || b.boosted_users) {
-          Object.assign(b, {
-            voted_users: b.voted_users || [],
-            boosted_users: b.boosted_users || []
-          });
-        }
-        return b.voted_users.length - a.voted_users.length;
-      });
-    }
-  });
-
   //  Song Error
-  socket.on('send-song-error', async (data) => {
+  socket.once('send-song-error', async (data) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
@@ -227,22 +218,11 @@ serverIO.on('connection', (socket) => {
       url: audio.url
     });
 
-    serverIO.to(socket.id).emit('song-error', { song: data.song });
-  });
-
-  //  Song Error When Searching
-  socket.on('send-song-error-searching', async (data) => {
-    await socket.join(data.chatRoom);
-    buildMedia(data);
-
-    const audio = await getSong(data.song.id, true);
-
-    Object.assign(data.song, {
-      hasExpired: false,
-      url: audio.url
-    });
-
-    serverIO.to(socket.id).emit('song-error-searching', { song: data.song });
+    if (data.song.isSearching) {
+      serverIO.to(socket.id).emit('song-error-searching', { song: data.song });
+    } else {
+      serverIO.to(socket.id).emit('song-error', { song: data.song });
+    }
   });
 
   // Vote
@@ -250,24 +230,13 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const { songs } = chatRooms[data.chatRoom];
-
-    const indexInArray = songs.findIndex((song) => song.id === data.song.id);
-    const song = songs[indexInArray];
-
     const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
 
-    if (song.id === data.song.id && !userHasVoted) {
-      if (song.voted_users.indexOf(data.user_uid) === -1) {
-        song.voted_users.push(data.user_id);
-      }
-
+    if (!userHasVoted) {
       if (data.song.voted_users.indexOf(data.user_uid) === -1) {
         data.song.voted_users.push(data.user_id);
       }
     }
-
-    songs.sort((a, b) => b.voted_users.length - a.voted_users.length);
 
     const { isVotingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-voted', { song: data.song, isVotingSong });
@@ -278,14 +247,6 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const { songs } = chatRooms[data.chatRoom];
-
-    if (songs.length) {
-      const indexInArray = songs.findIndex((song) => song.id === data.song.id);
-      if (indexInArray > -1) {
-        songs.splice(indexInArray, 1);
-      }
-    }
     const { isRemovingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
   });
@@ -294,18 +255,8 @@ serverIO.on('connection', (socket) => {
   socket.on('send-message-add-song', async (data) => {
     await socket.join(data.chatRoom);
 
-    const { songs } = chatRooms[data.chatRoom];
-
-    if (data.song) {
-      const indexInArray = songs.findIndex((song) => song.id === data.song.id);
-
-      if (indexInArray === -1) {
-        songs.push(data.song);
-
-        const { isAddingSong = false } = data;
-        serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
-      }
-    }
+    const { isAddingSong = false } = data;
+    serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
   });
 
   socket.on('get-connected-users', async (data) => {

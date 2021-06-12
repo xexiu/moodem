@@ -71,7 +71,6 @@ export const getUserGroups = async (user: any) => {
         return [...defaultGroup, ...ownedGroups as any];
 
     } catch (error) {
-        // Send error to sentry
-        throw error;
+        console.error('getUserGroups Error', JSON.stringify(error));
     }
 };

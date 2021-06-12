@@ -11,6 +11,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@sentry/integrations": "^6.6.0",
+    "@sentry/node": "^6.6.0",
     "express": "^4.17.1",
     "memory-cache": "^0.2.0",
     "node-cache": "^5.1.2",

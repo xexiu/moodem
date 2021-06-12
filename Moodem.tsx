@@ -58,8 +58,7 @@ const App = function Moodem() {
                         }
                     });
                 } catch (error) {
-                    console.log('Something happened', error);
-                    // send error to sentry
+                    console.error('Moodem Error', JSON.stringify(error));
                     return dispatchContextApp({
                         type: 'error_user', value: {
                             error,
@@ -83,7 +82,6 @@ const App = function Moodem() {
         });
 
         return () => {
-            console.log('2. OFF EFFECT Moodem');
             controller.abort();
         };
     }, []);

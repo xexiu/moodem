@@ -72,8 +72,7 @@ export async function convertVideoIdsFromDB(songs: [] = []) {
         }));
         return audios;
     } catch (error) {
-        // send error to sentry or other server
-        console.log('Error convertVideoIdsFromDB', error);
+        console.error('Error convertVideoIdsFromDB', JSON.stringify(error));
     }
 }
 

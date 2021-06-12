@@ -27,7 +27,6 @@ const Songs = (props: any) => {
         dispatchCommon(group.group_songs);
 
         if (!isServerError) {
-            socket.emit('emit-set-medias', { chatRoom: group.group_name, songs: group.group_songs });
             socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
             socket.on('get-message-welcomeMsg', getWelcomeMsg);
             socket.on('song-added', getSong);

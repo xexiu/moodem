@@ -5,6 +5,7 @@ import {
     saveSongOnDb,
     saveVotesForSongOnDb
 } from '../../../src/js/Utils/Helpers/actions/songs';
+import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
 
@@ -13,6 +14,10 @@ const controller = new AbortController();
 export const MediaButtons = (song: any, actions: string[], optionalCallback: Function) => {
     const { isServerError, user, group, socket }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, [song.voted_users]);
 
     function hasSongOrGroupOwner(mediaUser: any, songUser: any, groupOwner: any) {
         return ((mediaUser && songUser.uid === mediaUser.uid) ||
@@ -59,7 +64,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 marginBottom: 35,
                 marginRight: -10
             },
-            iconName: isLoading ? 'cloud' : 'arrow-right',
+            iconName: 'arrow-right',
             iconType: 'AntDesign',
             iconColor: '#90c520',
             iconSize: 40,
@@ -86,7 +91,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             containerStyle: {},
             votes_count: song.voted_users ? song.voted_users.length : 0,
             voted_users: song.voted_users,
-            iconName: isLoading ? 'cloud' : 'thumbs-up',
+            iconName: 'thumbs-up',
             iconType: 'entypo',
             iconColor: '#90c520',
             iconSize: 9,
@@ -98,14 +103,13 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     boosted_users: song.boosted_users || []
                 });
                 await saveVotesForSongOnDb(song, user, group.group_name, async () => {
-                    setIsLoading(false);
                     await emitVotedSong();
                 });
             }
         },
         remove: {
             containerStyle: {},
-            iconName: isLoading ? 'cloud' : 'remove',
+            iconName: 'remove',
             iconType: 'font-awesome',
             iconColor: '#dd0031',
             iconSize: 9,
@@ -161,6 +165,20 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
     }
 
     function createButton(action: string) {
+        if (isLoading) {
+            return (
+                <PreLoader
+                    containerStyle={{
+                        position: 'relative',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: -15,
+                        marginRight: 10
+                    }}
+                    size={20}
+                />
+            );
+        }
         return {
             element: () => (
                 <View style={{ marginBottom: -5, position: 'relative' }}>

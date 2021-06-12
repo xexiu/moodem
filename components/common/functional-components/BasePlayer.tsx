@@ -166,7 +166,6 @@ const BasePlayer = (props: any) => {
                     basePlayer.current.seek(0);
                 }}
                 onError={(error) => {
-                    // Send Error to Sentry
                     playPauseRef.current.setIsBuffering(true);
                     MusicControl.updatePlayback({
                         state: MusicControl.STATE_ERROR,
@@ -179,10 +178,12 @@ const BasePlayer = (props: any) => {
                     });
 
                     if (!isServerError) {
-                        console.log('Song Error', error);
-                        item.isSearching ?
-                        socket.emit('send-song-error-searching', { chatRoom: group.group_name, song: item }) :
-                        socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+                        if (item.isSearching) {
+                            console.error('Song Error on Searched Songs', JSON.stringify(error));
+                            return socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+                        }
+                        console.error('Song Error on Songs', JSON.stringify(error));
+                        return socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
                     }
                 }}
                 paused={!item.isPlaying}
