@@ -24,6 +24,7 @@ process.on('uncaughtException', exitHandler(0, 'Unexpected Error')); //
 process.on('unhandledRejection', exitHandler(0, 'Unhandled Promise'));
 
 const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
+const FIVE_HOURS = ttl * 5;
 const ONE_DAY = ttl * 24;
 const THIRTY_DAYS = ONE_DAY * 30;
 const ONE_YEAR = THIRTY_DAYS * 365;
@@ -80,7 +81,7 @@ async function getSong(videoId, hasExpired = false) {
     }
   });
   // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
+  const audio = info.formats.filter((format) => format.mimeType.indexOf('video/mp4') >= 0 && format.mimeType.indexOf('mp4a') >= 0);
 
   if (audio && audio.length) {
     // eslint-disable-next-line no-restricted-syntax
@@ -100,7 +101,7 @@ async function getSong(videoId, hasExpired = false) {
     cleanImageParams(audio[0]);
     cleanTitle(audio[0]);
 
-    myCache.set(key, { ...audio[0] }, ONE_YEAR);
+    myCache.set(key, { ...audio[0] }, FIVE_HOURS);
     return { ...audio[0] };
   }
 
@@ -195,12 +196,22 @@ serverIO.on('connection', (socket) => {
       chatRooms[data.chatRoom].songs = [...new Set([])];
       chatRooms[data.chatRoom].songs = data.songs;
       const { songs } = chatRooms[data.chatRoom];
-      songs.forEach((song) => Object.assign(song, {
-        voted_users: song.voted_users || [],
-        boosted_users: song.boosted_users || []
-      }));
 
-      songs.sort((a, b) => b.voted_users.length - a.voted_users.length);
+      songs.sort((a, b) => {
+        if (!a.voted_users || !a.boosted_users) {
+          Object.assign(a, {
+            voted_users: a.voted_users || [],
+            boosted_users: a.boosted_users || []
+          });
+        }
+        if (!b.voted_users || b.boosted_users) {
+          Object.assign(b, {
+            voted_users: b.voted_users || [],
+            boosted_users: b.boosted_users || []
+          });
+        }
+        return b.voted_users.length - a.voted_users.length;
+      });
     }
   });
 
@@ -210,7 +221,6 @@ serverIO.on('connection', (socket) => {
     buildMedia(data);
 
     const audio = await getSong(data.song.id, true);
-    const { songs } = chatRooms[data.chatRoom];
 
     Object.assign(data.song, {
       hasExpired: false,
@@ -218,18 +228,6 @@ serverIO.on('connection', (socket) => {
     });
 
     serverIO.to(socket.id).emit('song-error', { song: data.song });
-
-    for (let i = 0; i < songs.length; i++) {
-      const song = songs[i];
-
-      if (song.id === data.song.id) {
-        Object.assign(song, {
-          url: audio.url,
-          hasExpired: false
-        });
-        break;
-      }
-    }
   });
 
   //  Song Error When Searching

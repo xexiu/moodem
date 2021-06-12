@@ -1,10 +1,6 @@
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
-import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../common/storageConfig';
 import firebase from '../services/firebase';
-
-const ONE_DAY = 1000 * 3600 * 24;
-const NINTY_DAYS = ONE_DAY * 90;
 
 export function cleanVideoTitle(info: any) {
     if (info && info.details && info.details.title) {
@@ -81,42 +77,6 @@ export async function convertVideoIdsFromDB(songs: [] = []) {
     }
 }
 
-export const saveSongOnLocalStorage = async (song: any, user: any, groupName: string) => {
-    const groupsLocalStorage = await loadFromLocalStorage(user.uid);
-
-    if (groupsLocalStorage instanceof Array) {
-        const index = groupsLocalStorage.findIndex(groupLocal => groupLocal.group_name === groupName);
-
-        const groupLocalStorage = groupsLocalStorage[index];
-
-        if (groupLocalStorage.group_songs) {
-            groupLocalStorage.group_songs.push(song);
-        } else {
-            groupLocalStorage.group_songs = [song];
-        }
-
-        if (groupLocalStorage.group_users) {
-            groupLocalStorage.group_users.push({
-                user_uid: user.uid,
-                group_owner: false,
-                group_admin: false
-            });
-        } else {
-            groupLocalStorage.group_users = [{
-                user_uid: user.uid,
-                group_owner: false,
-                group_admin: false
-            }];
-        }
-
-        // tslint:disable-next-line:max-line-length
-        groupLocalStorage.group_users = [...new Map(groupLocalStorage.group_users.map((groupUser: any) => [groupUser.user_uid, groupUser])).values()];
-        // tslint:disable-next-line:max-line-length
-        groupLocalStorage.group_songs = [...new Map(groupLocalStorage.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
-        await saveOnLocalStorage(user.uid, groupsLocalStorage, NINTY_DAYS);
-    }
-};
-
 export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Function) => {
     const _groupName = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${_groupName}`);
@@ -153,29 +113,6 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Funct
         .then(cb);
 };
 
-export const updateSongExipredOnLocalStorage = async (song: any, user: any, groupName: string) => {
-    const groups = await loadFromLocalStorage(user.uid);
-
-    if (groups instanceof Array) {
-        const index = groups.findIndex(_group => _group.group_name === groupName);
-        const group = groups[index];
-        const groupSongs = group.group_songs;
-        const indexInArray = groupSongs.findIndex((groupSong: any) => groupSong.id === song.id);
-        const songLocal = groupSongs[indexInArray];
-
-        if (songLocal.id === song.id) {
-            Object.assign(songLocal, {
-                url: song.url,
-                hasExpired: false
-            });
-        }
-
-        // tslint:disable-next-line:max-line-length
-        group.group_songs = [...new Map(group.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
-        await saveOnLocalStorage(user.uid, groups, NINTY_DAYS);
-    }
-};
-
 export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, cb: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
@@ -183,14 +120,21 @@ export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, c
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = Object.assign({}, ...Object.values(snapshot.val() || []));
         const dbGroupSongs = dbgroup.group_songs;
-        const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
-        const songDB = dbGroupSongs[indexInArray];
 
-        if (songDB.id === song.id) {
-            Object.assign(songDB, {
-                url: song.url,
-                hasExpired: false
-            });
+        if (dbGroupSongs) {
+            const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
+            const songDB = dbGroupSongs[indexInArray];
+
+            if (songDB) {
+                if (songDB.id === song.id) {
+                    Object.assign(songDB, {
+                        url: song.url,
+                        hasExpired: false
+                    });
+                }
+            }
+        } else {
+            Object.assign(dbGroupSongs, []);
         }
 
         // tslint:disable-next-line:max-line-length
@@ -201,44 +145,6 @@ export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, c
         .then(cb);
 };
 
-export const saveVotesForSongOnLocalStorage = async (song: any, user: any, groupName: string) => {
-    const groups = await loadFromLocalStorage(user.uid);
-
-    if (groups instanceof Array) {
-        const index = groups.findIndex(_group => _group.group_name === groupName);
-        const group = groups[index];
-        const groupSongs = group.group_songs;
-        const indexInArray = groupSongs.findIndex((groupSong: any) => groupSong.id === song.id);
-        const songLocal = groupSongs[indexInArray];
-
-        if (songLocal.voted_users) {
-            const userHasVoted = songLocal.voted_users.some((id: number) => id === user.uid);
-
-            if (songLocal.id === song.id && !userHasVoted) {
-                if (songLocal.voted_users.indexOf(user.uid) === -1) {
-                    songLocal.voted_users.push(user.uid);
-                }
-            }
-        } else {
-            songLocal.voted_users = [];
-            songLocal.voted_users.push(user.uid);
-        }
-
-        group.group_songs.forEach((_song: any) => Object.assign(_song, {
-            voted_users: _song.voted_users || [],
-            boosted_users: _song.boosted_users || []
-        }));
-
-        // tslint:disable-next-line:max-line-length
-        group.group_songs = [...new Map(group.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
-        group.group_songs.sort((a: any, b: any) => {
-            return b.voted_users.length - a.voted_users.length;
-        });
-
-        await saveOnLocalStorage(user.uid, groups, NINTY_DAYS);
-    }
-};
-
 export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb?: Function) => {
     const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
@@ -246,54 +152,43 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
     return refGroup.once('value', (snapshot: any) => {
         const dbgroup = Object.assign({}, ...Object.values(snapshot.val() || []));
         const indexInArray = dbgroup.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
-        const songDB = dbgroup.group_songs[indexInArray];
+        const groupSongs = dbgroup.group_songs[indexInArray];
 
-        if (songDB.voted_users) {
-            const userHasVoted = songDB.voted_users.some((id: number) => id === user.uid);
+        if (groupSongs.voted_users) {
+            const userHasVoted = groupSongs.voted_users.some((id: number) => id === user.uid);
 
-            if (songDB.id === song.id && !userHasVoted) {
-                if (songDB.voted_users.indexOf(user.uid) === -1) {
-                    songDB.voted_users.push(user.uid);
+            if (groupSongs.id === song.id && !userHasVoted) {
+                if (groupSongs.voted_users.indexOf(user.uid) === -1) {
+                    groupSongs.voted_users.push(user.uid);
                 }
             }
         } else {
-            songDB.voted_users = [];
-            songDB.voted_users.push(user.uid);
+            groupSongs.voted_users = [];
+            groupSongs.voted_users.push(user.uid);
         }
-
-        dbgroup.group_songs.forEach((_song: any) => Object.assign(_song, {
-            voted_users: _song.voted_users || [],
-            boosted_users: _song.boosted_users || []
-        }));
 
         // tslint:disable-next-line:max-line-length
         dbgroup.group_songs = [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
 
         dbgroup.group_songs.sort((a: any, b: any) => {
+            if (!a.voted_users || !a.boosted_users) {
+                Object.assign(a, {
+                    voted_users: a.voted_users || [],
+                    boosted_users: a.boosted_users || []
+                });
+            }
+            if (!b.voted_users || b.boosted_users) {
+                Object.assign(b, {
+                    voted_users: b.voted_users || [],
+                    boosted_users: b.boosted_users || []
+                });
+            }
             return b.voted_users.length - a.voted_users.length;
         });
 
         refGroup.child(Object.keys(snapshot.val())[0]).set(dbgroup);
     })
         .then(cb);
-};
-
-export const removeSongFromLocalStorage = async (song: any, user: any, groupName: string) => {
-    const groupsLocalStorage = await loadFromLocalStorage(user.uid);
-
-    if (groupsLocalStorage instanceof Array) {
-        const index = groupsLocalStorage.findIndex(groupLocal => groupLocal.group_name === groupName);
-
-        const groupLocalStorage = groupsLocalStorage[index];
-
-        if (groupLocalStorage.group_songs.length) {
-            const indexInArray = groupLocalStorage.group_songs.findIndex((groupSong: any) => groupSong.id === song.id);
-            groupLocalStorage.group_songs.splice(indexInArray, 1);
-        }
-        // tslint:disable-next-line:max-line-length
-        groupLocalStorage.group_songs = [...new Map(groupLocalStorage.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
-        await saveOnLocalStorage(user.uid, groupsLocalStorage, NINTY_DAYS);
-    }
 };
 
 export const removeSongFromDB = (song: any, user: any, groupName: string, cb?: Function) => {

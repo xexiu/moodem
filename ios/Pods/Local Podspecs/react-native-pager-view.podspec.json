@@ -1,20 +1,16 @@
 {
   "name": "react-native-pager-view",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "summary": "React Native wrapper for Android and iOS ViewPager",
   "homepage": "https://github.com/callstack/react-native-pager-view#readme",
   "license": "MIT",
-  "authors": {
-    "name": "troZee",
-    "email": "hello@callstack.com",
-    "url": "https://github.com/callstack"
-  },
+  "authors": "troZee <hello@callstack.com> (https://github.com/callstack)",
   "platforms": {
     "ios": "10.0"
   },
   "source": {
     "git": "https://github.com/callstack/react-native-pager-view.git",
-    "tag": "5.2.0"
+    "tag": "5.2.1"
   },
   "source_files": "ios/**/*.{h,m,mm,swift}",
   "dependencies": {

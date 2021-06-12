@@ -1,4 +1,4 @@
-import debounce from 'lodash.debounce';
+import { debounce } from 'lodash';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import MusicControl, { Command } from 'react-native-music-control';

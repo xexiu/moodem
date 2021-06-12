@@ -1,13 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
 import {
     removeSongFromDB,
-    removeSongFromLocalStorage,
     saveSongOnDb,
-    saveSongOnLocalStorage,
-    saveVotesForSongOnDb,
-    saveVotesForSongOnLocalStorage
+    saveVotesForSongOnDb
 } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 import Button from './Button';
@@ -63,7 +59,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                 marginBottom: 35,
                 marginRight: -10
             },
-            iconName: 'arrow-right',
+            iconName: isLoading ? 'cloud' : 'arrow-right',
             iconType: 'AntDesign',
             iconColor: '#90c520',
             iconSize: 40,
@@ -80,9 +76,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     boosted_users: song.boosted_users || []
                 });
 
-                await saveSongOnLocalStorage(song, user, group.group_name);
                 await saveSongOnDb(song, user, group.group_name, async () => {
-                    setIsLoading(false);
                     await emitSendMedia();
                     return optionalCallback && optionalCallback();
                 });
@@ -103,10 +97,9 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
                     voted_users: song.voted_users || [],
                     boosted_users: song.boosted_users || []
                 });
-                await emitVotedSong();
-                await saveVotesForSongOnLocalStorage(song, user, group.group_name);
                 await saveVotesForSongOnDb(song, user, group.group_name, async () => {
                     setIsLoading(false);
+                    await emitVotedSong();
                 });
             }
         },
@@ -118,9 +111,7 @@ export const MediaButtons = (song: any, actions: string[], optionalCallback: Fun
             iconSize: 9,
             action: async () => {
                 setIsLoading(true);
-                await removeSongFromLocalStorage(song, user, group.group_name);
                 await removeSongFromDB(song, user, group.group_name, async () => {
-                    setIsLoading(false);
                     await emitRemoveSong();
                 });
             },

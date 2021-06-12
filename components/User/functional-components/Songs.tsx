@@ -1,9 +1,9 @@
 
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
-import Toast, { DURATION } from 'react-native-easy-toast';
+import Toast from 'react-native-easy-toast';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
-import { updateSongExipredOnLocalStorage, updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
+import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
 import Player from '../../common/functional-components/Player';
@@ -77,8 +77,7 @@ const Songs = (props: any) => {
         });
     }
 
-    async function getSongWithError({ song }: any) {
-        await updateSongExipredOnLocalStorage(song, user, group.group_name);
+    function getSongWithError({ song }: any) {
         return updateSongExpiredOnDB(song, user, group.group_name, () => {
             return dispatchContextSongs({
                 type: 'song_error',

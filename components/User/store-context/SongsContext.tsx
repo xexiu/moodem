@@ -148,10 +148,23 @@ function setVotedSong(result: Context, action: actionType) {
             voted_users: votedSong.voted_users
         });
     }
-    
+
     songs.sort((a: any, b: any) => {
+        if (!a.voted_users || !a.boosted_users) {
+            Object.assign(a, {
+                voted_users: a.voted_users || [],
+                boosted_users: a.boosted_users || []
+            });
+        }
+        if (!b.voted_users || b.boosted_users) {
+            Object.assign(b, {
+                voted_users: b.voted_users || [],
+                boosted_users: b.boosted_users || []
+            });
+        }
         return b.voted_users.length - a.voted_users.length;
     });
+
     setAnimation();
     const newIndexItem = songs.findIndex(_song => _song.id === song.id);
 

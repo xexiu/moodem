@@ -1,5 +1,4 @@
 import { YOUTUBE_KEY } from '@env';
-import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from 'react-native-elements';
@@ -30,7 +29,6 @@ const SearchSongScreen = (props: any) => {
         isLoading: true
     });
     const source = axios.CancelToken.source();
-    const isFocused = useIsFocused();
 
     async function fetchResults() {
         const videoIds = [] as string[];
@@ -80,12 +78,10 @@ const SearchSongScreen = (props: any) => {
             unmountInactiveRoutes: true
         });
 
-        if (isFocused) {
-            getResultsForSearch();
+        getResultsForSearch();
 
-            socket.on('get-songs-from-youtube', getSongs);
-            socket.on('song-error-searching', getSongWithError);
-        }
+        socket.on('get-songs-from-youtube', getSongs);
+        socket.on('song-error-searching', getSongWithError);
 
         return () => {
             console.log('OFF SEARCHE SCREEN');
@@ -94,7 +90,7 @@ const SearchSongScreen = (props: any) => {
             socket.off('get-songs-from-youtube', getSongs);
             socket.off('song-error-searching', getSongWithError);
         };
-    }, [isFocused]);
+    }, []);
 
     function getSongWithError({ song }: any) {
         return setAllValues(prev => {
@@ -187,7 +183,7 @@ const SearchSongScreen = (props: any) => {
     if (allValues.isLoading) {
         return (
             <BodyContainer>
-                { renderBackButton()}
+                {renderBackButton()}
                 <PreLoader
                     containerStyle={{
                         flex: 1,
@@ -215,8 +211,8 @@ const SearchSongScreen = (props: any) => {
 
     return (
         <BodyContainer>
-            { renderBackButton()}
-            { memoizedPlayerSongsListCallBack()}
+            {renderBackButton()}
+            {memoizedPlayerSongsListCallBack()}
         </BodyContainer>
     );
 };

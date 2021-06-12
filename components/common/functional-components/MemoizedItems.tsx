@@ -20,6 +20,7 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
     const renderItem = useCallback(({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
+            votedUsers={item.voted_users ? item.voted_users.length : 0}
             item={item}
             handleOnClickItem={handleOnClickItem}
             buttonActions={buttonActions}

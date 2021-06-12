@@ -12,13 +12,9 @@ import SideBarDrawer from './components/common/functional-components/SideBarDraw
 import { AppContext } from './components/User/store-context/AppContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
-import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from './src/js/Utils/common/storageConfig';
 import { getUserGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';
-
-const ONE_DAY = 1000 * 3600 * 24;
-const NINTY_DAYS = ONE_DAY * 90;
 
 const Stack = createStackNavigator();
 const controller = new AbortController();
@@ -33,12 +29,7 @@ function getUserUidAndName(user: any) {
 
     return `uid=${guestUID}&displayName=Guest`;
 }
-async function getGroupsAndSaveOnLocalStorage(user: any) {
-    const userGroups = await getUserGroups(user) as any;
-    await saveOnLocalStorage(user.uid, userGroups, NINTY_DAYS);
 
-    return userGroups;
-}
 const App = function Moodem() {
     const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
 
@@ -50,11 +41,7 @@ const App = function Moodem() {
 
             if (_user) {
                 try {
-                    // await removeItem(_user.uid);
-                    const groupsLocalStorage = await loadFromLocalStorage(_user.uid);
-                    const groups = groupsLocalStorage instanceof Array ?
-                    groupsLocalStorage :
-                    await getGroupsAndSaveOnLocalStorage(_user);
+                    const groups = await getUserGroups(_user) as any;
                     const group = groups[0];
 
                     return dispatchContextApp({
