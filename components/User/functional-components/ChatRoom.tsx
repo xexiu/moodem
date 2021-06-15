@@ -87,10 +87,7 @@ const ChatRoom = (props: any) => {
         return (
             <BodyContainer>
                 <BurgerMenuIcon
-                    action={() => {
-                        navigation.openDrawer();
-                        Keyboard.dismiss();
-                    }}
+                    action={navigation.openDrawer}
                 />
                 <PreLoader
                     containerStyle={{

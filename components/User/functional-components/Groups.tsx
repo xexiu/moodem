@@ -45,12 +45,7 @@ const Groups = (props: any) => {
     return (
         <BodyContainer>
             <BurgerMenuIcon
-                action={() => {
-                    navigation.openDrawer();
-                    Keyboard.dismiss();
-                    setIsLoading(false);
-                }
-                }
+                action={navigation.openDrawer}
             />
             <CommonTopSearchBar
                 placeholder='Search group...'

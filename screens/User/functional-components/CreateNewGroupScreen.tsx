@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, TextInput, View } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as yup from 'yup';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
@@ -27,24 +28,22 @@ const schema = yup.object().shape({
     .required(FORM_FIELDS_CREATE_GROUP.group_name.error),
     description: yup.string().min(0).max(100).optional(),
     password: yup.string()
+    .min(6)
+    .max(40)
     .optional()
     .notRequired()
-    .matches(/\w*[a-zA-Z]\w*/, 'La contraseña ha de tener almenos una letra.')
-    .matches(/\d/, 'La contraseña ha de tener almenos un número.')
-    .matches(/^[!@#$%^&*()\-_"=+{}; :,<.>]$/, 'La contraseña no puede contener espacios ni carácteres espaciales.'),
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{6,40}$/, 'Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.'),
     confirm_password: yup.string().oneOf
         (
             [yup.ref('password'), null],
             FORM_FIELDS_CREATE_GROUP.group_password_confirm.error
         )
-        .optional()
-        .notRequired()
         .when('password', {
             is: (value: any) => {
-                return value === 'undefined' || value === null || value === '';
+                return !value;
             },
             then: yup.string().optional().notRequired(),
-            otherwise: yup.string().optional().notRequired()
+            otherwise: yup.string().required(FORM_FIELDS_CREATE_GROUP.group_password_confirm.error)
         })
 });
 
@@ -207,6 +206,7 @@ const CreateNewGroupScreen = (props: any) => {
                     <Text style={{ textAlign: 'center', margin: 10, color: '#222' }}>{errorText}</Text>
                 </View>
             }
+            <KeyboardSpacer />
         </BodyContainer>
     );
 };

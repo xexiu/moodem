@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { bodyContainer } from '../../../src/css/styles/bodyContainer';
 
 type bodyProps = {
@@ -14,9 +14,11 @@ export default class BodyContainer extends Component<bodyProps> {
         } = this.props;
 
         return (
-            <View style={[bodyContainer, customBodyContainerStyle]}>
-                {children}
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={[bodyContainer, customBodyContainerStyle]}>
+                    {children}
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 }
