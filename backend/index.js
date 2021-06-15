@@ -91,17 +91,12 @@ async function getSong(videoId, hasExpired = false) {
   const info = await ytdl.getInfo(videoId, {
     requestOptions: {
       headers: {
-        Cookie: COOKIE,
-        'x-youtube-client-version': '2.20191008.04.01',
-        'x-youtube-client-name': '1',
-        'x-client-data': '',
-        'x-youtube-identity-token': 'QUFFLUhqbWtBX080QlRLNkQ3R2E2RXBWZGtXZFVjd1JuZ3w\u003d',
-        Accept: 'application/json, text/plain, */*'
+        Cookie: COOKIE
       }
     }
   });
   // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
+  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
 
   if (audio && audio.length) {
     // eslint-disable-next-line no-restricted-syntax
@@ -208,55 +203,59 @@ serverIO.on('connection', (socket) => {
 
   //  Song Error
   socket.once('send-song-error', async (data) => {
+    const { song } = data;
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const audio = await getSong(data.song.id, true);
+    const audio = await getSong(song.id, true);
 
-    Object.assign(data.song, {
+    Object.assign(song, {
       hasExpired: false,
       url: audio.url
     });
 
-    if (data.song.isSearching) {
-      serverIO.to(socket.id).emit('song-error-searching', { song: data.song });
+    if (song.isSearching) {
+      serverIO.to(socket.id).emit('song-error-searching', { song });
     } else {
-      serverIO.to(socket.id).emit('song-error', { song: data.song });
+      serverIO.to(socket.id).emit('song-error', { song });
     }
   });
 
   // Vote
   socket.on('send-message-vote-up', async (data) => {
+    const { song } = data;
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const userHasVoted = data.song.voted_users.some((id) => id === data.user_id);
+    const userHasVoted = song.voted_users.some((id) => id === data.user_id);
 
     if (!userHasVoted) {
-      if (data.song.voted_users.indexOf(data.user_uid) === -1) {
-        data.song.voted_users.push(data.user_id);
+      if (song.voted_users.indexOf(data.user_uid) === -1) {
+        song.voted_users.push(data.user_id);
       }
     }
 
     const { isVotingSong = false } = data;
-    serverIO.to(data.chatRoom).emit('song-voted', { song: data.song, isVotingSong });
+    serverIO.to(data.chatRoom).emit('song-voted', { song, isVotingSong });
   });
 
   // Remove song
   socket.on('send-message-remove-song', async (data) => {
+    const { song } = data;
     await socket.join(data.chatRoom);
     buildMedia(data);
 
     const { isRemovingSong = false } = data;
-    serverIO.to(data.chatRoom).emit('song-removed', { song: data.song, isRemovingSong });
+    serverIO.to(data.chatRoom).emit('song-removed', { song, isRemovingSong });
   });
 
   // Add song
   socket.on('send-message-add-song', async (data) => {
+    const { song } = data;
     await socket.join(data.chatRoom);
 
     const { isAddingSong = false } = data;
-    serverIO.to(data.chatRoom).emit('song-added', { song: data.song, isAddingSong });
+    serverIO.to(data.chatRoom).emit('song-added', { song, isAddingSong });
   });
 
   socket.on('get-connected-users', async (data) => {

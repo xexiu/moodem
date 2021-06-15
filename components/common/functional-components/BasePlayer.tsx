@@ -133,7 +133,7 @@ const BasePlayer = (props: any) => {
                 style={{
                     backgroundColor: 'transparent',
                     borderRadius: 50,
-                    borderWidth: 1,
+                    borderWidth: 3,
                     borderColor: '#ddd',
                     width: 100,
                     height: 100
