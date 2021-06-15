@@ -12,7 +12,7 @@ export const createGroupHandler = async (validate: any, user: any) => {
 
     const newGroup = await firebase.database().ref(`Groups/${user.uid}`).push({
         group_songs: [],
-        group_name: `${validate.group_name}-${user.uid}`,
+        group_name: validate.group_name,
         group_password: validate.group_password,
         group_user_owner_id: user.uid,
         group_avatar: DEFAULT_GROUP_AVATAR,

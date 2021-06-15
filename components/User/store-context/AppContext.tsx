@@ -13,11 +13,15 @@ function updateCommonState(result: State, action: actionType) {
 const MAP_ACTIONS = {
     server_error: updateCommonState,
     user_groups: updateCommonState,
-    guest: updateCommonState
+    guest: updateCommonState,
+    set_group: updateCommonState
 } as any;
 
 function updateState(result: State, action: actionType) {
-    return MAP_ACTIONS[action.type](result, action) || { ...initialValue };
+    if (MAP_ACTIONS[action.type]) {
+        return MAP_ACTIONS[action.type](result, action);
+    }
+    return result;
 }
 
 const reducer = (state: any, action: any) => {

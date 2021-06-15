@@ -202,7 +202,7 @@ serverIO.on('connection', (socket) => {
   });
 
   //  Song Error
-  socket.once('send-song-error', async (data) => {
+  socket.on('send-song-error', async (data) => {
     const { song } = data;
     await socket.join(data.chatRoom);
     buildMedia(data);

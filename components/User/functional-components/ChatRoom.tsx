@@ -35,7 +35,7 @@ const ChatRoom = (props: any) => {
             socket.off('moodem-chat', setMessageList);
             socket.off('chat-messages', getMessage);
         };
-    }, [isServerError]);
+    }, [isServerError, group]);
 
     const setMessageList = (messagesList: never[]) => {
         socket.off('moodem-chat', setMessageList);
@@ -81,7 +81,7 @@ const ChatRoom = (props: any) => {
                     _id: message._id
                 }
             });
-    }, []);
+    }, [group.group_id]);
 
     const renderLoading = useCallback(() => {
         return (

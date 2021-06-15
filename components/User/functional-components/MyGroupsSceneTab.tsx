@@ -9,45 +9,51 @@ import { GroupSongsIcon } from './GroupSongsIcon';
 import { GroupUsersIcon } from './GroupUsersIcon';
 
 const MyGroupsSceneTab = ({ navigation }: any) => {
-    console.log('My Groups');
+    console.log('Mis Grupos');
     const { groups, dispatchContextApp } = useContext(AppContext) as any;
     const keyExtractor = useCallback((item: any) => item.group_id, []);
-    const memoizedItem = useCallback(({ item }) => {
-        return (
-            <View style={{ position: 'relative' }}>
-                <CommonFlatListItem
-                    bottomDivider
-                    title={item.group_name}
-                    titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                    titleStyle={{ marginTop: -17 }}
-                    leftAvatar={{
-                        source: {
-                            uri: USER_AVATAR_DEFAULT
-                        }
-                    }}
-                    subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                    subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                    subtitle={'herhehrerhehrre'}
-                    chevron={!!item.group_password && {
-                        name: 'block',
-                        type: 'FontAwesome',
-                        color: 'red',
-                        raised: false,
-                        disabled: true,
-                        disabledStyle: {
-                            backgroundColor: 'transparent'
-                        }
-                    }}
-                    action={() => {
-                        dispatchContextApp({ type: 'group', value: item });
-                        navigation.openDrawer();
-                    }}
-                />
-                <GroupUsersIcon users={item.group_users} />
-                <GroupSongsIcon songs={item.group_songs} />
-            </View>
-        );
-    }, []);
+    const memoizedItem = useCallback(({ item }) => (
+        <View style={{ position: 'relative' }}>
+            <CommonFlatListItem
+                bottomDivider
+                title={item.group_name}
+                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+                titleStyle={{ marginTop: -17 }}
+                leftAvatar={{
+                    source: {
+                        uri: USER_AVATAR_DEFAULT
+                    }
+                }}
+                subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+                subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
+                subtitle={'herhehrerhehrre'}
+                chevron={!!item.group_password && {
+                    name: 'block',
+                    type: 'FontAwesome',
+                    color: 'red',
+                    raised: false,
+                    disabled: true,
+                    disabledStyle: {
+                        backgroundColor: 'transparent'
+                    }
+                }}
+                action={() => {
+                    dispatchContextApp(
+                        {
+                            type: 'set_group',
+                            value: {
+                                group: Object.assign(item, {
+                                    group_songs: item.group_songs || []
+                                })
+                            }
+                        });
+                    navigation.openDrawer();
+                }}
+            />
+            <GroupUsersIcon users={item.group_users} />
+            <GroupSongsIcon songs={item.group_songs} />
+        </View>
+    ), []);
 
     return (
         <CommonFlatList
