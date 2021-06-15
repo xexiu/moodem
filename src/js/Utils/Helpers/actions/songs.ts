@@ -1,5 +1,7 @@
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
+import { isEmpty } from '../../../Utils/common/checkers';
+import { hasObjWithProp } from '../../../Utils/common/checkers';
 import firebase from '../services/firebase';
 
 export function cleanVideoTitle(info: any) {
@@ -81,48 +83,45 @@ export const saveSongOnDb = (song: any, user: any, groupName: string, cb?: Funct
     const refGroup = firebase.database().ref(`${'Groups/'}${_groupName}`);
 
     return refGroup.once('value', (snapshot: any) => {
-        const dbgroup = Object.assign({}, ...Object.values(snapshot.val() || []));
+        const group = Object.assign({}, ...Object.values(snapshot.val() || []));
 
-        if (dbgroup.group_songs) {
-            dbgroup.group_songs.push(song);
+        if (group.group_songs && !hasObjWithProp(group, 'group_songs', { id: song.id })) {
+            group.group_songs.push(song);
         } else {
-            dbgroup.group_songs = [song];
+            group.group_songs = [];
+            group.group_songs.push(song);
         }
 
-        if (dbgroup.group_users) {
-            dbgroup.group_users.push({
+        if (group.group_users && !hasObjWithProp(group, 'group_users', { user_uid: user.uid })) {
+            group.group_users.push({
                 user_uid: user.uid,
-                group_owner: false,
-                group_admin: false
+                group_owner: group.user_owner_id === user.uid,
+                group_admin: group.user_owner_id === user.uid
             });
         } else {
-            dbgroup.group_users = [{
+            group.group_users = [];
+            group.group_users.push({
                 user_uid: user.uid,
-                group_owner: false,
-                group_admin: false
-            }];
+                group_owner: group.user_owner_id === user.uid,
+                group_admin: group.user_owner_id === user.uid
+            });
         }
-        // tslint:disable-next-line:max-line-length
-        dbgroup.group_users = [...new Map(dbgroup.group_users.map((groupUser: any) => [groupUser.user_uid, groupUser])).values()];
-        // tslint:disable-next-line:max-line-length
-        dbgroup.group_songs = [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
 
-        refGroup.child(Object.keys(snapshot.val())[0]).set(dbgroup);
+        refGroup.child(Object.keys(snapshot.val())[0]).set(group);
     })
         .then(cb);
 };
 
-export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, cb: Function) => {
-    const group = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
-    const refGroup = firebase.database().ref(`${'Groups/'}${group}`);
+export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, cb?: Function) => {
+    const _groupName = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
+    const refGroup = firebase.database().ref(`${'Groups/'}${_groupName}`);
 
     return refGroup.once('value', (snapshot: any) => {
-        const dbgroup = Object.assign({}, ...Object.values(snapshot.val() || []));
-        const dbGroupSongs = dbgroup.group_songs;
+        const group = Object.assign({}, ...Object.values(snapshot.val() || []));
 
-        if (dbGroupSongs) {
-            const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
-            const songDB = dbGroupSongs[indexInArray];
+        if (group.group_songs) {
+            const indexInArray = group.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
+            const songDB = group.group_songs[indexInArray];
 
             if (songDB) {
                 if (songDB.id === song.id) {
@@ -133,13 +132,10 @@ export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, c
                 }
             }
         } else {
-            Object.assign(dbGroupSongs, []);
+            group.group_songs = [];
         }
 
-        // tslint:disable-next-line:max-line-length
-        dbgroup.group_songs = [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.url, groupSong])).values()];
-
-        refGroup.child(Object.keys(snapshot.val())[0]).set(dbgroup);
+        refGroup.child(Object.keys(snapshot.val())[0]).set(group);
     })
         .then(cb);
 };
@@ -153,7 +149,7 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
         const indexInArray = dbgroup.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
         const groupSongs = dbgroup.group_songs[indexInArray];
 
-        if (groupSongs.voted_users) {
+        if (!isEmpty(groupSongs.voted_users)) {
             const userHasVoted = groupSongs.voted_users.some((id: number) => id === user.uid);
 
             if (groupSongs.id === song.id && !userHasVoted) {
@@ -165,9 +161,6 @@ export const saveVotesForSongOnDb = (song: any, user: any, groupName: string, cb
             groupSongs.voted_users = [];
             groupSongs.voted_users.push(user.uid);
         }
-
-        // tslint:disable-next-line:max-line-length
-        dbgroup.group_songs = [...new Map(dbgroup.group_songs.map((groupSong: any) => [groupSong.id, groupSong])).values()];
 
         dbgroup.group_songs.sort((a: any, b: any) => {
             if (!a.voted_users || !a.boosted_users) {
@@ -198,7 +191,7 @@ export const removeSongFromDB = (song: any, user: any, groupName: string, cb?: F
         const dbgroup = Object.assign({}, ...Object.values(snapshot.val() || []));
         const dbGroupSongs = dbgroup.group_songs;
 
-        if (dbGroupSongs.length) {
+        if (!isEmpty(dbGroupSongs)) {
             const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
             dbGroupSongs.splice(indexInArray, 1);
         }

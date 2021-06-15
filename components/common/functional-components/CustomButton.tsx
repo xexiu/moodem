@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Button } from 'react-native-elements';
-import { btnShadow } from '../../../src/css/styles/common';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 
 function defaultAction(evt) {

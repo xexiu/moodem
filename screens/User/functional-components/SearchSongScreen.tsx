@@ -7,6 +7,7 @@ import MemoizedSongsList from '../../../components/common/functional-components/
 import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
+import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
@@ -16,11 +17,13 @@ const ONE_YEAR = THIRTY_DAYS * 365;
 
 const SearchSongScreen = (props: any) => {
     const {
-        songs,
-        searchedText,
-        resetLoadingSongs
+        searchedText
     } = props.route.params;
     const { group, socket } = useContext(AppContext) as any;
+    const {
+        dispatchContextSongs,
+        songs
+    } = useContext(SongsContext) as any;
 
     const { navigation } = props;
     const [allValues, setAllValues] = useState({
@@ -54,17 +57,26 @@ const SearchSongScreen = (props: any) => {
         case 'NotFoundError':
             const videoIds = await fetchResults();
             saveOnLocalStorage(sanitizedText, videoIds, ONE_YEAR);
-            socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds });
+            socket.emit('search-songs-on-youtube', {
+                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                videoIds
+            });
             break;
         case 'ExpiredError':
             removeItem(sanitizedText, async () => {
                 const videoIds_1 = await fetchResults();
                 saveOnLocalStorage(sanitizedText, videoIds_1, ONE_YEAR);
-                socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: videoIds_1 });
+                socket.emit('search-songs-on-youtube', {
+                    chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                    videoIds: videoIds_1
+                });
             });
             break;
         default:
-            socket.emit('search-songs-on-youtube', { chatRoom: group.group_name, videoIds: videoIdsFromLocalStorage });
+            socket.emit('search-songs-on-youtube', {
+                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                videoIds: videoIdsFromLocalStorage
+            });
             break;
         }
     }
@@ -77,7 +89,6 @@ const SearchSongScreen = (props: any) => {
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true
         });
-
         getResultsForSearch();
 
         socket.on('get-songs-from-youtube', getSongs);
@@ -116,16 +127,26 @@ const SearchSongScreen = (props: any) => {
             return {
                 ...prevValues,
                 songs: [...data.songs],
-                indexItem: songs.indexItem || 0,
+                indexItem: 0,
                 isLoading: false
             };
         });
     }
 
-    const onClickUseCallBack = useCallback(async (index: number) => {
-        await resetLoadingSongs(true);
+    const resetSongs = useCallback((() => {
+        let executed = false;
+        return () => {
+            if (!executed) {
+                executed = true;
+                return dispatchContextSongs({ type: 'update_song_reset' });
+            }
+        };
+    })(), []);
 
-        setAllValues((prev: any) => {
+    const onClickUseCallBack = useCallback(async (index: number) => {
+        await resetSongs();
+
+        return setAllValues((prev: any) => {
             if (prev.indexItem === index) {
                 prev.songs[index].isPlaying = !prev.songs[index].isPlaying;
             } else {
@@ -138,9 +159,11 @@ const SearchSongScreen = (props: any) => {
                 songs: [...prev.songs]
             };
         });
-    }, [searchedText, allValues.indexItem]);
+    }, []);
 
     const memoizedPlayerSongsListCallBack = useCallback(() => {
+        const { indexItem } = allValues;
+
         if (allValues.songs && !allValues.songs.length) {
             return (<MediaListEmpty />);
         }
@@ -148,18 +171,18 @@ const SearchSongScreen = (props: any) => {
         return (
             <BodyContainer>
                 <Player
-                    isPlaying={allValues.songs[allValues.indexItem].isPlaying}
-                    item={allValues.songs[allValues.indexItem]}
+                    isPlaying={allValues.songs[indexItem].isPlaying}
+                    item={allValues.songs[indexItem]}
                     handleOnClickItem={onClickUseCallBack}
-                    items={songs}
-                    indexItem={allValues.indexItem}
+                    items={allValues.songs}
+                    indexItem={indexItem}
                 />
                 <MemoizedSongsList
                     data={allValues.songs}
-                    buttonActions={['send_media']}
+                    chevron={'send_media'}
                     handleOnClickItem={onClickUseCallBack}
                     optionalCallback={resetSearchingScreen}
-                    indexItem={allValues.indexItem}
+                    indexItem={indexItem}
                 />
             </BodyContainer>
         );
@@ -177,7 +200,8 @@ const SearchSongScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
-        return navigation.navigate(group.group_name);
+        navigation.navigate(group.group_name);
+        return Promise.resolve(true);
     }
 
     if (allValues.isLoading) {

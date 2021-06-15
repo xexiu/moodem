@@ -6,15 +6,21 @@ const MemoizedSongsList = (props: any) => {
         data,
         buttonActions,
         handleOnClickItem = Function,
-        optionalCallback
+        optionalCallback,
+        chevron,
+        reference,
+        checkSizeChangeHandler
     } = props;
 
     return (
         <MemoizedItems
+            reference={reference}
             data={data}
             handleOnClickItem={handleOnClickItem}
             buttonActions={buttonActions}
             optionalCallback={optionalCallback}
+            chevron={chevron}
+            checkSizeChangeHandler={checkSizeChangeHandler}
         />
     );
 };

@@ -1,60 +1,34 @@
 import React, { createContext, useReducer } from 'react';
-import { groupType } from '../../../src/types/group';
+import {
+    actionType,
+    AppProps,
+    initialValue,
+    State
+} from './actions/app';
 
-type Props = {
-    children: React.ReactNode;
-};
+function updateCommonState(result: State, action: actionType) {
+    return { ...result, ...action.value };
+}
 
-type State = {
-    user: null;
-    groups: string[];
-    group: groupType;
-    isServerError: boolean;
-    isLoading: boolean;
-    socket: any
-};
+const MAP_ACTIONS = {
+    server_error: updateCommonState,
+    user_groups: updateCommonState,
+    guest: updateCommonState
+} as any;
 
-const initialValue: State = {
-    user: null,
-    groups: [],
-    group: {
-        group_name: 'Moodem',
-        group_id: 0,
-        group_songs: []
-    },
-    isServerError: false,
-    isLoading: true,
-    socket: {
-        disconnected: false,
-        connected: true,
-        on: () => {},
-        off: () => {},
-        close: () => {},
-        disconnect: () => {},
-        emit: (str: string, param: any) => {}
-    }
-};
+function updateState(result: State, action: actionType) {
+    return MAP_ACTIONS[action.type](result, action) || { ...initialValue };
+}
 
 const reducer = (state: any, action: any) => {
     const result = { ...state };
 
-    if (action.type === 'reset') {
-        return initialValue;
-    } else if (action.type === 'server_error') {
-        return { ...result, ...action.value };
-    } else if (action.type === 'user_groups') {
-        return { ...result, ...action.value };
-    } else if (action.type === 'guest') {
-        return { ...result, ...action.value };
-    }
-
-    result[action.type] = action.value;
-    return result;
+    return updateState(result, action);
 };
 
 const AppContext = createContext<State>(initialValue);
 
-const AppContextProvider = ({ children }: Props): JSX.Element => {
+const AppContextProvider = ({ children }: AppProps): JSX.Element => {
     const [state, dispatchContextApp] = useReducer(reducer, initialValue);
 
     return (

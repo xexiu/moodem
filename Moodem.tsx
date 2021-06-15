@@ -10,6 +10,7 @@ import { CommonStackWrapper } from './components/common/functional-components/Co
 import PreLoader from './components/common/functional-components/PreLoader';
 import SideBarDrawer from './components/common/functional-components/SideBarDrawer';
 import { AppContext } from './components/User/store-context/AppContext';
+import { SongsContextProvider } from './components/User/store-context/SongsContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/Avatars';
 import { getUserGroups } from './src/js/Utils/Helpers/actions/groups';
@@ -101,10 +102,12 @@ const App = function Moodem() {
         );
     } else if (user) {
         return (
-            <CommonStackWrapper>
-                <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-                <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
-            </CommonStackWrapper>
+            <SongsContextProvider>
+                <CommonStackWrapper>
+                    <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
+                    <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
+                </CommonStackWrapper>
+            </SongsContextProvider>
         );
     }
 

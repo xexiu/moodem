@@ -3,8 +3,10 @@ import { useIsFocused } from '@react-navigation/native';
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Dimensions, Keyboard, Text, View } from 'react-native';
+import { Dimensions, Keyboard, Text, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import TouchableScale from 'react-native-touchable-scale';
 import { form, struct } from 'tcomb-form-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
@@ -18,33 +20,9 @@ import CustomButton from '../../common/functional-components/CustomButton';
 import { CustomModal } from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../store-context/AppContext';
+import AddGroupIcon from './AddGroupIcon';
 import { NewGroup } from './NewGroup';
-
-const FirstRoute = () => (
-    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
-);
-
-const SecondRoute = () => (
-    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
-);
-
-const ThirdRoute = () => (
-    <View style={{ flex: 1, backgroundColor: '#ccc' }} />
-);
-
-const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-    third: ThirdRoute
-});
-
-const renderTabBar = props => (
-    <TabBar
-        {...props}
-        indicatorStyle={{ backgroundColor: 'transparent' }}
-        style={{ backgroundColor: 'pink' }}
-    />
-);
+import TabBars from './TabBars';
 
 const Form = form.Form;
 
@@ -62,12 +40,6 @@ const Groups = (props: any) => {
     const refPassWordForm = React.createRef();
     const [isSearching, setIsSearching] = useState(false);
     const isFocused = useIsFocused();
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'first', title: 'Grupos Administrados' },
-        { key: 'second', title: 'Grupos Públicos' },
-        { key: 'third', title: 'Grupos Privados' }
-    ]);
 
     useEffect(() => {
         console.log('3. Groups', groups);
@@ -156,17 +128,8 @@ const Groups = (props: any) => {
                 }}
                 onEndEditingSearch={searchGroups}
             />
-            <TabView
-                renderTabBar={renderTabBar}
-                indicatorStyle={{ backgroundColor: 'black' }}
-                style={{ backgroundColor: 'red' }}
-                sceneContainerStyle={{ backgroundColor: 'green' }}
-                tabStyle={{ backgroundColor: 'pink' }}
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: Dimensions.get('window').width }}
-            />
+            <TabBars navigation={navigation} />
+            <AddGroupIcon />
             {/* <View>
                 <CustomModal isModalVisible={showPasswordModal} onBackdropPress={() => togglePasswordModal(false)}>
                     <Form
@@ -229,40 +192,10 @@ const Groups = (props: any) => {
                 </CustomModal>
             </View> */}
 
-            <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} />
-            {isSearching ?
-                <CommonFlatList
-                    emptyListComponent={GroupEmpty}
-                    data={searchedGroups}
-                    action={({ item }) => renderItem(item)}
-                /> :
-                <CommonFlatList
-                    emptyListComponent={GroupEmpty}
-                    headerComponent={<View style={{ alignSelf: 'center', marginBottom: 10 }}><CustomButton btnTitle='Create Group' action={() => toggleModal(true)} /></View>}
-                    data={groups}
-                    action={({ item }) => (<CommonFlatListItem
-                        bottomDivider
-                        title={item.group_name}
-                        subtitle={item.group_id}
-                        rightTitle={item.user_owner_id === user.uid ? 'Owner' : 'Invited'}
-                        action={() => {
-                            dispatchContextApp({ type: 'group', value: item });
-                            setUserGroup(item);
-                            navigation.navigate(group.group_name);
-                        }}
-                    />)}
-                />
-            }
+            {/* <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} /> */}
         </BodyContainer>
     );
 };
-
-// Groups.navigationOptions = ({ route }) => {
-//     // console.log('Groups Navigation Options', route);
-//     return {
-//         title: 'Mis Grupos'
-//     };
-// };
 
 Groups.propTypes = {
     navigation: PropTypes.object

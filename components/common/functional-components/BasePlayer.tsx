@@ -180,10 +180,16 @@ const BasePlayer = (props: any) => {
                     if (!isServerError) {
                         if (item.isSearching) {
                             console.error('Song Error on Searched Songs', JSON.stringify(error));
-                            return socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+                            return socket.emit('send-song-error', {
+                                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                                song: item
+                            });
                         }
                         console.error('Song Error on Songs', JSON.stringify(error));
-                        return socket.emit('send-song-error', { chatRoom: group.group_name, song: item });
+                        return socket.emit('send-song-error', {
+                            chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                            song: item
+                        });
                     }
                 }}
                 paused={!item.isPlaying}

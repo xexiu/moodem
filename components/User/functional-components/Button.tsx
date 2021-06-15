@@ -19,7 +19,7 @@ const Button = (props: any) => {
         iconType,
         iconSize = 12,
         iconColor,
-        iconStyle,
+        iconStyle = {},
         iconReverse = true,
         disabled,
         containerStyle

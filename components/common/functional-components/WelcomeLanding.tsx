@@ -5,7 +5,6 @@ import { AppState, DevSettings } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
-import { SongsContextProvider } from '../../User/store-context/SongsContext';
 import BodyContainer from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
 
@@ -44,7 +43,8 @@ const WelcomeLanding = (props: any) => {
         // Server has connected back from error.
         if (serverError) {
             serverError = false;
-            DevSettings.reload();
+            // DevSettings.reload();
+            toastRef.current.close();
             return dispatchContextApp({
                 type: 'server_error', value: {
                     isServerError: false
@@ -57,7 +57,7 @@ const WelcomeLanding = (props: any) => {
         toastRef.current.show('Connecting to server...', DURATION.FOREVER);
 
         if (!serverError) {
-            // Send error to sentry
+            console.error('getConnectionError', JSON.stringify(error));
             serverError = true;
             return dispatchContextApp({
                 type: 'server_error', value: {
@@ -72,9 +72,7 @@ const WelcomeLanding = (props: any) => {
             <BurgerMenuIcon
                 action={() => navigation.openDrawer()}
             />
-            <SongsContextProvider>
-                <Songs navigation={navigation} />
-            </SongsContextProvider>
+            <Songs navigation={navigation} />
             <Toast
                 position={isServerError ? 'bottom' : 'top'}
                 ref={toastRef}

@@ -8,7 +8,6 @@ const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
 
 const SearchBarAutoComplete = (props: any) => {
     const {
-        resetLoadingSongs,
         songs,
         navigation
     } = props;
@@ -19,9 +18,7 @@ const SearchBarAutoComplete = (props: any) => {
         setSuggestions([]);
 
         navigation.navigate('SearchSongScreen', {
-            resetLoadingSongs,
-            searchedText,
-            songs
+            searchedText
         });
     }
 

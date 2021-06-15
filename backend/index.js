@@ -96,13 +96,12 @@ async function getSong(videoId, hasExpired = false) {
         'x-youtube-client-name': '1',
         'x-client-data': '',
         'x-youtube-identity-token': 'QUFFLUhqbWtBX080QlRLNkQ3R2E2RXBWZGtXZFVjd1JuZ3w\u003d',
-        Accept: 'application/json, text/plain, */*',
-        Range: 'bytes=0-10380331'
+        Accept: 'application/json, text/plain, */*'
       }
     }
   });
   // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-  const audio = info.formats.filter((format) => format.mimeType.indexOf('video/mp4') >= 0 && format.mimeType.indexOf('mp4a') >= 0);
+  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo);
 
   if (audio && audio.length) {
     // eslint-disable-next-line no-restricted-syntax
@@ -200,9 +199,10 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
+    const groupName = data.chatRoom.replace(/(.*?_GroupName_)/g, '');
     serverIO.to(socket.id).emit('get-message-welcomeMsg',
       {
-        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${data.chatRoom.replace(/(--.*)/g, '')}.`
+        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${groupName}!`
       });
   });
 

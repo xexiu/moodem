@@ -1,5 +1,4 @@
 
-import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import Toast from 'react-native-easy-toast';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
@@ -12,6 +11,8 @@ import SearchBarAutoComplete from '../../common/functional-components/SearchBarA
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 
+let lastDataLength = 0;
+
 const Songs = (props: any) => {
     const { navigation } = props;
     const { group, isServerError, socket, user } = useContext(AppContext) as any;
@@ -22,12 +23,15 @@ const Songs = (props: any) => {
         indexItem
     } = useContext(SongsContext) as any;
     const toastRef = useRef(null);
+    const flatListRef = useRef(null);
 
     useEffect(() => {
-        dispatchCommon(group.group_songs);
+        MAP_SONGS_ACTIONS.set_songs();
 
         if (!isServerError) {
-            socket.emit('emit-message-welcomeMsg', { chatRoom: group.group_name });
+            socket.emit('emit-message-welcomeMsg', {
+                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`
+            });
             socket.on('get-message-welcomeMsg', getWelcomeMsg);
             socket.on('song-added', getSong);
             socket.on('song-removed', getRemovedSong);
@@ -37,107 +41,87 @@ const Songs = (props: any) => {
 
         return () => {
             console.log('OFF SONGS');
-            socket.off('emit-message-welcomeMsg');
-            socket.off('get-message-welcomeMsg');
-            socket.off('emit-set-medias');
+            socket.off('emit-message-welcomeMsg', getWelcomeMsg);
+            socket.off('get-message-welcomeMsg', getWelcomeMsg);
             socket.off('send-song-error', getSongWithError);
             socket.off('song-error', getSongWithError);
         };
     }, []);
 
+    const commonDispatch = useCallback((action: string, song: any) => {
+        return dispatchContextSongs({
+            type: action,
+            value: {
+                songToTransform: song
+            }
+        });
+    }, []);
+
+    function setSongs() {
+        return dispatchContextSongs({
+            type: 'set_songs',
+            value: {
+                songs: [...group.group_songs],
+                isLoading: false,
+                songToTransform: null
+            }
+        });
+    }
+
+    const MAP_SONGS_ACTIONS = {
+        set_songs: setSongs,
+        set_added_song: commonDispatch,
+        set_removed_song: commonDispatch,
+        set_voted_song: commonDispatch,
+        song_error: commonDispatch,
+        update_song_click_play_pause: useCallback((index) => {
+            return dispatchContextSongs({
+                type: 'update_song_click_play_pause',
+                value: {
+                    indexItem: index,
+                    index,
+                    songToTransform: null
+                }
+            });
+        }, [])
+    };
+
     function getWelcomeMsg({ welcomeMsg }: any) {
         toastRef.current.show(welcomeMsg, 1000);
     }
 
-    function dispatchCommon(data: any = []) {
-        return dispatchContextSongs({
-            type: 'set_songs',
-            value: {
-                songs: [...data],
-                isLoading: false,
-                removedSong: null,
-                votedSong: null,
-                addedSong: null,
-                transformedSong: null
-            }
-        });
-    }
-
     function getSong({ song }: any) {
-        return dispatchContextSongs({
-            type: 'set_added_song',
-            value: {
-                addedSong: song,
-                isLoading: false,
-                removedSong: null,
-                votedSong: null,
-                transformedSong: null
-            }
-        });
+        return MAP_SONGS_ACTIONS.set_added_song('set_added_song', song);
     }
 
-    function getSongWithError({ song }: any) {
-        return updateSongExpiredOnDB(song, user, group.group_name, () => {
-            return dispatchContextSongs({
-                type: 'song_error',
-                value: {
-                    transformedSong: song,
-                    addedSong: null,
-                    isLoading: false,
-                    removedSong: null,
-                    votedSong: null
-                }
-            });
-        });
+    async function getSongWithError({ song }: any) {
+        await updateSongExpiredOnDB(song, user, group.group_name);
+        return MAP_SONGS_ACTIONS.song_error('song_error', song);
     }
 
     function getRemovedSong({ song }: any) {
-        return dispatchContextSongs({
-            type: 'set_removed_song',
-            value: {
-                removedSong: song,
-                isLoading: false,
-                votedSong: null,
-                addedSong: null,
-                transformedSong: null
-            }
-        });
+        return MAP_SONGS_ACTIONS.set_removed_song('set_removed_song', song);
     }
 
     function getVotedSong({ song }: any) {
-        return dispatchContextSongs({
-            type: 'set_voted_song',
-            value: {
-                votedSong: song,
-                isLoading: false,
-                addedSong: null,
-                removedSong: null,
-                transformedSong: null
-            }
-        });
+        return MAP_SONGS_ACTIONS.set_voted_song('set_voted_song', song);
     }
 
-    const resetLoadingSongs = useCallback((() => {
-        let executed = false;
-        return () => {
-            if (!executed) {
-                executed = true;
-                return dispatchContextSongs({ type: 'update_song_reset' });
-            }
-        };
-    })(), []);
+    function onClickUseCallBack(index: number) {
+        return MAP_SONGS_ACTIONS.update_song_click_play_pause(index);
+    }
 
-    const onClickUseCallBack = useCallback((index: number) => dispatchContextSongs({
-        type: 'update_song_click_play_pause',
-        value: {
-            indexItem: index,
-            index,
-            removedSong: null,
-            votedSong: null,
-            addedSong: null,
-            transformedSong: null
+    function checkSizeChangeHandler(w: number, h: number) {
+        const newLength = songs.length;
+        const lastSong = songs[songs.length - 1];
+
+        if (newLength > lastDataLength && lastDataLength) {
+            if (lastSong.user.uid === user.uid) {
+                return flatListRef.current.scrollToEnd({ animated: true });
+            }
         }
-    }), []);
+        lastDataLength = newLength;
+    }
 
     const memoizedPlayerSongsListCallBack = useCallback(() => {
         if (songs && !songs.length) {
@@ -154,6 +138,8 @@ const Songs = (props: any) => {
                     indexItem={indexItem}
                 />
                 <MemoizedSongsList
+                    reference={flatListRef}
+                    checkSizeChangeHandler={checkSizeChangeHandler}
                     data={songs}
                     buttonActions={['votes', 'remove']}
                     indexItem={indexItem}
@@ -183,7 +169,6 @@ const Songs = (props: any) => {
 
         return (
             <SearchBarAutoComplete
-                resetLoadingSongs={resetLoadingSongs}
                 songs={songs}
                 navigation={navigation}
             />
@@ -192,20 +177,14 @@ const Songs = (props: any) => {
 
     return (
         <BodyContainer>
-            { renderSearchBar()}
-            { memoizedPlayerSongsListCallBack()}
+            {renderSearchBar()}
+            {memoizedPlayerSongsListCallBack()}
             <Toast
                 position={isServerError ? 'bottom' : 'top'}
                 ref={toastRef}
             />
         </BodyContainer>
     );
-};
-
-Songs.propTypes = {
-    media: PropTypes.any,
-    navigation: PropTypes.any,
-    isServerError: PropTypes.bool
 };
 
 export default memo(Songs);

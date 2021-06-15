@@ -1,4 +1,4 @@
 
-export function concat(...args) {
-	return args.reduce((acc, val) => [...acc, ...val]);
+export function concat(...args: any) {
+    return args.reduce((acc: any, val: any) => [...acc, ...val]);
 }

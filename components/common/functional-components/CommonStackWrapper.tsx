@@ -6,6 +6,7 @@ import AboutScreen from '../../../screens/common/functional-components/AboutScre
 import CopyrightScreen from '../../../screens/common/functional-components/CopyrightScreen';
 import FAQScreen from '../../../screens/common/functional-components/FAQScreen';
 import PrivacyScreen from '../../../screens/common/functional-components/PrivacyScreen';
+import CreateNewGroupScreen from '../../../screens/User/functional-components/CreateNewGroupScreen';
 import PrivateMessagesScreen from '../../../screens/User/functional-components/PrivateMessagesScreen';
 import PrivateUserMessageScreen from '../../../screens/User/functional-components/PrivateUserMessageScreen';
 import SearchGroupSongScreen from '../../../screens/User/functional-components/SearchGroupSongScreen';
@@ -26,6 +27,7 @@ export const CommonStackWrapper = (props: any) => {
                 <Stack.Screen name='PrivateMessagesScreen' component={PrivateMessagesScreen} />
                 <Stack.Screen name='PrivateUserMessageScreen' component={PrivateUserMessageScreen} />
                 <Stack.Screen name='SearchGroupSongScreen' component={SearchGroupSongScreen} />
+                <Stack.Screen name='CreateNewGroupScreen' component={CreateNewGroupScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

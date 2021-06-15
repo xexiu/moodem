@@ -24,7 +24,7 @@ const HeaderChat = (props: any) => {
                 group={group}
             />
             <HeaderChatUsers
-                chatRoom={`${group.group_name}-ChatRoom-${group.group_id}`}
+                chatRoom={`ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`}
             />
             <HeaderChatIconMessages />
         </View>

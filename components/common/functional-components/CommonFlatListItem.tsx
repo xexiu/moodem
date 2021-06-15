@@ -91,7 +91,7 @@ const CommonFlatListItem = (props: any) => {
                     type={chevron.type ? chevron.type : 'AntDesign'}
                     disabled={chevron.disabled}
                     disabledStyle={chevron.disabledStyle}
-                    onPress={() => chevron.onPress()}
+                    onPress={chevron.onPress}
                     iconStyle={chevron.iconStyle}
                     size={chevron.size}
                     color={chevron.color}

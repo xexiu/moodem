@@ -25,7 +25,10 @@ const ChatRoom = (props: any) => {
             socket.on('moodem-chat', setMessageList);
             socket.on('chat-messages', getMessage);
             socket.emit('moodem-chat',
-                { chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`, user });
+                {
+                    chatRoom: `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                    user
+                });
         }
 
         return () => {
@@ -67,7 +70,7 @@ const ChatRoom = (props: any) => {
     const memoizedOnSend = useCallback((message: any) => {
         socket.emit('chat-messages',
             {
-                chatRoom: `${group.group_name}-ChatRoom-${group.group_id}`,
+                chatRoom: `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`,
                 msg: {
                     text: message.text,
                     user: {

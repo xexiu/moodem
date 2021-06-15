@@ -11,12 +11,15 @@ type PropsItem = {
 type PropsItems = {
     data: (any | any)[],
     handleOnClickItem: Function,
-    media?: any,
-    buttonActions: string[],
-    optionalCallback?: Function
+    buttonActions?: string[],
+    optionalCallback?: Function,
+    chevron?: string,
+    reference?: any,
+    checkSizeChangeHandler?: Function
 };
 
-const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallback }: PropsItems) => {
+// tslint:disable-next-line:max-line-length
+const MemoizedItems = ({ reference, data, handleOnClickItem, buttonActions, optionalCallback, chevron, checkSizeChangeHandler }: PropsItems) => {
     const renderItem = useCallback(({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
@@ -25,6 +28,7 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
             handleOnClickItem={handleOnClickItem}
             buttonActions={buttonActions}
             optionalCallback={optionalCallback}
+            chevron={chevron}
         />
     ), []);
 
@@ -32,10 +36,12 @@ const MemoizedItems = ({ data, handleOnClickItem, buttonActions, optionalCallbac
 
     return (
         <CommonFlatList
+            reference={reference}
             emptyListComponent={<MediaListEmpty />}
             data={data}
             action={renderItem}
             keyExtractor={keyExtractor}
+            onContentSizeChange={checkSizeChangeHandler}
         />
     );
 };
