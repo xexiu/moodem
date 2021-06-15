@@ -6,7 +6,7 @@ import { AppContext } from '../../../components/User/store-context/AppContext';
 const SearchGroupSongScreen = (props: any) => {
     const { navigation } = props;
     const { group }: any = useContext(AppContext);
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         navigation.setOptions({

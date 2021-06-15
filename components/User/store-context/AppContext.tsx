@@ -3,18 +3,17 @@ import {
     actionType,
     AppProps,
     initialValue,
-    State
+    setNewGroup,
+    State,
+    updateCommonState
 } from './actions/app';
-
-function updateCommonState(result: State, action: actionType) {
-    return { ...result, ...action.value };
-}
 
 const MAP_ACTIONS = {
     server_error: updateCommonState,
     user_groups: updateCommonState,
     guest: updateCommonState,
-    set_group: updateCommonState
+    set_current_group: updateCommonState,
+    set_new_group: setNewGroup
 } as any;
 
 function updateState(result: State, action: actionType) {

@@ -22,11 +22,11 @@ const Songs = (props: any) => {
         isLoading,
         indexItem
     } = useContext(SongsContext) as any;
-    const toastRef = useRef(null);
-    const flatListRef = useRef(null);
+    const toastRef = useRef() as any;
+    const flatListRef = useRef() as any;
 
     useEffect(() => {
-        MAP_SONGS_ACTIONS.set_songs();
+        MAP_SONGS_ACTIONS.set_songs(group.group_songs);
 
         if (!isServerError) {
             socket.emit('emit-message-welcomeMsg', {
@@ -57,11 +57,11 @@ const Songs = (props: any) => {
         });
     }, []);
 
-    function setSongs() {
+    function setSongs(_songs: any) {
         return dispatchContextSongs({
             type: 'set_songs',
             value: {
-                songs: [...group.group_songs],
+                songs: [..._songs],
                 isLoading: false,
                 songToTransform: null
             }

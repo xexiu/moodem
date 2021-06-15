@@ -6,7 +6,7 @@ import PrivateGroupsSceneTab from './PrivateGroupsSceneTab';
 import PublicGroupsSceneTab from './PublicGroupsSceneTab';
 import TabBar from './TabBar';
 
-const TabBars = ({ navigation }: any) => {
+const TabBars = () => {
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'first', title: 'Mis Grupos' },
@@ -17,7 +17,7 @@ const TabBars = ({ navigation }: any) => {
     const renderScene = useCallback((props: any) => {
         switch (props.route.key) {
         case 'first':
-            return <MyGroupsSceneTab navigation={navigation} />;
+            return <MyGroupsSceneTab />;
         case 'second':
             return <PublicGroupsSceneTab />;
         case 'third':
@@ -32,8 +32,6 @@ const TabBars = ({ navigation }: any) => {
             <TabBar {...props} />
         );
     }, []);
-
-    console.log('Render Tab Bars');
 
     return (
         <TabView

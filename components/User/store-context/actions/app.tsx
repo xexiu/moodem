@@ -38,3 +38,17 @@ export const initialValue: State = {
         emit: (str: string, param: any) => {}
     }
 };
+
+export function updateCommonState(result: State, action: actionType) {
+    return { ...result, ...action.value };
+}
+
+export function setNewGroup(result: State, action: actionType) {
+    const { groups } = result;
+    const { value } = action;
+    const { group } = value;
+
+    groups.push(group as any);
+
+    return { ...result, ...value };
+}

@@ -5,16 +5,17 @@ const refAllGroups = firebase.database().ref('Groups');
 const refGroupMoodem = firebase.database().ref('Groups/Moodem');
 
 export const createGroupHandler = async (validate: any, user: any) => {
-    if (validate.group_name === 'Moodem') {
+    if (validate.name === 'Moodem') {
         console.log('Group Name Moodem is reserved', 'Error: ', validate.group_name);
         return;
     }
 
     const newGroup = await firebase.database().ref(`Groups/${user.uid}`).push({
         group_songs: [],
-        group_name: validate.group_name,
-        group_password: validate.group_password,
+        group_name: validate.name,
+        group_password: validate.password || '',
         group_user_owner_id: user.uid,
+        group_description: validate.description || '',
         group_avatar: DEFAULT_GROUP_AVATAR,
         group_users: [{
             user_uid: user.uid,
@@ -22,13 +23,15 @@ export const createGroupHandler = async (validate: any, user: any) => {
             group_admin: true
         }]
     });
-    newGroup.ref.update({ group_id: newGroup.key });
+    await newGroup.ref.update({ group_id: newGroup.key });
+    const refOwnedGroups = await firebase.database().ref().child(`Groups/${user.uid}/${newGroup.key}`);
+    const group = await refOwnedGroups.once('value');
 
-    return newGroup;
+    return group.val();
 };
 
 export const getOwnedGroupsFromDatabase = async (user: any) => {
-    const refOwnedGroups = firebase.database().ref().child(`Groups/${user.uid}`);
+    const refOwnedGroups = await firebase.database().ref().child(`Groups/${user.uid}`);
     const snapshot = await refOwnedGroups.once('value');
 
     return Object.values(snapshot.val() || []);

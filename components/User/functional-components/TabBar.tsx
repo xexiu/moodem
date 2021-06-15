@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 const TabBar = (props: any) => {
-    console.log('Render Tab Bar Item');
     return (
         <View
             style={{

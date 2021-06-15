@@ -227,14 +227,6 @@ serverIO.on('connection', (socket) => {
     await socket.join(data.chatRoom);
     buildMedia(data);
 
-    const userHasVoted = song.voted_users.some((id) => id === data.user_id);
-
-    if (!userHasVoted) {
-      if (song.voted_users.indexOf(data.user_uid) === -1) {
-        song.voted_users.push(data.user_id);
-      }
-    }
-
     const { isVotingSong = false } = data;
     serverIO.to(data.chatRoom).emit('song-voted', { song, isVotingSong });
   });

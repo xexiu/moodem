@@ -16,7 +16,7 @@ const Profile = (props: any) => {
     const [loading, setLoading] = useState(false);
     const { navigation } = props;
     const { user, dispatchContextApp } = useContext(AppContext) as any;
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         console.log('PROFILE');

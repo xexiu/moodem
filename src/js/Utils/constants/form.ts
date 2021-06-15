@@ -25,7 +25,7 @@ export const FORM_FIELDS_REGISTER = {
     },
 
     password: {
-        help: 'Ingresa tu contraseña! (min. 6 charácteres)',
+        help: 'Ingresa tu contraseña! (min. 6 carácteres)',
         error: 'Contraseña incorrecta!',
         password: true,
         secureTextEntry: true
@@ -41,22 +41,27 @@ export const FORM_FIELDS_REGISTER = {
 
 export const FORM_FIELDS_CREATE_GROUP = {
     group_name: {
-        help: 'Ingresar un nombre de grupo (Permitidos: letras y/o números o carácteres _-!)',
+        help: 'Ingresar un nombre de grupo. (max. 50 carácteres)',
         error: 'Nombre del grupo incorrecto o no permitido!'
     },
     group_password: {
-        help: 'Ingresa una contraseña para tú grupo. (contraseña mínima de 4 carácteres y ha de contener una letra)',
-        error: 'Contraseña no permitida! (contraseña mínima de 4 carácteres y ha de contener una letra)',
+        help: 'Min. 6 carácteres. Letra(s) y número(s).',
+        error: 'Contraseña no permitida! Contraseña mínima de 6 carácteres y ha de contener letra(s) y número(s)',
         password: true,
         secureTextEntry: true
+    },
+    group_password_confirm: {
+        help: 'Repite tu contraseña ',
+        error: 'Las contraseñas no coinciden',
+        password: true,
+        secureTextEntry: true
+    },
+    group_description: {
+        help: 'Añade una descripción para tu grupo (opcional). La descripción no puede exceder más de 100 carácteres!',
+        error: 'La descripción introducida no es válida.',
+        numberOfLines: 5,
+        multiline: true,
+        autoCapitalize: 'none',
+        autoCorrect: false
     }
-    // ,
-    // invited_emails: {
-    //     multiline: true,
-    //     numberOfLines: 10,
-    //     help: 'Enter emails to invite, followed by commas. (Ex: foo@bar.com,dummy@hey.com)',
-    //     error: 'Bad email or not allowed! (Ex: foo@bar.com,dummy@hey.com)',
-    //     autoCapitalize: 'none',
-    //     autoCorrect: false
-    // }
 };

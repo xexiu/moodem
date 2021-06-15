@@ -54,12 +54,13 @@ const SendSongIcon = (song: any, optionalCallback: Function) => {
                 boosted_users: song.boosted_users || []
             });
             if (optionalCallback) {
+                group.group_songs.push(song);
                 await optionalCallback();
                 await emitSendMedia();
             } else {
                 await emitSendMedia();
             }
-            await saveSongOnDb(song, user, group.group_name);
+            await saveSongOnDb(song, user, group);
         }
     };
 };

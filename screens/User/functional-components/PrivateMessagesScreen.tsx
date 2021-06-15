@@ -4,7 +4,7 @@ import BodyContainer from '../../../components/common/functional-components/Body
 
 const PrivateMessagesScreen = (props: any) => {
     const { navigation } = props;
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         navigation.setOptions({

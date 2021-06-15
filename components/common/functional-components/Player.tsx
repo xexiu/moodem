@@ -18,10 +18,10 @@ const Player = (props: any) => {
         indexItem
     } = props;
 
-    const repeatRef = useRef(null);
-    const playPauseRef = useRef(null);
-    const basePlayer = useRef(null);
-    const seekRef = useRef(null);
+    const repeatRef = useRef() as any;
+    const playPauseRef = useRef() as any;
+    const basePlayer = useRef() as any;
+    const seekRef = useRef() as any;
 
     return (
         <SongInfoContainer>

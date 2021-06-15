@@ -44,11 +44,13 @@ const RemoveSongIcon = (song: any) => {
                     iconColor={'#dd0031'}
                     iconSize={9}
                     action={async () => {
-                        setIsLoading(true);
-
+                        const indexInArray = group.group_songs.findIndex((_song: any) => _song.id === song.id);
+                        if (indexInArray > -1) {
+                            group.group_songs.splice(indexInArray, 1);
+                        }
                         setIsLoading(true);
                         await emitRemoveSong();
-                        await removeSongFromDB(song, user, group.group_name);
+                        await removeSongFromDB(song, user, group);
                     }}
                 />
             </View>

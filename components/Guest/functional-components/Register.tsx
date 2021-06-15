@@ -36,7 +36,7 @@ const schema = yup.object().shape({
 });
 
 const Register = (props: any) => {
-    const { btnTitle, btnStyle, navigation } = props;
+    const { btnTitle, btnStyle } = props;
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
@@ -130,7 +130,9 @@ const Register = (props: any) => {
                             color: '#D84A05',
                             marginTop: 5,
                             marginBottom: 5
-                        }}>{errors.name && errors.name.message}
+                        }}
+                    >
+                        {errors.name && errors.name.message}
                     </Text>
                     <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>E-Mail</Text>
                     <TextInput

@@ -44,14 +44,43 @@ const VoteSongIcon = (song: any) => {
                     iconColor={'#90c520'}
                     iconSize={9}
                     action={async () => {
-                        setIsLoading(true);
-
                         Object.assign(song, {
                             voted_users: song.voted_users || [],
                             boosted_users: song.boosted_users || []
                         });
+
+                        const userHasVoted = song.voted_users.some((id: number) => id === user.uid);
+
+                        if (!userHasVoted) {
+                            if (song.voted_users.indexOf(user.uid) === -1) {
+                                song.voted_users.push(user.uid);
+                            }
+                        }
+                        const indexInArray = group.group_songs.findIndex((_song: any) => _song.id === song.id);
+
+                        if (group.group_songs[indexInArray].id === song.id) {
+                            Object.assign(group.group_songs[indexInArray], {
+                                voted_users: song.voted_users
+                            });
+                        }
+                        group.group_songs.sort((a: any, b: any) => {
+                            if (!a.voted_users || !a.boosted_users) {
+                                Object.assign(a, {
+                                    voted_users: a.voted_users || [],
+                                    boosted_users: a.boosted_users || []
+                                });
+                            }
+                            if (!b.voted_users || b.boosted_users) {
+                                Object.assign(b, {
+                                    voted_users: b.voted_users || [],
+                                    boosted_users: b.boosted_users || []
+                                });
+                            }
+                            return b.voted_users.length - a.voted_users.length;
+                        });
+                        setIsLoading(true);
                         await emitVotedSong();
-                        await saveVotesForSongOnDb(song, user, group.group_name);
+                        await saveVotesForSongOnDb(song, user, group);
                     }}
                 />
             </View>

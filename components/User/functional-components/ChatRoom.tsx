@@ -18,7 +18,7 @@ const ChatRoom = (props: any) => {
         messages: [],
         isLoading: true
     });
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         if (!isServerError) {

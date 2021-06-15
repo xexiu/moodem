@@ -35,7 +35,7 @@ const PlayerControlTimeSeek = forwardRef((props: MyProps, ref: any) => {
 
     const [trackCurrentTime, setTrackCurrentTime] = useState(0);
     const [isSliding, setIsSliding] = useState(false);
-    const sliderRef = useRef();
+    const sliderRef = useRef() as any;
 
     useImperativeHandle(ref, () => {
         return {

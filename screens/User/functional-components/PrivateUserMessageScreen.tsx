@@ -6,7 +6,7 @@ import { AppContext } from '../../../components/User/store-context/AppContext';
 const PrivateUserMessageScreen = (props: any) => {
     const { navigation } = props;
     const { user }: any = useContext(AppContext);
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         navigation.setOptions({

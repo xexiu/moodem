@@ -36,7 +36,7 @@ const SideBarDrawer = (props: any) => {
             drawerContent={(_props) => itemsDrawer({ ..._props })}
         >
             <Drawer.Screen name={group.group_name} component={WelcomeLanding} />
-            <Drawer.Screen name={'ChatRoom'} component={ChatRoom} options={{ headerShown: false, title: `${group.group_name} Chat` }} />
+            <Drawer.Screen name='ChatRoom' component={ChatRoom} options={{ headerShown: false, title: 'Chat' }} />
             <Drawer.Screen name='Groups' component={Groups} options={{ headerShown: false, title: 'Grupos' }} />
             <Drawer.Screen name='Profile' component={Profile} options={{ headerShown: false, title: 'Mi Perfil' }} />
 

@@ -13,7 +13,7 @@ let serverError = false;
 const WelcomeLanding = (props: any) => {
     const { navigation } = props;
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
-    const toastRef = useRef(null);
+    const toastRef = useRef() as any;
 
     const getUserBackOnline = (data: any) => {
         if (data !== 'active') {
