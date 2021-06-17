@@ -117,16 +117,7 @@ export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, c
 
         if (group.group_songs) {
             const indexInArray = group.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
-            const songDB = group.group_songs[indexInArray];
-
-            if (songDB) {
-                if (songDB.id === song.id) {
-                    Object.assign(songDB, {
-                        url: song.url,
-                        hasExpired: false
-                    });
-                }
-            }
+            group.group_songs.splice(indexInArray, 1, song);
         } else {
             group.group_songs = [];
         }

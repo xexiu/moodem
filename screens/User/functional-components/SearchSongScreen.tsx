@@ -200,6 +200,7 @@ const SearchSongScreen = (props: any) => {
         navigation.setOptions({
             unmountInactiveRoutes: true
         });
+        source.cancel('SearchSongScreen Component got unmounted');
         navigation.navigate(group.group_name);
         return Promise.resolve(true);
     }

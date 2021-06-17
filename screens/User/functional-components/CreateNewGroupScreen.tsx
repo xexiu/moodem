@@ -22,17 +22,17 @@ const commonInputStyles = {
 
 const schema = yup.object().shape({
     name: yup.string()
-    .trim()
-    .min(5, ({ min }) => `El nombre del grupo ha de ser mayor que ${min} carácteres!`)
-    .max(50)
-    .required(FORM_FIELDS_CREATE_GROUP.group_name.error),
-    description: yup.string().min(0).max(100).optional(),
+        .trim()
+        .min(5, ({ min }) => `El nombre del grupo ha de ser mayor que ${min} carácteres!`)
+        .max(50)
+        .required(FORM_FIELDS_CREATE_GROUP.group_name.error),
+    description: yup.string().min(0).max(200).optional(),
     password: yup.string()
-    .min(6)
-    .max(40)
-    .optional()
-    .notRequired()
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{6,40}$/, 'Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.'),
+        .min(6, ({ min }) => `La contaseña tiene que ser de mínimo ${min} carácteres!`)
+        .max(40)
+        .optional()
+        .notRequired()
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{6,40}$/, 'Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.'),
     confirm_password: yup.string().oneOf
         (
             [yup.ref('password'), null],
@@ -84,7 +84,6 @@ const CreateNewGroupScreen = (props: any) => {
                     setIsLoading(false);
                     setErrorText(data.message);
                 } else {
-                    console.log('CREATING GROUP OKKK');
                     setIsLoading(false);
                     setErrorText('');
                     navigation.goBack();
@@ -128,7 +127,7 @@ const CreateNewGroupScreen = (props: any) => {
                     }}
                     autoCorrect={false}
                     autoFocus
-                    maxLength={30}
+                    maxLength={50}
                     placeholder={FORM_FIELDS_CREATE_GROUP.group_name.help}
                 />
                 <Text

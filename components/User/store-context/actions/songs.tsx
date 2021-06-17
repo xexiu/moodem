@@ -30,6 +30,8 @@ if (Platform.OS === 'android') {
         UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+let isLayoutAnimationConfigured = false;
+
 const CustomLayoutLinear = {
     duration: 300,
     create: {
@@ -46,7 +48,10 @@ const CustomLayoutLinear = {
 };
 
 const setAnimation = () => {
-    LayoutAnimation.configureNext(CustomLayoutLinear);
+    if (!isLayoutAnimationConfigured) {
+        isLayoutAnimationConfigured = true;
+        LayoutAnimation.configureNext(CustomLayoutLinear);
+    }
 };
 
 export function removeSong(result: State, action: actionType) {
@@ -175,9 +180,7 @@ export function transformSongWithError(result: State, action: actionType) {
     if (songToTransform && Object.keys(songToTransform).length) {
         const indexInArray = songs.findIndex(_song => _song.id === songToTransform.id);
 
-        Object.assign(songs[indexInArray], {
-            url: songToTransform.url
-        });
+        songs.splice(indexInArray, 1, songToTransform);
     }
 
     return { ...result, ...value };

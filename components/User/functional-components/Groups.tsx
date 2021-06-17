@@ -47,13 +47,6 @@ const Groups = (props: any) => {
             <BurgerMenuIcon
                 action={navigation.openDrawer}
             />
-            <CommonTopSearchBar
-                placeholder='Search group...'
-                cancelSearch={() => {
-                    setIsLoading(false);
-                }}
-                onEndEditingSearch={() => {}}
-            />
             <TabBars />
             <AddGroupIcon />
             {/* <View>

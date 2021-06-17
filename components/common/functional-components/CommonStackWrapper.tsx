@@ -10,6 +10,7 @@ import CreateNewGroupScreen from '../../../screens/User/functional-components/Cr
 import PrivateMessagesScreen from '../../../screens/User/functional-components/PrivateMessagesScreen';
 import PrivateUserMessageScreen from '../../../screens/User/functional-components/PrivateUserMessageScreen';
 import SearchGroupSongScreen from '../../../screens/User/functional-components/SearchGroupSongScreen';
+import SearchGroupsScreen from '../../../screens/User/functional-components/SearchGroupsScreen';
 import SearchSongScreen from '../../../screens/User/functional-components/SearchSongScreen';
 
 const Stack = createStackNavigator();
@@ -27,6 +28,7 @@ export const CommonStackWrapper = (props: any) => {
                 <Stack.Screen name='PrivateMessagesScreen' component={PrivateMessagesScreen} />
                 <Stack.Screen name='PrivateUserMessageScreen' component={PrivateUserMessageScreen} />
                 <Stack.Screen name='SearchGroupSongScreen' component={SearchGroupSongScreen} />
+                <Stack.Screen name='SearchGroupsScreen' component={SearchGroupsScreen} />
                 <Stack.Screen name='CreateNewGroupScreen' component={CreateNewGroupScreen} />
             </Stack.Navigator>
         </NavigationContainer>

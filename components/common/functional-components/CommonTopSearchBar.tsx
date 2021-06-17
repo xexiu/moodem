@@ -1,5 +1,4 @@
 import { useIsFocused } from '@react-navigation/native';
-import PropTypes from 'prop-types';
 import React, { memo, useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';
 import {
@@ -9,17 +8,27 @@ import {
 
 const controller = new AbortController();
 
-const CommonTopSearchBar = (props: any) => {
+type SearchBarProps = {
+    placeholder?: string,
+    onChangeText?: any,
+    onEndEditingSearch: Function,
+    cancelSearch?: Function,
+    searchRef?: any,
+    customStyleContainer?: any,
+    placeholderTextColor?: string
+};
+
+const CommonTopSearchBar = (props: SearchBarProps) => {
     const {
         placeholder,
         onChangeText,
         onEndEditingSearch,
         cancelSearch,
         searchRef,
-        customStyleContainer
+        customStyleContainer,
+        placeholderTextColor = '#ccc'
     } = props;
     const [value, setValue] = useState('');
-    const [showLoadingSpin, setShowLoadingSpin] = useState(false);
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -28,52 +37,36 @@ const CommonTopSearchBar = (props: any) => {
         };
     }, [isFocused]);
 
+    function handleOnChangeText(text: string) {
+        setValue(text);
+        if (onChangeText) {
+            return onChangeText(text);
+        }
+        return null;
+    }
+
     return (
         <SearchBar
-            placeholderTextColor='#ccc'
+            placeholderTextColor={placeholderTextColor}
             ref={searchRef}
             autoCorrect={false}
             containerStyle={[commonTopSeachBarContainer, customStyleContainer]}
             inputContainerStyle={commonTopSeachBarInputContainer}
             lightTheme
-            clearIcon={!!value && {
-                onPress: () => {
-                    setValue('');
-                    cancelSearch();
-                }
-            }}
             placeholder={placeholder}
-            onChangeText={(text: string) => {
-                setValue(text);
-                setShowLoadingSpin(true);
-                onChangeText && onChangeText(text)
-                    .then(() => {
-                        setShowLoadingSpin(false);
-                    });
-            }}
+            onChangeText={handleOnChangeText}
             value={value}
-            onClear={() => setShowLoadingSpin(false)}
-            showLoading={showLoadingSpin}
+            onClear={() => !!value}
+            showLoading={!!value}
             onCancel={() => cancelSearch()}
             onEndEditing={() => {
                 if (value) {
-                    setShowLoadingSpin(false);
                     setValue('');
                     onEndEditingSearch && onEndEditingSearch(value);
                 }
             }}
         />
     );
-};
-
-CommonTopSearchBar.propTypes = {
-    placeholder: PropTypes.string,
-    onChangeText: PropTypes.func,
-    onEndEditingSearch: PropTypes.func,
-    cancelSearch: PropTypes.func,
-    searchRef: PropTypes.any,
-    customStyleContainer: PropTypes.object,
-    placeholderTextColor: PropTypes.any
 };
 
 export default memo(CommonTopSearchBar);

@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback, useContext } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
+import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupSongsIcon } from './GroupSongsIcon';
@@ -62,14 +63,47 @@ const PrivateGroupsSceneTab = () => {
         </View>
     ), []);
 
+    function gruopsLengthMsg() {
+        if (!privateGroups.length) {
+            return null;
+        }
+        let msg = '';
+        privateGroups.length === 1 ?
+            msg = `Te has unido a ${privateGroups.length} grupo.` :
+            msg = `Te has unido a ${privateGroups.length} grupos.`;
+
+        return (
+            <View style={{ alignItems: 'center', marginBottom: 10 }}><Text style={{ color: '#666' }}>{msg}</Text></View>
+        );
+    }
+
+    function handleEndSearch(searchedText: string) {
+        return navigation.navigate('SearchGroupsScreen', {
+            searchedText,
+            filter: {
+                searchPrivateGroups: true
+            }
+        });
+    }
+
     return (
-        <CommonFlatList
-            style={{ marginTop: 10 }}
-            emptyListComponent={<GroupEmpty msg={'Te has unido a 0 grupos privados!'} />}
-            data={privateGroups}
-            action={memoizedItem}
-            keyExtractor={keyExtractor}
-        />
+        <View>
+            <CommonTopSearchBar
+                customStyleContainer={{ marginLeft: 0 }}
+                placeholder='Buscar grupos privados...'
+                cancelSearch={() => {
+                }}
+                onEndEditingSearch={handleEndSearch}
+            />
+            <CommonFlatList
+                style={{ marginTop: 10 }}
+                emptyListComponent={<GroupEmpty msg={'Te has unido a 0 grupos privados!'} />}
+                headerComponent={gruopsLengthMsg()}
+                data={privateGroups}
+                action={memoizedItem}
+                keyExtractor={keyExtractor}
+            />
+        </View>
     );
 };
 

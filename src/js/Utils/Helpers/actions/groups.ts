@@ -31,35 +31,31 @@ export const createGroupHandler = async (validate: any, user: any) => {
 };
 
 export const getOwnedGroupsFromDatabase = async (user: any) => {
-    const refOwnedGroups = await firebase.database().ref().child(`Groups/${user.uid}`);
+    const refOwnedGroups = await firebase.database().ref(`Groups/${user.uid}`);
     const snapshot = await refOwnedGroups.once('value');
 
     return Object.values(snapshot.val() || []);
 };
 
-export const getAllGroups = () => new Promise(async resolve => {
-    const snapshot = await refAllGroups.once('value');
+export const getAllGroups = async () => {
+    const allGroups = [] as any;
+    const snapshots = await refAllGroups.once('value');
 
-    if (snapshot.val()) {
-        const data = Object.values(snapshot.val()) || [];
-        const groups = [] as any;
-
-        data.forEach((group: any) => {
-            if (group && group.group_name !== 'Moodem') {
-                const groupObj = Object.values(group)[0];
-                groups.push(groupObj);
+    if (snapshots.hasChildren()) {
+        const childrens = snapshots.numChildren();
+        snapshots.forEach((snapshot: any) => {
+            for (let i = 0; i < childrens; i++) {
+                if (snapshot.val()) {
+                    const group = Object.values(snapshot.val())[0];
+                    allGroups.push(group);
+                    break;
+                }
             }
         });
-
-        for (let i = 0; i < groups.length; i++) {
-            if (i === (groups.length - 1)) {
-                resolve(groups);
-            }
-        }
-    } else {
-        resolve([]);
     }
-});
+
+    return allGroups;
+};
 
 export const getDefaultGroup = async () => {
     const snapshot = await refGroupMoodem.once('value');

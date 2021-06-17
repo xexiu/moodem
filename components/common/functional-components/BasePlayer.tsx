@@ -146,7 +146,11 @@ const BasePlayer = (props: any) => {
                 playWhenInactive
                 ignoreSilentSwitch='ignore'
                 onBuffer={(buffer) => {
-                    playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    if (playPauseRef.current.isBuffering) {
+                        playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    } else if (buffer.isBuffering) {
+                        playPauseRef.current.setIsBuffering(buffer.isBuffering);
+                    }
                     MusicControl.updatePlayback({
                         elapsedTime: seekRef.current.trackCurrentTime
                     });

@@ -209,15 +209,16 @@ serverIO.on('connection', (socket) => {
 
     const audio = await getSong(song.id, true);
 
-    Object.assign(song, {
+    Object.assign(audio, {
+      voted_users: song.voted_users,
       hasExpired: false,
-      url: audio.url
+      user: song.user
     });
 
     if (song.isSearching) {
-      serverIO.to(socket.id).emit('song-error-searching', { song });
+      serverIO.to(socket.id).emit('song-error-searching', { song: audio });
     } else {
-      serverIO.to(socket.id).emit('song-error', { song });
+      serverIO.to(socket.id).emit('song-error', { song: audio });
     }
   });
 

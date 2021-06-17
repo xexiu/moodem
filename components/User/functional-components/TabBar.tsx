@@ -5,7 +5,7 @@ const TabBar = (props: any) => {
     return (
         <View
             style={{
-                marginLeft: 17,
+                marginLeft: 30,
                 position: 'relative',
                 flexDirection: 'row',
                 alignItems: 'center',

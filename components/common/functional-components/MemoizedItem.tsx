@@ -9,20 +9,30 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
     console.log('Render Item');
 
     const BUTTONGROUP_MAP = {
-        votes: VoteSongIcon(item),
-        remove: RemoveSongIcon(item)
+        votes: VoteSongIcon,
+        remove: RemoveSongIcon
     } as any;
 
     const CHEVRON_MAP = {
-        send_media: SendSongIcon(item, optionalCallback)
+        send_media: SendSongIcon
     } as any;
 
     function setButtonGroupAction() {
         const actions = [] as any;
 
-        buttonActions.map((action: string) => BUTTONGROUP_MAP[action] && actions.push(BUTTONGROUP_MAP[action]));
+        buttonActions.map((action: string) => {
+            BUTTONGROUP_MAP[action] && actions.push(BUTTONGROUP_MAP[action](item));
+        });
 
         return actions;
+    }
+
+    function setChevron() {
+        if (!item.isMediaOnList && CHEVRON_MAP[chevron]) {
+            return CHEVRON_MAP[chevron](item, optionalCallback);
+        }
+
+        return null;
     }
 
     return (
@@ -40,7 +50,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
                     uri: item.details.thumbnails[0].url
                 }
             }}
-            chevron={!item.isMediaOnList && CHEVRON_MAP[chevron]}
+            chevron={setChevron()}
             buttonGroup={setButtonGroupAction()}
             action={() => handleOnClickItem(index)}
         />

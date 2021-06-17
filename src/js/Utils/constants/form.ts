@@ -57,7 +57,7 @@ export const FORM_FIELDS_CREATE_GROUP = {
         secureTextEntry: true
     },
     group_description: {
-        help: 'Añade una descripción para tu grupo (opcional). La descripción no puede exceder más de 100 carácteres!',
+        help: 'Añade una descripción para tu grupo (opcional). La descripción no puede exceder más de 200 carácteres!',
         error: 'La descripción introducida no es válida.',
         numberOfLines: 5,
         multiline: true,
