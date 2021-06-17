@@ -26,8 +26,8 @@ const GuestScreen = (props: any) => {
     return (
         <View style={{ alignItems: 'center' }}>
             <BgImage />
-            <Login btnTitle='Iniciar sesión' navigation={navigation} />
-            <Register btnTitle='Registrarse ' btnStyle={{ backgroundColor: '#00b7e0' }} navigation={navigation} />
+            <Login />
+            <Register />
         </View>
     );
 };

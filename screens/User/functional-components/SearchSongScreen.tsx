@@ -1,4 +1,3 @@
-import { YOUTUBE_KEY } from '@env';
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from 'react-native-elements';
@@ -9,11 +8,7 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
-import { loadFromLocalStorage, removeItem, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
-
-const THIRTY_DAYS = 1000 * 3600 * 24 * 30;
-const ONE_YEAR = THIRTY_DAYS * 365;
 
 const SearchSongScreen = (props: any) => {
     const {
@@ -33,54 +28,6 @@ const SearchSongScreen = (props: any) => {
     });
     const source = axios.CancelToken.source();
 
-    async function fetchResults() {
-        const videoIds = [] as string[];
-        try {
-            const { data } = await axios.get(
-                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchedText}&maxResults=15&type=video&key=${YOUTUBE_KEY}`,
-                { cancelToken: source.token });
-
-            const videos = data.items.filter((video: any) => video.id.videoId);
-            videos.map((video: any) => videoIds.push(video.id.videoId));
-
-            return Promise.resolve(videoIds);
-        } catch (err) {
-            // Send error to sentry
-        }
-    }
-
-    async function getResultsForSearch(): Promise<any> {
-        const sanitizedText = encodeURIComponent(searchedText).toLowerCase();
-        const videoIdsFromLocalStorage = await loadFromLocalStorage(sanitizedText);
-
-        switch (videoIdsFromLocalStorage) {
-        case 'NotFoundError':
-            const videoIds = await fetchResults();
-            saveOnLocalStorage(sanitizedText, videoIds, ONE_YEAR);
-            socket.emit('search-songs-on-youtube', {
-                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
-                videoIds
-            });
-            break;
-        case 'ExpiredError':
-            removeItem(sanitizedText, async () => {
-                const videoIds_1 = await fetchResults();
-                saveOnLocalStorage(sanitizedText, videoIds_1, ONE_YEAR);
-                socket.emit('search-songs-on-youtube', {
-                    chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
-                    videoIds: videoIds_1
-                });
-            });
-            break;
-        default:
-            socket.emit('search-songs-on-youtube', {
-                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
-                videoIds: videoIdsFromLocalStorage
-            });
-            break;
-        }
-    }
-
     useEffect(() => {
         navigation.setOptions({
             headerShown: false,
@@ -89,16 +36,19 @@ const SearchSongScreen = (props: any) => {
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true
         });
-        getResultsForSearch();
+        socket.emit('search-songs', {
+            chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+            searchedText
+        });
 
-        socket.on('get-songs-from-youtube', getSongs);
+        socket.on('get-songs', getSongs);
         socket.on('song-error-searching', getSongWithError);
 
         return () => {
             console.log('OFF SEARCHE SCREEN');
             source.cancel('SearchSongScreen Component got unmounted');
-            socket.off('search-songs-on-youtube', getSongs);
-            socket.off('get-songs-from-youtube', getSongs);
+            socket.off('search-songs', getSongs);
+            socket.off('get-songs', getSongs);
             socket.off('song-error-searching', getSongWithError);
         };
     }, []);

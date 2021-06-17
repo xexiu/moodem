@@ -10,6 +10,19 @@ const ytdl = require('ytdl-core');
 const NodeCache = require('node-cache');
 const Sentry = require('@sentry/node');
 const { CaptureConsole } = require('@sentry/integrations');
+const ytsr = require('ytsr');
+
+async function searchYoutubeForVideoIds(searchedText) {
+  const videoIds = [];
+  const options = {
+    pages: 1,
+    limit: 20
+  };
+  const searchResults = await ytsr(searchedText, options);
+  const videos = searchResults.items.filter((video) => video.id && !video.isLive && !video.isUpcoming);
+  videos.map((video) => videoIds.push(video.id));
+  return videoIds;
+}
 
 Sentry.init({
   dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
@@ -171,16 +184,32 @@ serverIO.use((socket, next) => {
 });
 
 serverIO.on('connection', (socket) => {
-  socket.on('search-songs-on-youtube', async (data) => {
+  socket.on('search-songs', async (data) => {
+    const { searchedText } = data;
     await socket.join(data.chatRoom);
     buildMedia(data);
+    const videoIds = await searchYoutubeForVideoIds(searchedText);
 
-    if (data.videoIds) {
+    /* TO-DO
+    - convert stream to blob and save to firebase
+    // const stream = await ytdl('vRXZj0DzXIA');
+    // const chunks = [];
+
+    // // eslint-disable-next-line no-restricted-syntax
+    // for await (const chunk of stream) {
+    //   chunks.push(chunk);
+    //   chunks.push(new Uint8Array(chunk));
+    // }
+
+    // const blob = new Blob(chunks, { type: 'video/mp4' });
+    */
+
+    if (videoIds) {
       try {
-        let songsCoverted = await Promise.allSettled(data.videoIds.map(async (videoId) => getSong(videoId)));
+        let songsCoverted = await Promise.allSettled(videoIds.map(async (videoId) => getSong(videoId)));
         songsCoverted.filter((songConverted) => songConverted.status !== 'rejected' && songsCoverted.push(songConverted.value), songsCoverted = []);
 
-        serverIO.to(socket.id).emit('get-songs-from-youtube', { // send message only to sender-client
+        serverIO.to(socket.id).emit('get-songs', { // send message only to sender-client
           songs: [...setExtraAttrs(songsCoverted, socket.uid, true)]
         });
       } catch (error) {
