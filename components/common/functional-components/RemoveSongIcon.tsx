@@ -50,7 +50,7 @@ const RemoveSongIcon = (song: any) => {
                         }
                         setIsLoading(true);
                         await emitRemoveSong();
-                        await removeSongFromDB(song, user, group);
+                        await removeSongFromDB(song, group);
                     }}
                 />
             </View>

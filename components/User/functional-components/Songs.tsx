@@ -95,7 +95,7 @@ const Songs = (props: any) => {
     }
 
     async function getSongWithError({ song }: any) {
-        await updateSongExpiredOnDB(song, user, group.group_name);
+        await updateSongExpiredOnDB(song, group);
         return MAP_SONGS_ACTIONS.song_error('song_error', song);
     }
 

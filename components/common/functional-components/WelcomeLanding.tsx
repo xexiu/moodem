@@ -37,7 +37,7 @@ const WelcomeLanding = (props: any) => {
             socket.off('disconnect');
 
         };
-    }, [group.group_name, isServerError]);
+    }, [group.group_id, isServerError]);
 
     function setServerConnectedBack() {
         // Server has connected back from error.

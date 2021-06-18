@@ -4,25 +4,6 @@ import { isEmpty } from '../../../Utils/common/checkers';
 import { hasObjWithProp } from '../../../Utils/common/checkers';
 import firebase from '../services/firebase';
 
-export function cleanVideoTitle(info: any) {
-    if (info && info.details && info.details.title) {
-        info.details.title = info.details.title.replace('(Official Music Video)', '')
-            .replace('(Official Video)', '');
-        return info.details.title;
-    }
-    return info.details.title;
-}
-
-export function cleanVideoImageParams(audio: any) {
-    if (audio.details && audio.details.thumbnails.length) {
-        if (audio.details.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
-            audio.details.thumbnails[0].url = audio.details.thumbnails[0].url.replace(/(\?.*)/g, '');
-            return audio.details.thumbnails[0].url;
-        }
-    }
-    return audio.details.thumbnails[0].url;
-}
-
 export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     songs.filter((song: any) => {
         return !searchedSongs.some((searchedSong: any) => {
@@ -35,51 +16,8 @@ export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     });
 }
 
-export async function convertVideoIdYtdl(videoId: string) {
-    const info = await ytdl.getInfo(videoId);
-    const audio = info.formats.filter((format: any) => format.hasAudio && format.hasVideo);
-
-    if (audio && audio.length) {
-        // tslint:disable-next-line:forin
-        for (const attr in audio[0]) {
-            if (attr !== 'url') {
-                delete audio[0][attr];
-            }
-        }
-
-        Object.assign(audio[0], {
-            id: info.videoDetails.videoId,
-            details: info.videoDetails
-        });
-
-        cleanVideoImageParams(audio[0]);
-        cleanVideoTitle(audio[0]);
-
-        return { ...audio[0] };
-    }
-
-    return {};
-}
-
-export async function convertVideoIdsFromDB(songs: [] = []) {
-    try {
-        const audios = await Promise.all(songs.map(async (song: any) => {
-            const convertedSong = await convertVideoIdYtdl(song.id);
-            Object.assign(song, {
-                ...convertedSong,
-                voted_users: song.voted_users || [],
-                boosted_users: song.boosted_users || []
-            });
-            return song;
-        }));
-        return audios;
-    } catch (error) {
-        console.error('Error convertVideoIdsFromDB', JSON.stringify(error));
-    }
-}
-
 export const saveSongOnDb = async (song: any, user: any, group: any) => {
-    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : user.uid}`;
+    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
     const _group = await dbgroup.val();
@@ -108,27 +46,26 @@ export const saveSongOnDb = async (song: any, user: any, group: any) => {
     return refGroup.update(_group);
 };
 
-export const updateSongExpiredOnDB = (song: any, user: any, groupName: string, cb?: Function) => {
-    const _groupName = `${groupName === 'Moodem' ? 'Moodem' : user.uid}`;
-    const refGroup = firebase.database().ref(`${'Groups/'}${_groupName}`);
+export const updateSongExpiredOnDB = async (song: any, group: any) => {
+    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
+    const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+    const snapshot = await refGroup.once('value');
+    const dbgroup = await snapshot.val();
 
-    return refGroup.once('value', (snapshot: any) => {
-        const group = Object.assign({}, ...Object.values(snapshot.val() || []));
-
-        if (group.group_songs) {
-            const indexInArray = group.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
-            group.group_songs.splice(indexInArray, 1, song);
+    if (dbgroup) {
+        if (dbgroup.group_songs) {
+            const indexInArray = dbgroup.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
+            dbgroup.group_songs.splice(indexInArray, 1, song);
         } else {
-            group.group_songs = [];
+            dbgroup.group_songs = [];
         }
 
-        refGroup.child(Object.keys(snapshot.val())[0]).set(group);
-    })
-        .then(cb);
+        return refGroup.update(dbgroup);
+    }
 };
 
 export const saveVotesForSongOnDb = async (song: any, user: any, group: any) => {
-    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : user.uid}`;
+    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
     const _group = await dbgroup.val();
@@ -169,8 +106,8 @@ export const saveVotesForSongOnDb = async (song: any, user: any, group: any) => 
     return refGroup.update(_group);
 };
 
-export const removeSongFromDB = async(song: any, user: any, group: any) => {
-    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : user.uid}`;
+export const removeSongFromDB = async(song: any, group: any) => {
+    const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
     const _group = await dbgroup.val();

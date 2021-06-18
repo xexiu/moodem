@@ -14,7 +14,11 @@ import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
-import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
+import {
+    addUserToJoinedGroupDB,
+    getAllGroups,
+    saveJoinedUser
+} from '../../../src/js/Utils/Helpers/actions/groups';
 
 const SearchGroupsScreen = (props: any) => {
     const {
@@ -22,7 +26,7 @@ const SearchGroupsScreen = (props: any) => {
         filter
     } = props.route.params;
     const source = axios.CancelToken.source();
-    const { dispatchContextApp } = useContext(AppContext) as any;
+    const { groups, user, dispatchContextApp } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [allValues, setAllValues] = useState({
         searchedGroups: [],
@@ -130,12 +134,21 @@ const SearchGroupsScreen = (props: any) => {
     }, []);
 
     async function handleSubmit(item: any) {
-        console.log('Ok', passwordPopUp.current.password);
-        await modalRef.current.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
+        console.log('Ok', groups, 'Group', item);
+        for (const group of groups) {
+            if (group.group_id !== item.group_id) {
+                groups.push(item);
+                await addUserToJoinedGroupDB(item, user);
+                await saveJoinedUser(item, user);
+                break;
+            }
+        }
+        // saveJoinedUser
+        // await modalRef.current.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
 
         // set to appContext groups without dispaching,
         // save to database --> invited_groups_ids: [group_id]
-        return navigation.openDrawer();
+        // return navigation.goBack();
     }
 
     function handleGroupPassword(item: any) {

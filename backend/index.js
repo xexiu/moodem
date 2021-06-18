@@ -11,6 +11,9 @@ const NodeCache = require('node-cache');
 const Sentry = require('@sentry/node');
 const { CaptureConsole } = require('@sentry/integrations');
 const ytsr = require('ytsr');
+const cliProgress = require('cli-progress');
+
+const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 async function searchYoutubeForVideoIds(searchedText) {
   const videoIds = [];
@@ -183,16 +186,47 @@ serverIO.use((socket, next) => {
   next(null, true);
 });
 
+const getStream = async (url) => {
+  console.info(`Downloading from ${url} ...`);
+
+  let allReceived = false;
+  return new Promise((resolve, reject) => {
+    const stream = ytdl(url, {
+      quality: 'highest',
+      filter: (format) => format.container === 'mp4'
+    })
+      .on('progress', (_, totalDownloaded, total) => {
+        if (!allReceived) {
+          progressBar.start(total, 0, {
+            mbTotal: (total / 1024 / 1024).toFixed(2),
+            mbValue: 0
+          });
+          allReceived = true;
+        }
+        progressBar.increment();
+        progressBar.update(totalDownloaded, {
+          mbValue: (totalDownloaded / 1024 / 1024).toFixed(2)
+        });
+      })
+      .on('end', () => {
+        progressBar.stop();
+        console.info('Successfully downloaded the stream!');
+        return resolve(stream);
+      });
+    resolve(stream);
+  });
+};
+
 serverIO.on('connection', (socket) => {
   socket.on('search-songs', async (data) => {
     const { searchedText } = data;
+    const videoIds = await searchYoutubeForVideoIds(searchedText);
     await socket.join(data.chatRoom);
     buildMedia(data);
-    const videoIds = await searchYoutubeForVideoIds(searchedText);
 
     /* TO-DO
     - convert stream to blob and save to firebase
-    // const stream = await ytdl('vRXZj0DzXIA');
+    // const stream = await ytdl('vRXZj0DzXIA') await getStream('https://www.youtube.com/watch?v=8SbUC-UaAxE');
     // const chunks = [];
 
     // // eslint-disable-next-line no-restricted-syntax
@@ -241,7 +275,8 @@ serverIO.on('connection', (socket) => {
     Object.assign(audio, {
       voted_users: song.voted_users,
       hasExpired: false,
-      user: song.user
+      user: song.user,
+      isPlaying: song.isPlaying
     });
 
     if (song.isSearching) {

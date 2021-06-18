@@ -13,6 +13,7 @@
   "dependencies": {
     "@sentry/integrations": "^6.7.0",
     "@sentry/node": "^6.7.0",
+    "cli-progress": "^3.9.0",
     "cross-blob": "^2.0.0",
     "express": "^4.17.1",
     "memory-cache": "^0.2.0",
