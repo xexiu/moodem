@@ -34,7 +34,7 @@ export const saveSongOnDb = async (song: any, user: any, group: any) => {
             group_owner: _group.user_owner_id === user.uid,
             group_admin: _group.user_owner_id === user.uid
         });
-    } else {
+    } else if (!dbgroup.group_users) {
         _group.group_users = [];
         _group.group_users.push({
             user_uid: user.uid,
@@ -62,6 +62,8 @@ export const updateSongExpiredOnDB = async (song: any, group: any) => {
 
         return refGroup.update(dbgroup);
     }
+
+    console.error('updateSongEpireOnDB error')
 };
 
 export const saveVotesForSongOnDb = async (song: any, user: any, group: any) => {

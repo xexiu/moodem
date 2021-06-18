@@ -181,10 +181,6 @@ export function transformSongWithError(result: State, action: actionType) {
         const indexInArray = songs.findIndex(_song => _song.id === songToTransform.id);
 
         songs.splice(indexInArray, 1, songToTransform);
-
-        Object.assign(result, {
-            indexItem: indexInArray
-        });
     }
 
     return { ...result, ...value };

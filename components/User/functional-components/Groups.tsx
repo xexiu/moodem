@@ -2,15 +2,11 @@ import { useIsFocused } from '@react-navigation/native';
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Keyboard} from 'react-native';
-import { getAllGroups } from '../../../src/js/Utils/Helpers/actions/groups';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
-import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../store-context/AppContext';
 import AddGroupIcon from './AddGroupIcon';
-import { NewGroup } from './NewGroup';
 import TabBars from './TabBars';
 
 const Groups = (props: any) => {
@@ -49,69 +45,6 @@ const Groups = (props: any) => {
             />
             <TabBars />
             <AddGroupIcon />
-            {/* <View>
-                <CustomModal isModalVisible={showPasswordModal} onBackdropPress={() => togglePasswordModal(false)}>
-                    <Form
-                        ref={refPassWordForm}
-                        type={struct({
-                            password: formValidationGroup.group_password
-                        })}
-                        value={value}
-                        onChange={(text: string) => {
-                            setPasswordFormValue({ value: text });
-                        }}
-                    />
-                    <CustomButton
-                        btnTitle='OK'
-                        action={() => {
-                            if (value && value.password === userGroup.group_password) {
-                                togglePasswordModal(false);
-                                setPasswordFormValue({ value: '' });
-
-                                if (isSearching) {
-                                    // setGroups({
-                                    //     groups: [...groups, userGroup] as never
-                                    // });
-                                    setIsLoading(false);
-                                    setIsSearching(false);
-                                } else {
-                                    Object.assign(props.route.params.group, {
-                                        group: {
-                                            ...userGroup
-                                        }
-                                    });
-                                    navigation.navigate('Moodem', {
-                                        group: {
-                                            ...userGroup
-                                        }
-                                    });
-                                }
-                            } else {
-                                setErrorPassword('Password incorrect!');
-                            }
-                        }}
-                    />
-                    <CustomButton
-                        btnTitle='Cancel'
-                        btnStyle={{
-                            backgroundColor: '#00b7e0',
-                            marginTop: 10,
-                            width: 200,
-                            marginLeft: 'auto',
-                            marginRight: 'auto'
-                        }}
-                        action={() => {
-                            setIsSearching(false);
-                            togglePasswordModal(false);
-                            setIsLoading(false);
-                            setErrorPassword('');
-                        }}
-                    />
-                    <Text style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>{errorPassword}</Text>
-                </CustomModal>
-            </View> */}
-
-            {/* <NewGroup showModal={showModal} toggleModal={toggleModal} user={user} handleNewGroup={handleNewGroup} navigation={navigation} /> */}
         </BodyContainer>
     );
 };

@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useCallback, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, memo, useImperativeHandle, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 
@@ -21,8 +21,6 @@ const ShowPopUpPasswordGroup = forwardRef((props: any, ref: any) => {
             setAllValues
         };
     }, [allValues.password, allValues.error]);
-
-    console.log('HEYY');
 
     return (
         <View>

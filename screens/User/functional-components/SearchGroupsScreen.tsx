@@ -13,6 +13,7 @@ import ShowPopUpPasswordGroup from '../../../components/User/functional-componen
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
+import { hasObjWithProp } from '../../../src/js/Utils/common/checkers';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import {
     addUserToJoinedGroupDB,
@@ -26,7 +27,7 @@ const SearchGroupsScreen = (props: any) => {
         filter
     } = props.route.params;
     const source = axios.CancelToken.source();
-    const { groups, user, dispatchContextApp } = useContext(AppContext) as any;
+    const { user, dispatchContextApp } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [allValues, setAllValues] = useState({
         searchedGroups: [],
@@ -43,15 +44,23 @@ const SearchGroupsScreen = (props: any) => {
     } as any;
 
     function filterGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0;
+        return group.group_name.indexOf(searchedText) >= 0 &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
     }
 
     function filterPublicGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0 && !group.group_password;
+        return group.group_name.indexOf(searchedText) >= 0 &&
+        !group.group_password &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
     }
 
     function filterPrivateGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0 && !!group.group_password;
+        return group.group_name.indexOf(searchedText) >= 0 &&
+        !!group.group_password &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
     }
 
     async function fetchResults() {
@@ -118,7 +127,7 @@ const SearchGroupsScreen = (props: any) => {
                     if (item.group_password) {
                         return handleGroupPassword(item);
                     }
-                    // return joinPublicGroup
+                    return handleSubmit(item);
                 }}
             />
         </View>
@@ -134,21 +143,24 @@ const SearchGroupsScreen = (props: any) => {
     }, []);
 
     async function handleSubmit(item: any) {
-        console.log('Ok', groups, 'Group', item);
-        for (const group of groups) {
-            if (group.group_id !== item.group_id) {
-                groups.push(item);
-                await addUserToJoinedGroupDB(item, user);
-                await saveJoinedUser(item, user);
-                break;
-            }
-        }
-        // saveJoinedUser
-        // await modalRef.current.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
+        try {
+            await addUserToJoinedGroupDB(item, user);
+            await saveJoinedUser(item, user);
 
-        // set to appContext groups without dispaching,
-        // save to database --> invited_groups_ids: [group_id]
-        // return navigation.goBack();
+            await dispatchContextApp(
+                {
+                    type: 'set_new_group',
+                    value: {
+                        group: Object.assign(item, {
+                            group_songs: item.group_songs || []
+                        })
+                    }
+                });
+            await dispatchContextSongs({ type: 'reset_all' });
+            return navigation.goBack();
+        } catch (error) {
+            console.error(error.name, error.message);
+        }
     }
 
     function handleGroupPassword(item: any) {

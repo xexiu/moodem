@@ -1,4 +1,4 @@
-import { find } from 'lodash';
+import { find, get, keys } from 'lodash';
 
 type anyObject = (any | any);
 
@@ -12,4 +12,8 @@ export function hasObjWithProp(obj: anyObject, prop: string, objToSearch: object
 
 export function isNothing(obj: object) {
     return typeof obj === 'undefined' || obj === null;
+}
+
+export function getKeyNumber(obj: object, number = 0 as number) {
+    return get(keys(obj), number);
 }

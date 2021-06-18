@@ -23,7 +23,7 @@ export const initialValue: State = {
     groups: [],
     group: {
         group_name: 'Moodem',
-        group_id: 0,
+        group_id: '0',
         group_songs: []
     },
     isServerError: false,
@@ -48,7 +48,12 @@ export function setNewGroup(result: State, action: actionType) {
     const { value } = action;
     const { group } = value;
 
-    groups.push(group as any);
+    for (const _group of groups as any) {
+        if (_group.group_id !== group.group_id) {
+            groups.push(group as any);
+            break;
+        }
+    }
 
     return { ...result, ...value };
 }
