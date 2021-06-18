@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import { getCurrentYear } from '../../../src/js/Utils/common/date';
 
 const year = getCurrentYear();
@@ -14,7 +15,8 @@ const CopyrightScreen = (props: any) => {
         navigation.setOptions({
             headerMode: 'none',
             unmountOnBlur: true,
-            headerBackTitleVisible: false
+            headerBackTitleVisible: false,
+            unmountInactiveRoutes: true
         });
         return () => {
 
@@ -22,7 +24,7 @@ const CopyrightScreen = (props: any) => {
     }, [isFocused]);
 
     return (
-        <SafeAreaView>
+        <BodyContainer>
             <ScrollView>
                 <View style={{ marginTop: 5, padding: 10 }}>
                     <Text style={{ fontWeight: '600', alignSelf: 'center' }}>Copyright © {year} Moodem</Text>
@@ -59,7 +61,7 @@ const CopyrightScreen = (props: any) => {
                     </Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </BodyContainer>
     );
 };
 

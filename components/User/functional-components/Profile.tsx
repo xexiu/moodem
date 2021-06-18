@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';
@@ -72,14 +74,14 @@ const Profile = (props: any) => {
     };
 
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+        <BodyContainer>
             <Toast
                 position='top'
                 ref={toastRef}
             />
-            <View style={{ marginTop: 30, padding: 10 }}>
-                <BurgerMenuIcon action={() => navigation.openDrawer()} />
-                <VerifyEmailMsg user={user} />
+            <BurgerMenuIcon action={() => navigation.openDrawer()} />
+            <VerifyEmailMsg user={user} />
+            <ScrollView>
                 <ProfileAvatar user={user} navigation={navigation} />
 
                 <View style={{ position: 'relative', flexDirection: 'row', marginBottom: 10 }}>
@@ -225,18 +227,17 @@ const Profile = (props: any) => {
                     <Text style={{ fontSize: 18 }}>Grupos Externos</Text>
                     <Text style={{ fontSize: 12, fontStyle: 'italic' }}>Próximamente...</Text>
                 </View>
-            </View>
-            <View>
-                <CustomButton
-                    btnTitle='Cerrar Sessión!'
-                    btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
-                    btnRaised={false}
-                    shadow={{}}
-                    btnTitleStyle={{ color: '#dd0031', fontSize: 16 }}
-                    action={() => handleLogOut()}
-                />
-            </View>
-        </View>
+            </ScrollView>
+            <KeyboardSpacer />
+            <CustomButton
+                btnTitle='Cerrar Sessión!'
+                btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
+                btnRaised={false}
+                shadow={{}}
+                btnTitleStyle={{ color: '#dd0031', fontSize: 16 }}
+                action={() => handleLogOut()}
+            />
+        </BodyContainer>
     );
 };
 

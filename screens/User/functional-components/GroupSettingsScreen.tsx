@@ -1,14 +1,13 @@
-import React, { memo, useContext, useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
-import { AppContext } from '../../../components/User/store-context/AppContext';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
-import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
 
 const commonInputStyles = {
     height: 30,
@@ -17,13 +16,16 @@ const commonInputStyles = {
     marginTop: 5,
     borderRadius: 3
 };
+const GroupSettingsScreen = (props: any) => {
+    const {
+        group
+    } = props.route.params;
 
-const CreateNewGroupScreen = (props: any) => {
-    const { navigation } = props;
-    const { user, dispatchContextApp } = useContext(AppContext) as any;
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const { handleSubmit, errors, setValue } = useGroupForm();
+    const navigation = useNavigation<any>();
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         navigation.setOptions({
@@ -31,46 +33,9 @@ const CreateNewGroupScreen = (props: any) => {
             unmountOnBlur: true,
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true,
-            title: 'Crear un nuevo grupo'
+            title: 'Ajustes'
         });
     }, []);
-
-    async function onSubmit(dataInput: any) {
-        setIsLoading(true);
-
-        if (dataInput) {
-            if (dataInput.name === 'Moodem') {
-                setIsLoading(false);
-                setErrorText('Nombre Moodem está reservado!');
-                return;
-            }
-            try {
-                const data = await createGroupHandler(dataInput, user);
-                if (data && data.message) {
-                    setIsLoading(false);
-                    setErrorText(data.message);
-                } else {
-                    setIsLoading(false);
-                    setErrorText('');
-                    navigation.goBack();
-                    dispatchContextApp(
-                        {
-                            type: 'set_new_group',
-                            value: {
-                                group: Object.assign(data, {
-                                    group_songs: data.group_songs || []
-                                })
-                            }
-                        });
-                }
-            } catch (err) {
-                setIsLoading(false);
-                setErrorText(err);
-            }
-        } else {
-            setIsLoading(false);
-        }
-    }
 
     return (
         <BodyContainer>
@@ -162,7 +127,7 @@ const CreateNewGroupScreen = (props: any) => {
                 <CustomButton
                     btnTitle='Crear Grupo'
                     btnStyle={[btnStyleDefault, { marginTop: 15 }]}
-                    action={handleSubmit(onSubmit)}
+                    action={() => {}}
                 />
             }
             {
@@ -176,4 +141,4 @@ const CreateNewGroupScreen = (props: any) => {
     );
 };
 
-export default memo(CreateNewGroupScreen);
+export default memo(GroupSettingsScreen);

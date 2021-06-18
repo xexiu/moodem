@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 
 const FAQScreen = (props: any) => {
     const { navigation } = props;
@@ -11,6 +12,7 @@ const FAQScreen = (props: any) => {
         navigation.setOptions({
             headerMode: 'none',
             unmountOnBlur: true,
+            unmountInactiveRoutes: true,
             headerBackTitleVisible: false
         });
         return () => {
@@ -19,7 +21,7 @@ const FAQScreen = (props: any) => {
     }, [isFocused]);
 
     return (
-        <SafeAreaView>
+        <BodyContainer>
             <ScrollView>
                 <View style={{ marginTop: 5, padding: 10 }}>
                     <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>1. ¿Cómo usar Moodem?</Text>
@@ -36,7 +38,7 @@ const FAQScreen = (props: any) => {
                     <Text style={{ marginTop: 10, paddingBottom: 10 }}>El límite es indefinido siempre y cuando no hay un uso excesivo de ello y el tráfico no sobrepasa los límites de nuestras base de datos.</Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </BodyContainer>
     );
 };
 

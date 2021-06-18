@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import Button from '../../../components/User/functional-components/Button';
 
 function checkLength(songs: any) {
     if (songs) {
@@ -11,22 +12,17 @@ function checkLength(songs: any) {
 
 export const GroupSongsIcon = ({ songs }: any) => {
     return (
-        <View style={{ position: 'relative' }}>
-            <Icon
-                containerStyle={{
-                    position: 'absolute',
-                    bottom: 12,
-                    left: 110,
-                    width: 50
-                }}
-                disabled
-                disabledStyle={{ backgroundColor: 'transparent' }}
-                name={'my-library-music'}
-                type={'FontAwesome'}
-                size={15}
-                color='#ddd'
-            />
-            <Text style={{ position: 'absolute', left: 145, top: -27, fontSize: 12 }}>{checkLength(songs)}</Text>
-        </View>
+        <Button
+            containerStyle={{ marginRight: 7, marginTop: 10 }}
+            textStyle={{ fontSize: 12, paddingRight: 10, marginTop: 10 }}
+            disabled
+            disabledStyle={{ backgroundColor: 'transparent' }}
+            iconReverse={false}
+            iconName={'my-library-music'}
+            iconType={'FontAwesome'}
+            iconColor='#ddd'
+            iconSize={15}
+            text={checkLength(songs)}
+        />
     );
 };

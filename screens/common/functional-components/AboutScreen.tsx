@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 
 const AboutScreen = (props: any) => {
     const { navigation } = props;
@@ -12,6 +13,7 @@ const AboutScreen = (props: any) => {
             title: 'Sobre Nosotros',
             headerMode: 'none',
             unmountOnBlur: true,
+            unmountInactiveRoutes: true,
             headerBackTitleVisible: false
         });
         return () => {
@@ -20,7 +22,7 @@ const AboutScreen = (props: any) => {
     }, [isFocused]);
 
     return (
-        <SafeAreaView>
+        <BodyContainer>
             <ScrollView>
                 <View style={{ marginTop: 5, padding: 10 }}>
                     <Text style={{ fontWeight: '600', alignSelf: 'center' }}>Moodem</Text>
@@ -33,7 +35,7 @@ const AboutScreen = (props: any) => {
                     <Text style={{ marginTop: 10, paddingBottom: 10 }}>Muchas gracias!</Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </BodyContainer>
     );
 };
 

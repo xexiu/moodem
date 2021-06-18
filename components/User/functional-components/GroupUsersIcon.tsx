@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { Icon } from 'react-native-elements';
+import Button from '../../../components/User/functional-components/Button';
 
 function checkLength(users: any) {
     if (users) {
@@ -11,22 +10,17 @@ function checkLength(users: any) {
 
 export const GroupUsersIcon = ({ users }: any) => {
     return (
-        <View style={{ position: 'relative' }}>
-            <Icon
-                containerStyle={{
-                    position: 'absolute',
-                    bottom: 12,
-                    left: 60,
-                    width: 50
-                }}
-                disabled
-                disabledStyle={{ backgroundColor: 'transparent' }}
-                name={'supervised-user-circle'}
-                type={'FontAwesome'}
-                size={15}
-                color='#ddd'
-            />
-            <Text style={{ position: 'absolute', left: 95, top: -27, fontSize: 12 }}>{checkLength(users)}</Text>
-        </View>
+        <Button
+            containerStyle={{ marginTop: 10}}
+            textStyle={{ fontSize: 12, paddingLeft: 5, paddingRight: 10, marginTop: 10 }}
+            disabled
+            disabledStyle={{ backgroundColor: 'transparent' }}
+            iconReverse={false}
+            iconName={'supervised-user-circle'}
+            iconType={'FontAwesome'}
+            iconColor='#ddd'
+            iconSize={15}
+            text={checkLength(users)}
+        />
     );
 };

@@ -33,7 +33,7 @@ class App extends PureComponent<AppProps, AppState> {
 
     constructor(props: any) {
         const transaction = Sentry.startTransaction({
-            name: 'App Component',
+            name: 'Main App Component',
             sampled: true
         });
         transaction.sampled = true;

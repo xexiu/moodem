@@ -5,7 +5,7 @@ import React, { memo } from 'react';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import BgImage from '../../../components/common/functional-components/BgImage';
-import Login from '../../../components/Guest/class-components/Login';
+import Login from '../../../components/Guest/functional-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
 
 const GuestScreen = (props: any) => {
@@ -16,6 +16,7 @@ const GuestScreen = (props: any) => {
         navigation.setOptions({
             headerShown: false,
             unmountOnBlur: true,
+            unmountInactiveRoutes: true,
             headerMode: 'none'
         });
         return () => {

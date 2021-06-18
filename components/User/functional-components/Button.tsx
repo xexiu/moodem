@@ -3,14 +3,6 @@ import React, { memo } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + 'K';
-    if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + 'M';
-    if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + 'B';
-    if (n >= 1e12) return +(n / 1e12).toFixed(1) + 'T';
-};
-
 const Button = (props: any) => {
     const {
         text,
@@ -22,7 +14,9 @@ const Button = (props: any) => {
         iconStyle = {},
         iconReverse = true,
         disabled,
-        containerStyle
+        containerStyle,
+        disabledStyle,
+        textStyle = { marginRight: 4, marginLeft: 4, fontWeight: '600' }
     } = props;
 
     return (
@@ -36,6 +30,7 @@ const Button = (props: any) => {
             }}
         >
             <Icon
+                disabledStyle={disabledStyle}
                 iconStyle={iconStyle}
                 reverse={iconReverse}
                 containerStyle={containerStyle}
@@ -46,7 +41,7 @@ const Button = (props: any) => {
                 color={disabled ? '#999' : iconColor}
                 onPress={action}
             />
-            <Text style={{ marginRight: 4, marginLeft: 4, fontWeight: '600' }}>{formatCash(text)}</Text>
+            <Text style={textStyle}>{text}</Text>
         </TouchableOpacity>
     );
 };
@@ -64,7 +59,9 @@ Button.propTypes = {
     iconSize: PropTypes.number,
     iconReverse: PropTypes.bool,
     iconStyle: PropTypes.object,
-    action: PropTypes.func
+    action: PropTypes.func,
+    disabledStyle: PropTypes.object,
+    textStyle: PropTypes.object
 };
 
 export default memo(Button);

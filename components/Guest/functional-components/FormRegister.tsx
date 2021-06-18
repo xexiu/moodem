@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import React, { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { registerText } from '../../../src/css/styles/register';
 import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
@@ -31,8 +31,7 @@ const schema = yup.object().shape({
         .required(FORM_FIELDS_REGISTER.confirmar_password.help)
 });
 
-const FormRegister = (props: any) => {
-    const { modalRef } = props;
+const FormRegister = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({

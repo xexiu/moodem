@@ -13,6 +13,7 @@ const SearchGroupSongScreen = (props: any) => {
             headerMode: 'none',
             unmountOnBlur: true,
             headerBackTitleVisible: false,
+            unmountInactiveRoutes: true,
             title: `Lista Canciones: ${group.group_name}`
         });
         toastRef.current.show('Próximamente...', DURATION.FOREVER);

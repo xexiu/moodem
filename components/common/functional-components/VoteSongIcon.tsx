@@ -1,10 +1,18 @@
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Button from '../../../components/User/functional-components/Button';
 import { saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 
 const controller = new AbortController();
+
+const format = (n: number) => {
+    if (n < 1e3) return n;
+    if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + 'K';
+    if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e12) return +(n / 1e12).toFixed(1) + 'T';
+};
 
 const VoteSongIcon = (song: any) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
@@ -38,7 +46,7 @@ const VoteSongIcon = (song: any) => {
                 <Button
                     containerStyle={{}}
                     disabled={disableFn()}
-                    text={song.voted_users ? song.voted_users.length : 0}
+                    text={format(song.voted_users ? song.voted_users.length : 0)}
                     iconName={'thumbs-up'}
                     iconType={'entypo'}
                     iconColor={'#90c520'}

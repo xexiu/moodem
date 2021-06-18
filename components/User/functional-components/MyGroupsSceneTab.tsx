@@ -10,6 +10,7 @@ import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupSongsIcon } from './GroupSongsIcon';
 import { GroupUsersIcon } from './GroupUsersIcon';
+import { SettingsGroupIcon } from './SettingsGroupIcon';
 
 const MyGroupsSceneTab = () => {
     const { groups, user, dispatchContextApp } = useContext(AppContext) as any;
@@ -44,6 +45,17 @@ const MyGroupsSceneTab = () => {
                         backgroundColor: 'transparent'
                     }
                 }}
+                buttonGroup={[
+                    {
+                        element: () => <GroupUsersIcon users={item.group_users} />
+                    },
+                    {
+                        element: () => <GroupSongsIcon songs={item.group_songs} />
+                    },
+                    item.group_user_owner_id === user.uid && {
+                        element: () => <SettingsGroupIcon group={item} />
+                    }
+                ]}
                 action={async () => {
                     await dispatchContextApp(
                         {
@@ -58,8 +70,6 @@ const MyGroupsSceneTab = () => {
                     return navigation.openDrawer();
                 }}
             />
-            <GroupUsersIcon users={item.group_users} />
-            <GroupSongsIcon songs={item.group_songs} />
         </View>
     ), []);
 

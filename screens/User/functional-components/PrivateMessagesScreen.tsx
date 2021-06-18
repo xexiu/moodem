@@ -11,6 +11,7 @@ const PrivateMessagesScreen = (props: any) => {
             headerMode: 'none',
             unmountOnBlur: true,
             headerBackTitleVisible: false,
+            unmountInactiveRoutes: true,
             title: 'Mensajes Privados'
         });
         toastRef.current.show('Próximamente...', DURATION.FOREVER);

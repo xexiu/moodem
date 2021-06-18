@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import CustomButton from '../../common/functional-components/CustomButton';
 import CustomModal from '../../common/functional-components/CustomModal';
-import FormRegister from '../class-components/FormRegister';
+import FormRegister from '../functional-components/FormRegister';
 
 const Register = () => {
     const modalRef = useRef() as any;
@@ -13,7 +13,7 @@ const Register = () => {
             return {
                 ...prev,
                 isVisible: true,
-                element: () => <FormRegister modalRef={modalRef.current} />
+                element: () => <FormRegister />
             };
         });
     }

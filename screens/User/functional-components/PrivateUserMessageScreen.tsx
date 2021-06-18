@@ -13,6 +13,7 @@ const PrivateUserMessageScreen = (props: any) => {
             headerMode: 'none',
             unmountOnBlur: true,
             headerBackTitleVisible: false,
+            unmountInactiveRoutes: true,
             title: `Chat Privado con ${user.displayName}`
         });
         toastRef.current.show('Próximamente...', DURATION.FOREVER);

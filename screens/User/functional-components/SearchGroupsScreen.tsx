@@ -89,6 +89,7 @@ const SearchGroupsScreen = (props: any) => {
             headerMode: 'none',
             unmountOnBlur: true,
             headerBackTitleVisible: false,
+            unmountInactiveRoutes: true,
             title: `${allValues.searchedGroups.length} encontrado(s)`
         });
         fetchResults();
@@ -185,9 +186,6 @@ const SearchGroupsScreen = (props: any) => {
                 searchedGroups: [],
                 isLoading: true
             };
-        });
-        navigation.setOptions({
-            unmountInactiveRoutes: true
         });
         source.cancel('SearchGroupsScreen Component got unmounted');
         navigation.goBack();

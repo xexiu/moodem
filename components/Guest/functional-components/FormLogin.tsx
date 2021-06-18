@@ -3,13 +3,13 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import * as yup from 'yup';
-import CustomButton from '../../../components/common/functional-components/CustomButton';
-import CustomModal from '../../../components/common/functional-components/CustomModal';
-import PreLoader from '../../../components/common/functional-components/PreLoader';
-import ResetPassword from '../../../components/Guest/class-components/ResetPassword';
+import ResetPassword from '../../../components/Guest/functional-components/ResetPassword';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
 import { loginHandler } from '../../../src/js/Utils/Helpers/actions/loginHandlers';
+import CustomButton from '../../common/functional-components/CustomButton';
+import CustomModal from '../../common/functional-components/CustomModal';
+import PreLoader from '../../common/functional-components/PreLoader';
 
 const controller = new AbortController();
 

@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import React, {memo, useEffect} from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 
 const PrivacyScreen = (props: any) => {
     const { navigation } = props;
@@ -12,6 +13,7 @@ const PrivacyScreen = (props: any) => {
             title: 'Privacidad',
             headerMode: 'none',
             unmountOnBlur: true,
+            unmountInactiveRoutes: true,
             headerBackTitleVisible: false
         });
         return () => {
@@ -19,7 +21,7 @@ const PrivacyScreen = (props: any) => {
         };
     }, [isFocused]);
     return (
-        <SafeAreaView>
+        <BodyContainer>
             <ScrollView>
                 <View style={{ marginTop: 5, padding: 10 }}>
                     <Text style={{ marginBottom: 10 }}>Esta política se basa en nuestro objetivo fundamental de ofrecer a nuestros visitantes información y recursos de calidad y al mismo tiempo mantener el anonimato individual y la privacidad personal. La siguiente declaración describe la política de privacidad de la app (Moodem).</Text>
@@ -32,7 +34,7 @@ const PrivacyScreen = (props: any) => {
                     <Text>Si tiene otras preguntas o preocupaciones sobre nuestras políticas y prácticas de privacidad, por favor envíe un correo electrónico a sergiu.mironescu@gmail.com</Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </BodyContainer>
     );
 };
 
