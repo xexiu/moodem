@@ -9,7 +9,7 @@ import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
-sentryInit();
+// sentryInit(); disable sentry temporally
 
 const controller = new AbortController();
 LogBox.ignoreAllLogs();

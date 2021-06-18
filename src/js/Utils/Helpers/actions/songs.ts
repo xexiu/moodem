@@ -16,7 +16,7 @@ export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     });
 }
 
-export const saveSongOnDb = async (song: any, user: any, group: any) => {
+export async function saveSongOnDb(song: any, user: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
@@ -44,9 +44,9 @@ export const saveSongOnDb = async (song: any, user: any, group: any) => {
     }
 
     return refGroup.update(_group);
-};
+}
 
-export const updateSongExpiredOnDB = async (song: any, group: any) => {
+export async function updateSongExpiredOnDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const snapshot = await refGroup.once('value');
@@ -63,10 +63,10 @@ export const updateSongExpiredOnDB = async (song: any, group: any) => {
         return refGroup.update(dbgroup);
     }
 
-    console.error('updateSongEpireOnDB error')
-};
+    console.error('updateSongEpireOnDB error');
+}
 
-export const saveVotesForSongOnDb = async (song: any, user: any, group: any) => {
+export async function saveVotesForSongOnDb(song: any, user: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
@@ -106,9 +106,9 @@ export const saveVotesForSongOnDb = async (song: any, user: any, group: any) => 
     });
 
     return refGroup.update(_group);
-};
+}
 
-export const removeSongFromDB = async(song: any, group: any) => {
+export async function removeSongFromDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
@@ -121,4 +121,4 @@ export const removeSongFromDB = async(song: any, group: any) => {
     }
 
     return refGroup.update(_group);
-};
+}

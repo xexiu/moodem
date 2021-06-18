@@ -5,7 +5,22 @@ import firebase from '../services/firebase';
 const refAllGroups = firebase.database().ref('Groups');
 const refGroupMoodem = firebase.database().ref('Groups/Moodem');
 
-export const createGroupHandler = async (validate: any, user: any) => {
+export async function updateUserGroup(group: any) {
+
+}
+
+export async function deleteGroupForEver(group: any) {
+
+    // TODO: delete also users that have joined
+    try {
+        const refOwnedGroups = await firebase.database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        await refOwnedGroups.remove();
+    } catch (error) {
+        console.error('deleteGroupForEver Error', JSON.stringify(error));
+    }
+}
+
+export async function createGroupHandler (validate: any, user: any) {
     if (validate.name === 'Moodem') {
         console.log('Group Name Moodem is reserved', 'Error: ', validate.group_name);
         return;
@@ -33,9 +48,9 @@ export const createGroupHandler = async (validate: any, user: any) => {
     } catch (error) {
         console.error('createGroupHandler Error', JSON.stringify(error));
     }
-};
+}
 
-export const getJoinedGroups = async (user: any) => {
+export async function getJoinedGroups(user: any) {
     const invitedGroups = [] as any;
 
     try {
@@ -58,9 +73,9 @@ export const getJoinedGroups = async (user: any) => {
     } catch (error) {
         console.error('getJoinedGroups Error', JSON.stringify(error));
     }
-};
+}
 
-export const getOwnedGroupsFromDatabase = async (user: any) => {
+export async function getOwnedGroupsFromDatabase (user: any) {
     const groups = [] as any;
     try {
         const refOwnedGroups = await firebase.database().ref(`Groups/${user.uid}`);
@@ -78,9 +93,9 @@ export const getOwnedGroupsFromDatabase = async (user: any) => {
     } catch (error) {
         console.error('getOwnedGroupsFromDatabase Error', JSON.stringify(error));
     }
-};
+}
 
-export const getAllGroups = async () => {
+export async function getAllGroups() {
     const allGroups = [] as any;
 
     try {
@@ -106,9 +121,9 @@ export const getAllGroups = async () => {
     } catch (error) {
         console.error('getAllGroups Error', JSON.stringify(error));
     }
-};
+}
 
-export const getDefaultGroup = async () => {
+export async function getDefaultGroup () {
     try {
         const snapshot = await refGroupMoodem.once('value');
         return Object.values(snapshot.val() || []);
@@ -117,7 +132,7 @@ export const getDefaultGroup = async () => {
     }
 };
 
-export const getUserGroups = async (user: any) => {
+export async function getUserGroups(user: any) {
     try {
         const defaultGroup = await getDefaultGroup();
         const ownedGroups = await getOwnedGroupsFromDatabase(user);

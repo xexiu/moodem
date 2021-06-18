@@ -1,13 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
+import { AppContext } from '../../../components/User/store-context/AppContext';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
+import { deleteGroupForEver } from '../../../src/js/Utils/Helpers/actions/groups';
 
 const commonInputStyles = {
     height: 30,
@@ -20,7 +22,7 @@ const GroupSettingsScreen = (props: any) => {
     const {
         group
     } = props.route.params;
-
+    const { dispatchContextApp } = useContext(AppContext) as any;
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const { handleSubmit, errors, setValue } = useGroupForm();
@@ -37,6 +39,32 @@ const GroupSettingsScreen = (props: any) => {
         });
     }, []);
 
+    function handleUserAvatar() {
+        Alert.alert(
+            `Seguro que quiere elimar el grupo? \n\n ${group.group_name} \n\n Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo.`,
+            undefined,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                { text: 'OK', onPress: async () => {
+                    await deleteGroupForEver(group);
+                    await dispatchContextApp(
+                        {
+                            type: 'delete_owned_group',
+                            value: {
+                                group
+                            }
+                        });
+                    return navigation.goBack();
+                } }
+            ],
+            { cancelable: false }
+        );
+    }
+
     return (
         <BodyContainer>
             <ScrollView>
@@ -46,7 +74,7 @@ const GroupSettingsScreen = (props: any) => {
                         fontSize: 15,
                         fontWeight: '500'
                     }}
-                >Nombre del grupo:
+                >Editar nombre del grupo:
                 </Text>
                 <TextInput
                     style={[
@@ -59,7 +87,7 @@ const GroupSettingsScreen = (props: any) => {
                     autoCorrect={false}
                     autoFocus
                     maxLength={50}
-                    placeholder={FORM_FIELDS_CREATE_GROUP.group_name.help}
+                    placeholder={group.group_name}
                 />
                 <Text
                     style={{
@@ -70,7 +98,7 @@ const GroupSettingsScreen = (props: any) => {
                 >
                     {errors.name && errors.name.message}
                 </Text>
-                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Descripción del grupo (opcional):</Text>
+                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Editar descripción del grupo (opcional):</Text>
                 <TextInput
                     // tslint:disable-next-line:max-line-length
                     style={[errors.description && errors.description.message ? [commonInputStyles, { borderColor: '#D84A05', height: 80 }] : [commonInputStyles, { height: 80 }]]}
@@ -121,13 +149,21 @@ const GroupSettingsScreen = (props: any) => {
                         marginBottom: 5
                     }}>{errors.confirm_password && errors.confirm_password.message}
                 </Text>
+                <CustomButton
+                    btnTitle='Eliminar Grupo!'
+                    btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
+                    btnRaised={false}
+                    shadow={{}}
+                    btnTitleStyle={{ color: '#dd0031', fontSize: 16 }}
+                    action={handleUserAvatar}
+                />
             </ScrollView>
             {isLoading ?
                 <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                 <CustomButton
-                    btnTitle='Crear Grupo'
+                    btnTitle='Editar Grupo'
                     btnStyle={[btnStyleDefault, { marginTop: 15 }]}
-                    action={() => {}}
+                    action={() => { }}
                 />
             }
             {
