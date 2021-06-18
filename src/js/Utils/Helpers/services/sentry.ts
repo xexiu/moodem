@@ -1,6 +1,7 @@
 import { SENTRY_KEY } from '@env';
 import { CaptureConsole } from '@sentry/integrations';
 import * as Sentry from '@sentry/react-native';
+const routingInstrumentation = new Sentry.ReactNavigationV5Instrumentation();
 
 export const sentryInit = () => Sentry.init({
     dsn: SENTRY_KEY,
@@ -8,7 +9,13 @@ export const sentryInit = () => Sentry.init({
     integrations: [
         new CaptureConsole({
             levels: ['error']
+        }),
+        new Sentry.ReactNativeTracing({
+            tracingOrigins: ['localhost', 'my-site-url.com', /^\//],
+            routingInstrumentation
+      // ... other options
         })
     ],
+    tracesSampleRate: 0.1,
     attachStacktrace: true
 });

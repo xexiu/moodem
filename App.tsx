@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
+import * as Sentry from '@sentry/react-native';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
@@ -8,7 +9,7 @@ import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
-// sentryInit();
+sentryInit();
 
 const controller = new AbortController();
 LogBox.ignoreAllLogs();
@@ -31,6 +32,12 @@ class App extends PureComponent<AppProps, AppState> {
     public netinfoUnsubscribe: any;
 
     constructor(props: any) {
+        const transaction = Sentry.startTransaction({
+            name: 'App Component',
+            sampled: true
+        });
+        transaction.sampled = true;
+        transaction.finish();
         super(props);
         this.state = {
             hasInternetConnection: true
