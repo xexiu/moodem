@@ -173,7 +173,12 @@ const SearchGroupsScreen = (props: any) => {
                     ref={passwordPopUp}
                     item={item}
                     handleChangeText={memoizedChangeText}
-                    handleSubmit={() => handleSubmit(item)}
+                    handleSubmit={async () => {
+                        passwordPopUp.current.setAllValues((prevState: any) => ({ ...prevState, isLoading: true }));
+                        await handleSubmit(item);
+                        modalRef.current.setAllValues((prevState: any) => ({ ...prevState, isVisible: false }));
+                        passwordPopUp.current.setAllValues((prevState: any) => ({ ...prevState, isLoading: false }));
+                    }}
                 />
             };
         });

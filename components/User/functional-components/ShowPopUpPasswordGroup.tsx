@@ -1,6 +1,7 @@
 import React, { forwardRef, memo, useImperativeHandle, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
+import PreLoader from '../../../components/common/functional-components/PreLoader';
 
 const ShowPopUpPasswordGroup = forwardRef((props: any, ref: any) => {
     const {
@@ -11,13 +12,15 @@ const ShowPopUpPasswordGroup = forwardRef((props: any, ref: any) => {
 
     const [allValues, setAllValues] = useState({
         password: '',
-        error: ''
+        error: '',
+        isLoading: false
     });
 
     useImperativeHandle(ref, () => {
         return {
             password: allValues.password,
             error: allValues.error,
+            isLoading: allValues.isLoading,
             setAllValues
         };
     }, [allValues.password, allValues.error]);
@@ -51,11 +54,14 @@ const ShowPopUpPasswordGroup = forwardRef((props: any, ref: any) => {
                 placeholder={`Contraseña grupo: ${item.group_name}`}
                 autoFocus
             />
-            <CustomButton
-                btnTitle='OK'
-                btnDisabled={allValues.password !== item.group_password}
-                action={handleSubmit}
-            />
+            {allValues.isLoading ?
+                <PreLoader containerStyle={{ alignItems: 'center' }} /> :
+                <CustomButton
+                    btnTitle='OK'
+                    btnDisabled={allValues.password !== item.group_password}
+                    action={handleSubmit}
+                />
+            }
         </View>
     );
 });

@@ -142,8 +142,8 @@ const GroupSettingsScreen = (props: any) => {
                 <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña:</Text>
                 {
                     !group.group_password ?
-                    <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!</Text> :
-                    <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Actualizar contraseña!</Text>
+                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!</Text> :
+                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Actualizar contraseña!</Text>
                 }
                 <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!</Text>
                 <TextInput
@@ -179,7 +179,9 @@ const GroupSettingsScreen = (props: any) => {
                         color: '#D84A05',
                         marginTop: 5,
                         marginBottom: 5
-                    }}>{errors.confirm_password && errors.confirm_password.message}
+                    }}
+                >
+                    {errors.confirm_password && errors.confirm_password.message}
                 </Text>
                 <CustomButton
                     btnTitle='Eliminar Grupo!'
