@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
@@ -32,6 +32,8 @@ const schema = yup.object().shape({
 });
 
 function useGroupForm() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorText, setErrorText] = useState('');
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: yupResolver(schema)
     });
@@ -43,7 +45,7 @@ function useGroupForm() {
         register('confirm_password');
     }, [register]);
 
-    return { handleSubmit, errors, setValue };
+    return { handleSubmit, errors, errorText, isLoading, setValue, setIsLoading, setErrorText };
 }
 
 export default useGroupForm;

@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
@@ -21,9 +21,15 @@ const commonInputStyles = {
 const CreateNewGroupScreen = (props: any) => {
     const { navigation } = props;
     const { user, dispatchContextApp } = useContext(AppContext) as any;
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorText, setErrorText] = useState('');
-    const { handleSubmit, errors, setValue } = useGroupForm();
+    const {
+        handleSubmit,
+        errors,
+        errorText,
+        isLoading,
+        setValue,
+        setErrorText,
+        setIsLoading
+    } = useGroupForm();
 
     useEffect(() => {
         navigation.setOptions({
@@ -36,39 +42,24 @@ const CreateNewGroupScreen = (props: any) => {
     }, []);
 
     async function onSubmit(dataInput: any) {
-        setIsLoading(true);
-
         if (dataInput) {
-            if (dataInput.name === 'Moodem') {
-                setIsLoading(false);
-                setErrorText('Nombre Moodem está reservado!');
-                return;
-            }
             try {
+                setIsLoading(true);
                 const data = await createGroupHandler(dataInput, user);
-                if (data && data.message) {
-                    setIsLoading(false);
-                    setErrorText(data.message);
-                } else {
-                    setIsLoading(false);
-                    setErrorText('');
-                    navigation.goBack();
-                    dispatchContextApp(
-                        {
-                            type: 'set_new_group',
-                            value: {
-                                group: Object.assign(data, {
-                                    group_songs: data.group_songs || []
-                                })
-                            }
-                        });
-                }
-            } catch (err) {
+                await dispatchContextApp(
+                    {
+                        type: 'set_new_group',
+                        value: {
+                            group: data
+                        }
+                    });
                 setIsLoading(false);
-                setErrorText(err);
+                setErrorText('');
+                return navigation.goBack();
+            } catch (error) {
+                setIsLoading(false);
+                setErrorText(error);
             }
-        } else {
-            setIsLoading(false);
         }
     }
 

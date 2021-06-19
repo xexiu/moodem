@@ -10,6 +10,8 @@ import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupSongsIcon } from './GroupSongsIcon';
 import { GroupUsersIcon } from './GroupUsersIcon';
+import { LeaveGroupIcon } from './LeaveGroupIcon';
+import { SettingsGroupIcon } from './SettingsGroupIcon';
 
 const PublicGroupsSceneTab = () => {
     const { groups, user, dispatchContextApp } = useContext(AppContext) as any;
@@ -44,6 +46,21 @@ const PublicGroupsSceneTab = () => {
                         backgroundColor: 'transparent'
                     }
                 }}
+                buttonGroup={[
+                    {
+                        element: () => <GroupUsersIcon users={item.group_users} />
+                    },
+                    {
+                        element: () => <GroupSongsIcon songs={item.group_songs} />
+                    },
+                    item.group_user_owner_id === user.uid ?
+                    {
+                        element: () => <SettingsGroupIcon group={item} />
+                    } :
+                    {
+                        element: () => <LeaveGroupIcon group={item} />
+                    }
+                ]}
                 action={async () => {
                     await dispatchContextApp(
                         {
@@ -58,8 +75,6 @@ const PublicGroupsSceneTab = () => {
                     return navigation.openDrawer();
                 }}
             />
-            <GroupUsersIcon users={item.group_users} />
-            <GroupSongsIcon songs={item.group_songs} />
         </View>
     ), []);
 
@@ -92,7 +107,7 @@ const PublicGroupsSceneTab = () => {
                 customStyleContainer={{ marginLeft: 0 }}
                 placeholder='Buscar grupos públicos...'
                 cancelSearch={() => {
-                    console.log('Search Cancel')
+                    console.log('Search Cancel');
                 }}
                 onEndEditingSearch={handleEndSearch}
             />

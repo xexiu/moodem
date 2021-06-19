@@ -5,8 +5,23 @@ import firebase from '../services/firebase';
 const refAllGroups = firebase.database().ref('Groups');
 const refGroupMoodem = firebase.database().ref('Groups/Moodem');
 
-export async function updateUserGroup(group: any) {
+export async function updateUserGroup(group: any, params: any) {
+    try {
+        const refOwnedGroups = await firebase.database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        const snapshot = await refOwnedGroups.once('value');
+        const dbgroup = snapshot.val();
 
+        Object.assign(dbgroup, {
+            group_name: params.name ? params.name : dbgroup.group_name,
+            group_description: params.description ? params.description : dbgroup.group_description,
+            group_password: params.password ? params.password : dbgroup.group_password,
+            group_avatar: params.avatar ? params.avatar : dbgroup.group_avatar
+        });
+        await refOwnedGroups.update(dbgroup);
+        return dbgroup;
+    } catch (error) {
+        console.error('deleteGroupForEver Error', JSON.stringify(error));
+    }
 }
 
 export async function deleteGroupForEver(group: any) {
@@ -130,7 +145,7 @@ export async function getDefaultGroup () {
     } catch (error) {
         console.error('getDefaultGroup Error', JSON.stringify(error));
     }
-};
+}
 
 export async function getUserGroups(user: any) {
     try {
@@ -143,7 +158,7 @@ export async function getUserGroups(user: any) {
     } catch (error) {
         console.error('getUserGroups Error', JSON.stringify(error));
     }
-};
+}
 
 export async function addUserToJoinedGroupDB(group: any, user: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;

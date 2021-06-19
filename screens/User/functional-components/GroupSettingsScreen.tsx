@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
 import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
@@ -9,7 +9,7 @@ import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
-import { deleteGroupForEver } from '../../../src/js/Utils/Helpers/actions/groups';
+import { deleteGroupForEver, updateUserGroup } from '../../../src/js/Utils/Helpers/actions/groups';
 
 const commonInputStyles = {
     height: 30,
@@ -23,11 +23,16 @@ const GroupSettingsScreen = (props: any) => {
         group
     } = props.route.params;
     const { dispatchContextApp } = useContext(AppContext) as any;
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorText, setErrorText] = useState('');
-    const { handleSubmit, errors, setValue } = useGroupForm();
+    const {
+        handleSubmit,
+        errors,
+        errorText,
+        isLoading,
+        setValue,
+        setErrorText,
+        setIsLoading
+    } = useGroupForm();
     const navigation = useNavigation<any>();
-    const toastRef = useRef() as any;
 
     useEffect(() => {
         navigation.setOptions({
@@ -41,7 +46,7 @@ const GroupSettingsScreen = (props: any) => {
 
     function handleUserAvatar() {
         Alert.alert(
-            `Seguro que quiere elimar el grupo? \n\n ${group.group_name} \n\n Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo.`,
+            `Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo. \n\n ${group.group_name} \n\n ¿Seguro que quiere eliminar este grupo de tú lista?`,
             undefined,
             [
                 {
@@ -49,20 +54,44 @@ const GroupSettingsScreen = (props: any) => {
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel'
                 },
-                { text: 'OK', onPress: async () => {
-                    await deleteGroupForEver(group);
-                    await dispatchContextApp(
-                        {
-                            type: 'delete_owned_group',
-                            value: {
-                                group
-                            }
-                        });
-                    return navigation.goBack();
-                } }
+                {
+                    text: 'OK', onPress: async () => {
+                        await deleteGroupForEver(group);
+                        await dispatchContextApp(
+                            {
+                                type: 'delete_owned_group',
+                                value: {
+                                    group
+                                }
+                            });
+                        return navigation.goBack();
+                    }
+                }
             ],
             { cancelable: false }
         );
+    }
+
+    async function onSubmit(dataInput: any) {
+        if (dataInput) {
+            try {
+                setIsLoading(true);
+                const data = await updateUserGroup(group, dataInput);
+                await dispatchContextApp(
+                    {
+                        type: 'update_owned_group',
+                        value: {
+                            group: data
+                        }
+                    });
+                setIsLoading(false);
+                setErrorText('');
+                return navigation.goBack();
+            } catch (error) {
+                setIsLoading(false);
+                setErrorText(error);
+            }
+        }
     }
 
     return (
@@ -111,8 +140,11 @@ const GroupSettingsScreen = (props: any) => {
                     placeholder={FORM_FIELDS_CREATE_GROUP.group_description.help}
                 />
                 <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña:</Text>
-                <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Crear un grupo público: No introducir contraseña!</Text>
-                <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Crear un grupo privado: Crear una contraseña!</Text>
+                {
+                    !group.group_password ?
+                    <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!</Text> :
+                    <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Actualizar contraseña!</Text>
+                }
                 <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!</Text>
                 <TextInput
                     // tslint:disable-next-line:max-line-length
@@ -163,7 +195,7 @@ const GroupSettingsScreen = (props: any) => {
                 <CustomButton
                     btnTitle='Editar Grupo'
                     btnStyle={[btnStyleDefault, { marginTop: 15 }]}
-                    action={() => { }}
+                    action={handleSubmit(onSubmit)}
                 />
             }
             {

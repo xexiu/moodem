@@ -2,8 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import Button from '../../../components/User/functional-components/Button';
 
-export const SettingsGroupIcon = (props: any) => {
-    const { group } = props;
+export const SettingsGroupIcon = ({ group }: any) => {
     const navigation = useNavigation<any>();
 
     return (
@@ -18,7 +17,7 @@ export const SettingsGroupIcon = (props: any) => {
             iconReverse={false}
             iconName={'settings'}
             iconType={'FontAwesome'}
-            iconColor='#000'
+            iconColor='#1E90FF'
             iconSize={15}
         />
     );

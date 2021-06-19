@@ -2,23 +2,13 @@ import React, { createContext, useReducer } from 'react';
 import {
     actionType,
     AppProps,
+    deleteOwnedGroup,
     initialValue,
     setNewGroup,
     State,
-    updateCommonState
+    updateCommonState,
+    updateOwnedGroup
 } from './actions/app';
-
-function deleteOwnedGroup(result: State, action: actionType) {
-    const { groups } = result;
-    const { value } = action;
-    const { group } = value;
-
-    const indexInArray = groups.findIndex((_group: any) => _group.group_id === group.group_id);
-    groups.splice(indexInArray, 1);
-    value.group = groups[0] as any;
-
-    return { ...result, ...value };
-}
 
 const MAP_ACTIONS = {
     server_error: updateCommonState,
@@ -26,7 +16,8 @@ const MAP_ACTIONS = {
     guest: updateCommonState,
     set_current_group: updateCommonState,
     set_new_group: setNewGroup,
-    delete_owned_group: deleteOwnedGroup
+    delete_owned_group: deleteOwnedGroup,
+    update_owned_group: updateOwnedGroup
 } as any;
 
 function updateState(result: State, action: actionType) {
