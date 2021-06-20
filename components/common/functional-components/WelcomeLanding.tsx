@@ -15,24 +15,12 @@ const WelcomeLanding = (props: any) => {
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef() as any;
 
-    const getUserBackOnline = (data: any) => {
-        if (data !== 'active') {
-            socket.open();
-            socket.connect();
-        } else {
-            socket.open();
-            socket.connect();
-        }
-    };
-
     useEffect(() => {
-        AppState.addEventListener('change', getUserBackOnline);
         socket.on('connect_error', getConnectionError);
         socket.on('connect', setServerConnectedBack);
 
         return () => {
             console.log('OFF WELCOME');
-            AppState.removeEventListener('change', getUserBackOnline);
             socket.off('emit-set-medias');
             socket.off('get-medias-group');
             socket.off('connect_error', getConnectionError);
