@@ -218,6 +218,10 @@ const getStream = async (url) => {
 };
 
 serverIO.on('connection', (socket) => {
+  socket.on('app-goes-to-background', () => {
+    // do nothing
+    console.log('Onlineee');
+  });
   socket.on('search-songs', async (data) => {
     const { searchedText } = data;
     const videoIds = await searchYoutubeForVideoIds(searchedText);

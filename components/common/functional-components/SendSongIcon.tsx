@@ -20,8 +20,6 @@ const SendSongIcon = (song: any, optionalCallback: Function) => {
             chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
             isAddingSong: true
         });
-
-        socket.off('send-message-add-song');
         controller.abort();
     }
 

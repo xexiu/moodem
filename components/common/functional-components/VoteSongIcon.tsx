@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Button from '../../../components/User/functional-components/Button';
+import { isEmpty } from '../../../src/js/Utils/common/checkers';
 import { saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 
@@ -36,7 +37,6 @@ const VoteSongIcon = (song: any) => {
                 chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
                 user_id: user.uid
             });
-        socket.off('send-message-vote-up');
         controller.abort();
     }
 
@@ -56,36 +56,14 @@ const VoteSongIcon = (song: any) => {
                             voted_users: song.voted_users || [],
                             boosted_users: song.boosted_users || []
                         });
+                        const userHasVotedSong = song.voted_users.some((id: number) => id === user.uid);
 
-                        const userHasVoted = song.voted_users.some((id: number) => id === user.uid);
-
-                        if (!userHasVoted) {
+                        if (!userHasVotedSong) {
                             if (song.voted_users.indexOf(user.uid) === -1) {
                                 song.voted_users.push(user.uid);
                             }
                         }
-                        const indexInArray = group.group_songs.findIndex((_song: any) => _song.id === song.id);
 
-                        if (group.group_songs[indexInArray].id === song.id) {
-                            Object.assign(group.group_songs[indexInArray], {
-                                voted_users: song.voted_users
-                            });
-                        }
-                        group.group_songs.sort((a: any, b: any) => {
-                            if (!a.voted_users || !a.boosted_users) {
-                                Object.assign(a, {
-                                    voted_users: a.voted_users || [],
-                                    boosted_users: a.boosted_users || []
-                                });
-                            }
-                            if (!b.voted_users || b.boosted_users) {
-                                Object.assign(b, {
-                                    voted_users: b.voted_users || [],
-                                    boosted_users: b.boosted_users || []
-                                });
-                            }
-                            return b.voted_users.length - a.voted_users.length;
-                        });
                         setIsLoading(true);
                         await emitVotedSong();
                         await saveVotesForSongOnDb(song, user, group);

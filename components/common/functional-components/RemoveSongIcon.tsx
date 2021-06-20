@@ -29,7 +29,6 @@ const RemoveSongIcon = (song: any) => {
                 user_id: user.uid,
                 isRemovingSong: true
             });
-        socket.off('send-message-remove-song');
         controller.abort();
     }
 

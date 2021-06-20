@@ -9,6 +9,7 @@ import BgImage from './components/common/functional-components/BgImage';
 import { CommonStackWrapper } from './components/common/functional-components/CommonStackWrapper';
 import PreLoader from './components/common/functional-components/PreLoader';
 import SideBarDrawer from './components/common/functional-components/SideBarDrawer';
+import useAppState from './components/User/custom-hooks/useAppState';
 import { AppContext } from './components/User/store-context/AppContext';
 import { SongsContextProvider } from './components/User/store-context/SongsContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
@@ -30,9 +31,9 @@ function getUserUidAndName(user: any) {
 
     return `uid=${guestUID}&displayName=Guest`;
 }
-
 const App = function Moodem() {
     const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
+    const { setSocket } = useAppState();
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
@@ -44,6 +45,7 @@ const App = function Moodem() {
                 try {
                     const groups = await getUserGroups(_user) as any;
                     const group = groups[0];
+                    setSocket(socket);
 
                     return dispatchContextApp({
                         type: 'user_groups',

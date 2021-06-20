@@ -18,8 +18,10 @@ const WelcomeLanding = (props: any) => {
     const getUserBackOnline = (data: any) => {
         if (data !== 'active') {
             socket.open();
+            socket.connect();
         } else {
             socket.open();
+            socket.connect();
         }
     };
 

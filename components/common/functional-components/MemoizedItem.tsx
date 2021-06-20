@@ -39,7 +39,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
         <CommonFlatListItem
             bottomDivider
             topDivider={true}
-            title={item.details.title}
+            title={item.details ? item.details.title : item.videoDetails.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             titleStyle={{ paddingBottom: 7 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}

@@ -175,6 +175,8 @@ const Songs = (props: any) => {
         );
     }
 
+    console.log('Songs');
+
     return (
         <BodyContainer>
             {renderSearchBar()}

@@ -1,19 +1,12 @@
+import { useIsFocused } from '@react-navigation/native';
 import { debounce } from 'lodash';
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
+import convertToProxyURL from 'react-native-video-cache';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
-
-function updateSongDetailsOnControlCenter(item: any) {
-    MusicControl.setNowPlaying({
-        title: item.details.title,
-        artwork: item.details.thumbnails[0].url,
-        artist: item.details.author.name,
-        duration: Number(item.details.lengthSeconds) // (Seconds)
-    });
-}
 
 function configMusicControl() {
     MusicControl.enableControl('play', true);
@@ -21,6 +14,7 @@ function configMusicControl() {
     MusicControl.enableControl('nextTrack', true);
     MusicControl.enableControl('previousTrack', true);
     MusicControl.enableControl('changePlaybackPosition', true);
+    MusicControl.enableBackgroundMode(true);
     MusicControl.handleAudioInterruptions(true);
 }
 
@@ -38,14 +32,34 @@ const BasePlayer = (props: any) => {
     const { group, socket, isServerError } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        configMusicControl();
+        if (!item.isSearching) {
+            configMusicControl();
+            updateSongDetailsOnControlCenter(item);
+        } else if (item.isSearching && item.isPlaying) {
+            configMusicControl();
+            updateSongDetailsOnControlCenter(item);
+        } else if (item.isSearching && !item.isPlaying) {
+            MusicControl.stopControl();
+        }
 
         if (playPauseRef.current) {
             setIsLoading(false);
         }
-        return () => { };
+        return () => {
+            MusicControl.stopControl();
+        };
+    }, [isFocused, item.isPlaying]);
+
+    const updateSongDetailsOnControlCenter = useCallback((itemToUpdate: any) => {
+        MusicControl.setNowPlaying({
+            title: itemToUpdate.details.title,
+            artwork: itemToUpdate.details.thumbnails[0].url,
+            artist: itemToUpdate.details.author.name,
+            duration: Number(itemToUpdate.details.lengthSeconds) // (Seconds)
+        });
     }, []);
 
     if (isLoading) {
@@ -138,7 +152,7 @@ const BasePlayer = (props: any) => {
                     width: 100,
                     height: 100
                 }}
-                source={{ uri: item.url }}
+                source={{ uri: convertToProxyURL(item.url) }}
                 ref={basePlayer}
                 volume={1.0}
                 muted={false}
@@ -165,7 +179,6 @@ const BasePlayer = (props: any) => {
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
-                        updateSongDetailsOnControlCenter(item);
                     }
                     basePlayer.current.seek(0);
                 }}
