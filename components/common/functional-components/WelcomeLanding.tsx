@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef } from 'react';
-import { AppState, DevSettings } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
