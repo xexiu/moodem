@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
@@ -19,6 +20,7 @@ const ChatRoom = (props: any) => {
         isLoading: true
     });
     const toastRef = useRef() as any;
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         if (!isServerError) {
@@ -35,7 +37,7 @@ const ChatRoom = (props: any) => {
             socket.off('moodem-chat', setMessageList);
             socket.off('chat-messages', getMessage);
         };
-    }, [isServerError, group]);
+    }, [isServerError, group, isFocused]);
 
     const setMessageList = (messagesList: never[]) => {
         socket.off('moodem-chat', setMessageList);
@@ -123,6 +125,8 @@ const ChatRoom = (props: any) => {
             </View>
         );
     }
+
+    console.log('ChatRoom');
 
     return (
         <BodyContainer>

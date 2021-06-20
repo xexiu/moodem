@@ -135,7 +135,7 @@ const BasePlayer = (props: any) => {
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
             <Video
-                pictureInPicture
+                minLoadRetryCount={5}
                 onFullscreenPlayerWillDismiss={() => {
                     return basePlayer.current.setNativeProps({
                         paused: !item.isPlaying
@@ -172,9 +172,9 @@ const BasePlayer = (props: any) => {
                 }}
                 onLoad={({ currentTime }) => {
                     if (!seekRef.current.isSliding) {
-                        seekRef.current.setTrackCurrentTime(0);
+                        seekRef.current.setTrackCurrentTime(currentTime);
                     }
-                    basePlayer.current.seek(0);
+                    basePlayer.current.seek(currentTime);
                 }}
                 onLoadStart={() => {
                     if (!seekRef.current.isSliding) {

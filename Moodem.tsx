@@ -1,8 +1,8 @@
-/* eslint-disable max-len */
 import { createStackNavigator } from '@react-navigation/stack';
 import AbortController from 'abort-controller';
-import React, { memo, useContext, useEffect } from 'react';
+import React, { memo, useContext, useEffect, useRef } from 'react';
 import { View } from 'react-native';
+import Toast, { DURATION } from 'react-native-easy-toast';
 import 'react-native-gesture-handler';
 import io from 'socket.io-client';
 import BgImage from './components/common/functional-components/BgImage';
@@ -34,6 +34,7 @@ function getUserUidAndName(user: any) {
 const App = function Moodem() {
     const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
     const { setSocket } = useAppState();
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
@@ -62,6 +63,7 @@ const App = function Moodem() {
                     });
                 } catch (error) {
                     console.error('Moodem Error', JSON.stringify(error));
+                    toastRef.current.show('Oops!! Hubo un problema...', DURATION.FOREVER);
                     return dispatchContextApp({
                         type: 'error_user', value: {
                             error,
@@ -93,6 +95,10 @@ const App = function Moodem() {
         return (
             <View>
                 <BgImage />
+                <Toast
+                    position={'bottom'}
+                    ref={toastRef}
+                />
                 <PreLoader
                     containerStyle={{
                         justifyContent: 'center',

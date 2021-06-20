@@ -387,7 +387,7 @@ serverIO.on('connection', (socket) => {
   // });
 
   socket.on('disconnect', (reason) => {
-    console.log('DISCONNNECT SOCKET ID', socket.id, 'With REASON', reason);
+    console.log('DISCONNNECT SOCKET ID', socket.id, 'uid', socket.uid, 'With REASON', reason);
     socket.offAny();
     delete socket.id;
     delete socket.uid;
