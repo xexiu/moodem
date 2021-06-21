@@ -150,6 +150,7 @@ function buildMedia(data) {
     chatRooms[data.chatRoom] = {};
 
     Object.assign(chatRooms[data.chatRoom], {
+      songs: [],
       messages: [],
       uids: new Set([])
     });

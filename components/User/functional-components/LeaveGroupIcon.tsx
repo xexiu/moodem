@@ -1,18 +1,36 @@
-import React from 'react';
-import Button from '../../../components/User/functional-components/Button';
+import { Alert } from 'react-native';
 
-export const LeaveGroupIcon = ({ group }: any) => {
-    return (
-        <Button
-            containerStyle={{ marginTop: 10}}
-            textStyle={{ fontSize: 12, paddingLeft: 5, paddingRight: 10, marginTop: 10 }}
-            disabled
-            disabledStyle={{ backgroundColor: 'transparent' }}
-            iconReverse={false}
-            iconName={'supervised-user-circle'}
-            iconType={'FontAwesome'}
-            iconColor='#ddd'
-            iconSize={15}
-        />
-    );
+export const LeaveGroupIcon = (group: any, callback: Function) => {
+    function handleUserLeaveGroup() {
+        Alert.alert(
+            `Estás segur@ de que quieres abandonar el grupo: \n\n ${group.group_name} \n\n ¡Se perderán todos los datos relacionados con este grupo!`,
+            undefined,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK', onPress: async () => {
+                        return callback && callback();
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    }
+
+    return {
+        name: 'logout',
+        type: 'AntDesign',
+        color: '#1E90FF',
+        raised: false,
+        containerStyle: {
+            marginBottom: 10
+        },
+        onPress: () => {
+            return handleUserLeaveGroup();
+        }
+    };
 };

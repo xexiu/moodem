@@ -11,8 +11,10 @@ const Button = (props: any) => {
         iconType,
         iconSize = 12,
         iconColor,
+        iconColorDisabled = '#999',
         iconStyle = {},
         iconReverse = true,
+        iconRaised = false,
         disabled,
         containerStyle,
         disabledStyle,
@@ -33,12 +35,13 @@ const Button = (props: any) => {
                 disabledStyle={disabledStyle}
                 iconStyle={iconStyle}
                 reverse={iconReverse}
+                raised={iconRaised}
                 containerStyle={containerStyle}
                 disabled={disabled}
                 name={iconName}
                 type={iconType}
                 size={iconSize}
-                color={disabled ? '#999' : iconColor}
+                color={disabled ? iconColorDisabled : iconColor}
                 onPress={action}
             />
             <Text style={textStyle}>{text}</Text>
@@ -61,7 +64,9 @@ Button.propTypes = {
     iconStyle: PropTypes.object,
     action: PropTypes.func,
     disabledStyle: PropTypes.object,
-    textStyle: PropTypes.object
+    textStyle: PropTypes.object,
+    iconColorDisabled: PropTypes.string,
+    iconRaised: PropTypes.bool
 };
 
 export default memo(Button);

@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { saveSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
@@ -7,6 +8,7 @@ const controller = new AbortController();
 const SendSongIcon = (song: any, optionalCallback: Function) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (song.voted_users && isLoading) {
@@ -51,14 +53,11 @@ const SendSongIcon = (song: any, optionalCallback: Function) => {
                 voted_users: song.voted_users || [],
                 boosted_users: song.boosted_users || []
             });
-            if (optionalCallback) {
-                group.group_songs.push(song);
-                await optionalCallback();
-                await emitSendMedia();
-            } else {
-                await emitSendMedia();
-            }
+
+            group.group_songs.push(song);
+            await emitSendMedia();
             await saveSongOnDb(song, user, group);
+            navigation.navigate(group.group_name);
         }
     };
 };

@@ -8,6 +8,7 @@ import CommonFlatListItem from '../../common/functional-components/CommonFlatLis
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
+import { GroupPrivateIcon } from './GroupPrivateIcon';
 import { GroupSongsIcon } from './GroupSongsIcon';
 import { GroupUsersIcon } from './GroupUsersIcon';
 import { SettingsGroupIcon } from './SettingsGroupIcon';
@@ -35,16 +36,7 @@ const MyGroupsSceneTab = () => {
                 subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
                 subtitle={item.group_description}
-                chevron={!!item.group_password && {
-                    name: 'block',
-                    type: 'FontAwesome',
-                    color: 'red',
-                    raised: false,
-                    disabled: true,
-                    disabledStyle: {
-                        backgroundColor: 'transparent'
-                    }
-                }}
+                chevron={item.group_user_owner_id === user.uid && SettingsGroupIcon(item, navigation)}
                 buttonGroup={[
                     {
                         element: () => <GroupUsersIcon users={item.group_users} />
@@ -52,8 +44,8 @@ const MyGroupsSceneTab = () => {
                     {
                         element: () => <GroupSongsIcon songs={item.group_songs} />
                     },
-                    item.group_user_owner_id === user.uid && {
-                        element: () => <SettingsGroupIcon group={item} />
+                    {
+                        element: () => <GroupPrivateIcon group={item} />
                     }
                 ]}
                 action={async () => {

@@ -1,5 +1,9 @@
 import { groupType } from '../../../../src/types/group';
 
+export type userProps = {
+    uid: string
+};
+
 export type AppProps = {
     children: React.ReactNode;
 };
@@ -10,7 +14,7 @@ export type actionType = {
 };
 
 export type State = {
-    user: null;
+    user: userProps;
     groups: string[];
     group: groupType;
     params: any,
@@ -25,7 +29,9 @@ export const initialValue: State = {
     group: {
         group_name: 'Moodem',
         group_id: '0',
-        group_songs: []
+        group_songs: [],
+        user_owner_id: '',
+        group_users: []
     },
     params: null,
     isServerError: false,
@@ -69,19 +75,17 @@ export function updateCommonState(result: State, action: actionType) {
 }
 
 export function setNewGroup(result: State, action: actionType) {
-    const { groups } = result;
+    const { groups, user } = result;
     const { value } = action;
     const { group } = value;
 
-    for (const _group of groups as any) {
-        if (_group.group_id !== group.group_id) {
-            Object.assign(group, {
-                group_songs: group.group_songs || []
-            });
-            groups.push(group as any);
-            break;
-        }
-    }
+    group.group_users.push({
+        user_uid: user.uid,
+        group_owner: group.user_owner_id === user.uid,
+        group_admin: group.user_owner_id === user.uid
+    });
+
+    groups.push(group as any);
 
     return { ...result, ...value };
 }

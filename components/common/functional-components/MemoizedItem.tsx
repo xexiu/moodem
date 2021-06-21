@@ -4,8 +4,7 @@ import { RemoveSongIcon } from './RemoveSongIcon';
 import { SendSongIcon } from './SendSongIcon';
 import { VoteSongIcon } from './VoteSongIcon';
 
-// tslint:disable-next-line:max-line-length
-const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chevron = null, optionalCallback }: any) => {
+const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chevron = null }: any) => {
     console.log('Render Item');
 
     const BUTTONGROUP_MAP = {
@@ -29,7 +28,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
 
     function setChevron() {
         if (!item.isMediaOnList && CHEVRON_MAP[chevron]) {
-            return CHEVRON_MAP[chevron](item, optionalCallback);
+            return CHEVRON_MAP[chevron](item);
         }
 
         return null;

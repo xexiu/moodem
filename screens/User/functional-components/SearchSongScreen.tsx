@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../../components/common/functional-components/MemoizedSongsList';
 import Player from '../../../components/common/functional-components/Player';
@@ -30,11 +29,11 @@ const SearchSongScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerShown: false,
             headerMode: 'none',
             unmountOnBlur: true,
             headerBackTitleVisible: false,
-            unmountInactiveRoutes: true
+            unmountInactiveRoutes: true,
+            title: `${allValues.songs.length} encontrado(s)`
         });
         socket.emit('search-songs', {
             chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
@@ -72,6 +71,7 @@ const SearchSongScreen = (props: any) => {
 
     function getSongs(data: any) {
         checkIfAlreadyOnList(songs, data.songs);
+        navigation.setOptions({ title: `${data.songs.length} encontrado(s)` });
 
         return setAllValues(prevValues => {
             return {
@@ -130,32 +130,15 @@ const SearchSongScreen = (props: any) => {
                 <MemoizedSongsList
                     data={allValues.songs}
                     chevron={'send_media'}
-                    handleOnClickItem={onClickUseCallBack}
-                    optionalCallback={resetSearchingScreen}
                     indexItem={indexItem}
                 />
             </BodyContainer>
         );
     }, [allValues.songs, allValues.indexItem]);
 
-    function resetSearchingScreen() {
-        setAllValues(prevValues => {
-            return {
-                ...prevValues,
-                indexItem: 0,
-                songs: [],
-                isLoading: true
-            };
-        });
-        source.cancel('SearchSongScreen Component got unmounted');
-        navigation.navigate(group.group_name);
-        return Promise.resolve(true);
-    }
-
     if (allValues.isLoading) {
         return (
             <BodyContainer>
-                {renderBackButton()}
                 <PreLoader
                     containerStyle={{
                         flex: 1,
@@ -168,22 +151,8 @@ const SearchSongScreen = (props: any) => {
         );
     }
 
-    function renderBackButton() {
-        return (
-            <Icon
-                containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100 }}
-                onPress={resetSearchingScreen}
-                name={'arrow-back'}
-                type={'Ionicons'}
-                size={25}
-                color='#dd0031'
-            />
-        );
-    }
-
     return (
         <BodyContainer>
-            {renderBackButton()}
             {memoizedPlayerSongsListCallBack()}
         </BodyContainer>
     );

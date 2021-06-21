@@ -30,8 +30,6 @@ if (Platform.OS === 'android') {
         UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-let isLayoutAnimationConfigured = false;
-
 const CustomLayoutLinear = {
     duration: 300,
     create: {
@@ -48,10 +46,7 @@ const CustomLayoutLinear = {
 };
 
 const setAnimation = () => {
-    if (!isLayoutAnimationConfigured) {
-        isLayoutAnimationConfigured = true;
-        LayoutAnimation.configureNext(CustomLayoutLinear);
-    }
+    LayoutAnimation.configureNext(CustomLayoutLinear);
 };
 
 export function removeSong(result: State, action: actionType) {

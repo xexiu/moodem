@@ -1,8 +1,10 @@
 
 import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
+import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
 import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
+import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import BodyContainer from '../../common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
 import Player from '../../common/functional-components/Player';
@@ -26,7 +28,7 @@ const Songs = (props: any) => {
     const flatListRef = useRef() as any;
 
     useEffect(() => {
-        MAP_SONGS_ACTIONS.set_songs(group.group_songs);
+        getSongs();
 
         if (!isServerError) {
             socket.emit('emit-message-welcomeMsg', {
@@ -85,6 +87,18 @@ const Songs = (props: any) => {
             });
         }, [])
     };
+
+    async function getSongs() {
+        const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
+        try {
+            const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+            const snapshot = await refGroup.child('group_songs').once('value');
+            const dbGroups = snapshot.val() || [];
+            return MAP_SONGS_ACTIONS.set_songs(dbGroups);
+        } catch (error) {
+            console.error('getSongs Error', JSON.stringify(error));
+        }
+    }
 
     function getWelcomeMsg({ welcomeMsg }: any) {
         toastRef.current.show(welcomeMsg, 1000);
@@ -151,14 +165,20 @@ const Songs = (props: any) => {
 
     if (isLoading) {
         return (
-            <PreLoader
-                containerStyle={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-                size={50}
-            />
+            <View style={{ flex: 1 }}>
+                <Toast
+                    position={isServerError ? 'bottom' : 'top'}
+                    ref={toastRef}
+                />
+                <PreLoader
+                    containerStyle={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    size={50}
+                />
+            </View>
         );
     }
 

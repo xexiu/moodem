@@ -67,7 +67,6 @@ export default class CommonFlatList extends Component<CommonFlatListProps> {
                 ListHeaderComponentStyle={headerStyle}
                 ItemSeparatorComponent={itemSeparatorComponent}
                 windowSize={5} // For performance (default - 21)
-                keyboardShouldPersistTaps='always'
                 horizontal={horizontal}
                 numColumns={numColumns}
                 data={data}

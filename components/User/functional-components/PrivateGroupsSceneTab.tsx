@@ -3,13 +3,16 @@ import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
+import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
+import { GroupPrivateIcon } from './GroupPrivateIcon';
 import { GroupSongsIcon } from './GroupSongsIcon';
 import { GroupUsersIcon } from './GroupUsersIcon';
+import { LeaveGroupIcon } from './LeaveGroupIcon';
 
 const PrivateGroupsSceneTab = () => {
     const { groups, user, dispatchContextApp } = useContext(AppContext) as any;
@@ -34,16 +37,28 @@ const PrivateGroupsSceneTab = () => {
                 subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
                 subtitle={item.group_description}
-                chevron={!!item.group_password && {
-                    name: 'block',
-                    type: 'FontAwesome',
-                    color: 'red',
-                    raised: false,
-                    disabled: true,
-                    disabledStyle: {
-                        backgroundColor: 'transparent'
+                chevron={item.group_user_owner_id !== user.uid &&
+                    item.group_name !== 'Moodem' && LeaveGroupIcon(item, async () => {
+                        await leaveGroup(item, user);
+                        await dispatchContextApp(
+                            {
+                                type: 'delete_owned_group',
+                                value: {
+                                    group: item
+                                }
+                            });
+                    })}
+                buttonGroup={[
+                    {
+                        element: () => <GroupUsersIcon users={item.group_users} />
+                    },
+                    {
+                        element: () => <GroupSongsIcon songs={item.group_songs} />
+                    },
+                    {
+                        element: () => <GroupPrivateIcon group={item} />
                     }
-                }}
+                ]}
                 action={async () => {
                     await dispatchContextApp(
                         {
@@ -58,8 +73,6 @@ const PrivateGroupsSceneTab = () => {
                     navigation.openDrawer();
                 }}
             />
-            <GroupUsersIcon users={item.group_users} />
-            <GroupSongsIcon songs={item.group_songs} />
         </View>
     ), []);
 

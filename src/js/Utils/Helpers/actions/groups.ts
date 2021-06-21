@@ -1,9 +1,68 @@
-import { getKeyNumber, hasObjWithProp } from '../../../Utils/common/checkers';
+import { getKeyNumber, hasObjWithProp, isEmpty } from '../../../Utils/common/checkers';
 import { DEFAULT_GROUP_AVATAR } from '../../constants/groups';
 import firebase from '../services/firebase';
 
 const refAllGroups = firebase.database().ref('Groups');
 const refGroupMoodem = firebase.database().ref('Groups/Moodem');
+
+export function filterSearchedGroups(group: any, searchedText: string, user: any) {
+    return group.group_name.indexOf(searchedText) >= 0 &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
+}
+
+export function filterSearchedPublicGroups(group: any, searchedText: string, user: any) {
+    return group.group_name.indexOf(searchedText) >= 0 &&
+        !group.group_password &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
+}
+
+export function filterSearchedPrivateGroups(group: any, searchedText: string, user: any) {
+    return group.group_name.indexOf(searchedText) >= 0 &&
+        !!group.group_password &&
+        group.group_user_owner_id !== user.uid &&
+        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
+}
+
+export async function leaveGroup(group: any, user: any) {
+    try {
+        const refJoinedGroup = await firebase.database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        const refInvitedGroups = await firebase.database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`);
+        const snapshotInvited = await refInvitedGroups.once('value');
+        const snapshot = await refJoinedGroup.child('group_users').once('value');
+        const groupUsers = snapshot.val();
+        const invited = snapshotInvited.val();
+
+        if (groupUsers) {
+            const indexInArray = groupUsers.findIndex((dbGroupUser: any) => dbGroupUser.user_uid === user.uid);
+            const userToDelete = groupUsers[indexInArray];
+
+            if (userToDelete) {
+            // delete user from groupUsers
+                groupUsers.splice(indexInArray, 1);
+                await refJoinedGroup.child('group_users').set(groupUsers);
+                if (invited) {
+                // delete joined goup from user
+                    const key = getKeyNumber(invited, 0);
+                    const joinedGroups = invited[key] as any;
+                    if (joinedGroups && !isEmpty(joinedGroups.joined_groups)) {
+                        // tslint:disable-next-line:max-line-length
+                        const _indexInArray = joinedGroups.joined_groups.findIndex((joinedGroup: any) => group.group_id === joinedGroup.group_id);
+                        const _group = joinedGroups.joined_groups[_indexInArray];
+                        if (_group) {
+                            joinedGroups.joined_groups.splice(_indexInArray, 1);
+                            await refInvitedGroups.child(`/${key}`).update(joinedGroups);
+                        }
+
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.error('leaveGroup Error', JSON.stringify(error));
+    }
+}
 
 export async function updateUserGroup(group: any, params: any) {
     try {

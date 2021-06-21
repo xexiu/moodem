@@ -32,6 +32,7 @@ const CommonFlatListItem = (props: any) => {
         subtitleStyle,
         subTitleProps,
         topDivider,
+        disabled = false,
         rightTitle,
         contentContainerStyle = DEFAULT_CONTAINER_STYLE,
         leftAvatar,
@@ -61,6 +62,7 @@ const CommonFlatListItem = (props: any) => {
             containerStyle={contentContainerStyle}
             topDivider={topDivider}
             bottomDivider={bottomDivider}
+            disabled={disabled}
             onPress={action}
         >
             {leftAvatar && myAvatar}
@@ -126,7 +128,8 @@ CommonFlatListItem.propTypes = {
     friction: PropTypes.number,
     tension: PropTypes.number,
     customView: PropTypes.any,
-    subTitleProps: PropTypes.any
+    subTitleProps: PropTypes.any,
+    disabled: PropTypes.bool
 };
 
 export default memo(CommonFlatListItem);

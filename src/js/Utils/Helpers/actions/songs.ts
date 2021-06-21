@@ -1,7 +1,6 @@
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
-import { isEmpty } from '../../../Utils/common/checkers';
-import { hasObjWithProp } from '../../../Utils/common/checkers';
+import { hasObjWithProp, isEmpty } from '../../../Utils/common/checkers';
 import firebase from '../services/firebase';
 
 export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
@@ -111,14 +110,19 @@ export async function saveVotesForSongOnDb(song: any, user: any, group: any) {
 export async function removeSongFromDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
-    const dbgroup = await refGroup.once('value');
-    const _group = await dbgroup.val();
-    const dbGroupSongs = _group.group_songs;
 
-    if (!isEmpty(dbGroupSongs)) {
-        const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
-        dbGroupSongs.splice(indexInArray, 1);
+    try {
+        const dbgroup = await refGroup.once('value');
+        const _group = await dbgroup.val();
+        const dbGroupSongs = _group.group_songs;
+
+        if (!isEmpty(dbGroupSongs)) {
+            const indexInArray = dbGroupSongs.findIndex((dbSong: any) => dbSong.id === song.id);
+            dbGroupSongs.splice(indexInArray, 1);
+        }
+
+        await refGroup.child('group_songs').set(dbGroupSongs);
+    } catch (error) {
+        console.error('removeSongFromDB Error', JSON.stringify(error));
     }
-
-    return refGroup.update(_group);
 }

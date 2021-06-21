@@ -12,14 +12,13 @@ type PropsItems = {
     data: (any | any)[],
     handleOnClickItem: Function,
     buttonActions?: string[],
-    optionalCallback?: Function,
     chevron?: string,
     reference?: any,
     checkSizeChangeHandler?: Function
 };
 
 // tslint:disable-next-line:max-line-length
-const MemoizedItems = ({ reference, data, handleOnClickItem, buttonActions, optionalCallback, chevron, checkSizeChangeHandler }: PropsItems) => {
+const MemoizedItems = ({ reference, data, handleOnClickItem, buttonActions, chevron, checkSizeChangeHandler }: PropsItems) => {
     const renderItem = useCallback(({ item, index }: PropsItem) => (
         <MemoizedItem
             index={index}
@@ -27,7 +26,6 @@ const MemoizedItems = ({ reference, data, handleOnClickItem, buttonActions, opti
             item={item}
             handleOnClickItem={handleOnClickItem}
             buttonActions={buttonActions}
-            optionalCallback={optionalCallback}
             chevron={chevron}
         />
     ), []);

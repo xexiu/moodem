@@ -1,22 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { Icon } from 'react-native-elements';
 import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../../components/common/functional-components/CommonFlatListItem';
 import CustomModal from '../../../components/common/functional-components/CustomModal';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import AddGroupIcon from '../../../components/User/functional-components/AddGroupIcon';
+import { GroupPrivateIcon } from '../../../components/User/functional-components/GroupPrivateIcon';
+import { GroupSongsIcon } from '../../../components/User/functional-components/GroupSongsIcon';
+import { GroupUsersIcon } from '../../../components/User/functional-components/GroupUsersIcon';
 import ShowPopUpPasswordGroup from '../../../components/User/functional-components/ShowPopUpPasswordGroup';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
-import { hasObjWithProp } from '../../../src/js/Utils/common/checkers';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import {
     addUserToJoinedGroupDB,
+    filterSearchedGroups,
+    filterSearchedPrivateGroups,
+    filterSearchedPublicGroups,
     getAllGroups,
     saveJoinedUser
 } from '../../../src/js/Utils/Helpers/actions/groups';
@@ -38,47 +41,21 @@ const SearchGroupsScreen = (props: any) => {
     const passwordPopUp = useRef() as any;
 
     const MAP_FILTERS = {
-        searchAllGroups: filterGroups,
-        searchPublicGroups: filterPublicGroups,
-        searchPrivateGroups: filterPrivateGroups
+        searchAllGroups: filterSearchedGroups,
+        searchPublicGroups: filterSearchedPublicGroups,
+        searchPrivateGroups: filterSearchedPrivateGroups
     } as any;
-
-    function filterGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0 &&
-        group.group_user_owner_id !== user.uid &&
-        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
-    }
-
-    function filterPublicGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0 &&
-        !group.group_password &&
-        group.group_user_owner_id !== user.uid &&
-        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
-    }
-
-    function filterPrivateGroups(group: any) {
-        return group.group_name.indexOf(searchedText) >= 0 &&
-        !!group.group_password &&
-        group.group_user_owner_id !== user.uid &&
-        !hasObjWithProp(group, 'group_users', { user_uid: user.uid });
-    }
 
     async function fetchResults() {
         try {
             const allGroups = await getAllGroups();
             const filteredGroups = allGroups.filter((group: any) => {
                 if (filter && Object.keys(filter).length) {
-                    return MAP_FILTERS[Object.keys(filter) as any](group);
+                    return MAP_FILTERS[Object.keys(filter) as any](group, searchedText, user);
                 }
                 return group.group_name.indexOf(searchedText) >= 0;
             });
-            return setAllValues(prev => {
-                return {
-                    ...prev,
-                    searchedGroups: [...filteredGroups],
-                    isLoading: false
-                };
-            });
+            return Promise.resolve(filteredGroups);
         } catch (err) {
             console.warn('SearchedGroupsScreen error', err);
         }
@@ -92,46 +69,61 @@ const SearchGroupsScreen = (props: any) => {
             unmountInactiveRoutes: true,
             title: `${allValues.searchedGroups.length} encontrado(s)`
         });
-        fetchResults();
+        fetchResults()
+            .then((filteredGroups: any) => {
+                navigation.setOptions({ title: `${filteredGroups.length} encontrado(s)` });
+                setAllValues(prev => {
+                    return {
+                        ...prev,
+                        searchedGroups: [...filteredGroups],
+                        isLoading: false
+                    };
+                });
+            });
         return () => {
             source.cancel('SearchGroupsScreen Component got unmounted');
         };
-    }, [allValues.searchedGroups.length]);
+    }, []);
 
     const keyExtractor = useCallback((item: any) => item.group_id, []);
     const memoizedItem = useCallback(({ item }) => (
-        <View style={{ position: 'relative' }}>
-            <CommonFlatListItem
-                bottomDivider
-                title={item.group_name}
-                titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                titleStyle={{ marginTop: -17 }}
-                leftAvatar={{
-                    source: {
-                        uri: USER_AVATAR_DEFAULT
-                    }
-                }}
-                subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-                subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                subtitle={item.group_description}
-                chevron={!!item.group_password && {
-                    name: 'block',
-                    type: 'FontAwesome',
-                    color: 'red',
-                    raised: false,
-                    disabled: true,
-                    disabledStyle: {
-                        backgroundColor: 'transparent'
-                    }
-                }}
-                action={() => {
-                    if (item.group_password) {
-                        return handleGroupPassword(item);
-                    }
-                    return handleSubmit(item);
-                }}
-            />
-        </View>
+        <CommonFlatListItem
+            bottomDivider
+            title={item.group_name}
+            titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+            titleStyle={{ marginTop: -17 }}
+            leftAvatar={{
+                source: {
+                    uri: USER_AVATAR_DEFAULT
+                }
+            }}
+            subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
+            subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
+            subtitle={item.group_description}
+            buttonGroup={[
+                {
+                    element: () => <GroupUsersIcon users={item.group_users} />
+                },
+                {
+                    element: () => <GroupSongsIcon songs={item.group_songs} />
+                },
+                {
+                    element: () => <GroupPrivateIcon group={item} />
+                }
+            ]}
+            action={() => {
+                if (item.group_password) {
+                    return handleGroupPassword(item);
+                }
+                setAllValues(prevState => {
+                    return {
+                        ...prevState,
+                        isLoading: true
+                    };
+                });
+                return handleSubmit(item);
+            }}
+        />
     ), []);
 
     const memoizedChangeText = useCallback((text) => {
@@ -175,6 +167,12 @@ const SearchGroupsScreen = (props: any) => {
                     handleChangeText={memoizedChangeText}
                     handleSubmit={async () => {
                         passwordPopUp.current.setAllValues((prevState: any) => ({ ...prevState, isLoading: true }));
+                        setAllValues(prevState => {
+                            return {
+                                ...prevState,
+                                isLoading: true
+                            };
+                        });
                         await handleSubmit(item);
                         modalRef.current.setAllValues((prevState: any) => ({ ...prevState, isVisible: false }));
                         passwordPopUp.current.setAllValues((prevState: any) => ({ ...prevState, isLoading: false }));
@@ -184,23 +182,9 @@ const SearchGroupsScreen = (props: any) => {
         });
     }
 
-    function resetSearchingScreen() {
-        setAllValues(prevValues => {
-            return {
-                ...prevValues,
-                searchedGroups: [],
-                isLoading: true
-            };
-        });
-        source.cancel('SearchGroupsScreen Component got unmounted');
-        navigation.goBack();
-        return Promise.resolve(true);
-    }
-
     if (allValues.isLoading) {
         return (
             <BodyContainer>
-                {renderBackButton()}
                 <PreLoader
                     containerStyle={{
                         flex: 1,
@@ -210,19 +194,6 @@ const SearchGroupsScreen = (props: any) => {
                     size={50}
                 />
             </BodyContainer>
-        );
-    }
-
-    function renderBackButton() {
-        return (
-            <Icon
-                containerStyle={{ position: 'absolute', top: 5, left: 10, zIndex: 100 }}
-                onPress={resetSearchingScreen}
-                name={'arrow-back'}
-                type={'Ionicons'}
-                size={25}
-                color='#dd0031'
-            />
         );
     }
 

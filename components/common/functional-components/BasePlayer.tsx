@@ -182,7 +182,11 @@ const BasePlayer = (props: any) => {
                     }
                     basePlayer.current.seek(0);
                 }}
-                onError={(error) => {
+                onError={(error: any) => {
+                    if (error.localizedDescription === 'Cannot Decode') {
+                        console.error('Song Error -> Cannot Decode', 'Error: ', JSON.stringify(error));
+                        return;
+                    }
                     playPauseRef.current.setIsBuffering(true);
                     MusicControl.updatePlayback({
                         state: MusicControl.STATE_ERROR,
@@ -196,13 +200,13 @@ const BasePlayer = (props: any) => {
 
                     if (!isServerError) {
                         if (item.isSearching) {
-                            console.error('Song Error on Searched Songs', JSON.stringify(error));
+                            console.error('Song Error on Searched Songs', 'Error: ', JSON.stringify(error));
                             return socket.emit('send-song-error', {
                                 chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
                                 song: item
                             });
                         }
-                        console.error('Song Error on Songs', JSON.stringify(error));
+                        console.error('Song Error on Songs', 'Error: ', JSON.stringify(error));
                         return socket.emit('send-song-error', {
                             chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
                             song: item
