@@ -131,6 +131,7 @@ const SearchSongScreen = (props: any) => {
                     data={allValues.songs}
                     chevron={'send_media'}
                     indexItem={indexItem}
+                    handleOnClickItem={onClickUseCallBack}
                 />
             </BodyContainer>
         );

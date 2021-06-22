@@ -12,6 +12,7 @@ const Sentry = require('@sentry/node');
 const { CaptureConsole } = require('@sentry/integrations');
 const ytsr = require('ytsr');
 const cliProgress = require('cli-progress');
+const youtubedl = require('youtube-dl-exec');
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
@@ -112,28 +113,34 @@ async function getSong(videoId, hasExpired = false) {
     }
   });
   // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-  const audio = info.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
+  const audioFormats = info.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
 
-  if (audio && audio.length) {
+  if (audioFormats && audioFormats.length) {
+    const hasHD1080p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '1080p');
+    const hasHD720p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '720p');
+    const has360p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '360p');
+
+    const audios = (hasHD1080p.length && hasHD1080p) || (hasHD720p.length && hasHD720p) || (has360p.length && has360p);
+
     // eslint-disable-next-line no-restricted-syntax
-    for (const attr in audio[0]) {
+    for (const attr in audios[0]) {
       if (attr !== 'url') {
-        delete audio[0][attr];
+        delete audios[0][attr];
       }
     }
 
-    Object.assign(audio[0], {
+    Object.assign(audios[0], {
       id: info.videoDetails.videoId,
       hasExpired: false,
       details: info.videoDetails,
       isCachedInServerNode: false
     });
 
-    cleanImageParams(audio[0]);
-    cleanTitle(audio[0]);
+    cleanImageParams(audios[0]);
+    cleanTitle(audios[0]);
 
-    myCache.set(key, { ...audio[0] }, FIVE_HOURS);
-    return { ...audio[0] };
+    myCache.set(key, { ...audios[0] }, FIVE_HOURS);
+    return { ...audios[0] };
   }
 
   return {};
@@ -246,7 +253,7 @@ serverIO.on('connection', (socket) => {
     if (videoIds) {
       try {
         let songsCoverted = await Promise.allSettled(videoIds.map(async (videoId) => getSong(videoId)));
-        songsCoverted.filter((songConverted) => songConverted.status !== 'rejected' && songsCoverted.push(songConverted.value), songsCoverted = []);
+        songsCoverted.filter((songConverted) => songConverted.status !== 'rejected' && Object.keys(songConverted.value).length && songsCoverted.push(songConverted.value), songsCoverted = []);
 
         serverIO.to(socket.id).emit('get-songs', { // send message only to sender-client
           songs: [...setExtraAttrs(songsCoverted, socket.uid, true)]
