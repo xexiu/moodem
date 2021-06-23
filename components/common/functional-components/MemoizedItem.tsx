@@ -1,10 +1,15 @@
 import React, { memo } from 'react';
+import convertToProxyURL from 'react-native-video-cache';
 import CommonFlatListItem from './CommonFlatListItem';
 import { RemoveSongIcon } from './RemoveSongIcon';
 import { SendSongIcon } from './SendSongIcon';
 import { VoteSongIcon } from './VoteSongIcon';
 
 const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chevron = null }: any) => {
+    const proxyUrl = convertToProxyURL(item.url);
+    Object.assign(item, {
+        url: proxyUrl
+    });
     console.log('Render Item');
 
     const BUTTONGROUP_MAP = {
@@ -38,15 +43,15 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
         <CommonFlatListItem
             bottomDivider
             topDivider={true}
-            title={item.details ? item.details.title : item.videoDetails.title}
+            title={item.title}
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             titleStyle={{ paddingBottom: 7 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.details.author.name.replace('VEVO', '')}`}
+            subtitle={`${item.artist.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic', width: 180 }}
             leftAvatar={{
                 source: {
-                    uri: item.details.thumbnails[0].url
+                    uri: item.thumbnail
                 }
             }}
             chevron={setChevron()}

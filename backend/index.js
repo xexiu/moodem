@@ -16,6 +16,41 @@ const youtubedl = require('youtube-dl-exec');
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
+function makeRandomChars(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random()
+* charactersLength));
+  }
+  return result;
+}
+
+function assignAudioProps(audio, audioProps) {
+  return Object.assign(audio, {
+    age_limit: audioProps.age_limit || 0,
+    artist: audioProps.artist || audioProps.uploader || 'Anonymous',
+    average_rating: audioProps.average_rating || 0,
+    categories: audioProps.categories || [],
+    description: audioProps.description || 'No description',
+    dislike_count: audioProps.dislike_count || 0,
+    duration: audioProps.duration || 0,
+    id: audioProps.id,
+    fps: audioProps.fps || 0,
+    height: audioProps.height || 0,
+    like_count: audioProps.like_count || 0,
+    tags: audioProps.tags || [],
+    thumbnail: (audioProps.thumbnails && audioProps.thumbnails[0].url) || 'No image',
+    title: audioProps.title || 'No title',
+    track: audioProps.track || 'No track',
+    vbr: audioProps.vbr || 0,
+    vcodec: audioProps.vcodec || 0,
+    view_count: audioProps.view_count || 0,
+    width: audioProps.width || 0
+  });
+}
+
 async function searchYoutubeForVideoIds(searchedText) {
   const videoIds = [];
   const options = {
@@ -57,9 +92,9 @@ function handleServerError(eventType) {
   console.error('Server Error:', error);
 }
 
-['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'unhandledRejection', 'SIGTERM'].forEach((eventType) => {
-  process.on(eventType, handleServerError);
-});
+// ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'unhandledRejection', 'SIGTERM'].forEach((eventType) => {
+//   process.on(eventType, handleServerError);
+// });
 
 const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
 const FIVE_HOURS = ttl * 5;
@@ -70,22 +105,22 @@ const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFm
 const myCache = new NodeCache();
 
 function cleanTitle(audio) {
-  if (audio.details && audio.details.title) {
-    audio.details.title = audio.details.title.replace('(Official Music Video)', '')
+  if (audio.title) {
+    audio.title = audio.title.replace('(Official Music Video)', '')
       .replace('(Official Video)', '');
-    return audio.details.title;
+    return audio.title;
   }
-  return audio.details.title;
+  return audio.title;
 }
 
 function cleanImageParams(audio) {
-  if (audio.details && audio.details.thumbnails) {
-    if (audio.details.thumbnails[0].url.indexOf('hqdefault.jpg') >= 0) {
-      audio.details.thumbnails[0].url = audio.details.thumbnails[0].url.replace(/(\?.*)/g, '');
-      return audio.details.thumbnails[0].url;
+  if (audio.thumbnail) {
+    if (audio.thumbnail.indexOf('hqdefault.jpg') >= 0) {
+      audio.thumbnail = audio.thumbnail.replace(/(\?.*)/g, '');
+      return audio.thumbnail;
     }
   }
-  return audio.details.thumbnails[0].url;
+  return audio.thumbnail;
 }
 
 async function getSong(videoId, hasExpired = false) {
@@ -105,42 +140,42 @@ async function getSong(videoId, hasExpired = false) {
     return audioMem;
   }
 
-  const info = await ytdl.getInfo(videoId, {
-    requestOptions: {
-      headers: {
-        Cookie: COOKIE
-      }
-    }
-  });
-  // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-  const audioFormats = info.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
-
-  if (audioFormats && audioFormats.length) {
-    const hasHD1080p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '1080p');
-    const hasHD720p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '720p');
-    const has360p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '360p');
-
-    const audios = (hasHD1080p.length && hasHD1080p) || (hasHD720p.length && hasHD720p) || (has360p.length && has360p);
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const attr in audios[0]) {
-      if (attr !== 'url') {
-        delete audios[0][attr];
-      }
-    }
-
-    Object.assign(audios[0], {
-      id: info.videoDetails.videoId,
-      hasExpired: false,
-      details: info.videoDetails,
-      isCachedInServerNode: false
+  try {
+    const audioYT = await youtubedl(`https://www.youtube.com/watch?v=${videoId}`, {
+      dumpSingleJson: true,
+      noWarnings: true,
+      noCallHome: true,
+      noCheckCertificate: true,
+      preferFreeFormats: true,
+      referer: `https://${makeRandomChars(6)}.com`
     });
 
-    cleanImageParams(audios[0]);
-    cleanTitle(audios[0]);
+    // const info = await ytdl.getInfo(videoId);
+    // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
+    const audioFormats = audioYT.formats.filter((format) => {
+      if (format.ext === 'mp4' && format.format_note !== 'tiny' && format.quality > 1 && format.vcodec !== 'none' && format.acodec.indexOf('mp4') >= 0) {
+        assignAudioProps(format, audioYT);
+        return true;
+      }
+      return false;
+    });
 
-    myCache.set(key, { ...audios[0] }, FIVE_HOURS);
-    return { ...audios[0] };
+    if (audioFormats && audioFormats.length) {
+      Object.assign(audioFormats[0], {
+        hasExpired: false,
+        isCachedInServerNode: false
+      });
+
+      cleanImageParams(audioFormats[0]);
+      cleanTitle(audioFormats[0]);
+
+      myCache.set(key, { ...audioFormats[0] }, FIVE_HOURS);
+      return { ...audioFormats[0] };
+    }
+
+    return {};
+  } catch (error) {
+    console.error('Error converting getSong', JSON.stringify(error));
   }
 
   return {};
@@ -253,7 +288,13 @@ serverIO.on('connection', (socket) => {
     if (videoIds) {
       try {
         let songsCoverted = await Promise.allSettled(videoIds.map(async (videoId) => getSong(videoId)));
-        songsCoverted.filter((songConverted) => songConverted.status !== 'rejected' && Object.keys(songConverted.value).length && songsCoverted.push(songConverted.value), songsCoverted = []);
+        songsCoverted.filter((songConverted) => {
+          if (songConverted.status !== 'rejected' && Object.keys(songConverted.value).length) {
+            songsCoverted.push(songConverted.value);
+            return true;
+          }
+          return false;
+        }, songsCoverted = []);
 
         serverIO.to(socket.id).emit('get-songs', { // send message only to sender-client
           songs: [...setExtraAttrs(songsCoverted, socket.uid, true)]

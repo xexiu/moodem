@@ -4,7 +4,6 @@ import React, { memo, useCallback, useContext, useEffect, useState } from 'react
 import { View } from 'react-native';
 import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
-import convertToProxyURL from 'react-native-video-cache';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
@@ -55,10 +54,10 @@ const BasePlayer = (props: any) => {
 
     const updateSongDetailsOnControlCenter = useCallback((itemToUpdate: any) => {
         MusicControl.setNowPlaying({
-            title: itemToUpdate.details.title,
-            artwork: itemToUpdate.details.thumbnails[0].url,
-            artist: itemToUpdate.details.author.name,
-            duration: Number(itemToUpdate.details.lengthSeconds) // (Seconds)
+            title: itemToUpdate.title,
+            artwork: itemToUpdate.thumbnail,
+            artist: itemToUpdate.artist,
+            duration: Number(itemToUpdate.duration) // (Seconds)
         });
     }, []);
 
@@ -108,7 +107,7 @@ const BasePlayer = (props: any) => {
     });
 
     function showPoster() {
-        return !item.isPlaying ? item.details.thumbnails[0].url : undefined;
+        return !item.isPlaying ? item.thumbnail : undefined;
     }
 
     function handleOnEnd() {
@@ -152,7 +151,7 @@ const BasePlayer = (props: any) => {
                     width: 100,
                     height: 100
                 }}
-                source={{ uri: convertToProxyURL(item.url) }}
+                source={{ uri: item.url }}
                 ref={basePlayer}
                 volume={1.0}
                 muted={false}

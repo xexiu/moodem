@@ -95,7 +95,7 @@ const Player = (props: any) => {
                 />
                 <PlayerControlFullScreen basePlayer={basePlayer} />
             </PlayerControlsContainer>
-            <SongInfoTitle songTitle={item.details.title} />
+            <SongInfoTitle songTitle={item.title} />
             <PlayerControlTimeSeek
                 ref={seekRef}
                 basePlayer={basePlayer}

@@ -5,7 +5,7 @@ import { AppContext } from '../../User/store-context/AppContext';
 
 const controller = new AbortController();
 
-const SendSongIcon = (song: any, optionalCallback: Function) => {
+const SendSongIcon = (song: any) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation();
