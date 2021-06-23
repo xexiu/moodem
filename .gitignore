@@ -1,22 +1,25 @@
-node_modules/**/*
 .expo/*
 .expo-shared
 .vscode
 .env
 .phothoshop
 .quokka
-RoadMap
-assets/images/avatars
-npm-debug.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
 *.orig.*
+
+# Folders
 web-build/
 web-report/
+RoadMap
+assets/images/avatars
+phothoshop
+node_modules/**/*
+node_modules
+npm-debug.*
 
 # macOS
 .DS_Store
-node_modules
