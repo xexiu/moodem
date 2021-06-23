@@ -1,8 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable max-len */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
-
 const app = require('express')();
 const serverHTTP = require('http').Server(app);
 const serverIO = require('socket.io')(serverHTTP);
@@ -22,7 +17,7 @@ function makeRandomChars(length) {
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random()
-* charactersLength));
+      * charactersLength));
   }
   return result;
 }
@@ -86,28 +81,29 @@ const MAP_ERRORS = {
 // memory-cache docs -> https://github.com/ptarjan/node-cache
 // Socket.io do -> https://socket.io/docs/server-api/#socket-id
 
-function handleServerError(eventType) {
-  const error = MAP_ERRORS[eventType];
+// function handleServerError(eventType) {
+//   const error = MAP_ERRORS[eventType];
 
-  console.error('Server Error:', error);
-}
+//   console.error('Server Error:', error);
+// }
 
 // ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'unhandledRejection', 'SIGTERM'].forEach((eventType) => {
 //   process.on(eventType, handleServerError);
 // });
 
 const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
-const FIVE_HOURS = ttl * 5;
+// const FIVE_HOURS = ttl * 5;
 const ONE_DAY = ttl * 24;
 const THIRTY_DAYS = ONE_DAY * 30;
 const ONE_YEAR = THIRTY_DAYS * 365;
-const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFmmF2swRgIhALFkP9EgTxgWwh8_Dx3Fa2g-WN-K4umS1JQyzndTP5DLAiEAyHfgMQ2jMlNpvltT8LdxKqTle8a4ZSjODYq-svrKlVA:QUQ3MjNmemFvaS1aNkFXVURieUYtMUtWbnR5bFMzRnJfa21CUXdhSTV4QXNPVnNfQWlabDBUZU1qaC1oMnh1eVNwa2pxVWxkN3duYWdhbkk5aHM1ai1JNHFORy1ZVHNvMWw3X2RBdlhKMGZaamFaa3JfeUZzVmhqTnFLS1BETlJTOFRfTmZ6TVQyd0tfUktlcEQ5X1hiNmROcU5hSEt6NC13; VISITOR_INFO1_LIVE=Foji98RNGoc; HSID=AFT92MyweZvASBFc8; SSID=Adqw7Q8srjSE8qVwE; APISID=aS1BdrF_061pvnJi/AK-F-FrDdaxvZ2M9S; SAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; __Secure-3PAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; SID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQvrjB2Ws224CKFU_q-xDu6g.; __Secure-3PSID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQyzg_CthnHmIDweLdzl7x6w.; _gcl_au=1.1.1092345076.1615207146; PREF=tz=America.Bogota&f4=4000000&volume=100; SIDCC=AJi4QfHEidaBriNX7zfdqwhYttDNMZaRIs2EiVR8sxQEsgzh5tlYaBOoAUn9tNTUrmuHbD37LA; __Secure-3PSIDCC=AJi4QfHpDx-igRwtg57bWL78ZZK45bEB4srtDgZAfdcKm4cmO1a5l7jiJ0EVDsAKQlM_meAlN60';
 const myCache = new NodeCache();
 
 function cleanTitle(audio) {
   if (audio.title) {
-    audio.title = audio.title.replace('(Official Music Video)', '')
-      .replace('(Official Video)', '');
+    Object.assign(audio, {
+      title: audio.title.replace('(Official Music Video)', '')
+        .replace('(Official Video)', '')
+    });
     return audio.title;
   }
   return audio.title;
@@ -116,7 +112,9 @@ function cleanTitle(audio) {
 function cleanImageParams(audio) {
   if (audio.thumbnail) {
     if (audio.thumbnail.indexOf('hqdefault.jpg') >= 0) {
-      audio.thumbnail = audio.thumbnail.replace(/(\?.*)/g, '');
+      Object.assign(audio, {
+        thumbnail: audio.thumbnail.replace(/(\?.*)/g, '')
+      });
       return audio.thumbnail;
     }
   }
@@ -147,13 +145,14 @@ async function getSong(videoId, hasExpired = false) {
       noCallHome: true,
       noCheckCertificate: true,
       preferFreeFormats: true,
-      referer: `https://${makeRandomChars(6)}.com`
+      referer: `https://www.${makeRandomChars(6)}.com`
     });
 
     // const info = await ytdl.getInfo(videoId);
     // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
     const audioFormats = audioYT.formats.filter((format) => {
-      if (format.ext === 'mp4' && format.format_note !== 'tiny' && format.quality > 1 && format.vcodec !== 'none' && format.acodec.indexOf('mp4') >= 0) {
+      if (format.ext === 'mp4' && format.format_note !== 'tiny'
+        && format.quality > 1 && format.vcodec !== 'none' && format.acodec.indexOf('mp4') >= 0) {
         assignAudioProps(format, audioYT);
         return true;
       }
@@ -169,7 +168,7 @@ async function getSong(videoId, hasExpired = false) {
       cleanImageParams(audioFormats[0]);
       cleanTitle(audioFormats[0]);
 
-      myCache.set(key, { ...audioFormats[0] }, FIVE_HOURS);
+      myCache.set(key, { ...audioFormats[0] }, ONE_YEAR);
       return { ...audioFormats[0] };
     }
 
