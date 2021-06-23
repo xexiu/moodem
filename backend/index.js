@@ -11,6 +11,25 @@ const youtubedl = require('youtube-dl-exec');
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
+const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
+// const FIVE_HOURS = ttl * 5;
+const ONE_DAY = ttl * 24;
+const THIRTY_DAYS = ONE_DAY * 30;
+const ONE_YEAR = THIRTY_DAYS * 365;
+const myCache = new NodeCache();
+const YOUTUBE_ROOT = 'https://www.youtube.com/watch?v=';
+
+// Sentry.init({
+//   dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
+//   debug: false,
+//   integrations: [
+//     new CaptureConsole({
+//       levels: ['error']
+//     })
+//   ],
+//   attachStacktrace: true
+// });
+
 function makeRandomChars(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -58,17 +77,6 @@ async function searchYoutubeForVideoIds(searchedText) {
   return videoIds;
 }
 
-Sentry.init({
-  dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
-  debug: false,
-  integrations: [
-    new CaptureConsole({
-      levels: ['error']
-    })
-  ],
-  attachStacktrace: true
-});
-
 const MAP_ERRORS = {
   SIGUSR1: 'server kill PID or nodemon restart.',
   SIGUSR2: 'server kill PID or nodemon restart.',
@@ -90,13 +98,6 @@ const MAP_ERRORS = {
 // ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'unhandledRejection', 'SIGTERM'].forEach((eventType) => {
 //   process.on(eventType, handleServerError);
 // });
-
-const ttl = 60 * 60 * 1; // cache for 1 Hour ttl -> time to live
-// const FIVE_HOURS = ttl * 5;
-const ONE_DAY = ttl * 24;
-const THIRTY_DAYS = ONE_DAY * 30;
-const ONE_YEAR = THIRTY_DAYS * 365;
-const myCache = new NodeCache();
 
 function cleanTitle(audio) {
   if (audio.title) {
@@ -139,7 +140,7 @@ async function getSong(videoId, hasExpired = false) {
   }
 
   try {
-    const audioYT = await youtubedl(`https://www.youtube.com/watch?v=${videoId}`, {
+    const audioYT = await youtubedl(`${YOUTUBE_ROOT}${videoId}`, {
       dumpSingleJson: true,
       noWarnings: true,
       noCallHome: true,

@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import ResetPassword from '../../../components/Guest/functional-components/ResetPassword';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
-import { loginHandler } from '../../../src/js/Utils/Helpers/actions/loginHandlers';
+import { loginHandler } from '../../../src/js/Utils/Helpers/actions/users';
 import CustomButton from '../../common/functional-components/CustomButton';
 import CustomModal from '../../common/functional-components/CustomModal';
 import PreLoader from '../../common/functional-components/PreLoader';
@@ -44,27 +44,23 @@ const FormLogin = (props: any) => {
         };
     }, [register]);
 
-    function onSubmit(dataInput: object) {
-        setIsLoading(true);
-
+    async function onSubmit(dataInput: object) {
         if (dataInput) {
-            loginHandler(dataInput)
-                .then(() => {
-                    setIsLoading(false);
-                    modalRef.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
-                    setErrorText('');
-                })
-                .catch(error => {
-                    setIsLoading(false);
-                    console.log('ERROR', error);
-                    if (error.code === 'auth/wrong-password' || error.code === 'auth/too-many-requests') {
-                        setErrorText(error.message);
-                    } else {
-                        setErrorText(error.message);
-                    }
-                });
-        } else {
-            setIsLoading(false);
+            setIsLoading(true);
+            try {
+                await loginHandler(dataInput);
+                setIsLoading(false);
+                modalRef.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
+                setErrorText('');
+            } catch (error) {
+                console.error('FormLogin Error', JSON.stringify(error));
+                setIsLoading(false);
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/too-many-requests') {
+                    setErrorText(error.message);
+                } else {
+                    setErrorText(error.message);
+                }
+            }
         }
     }
 

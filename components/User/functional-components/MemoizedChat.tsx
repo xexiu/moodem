@@ -2,7 +2,17 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import React, { memo } from 'react';
 import { hasNotch } from 'react-native-device-info';
+import FastImage from 'react-native-fast-image';
 import { GiftedChat } from 'react-native-gifted-chat';
+
+const DEFAULT_AVATAR_STYLE = {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    marginBottom: 10
+};
 
 const MemoizedChat = (props: any) => {
     const {
@@ -12,6 +22,18 @@ const MemoizedChat = (props: any) => {
         memoizedRenderSendBtn,
         memoizedOnSend
     } = props;
+
+    function renderAvatar() {
+        return (
+            <FastImage
+                style={DEFAULT_AVATAR_STYLE}
+                source={{
+                    uri: user.photoURL,
+                    priority: FastImage.priority.high
+                }}
+            />
+        );
+    }
 
     return (
         <GiftedChat
@@ -34,6 +56,7 @@ const MemoizedChat = (props: any) => {
             keyboardShouldPersistTaps='always'
             showUserAvatar
             inverted
+            renderAvatar={renderAvatar}
             user={{
                 _id: user.uid,
                 name: user.displayName

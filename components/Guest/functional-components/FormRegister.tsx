@@ -6,10 +6,13 @@ import * as yup from 'yup';
 import { registerText } from '../../../src/css/styles/register';
 import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
 import {
+    addUserToJoinedGroupDB
+} from '../../../src/js/Utils/Helpers/actions/groups';
+import {
     registerNewUser,
     saveNewUserOnDB,
     updateProfile
-} from '../../../src/js/Utils/Helpers/actions/registerHandlers';
+} from '../../../src/js/Utils/Helpers/actions/users';
 import CustomButton from '../../common/functional-components/CustomButton';
 import PreLoader from '../../common/functional-components/PreLoader';
 
@@ -49,33 +52,29 @@ const FormRegister = () => {
         };
     }, [register]);
 
-    function onSubmit(dataInput: object) {
-        setIsLoading(true);
-
+    async function onSubmit(dataInput: object) {
         if (dataInput) {
-            return registerNewUser(dataInput)
-                .then((auth: any) => {
-                    if (auth && auth.message) {
-                        setIsLoading(false);
-                        setErrorText(auth.message);
-                    } else {
-                        return updateProfile(auth, dataInput)
-                            .then((user: any) => {
-                                setIsLoading(false);
-                                setErrorText('');
-                                saveNewUserOnDB(user, dataInput);
-                            }).catch((err: any) => {
-                                setIsLoading(false);
-                                setErrorText(err);
-                            });
-                    }
-                })
-                .catch((err: any) => {
+            setIsLoading(true);
+            try {
+                const auth = await registerNewUser(dataInput);
+                if (auth && auth.message) {
                     setIsLoading(false);
-                    setErrorText(err);
-                });
-        } else {
-            setIsLoading(false);
+                    setErrorText(auth.message);
+                } else {
+                    await updateProfile(auth, dataInput);
+                    setIsLoading(false);
+                    setErrorText('');
+                    await saveNewUserOnDB(auth.user, dataInput);
+                    await addUserToJoinedGroupDB({
+                        group_name: 'Moodem',
+                        group_id: '-MbrDH40rJYRzCq-v58a'
+                    }, auth.user);
+                }
+            } catch (error) {
+                console.error('FormRegisterUser Error', JSON.stringify(error));
+                setIsLoading(false);
+                setErrorText(error);
+            }
         }
     }
 

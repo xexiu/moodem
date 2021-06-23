@@ -14,6 +14,7 @@ import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 
 let lastDataLength = 0;
+let isFirstLanding = true;
 
 const Songs = (props: any) => {
     const { navigation } = props;
@@ -89,6 +90,10 @@ const Songs = (props: any) => {
     };
 
     async function getSongs() {
+        if (isFirstLanding) {
+            isFirstLanding = false;
+            return MAP_SONGS_ACTIONS.set_songs(group.group_songs);
+        }
         const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
         try {
             const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
@@ -194,8 +199,6 @@ const Songs = (props: any) => {
             />
         );
     }
-
-    console.log('Songs');
 
     return (
         <BodyContainer>

@@ -18,51 +18,46 @@ export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
 export async function saveSongOnDb(song: any, user: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
     const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
-    const dbgroup = await refGroup.once('value');
-    const _group = await dbgroup.val();
-    if (_group.group_songs && !hasObjWithProp(_group, 'group_songs', { id: song.id })) {
-        _group.group_songs.push(song);
-    } else {
-        _group.group_songs = [];
-        _group.group_songs.push(song);
-    }
 
-    if (_group.group_users && !hasObjWithProp(_group, 'group_users', { user_uid: user.uid })) {
-        _group.group_users.push({
-            user_uid: user.uid,
-            group_owner: _group.user_owner_id === user.uid,
-            group_admin: _group.user_owner_id === user.uid
-        });
-    } else if (!dbgroup.group_users) {
-        _group.group_users = [];
-        _group.group_users.push({
-            user_uid: user.uid,
-            group_owner: _group.user_owner_id === user.uid,
-            group_admin: _group.user_owner_id === user.uid
-        });
-    }
+    try {
+        const dbgroup = await refGroup.once('value');
+        const _group = await dbgroup.val();
 
-    return refGroup.update(_group);
+        if (_group.group_songs && !hasObjWithProp(_group, 'group_songs', { id: song.id })) {
+            _group.group_songs.push(song);
+        } else {
+            _group.group_songs = [];
+            _group.group_songs.push(song);
+        }
+
+        await refGroup.update(_group);
+    } catch (error) {
+        console.error('saveSongOnDb Error', JSON.stringify(error));
+    }
 }
 
 export async function updateSongExpiredOnDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
-    const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
-    const snapshot = await refGroup.once('value');
-    const dbgroup = await snapshot.val();
 
-    if (dbgroup) {
-        if (dbgroup.group_songs) {
-            const indexInArray = dbgroup.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
-            dbgroup.group_songs.splice(indexInArray, 1, song);
-        } else {
-            dbgroup.group_songs = [];
+    try {
+        const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+        const snapshot = await refGroup.once('value');
+        const dbgroup = await snapshot.val();
+
+        if (dbgroup) {
+            if (dbgroup.group_songs) {
+                const indexInArray = dbgroup.group_songs.findIndex((dbSong: any) => dbSong.id === song.id);
+                dbgroup.group_songs.splice(indexInArray, 1, song);
+            } else {
+                dbgroup.group_songs = [];
+            }
+
+            await refGroup.update(dbgroup);
         }
-
-        return refGroup.update(dbgroup);
+    } catch (error) {
+        console.error('updateSongEpireOnDB Error', JSON.stringify(error));
     }
 
-    console.error('updateSongEpireOnDB error');
 }
 
 export async function saveVotesForSongOnDb(song: any, user: any, group: any) {

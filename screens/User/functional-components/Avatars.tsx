@@ -1,15 +1,78 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import React, { memo, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
+import React, { memo, useContext, useEffect, useState } from 'react';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import BgImage from '../../../components/common/functional-components/BgImage';
+import BodyContainer from '../../../components/common/functional-components/BodyContainer';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
+import { AppContext } from '../../../components/User/store-context/AppContext';
+import { loadFromLocalStorage, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { getAllRandomUserAvatars } from '../../../src/js/Utils/Helpers/actions/users';
 
 const Avatars = (props: any) => {
-    const { route, navigation } = props;
-    const [loading, setLoading] = useState(false);
+    const { navigation } = props;
+    const [isLoading, setIsLoading] = useState(true);
+    const [avatarUrls, setUrls] = useState([]);
+    const { user, dispatchContextApp } = useContext(AppContext) as any;
 
-    if (!route.params.avatarUrls.length || loading) {
+    async function getAllRandomAvatars() {
+        try {
+            const avatarsUrlsFromStorage = await loadFromLocalStorage('randomUserAvatars');
+            if (avatarsUrlsFromStorage) {
+                setIsLoading(false);
+                return setUrls(avatarsUrlsFromStorage);
+            }
+            const urls = await getAllRandomUserAvatars();
+            await saveOnLocalStorage('randomUserAvatars', urls, null);
+            setUrls(urls);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('getAllRandomAvatars Error', JSON.stringify(error));
+        }
+    }
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerMode: 'none',
+            unmountOnBlur: true,
+            headerBackTitleVisible: false,
+            unmountInactiveRoutes: true
+        });
+        getAllRandomAvatars();
+    }, [avatarUrls]);
+
+    async function changeAvatar(url: string) {
+        setIsLoading(true);
+        await user.updateProfile({
+            photoURL: url
+        });
+        setIsLoading(false);
+        await dispatchContextApp({
+            type: 'set_user',
+            value: {
+                user
+            }
+        });
+        await navigation.navigate('Profile');
+    }
+
+    const handleUserAvatar = (url: string) => {
+        Alert.alert(
+            '¿Estás segur@ de cambiar a este avatar?',
+            undefined,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                { text: 'OK', onPress: () => changeAvatar(url) }
+            ],
+            { cancelable: false }
+        );
+    };
+
+    if (isLoading) {
         return (
             <PreLoader
                 containerStyle={{
@@ -21,44 +84,18 @@ const Avatars = (props: any) => {
         );
     }
 
-    const changeAvatar = (url: string, user: any) => {
-        setLoading(true);
-
-        user.updateProfile({
-            photoURL: url
-        }).then(() => {
-            setLoading(false);
-            navigation.navigate('Profile', {
-                params: url
-            });
-        }, () => { });
-    };
-
-    const handleUserAvatar = (url: string, user: any) => {
-        Alert.alert(
-            'Are you sure you want this avatar?',
-            undefined,
-            [
-                {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel'
-                },
-                { text: 'OK', onPress: () => changeAvatar(url, user) }
-            ],
-            { cancelable: false }
-        );
-    };
-
     return (
-        <SafeAreaView>
+        <BodyContainer>
             <ScrollView>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 5, justifyContent: 'center' }}>
-                    {route.params.avatarUrls.map((avatar: any, key: number) => (
-                        <TouchableOpacity key={key.toString()} onPress={() => handleUserAvatar(avatar.avatarUrl, route.params.user)}>
+                    {avatarUrls.map((avatarUrl: any, key: number) => (
+                        <TouchableOpacity
+                            key={key.toString()}
+                            onPress={() => handleUserAvatar(avatarUrl)}
+                        >
                             <BgImage
                                 key={key.toString()}
-                                source={{ uri: avatar.avatarUrl, cache: 'force-cache' }}
+                                source={{ uri: avatarUrl, cache: 'force-cache' }}
                                 bgImageStyle={[{
                                     width: 90,
                                     height: 90,
@@ -69,7 +106,7 @@ const Avatars = (props: any) => {
                         </TouchableOpacity>))}
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </BodyContainer>
     );
 };
 

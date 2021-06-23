@@ -77,7 +77,8 @@ const ChatRoom = (props: any) => {
                     text: message.text,
                     user: {
                         _id: message.user._id,
-                        name: message.user.name
+                        name: message.user.name,
+                        avatar: user.photoURL || ''
                     },
                     createdAt: message.createdAt,
                     _id: message._id

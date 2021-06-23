@@ -5,7 +5,7 @@ import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
-import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/resetPasswordHandlers';
+import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/users';
 import CustomButton from '../../common/functional-components/CustomButton';
 import PreLoader from '../../common/functional-components/PreLoader';
 
@@ -33,20 +33,17 @@ const ResetPassword = () => {
     }, [register]);
 
     async function onSubmit(dataInput: object) {
-        setIsLoading(true);
-
         if (dataInput) {
+            setIsLoading(true);
             try {
                 await resetPasswordHandler(dataInput);
                 setErrorText('Email enviado correctamente!');
-                return setIsLoading(false);
+                setIsLoading(false);
             } catch (err) {
                 setIsLoading(false);
                 setErrorText(err);
             }
         }
-
-        setIsLoading(false);
     }
 
     console.log('Reset Password');

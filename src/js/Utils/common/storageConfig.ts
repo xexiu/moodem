@@ -48,10 +48,10 @@ export async function loadFromLocalStorage(key: string) {
         switch (err.name) {
         case 'NotFoundError':
                 // TODO;
-            return err.name;
+            return null;
         case 'ExpiredError':
                 // TODO
-            return err.name;
+            return null;
         }
     }
 }

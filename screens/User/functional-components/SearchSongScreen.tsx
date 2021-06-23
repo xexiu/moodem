@@ -44,7 +44,6 @@ const SearchSongScreen = (props: any) => {
         socket.on('song-error-searching', getSongWithError);
 
         return () => {
-            console.log('OFF SEARCHE SCREEN');
             source.cancel('SearchSongScreen Component got unmounted');
             socket.off('search-songs', getSongs);
             socket.off('get-songs', getSongs);

@@ -5,6 +5,7 @@ import {
     deleteOwnedGroup,
     initialValue,
     setNewGroup,
+    setUser,
     State,
     updateCommonState,
     updateOwnedGroup
@@ -17,7 +18,8 @@ const MAP_ACTIONS = {
     set_current_group: updateCommonState,
     set_new_group: setNewGroup,
     delete_owned_group: deleteOwnedGroup,
-    update_owned_group: updateOwnedGroup
+    update_owned_group: updateOwnedGroup,
+    set_user: setUser
 } as any;
 
 function updateState(result: State, action: actionType) {

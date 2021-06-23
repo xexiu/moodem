@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
-import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
+import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
@@ -30,7 +30,7 @@ const MyGroupsSceneTab = () => {
                 titleStyle={{ marginTop: -17 }}
                 leftAvatar={{
                     source: {
-                        uri: USER_AVATAR_DEFAULT
+                        uri: DEFAULT_GROUP_AVATAR
                     }
                 }}
                 subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}

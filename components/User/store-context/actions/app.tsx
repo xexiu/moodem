@@ -89,3 +89,7 @@ export function setNewGroup(result: State, action: actionType) {
 
     return { ...result, ...value };
 }
+
+export function setUser(result: State, action: actionType) {
+    return { ...result, ...action.value };
+}

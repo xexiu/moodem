@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
+import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
@@ -31,7 +32,7 @@ const PublicGroupsSceneTab = () => {
                 titleStyle={{ marginTop: -17 }}
                 leftAvatar={{
                     source: {
-                        uri: USER_AVATAR_DEFAULT
+                        uri: item.group_name === 'Moodem' ? USER_AVATAR_DEFAULT : DEFAULT_GROUP_AVATAR
                     }
                 }}
                 subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}

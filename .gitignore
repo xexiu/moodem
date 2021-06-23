@@ -6,6 +6,7 @@ node_modules/**/*
 .phothosop
 .quokka
 .RoadMap
+.assets/images/avatars
 npm-debug.*
 *.jks
 *.p8
