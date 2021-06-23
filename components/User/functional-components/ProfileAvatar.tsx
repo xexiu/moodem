@@ -4,7 +4,7 @@ import React, { memo, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
-import { avatarContainer, avatarImage } from '../../../src/css/styles/Avatar';
+import { avatarContainer, avatarImage } from '../../../src/css/styles/avatar';
 import { btnShadow } from '../../../src/css/styles/common';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import BgImage from '../../common/functional-components/BgImage';
