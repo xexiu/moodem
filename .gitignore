@@ -3,10 +3,10 @@ node_modules/**/*
 .expo-shared
 .vscode
 .env
-.phothosop
+.phothoshop
 .quokka
-.RoadMap
-.assets/images/avatars
+RoadMap
+assets/images/avatars
 npm-debug.*
 *.jks
 *.p8
