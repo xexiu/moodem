@@ -2,7 +2,6 @@
 import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
-import MediaListEmpty from './MediaListEmpty';
 import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import BodyContainer from '../../common/functional-components/BodyContainer';
@@ -12,6 +11,7 @@ import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
+import { MediaListEmpty } from './MediaListEmpty';
 
 let lastDataLength = 0;
 let isFirstLanding = true;

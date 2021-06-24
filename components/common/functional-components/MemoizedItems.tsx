@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { memo, useCallback } from 'react';
-import MediaListEmpty from '../../User/functional-components/MediaListEmpty';
+import { MediaListEmpty } from '../../User/functional-components/MediaListEmpty';
 import CommonFlatList from './CommonFlatList';
 import MemoizedItem from './MemoizedItem';
 

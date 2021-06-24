@@ -4,9 +4,9 @@ import BodyContainer from '../../../components/common/functional-components/Body
 import MemoizedSongsList from '../../../components/common/functional-components/MemoizedSongsList';
 import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
+import { MediaListEmpty } from '../../../components/User/functional-components/MediaListEmpty';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
-import MediaListEmpty from '../../../components/User/functional-components/MediaListEmpty';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const SearchSongScreen = (props: any) => {

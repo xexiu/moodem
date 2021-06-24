@@ -5,7 +5,7 @@ import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
-import { GroupEmpty } from '../../User/functional-components/GroupEmpty';
+import { MediaListEmpty } from '../../User/functional-components/MediaListEmpty';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupPrivateIcon } from './GroupPrivateIcon';
@@ -103,7 +103,7 @@ const MyGroupsSceneTab = () => {
             />
             <CommonFlatList
                 style={{ marginTop: 10 }}
-                emptyListComponent={<GroupEmpty msg={'No tienes ningún grupo! Prueba de crear uno.'} />}
+                emptyListComponent={<MediaListEmpty msg={'No tienes ningún grupo! Prueba de crear uno.'} />}
                 headerComponent={gruopsLengthMsg()}
                 data={ownedGroups}
                 action={memoizedItem}

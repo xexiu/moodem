@@ -7,7 +7,7 @@ import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
-import { GroupEmpty } from '../../User/functional-components/GroupEmpty';
+import { MediaListEmpty } from '../../User/functional-components/MediaListEmpty';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupPrivateIcon } from './GroupPrivateIcon';
@@ -112,7 +112,7 @@ const PublicGroupsSceneTab = () => {
             />
             <CommonFlatList
                 style={{ marginTop: 10 }}
-                emptyListComponent={<GroupEmpty msg={'Te has unido a 0 grupos públicos!'} />}
+                emptyListComponent={<MediaListEmpty msg={'Te has unido a 0 grupos públicos!'} />}
                 headerComponent={gruopsLengthMsg()}
                 data={publicGroups}
                 action={memoizedItem}

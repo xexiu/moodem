@@ -2,7 +2,7 @@ import React, { Component, ComponentType } from 'react';
 import { FallbackComponent, Props as FallbackComponentProps } from '../functional-components/FallbackComponent';
 
 type Props = {
-    children: Node,
+    children: React.ReactChild,
     FallbackComponent: ComponentType<FallbackComponentProps>,
     onError?: Function
 };
@@ -11,7 +11,6 @@ type State = { error: Error | null };
 
 export class ErrorBoundary extends Component<Props, State> {
     public setState: any;
-    public props: any;
     state: State = { error: null };
 
     static defaultProps: { FallbackComponent: ComponentType<FallbackComponentProps> } = {
@@ -22,8 +21,8 @@ export class ErrorBoundary extends Component<Props, State> {
         return { error };
     }
 
-    componentDidCatch(error, info) {
-        // logErrorToService(error, info.componentStack) ---> https://sentry.io/
+    componentDidCatch(error: any, info: any) {
+        console.error('ErrorBoundary Error', JSON.stringify(error), 'Info. ', info);
     }
 
     resetError = () => {
