@@ -13,7 +13,7 @@ import useAppState from './components/User/custom-hooks/useAppState';
 import { AppContext } from './components/User/store-context/AppContext';
 import { SongsContextProvider } from './components/User/store-context/SongsContext';
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
-import { Avatars } from './screens/User/functional-components/Avatars';
+import { Avatars } from './screens/User/functional-components/AvatarsScreen';
 import { getUserGroups } from './src/js/Utils/Helpers/actions/groups';
 import firebase from './src/js/Utils/Helpers/services/firebase';
 import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';

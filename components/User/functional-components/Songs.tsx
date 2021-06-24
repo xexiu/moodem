@@ -2,7 +2,7 @@
 import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
-import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
+import MediaListEmpty from './MediaListEmpty';
 import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import BodyContainer from '../../common/functional-components/BodyContainer';

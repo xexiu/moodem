@@ -7,6 +7,8 @@ import Video from 'react-native-video';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
+const errorSongs = [] as any;
+
 function configMusicControl() {
     MusicControl.enableControl('play', true);
     MusicControl.enableControl('pause', true);
@@ -180,6 +182,7 @@ const BasePlayer = (props: any) => {
                         seekRef.current.setTrackCurrentTime(0);
                     }
                     basePlayer.current.seek(0);
+                    Object.assign(errorSongs, []);
                 }}
                 onError={(error: any) => {
                     if (error.localizedDescription === 'Cannot Decode') {
@@ -197,19 +200,22 @@ const BasePlayer = (props: any) => {
                         hasExpired: true
                     });
 
-                    if (!isServerError) {
-                        if (item.isSearching) {
-                            console.error('Song Error on Searched Songs', 'Error: ', JSON.stringify(error));
+                    if (!errorSongs.includes(item.id)) {
+                        errorSongs.push(item.id);
+                        if (!isServerError) {
+                            if (item.isSearching) {
+                                console.error('Song Error on Searched Songs', 'Error: ', JSON.stringify(error));
+                                return socket.emit('send-song-error', {
+                                    chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                                    song: item
+                                });
+                            }
+                            console.error('Song Error on Songs', 'Error: ', JSON.stringify(error));
                             return socket.emit('send-song-error', {
                                 chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
                                 song: item
                             });
                         }
-                        console.error('Song Error on Songs', 'Error: ', JSON.stringify(error));
-                        return socket.emit('send-song-error', {
-                            chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
-                            song: item
-                        });
                     }
                 }}
                 paused={!item.isPlaying}

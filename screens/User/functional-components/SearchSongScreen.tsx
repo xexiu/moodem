@@ -6,7 +6,7 @@ import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
-import MediaListEmpty from '../../../screens/User/functional-components/MediaListEmpty';
+import MediaListEmpty from '../../../components/User/functional-components/MediaListEmpty';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
 
 const SearchSongScreen = (props: any) => {

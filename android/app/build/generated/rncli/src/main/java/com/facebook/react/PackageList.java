@@ -23,6 +23,10 @@ import org.reactnative.maskedview.RNCMaskedViewPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 // @react-native-community/slider
 import com.reactnativecommunity.slider.ReactSliderPackage;
+// @sentry/react-native
+import io.sentry.react.RNSentryPackage;
+// react-native-background-timer
+import com.ocetnik.timer.BackgroundTimerPackage;
 // react-native-device-info
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 // react-native-fast-image
@@ -31,6 +35,8 @@ import com.dylanvann.fastimage.FastImageViewPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-music-control
 import com.tanguyantoine.react.MusicControl;
+// react-native-pager-view
+import com.reactnativepagerview.PagerViewPackage;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
 // react-native-safe-area-context
@@ -39,6 +45,8 @@ import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 // react-native-vector-icons
 import com.oblador.vectoricons.VectorIconsPackage;
+// react-native-video-cache
+import com.reactnative.videocache.VideoCachePackage;
 
 public class PackageList {
   private Application application;
@@ -90,14 +98,18 @@ public class PackageList {
       new RNCMaskedViewPackage(),
       new NetInfoPackage(),
       new ReactSliderPackage(),
+      new RNSentryPackage(),
+      new BackgroundTimerPackage(),
       new RNDeviceInfo(),
       new FastImageViewPackage(),
       new RNGestureHandlerPackage(),
       new MusicControl(),
+      new PagerViewPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
-      new VectorIconsPackage()
+      new VectorIconsPackage(),
+      new VideoCachePackage()
     ));
   }
 }

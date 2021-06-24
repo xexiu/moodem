@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
-import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
+import { GroupEmpty } from '../../User/functional-components/GroupEmpty';
 import { AppContext } from '../store-context/AppContext';
 import { SongsContext } from '../store-context/SongsContext';
 import { GroupPrivateIcon } from './GroupPrivateIcon';

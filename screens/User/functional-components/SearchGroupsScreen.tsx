@@ -7,13 +7,13 @@ import CommonFlatListItem from '../../../components/common/functional-components
 import CustomModal from '../../../components/common/functional-components/CustomModal';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import AddGroupIcon from '../../../components/User/functional-components/AddGroupIcon';
+import { GroupEmpty } from '../../../components/User/functional-components/GroupEmpty';
 import { GroupPrivateIcon } from '../../../components/User/functional-components/GroupPrivateIcon';
 import { GroupSongsIcon } from '../../../components/User/functional-components/GroupSongsIcon';
 import { GroupUsersIcon } from '../../../components/User/functional-components/GroupUsersIcon';
 import ShowPopUpPasswordGroup from '../../../components/User/functional-components/ShowPopUpPasswordGroup';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
-import { GroupEmpty } from '../../../screens/User/functional-components/GroupEmpty';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import {
     addUserToJoinedGroupDB,
