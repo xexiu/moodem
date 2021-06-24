@@ -1,8 +1,9 @@
-export function doFetch(url: any, options: any, callback: Function) {
-    return fetch(url, options)
-        .then(response => response.json())
-        .then(data => Promise.resolve(callback(data)))
-        .catch(err => {
-            throw new Error(`doFecth() ${err.message}`);
-        });
+export async function doFetch(url: any, options: any, callback: Function) {
+    try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        return await Promise.resolve(callback(data));
+    } catch (err) {
+        throw new Error(`doFecth() ${err.message}`);
+    }
 }

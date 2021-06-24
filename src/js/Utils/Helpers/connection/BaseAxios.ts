@@ -42,7 +42,7 @@ function executeRequest(method: any, pathname: string, data: any, options: any) 
 }
 
 export default {
-    get(pathname: any, options: ay) {
+    get(pathname: any, options: any) {
         console.log('BaseApi', options);
         return executeRequest('get', pathname, null, options);
     },
