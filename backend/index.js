@@ -313,7 +313,7 @@ serverIO.on('connection', (socket) => {
     const groupName = data.chatRoom.replace(/(.*?_GroupName_)/g, '');
     serverIO.to(socket.id).emit('get-message-welcomeMsg',
       {
-        welcomeMsg: `Bienvenid@ ${socket.displayName} al grupo ${groupName}!`
+        welcomeMsg: `Welcome ${socket.displayName} to ${groupName}!`
       });
   });
 
