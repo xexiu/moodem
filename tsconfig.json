@@ -5,7 +5,10 @@
         "esModuleInterop": true,
         "isolatedModules": true,
         "jsx": "react",
-        "lib": ["ES6", "dom"],
+        "lib": [
+            "ES6",
+            "dom"
+        ],
         "moduleResolution": "node",
         "noEmit": true,
         "target": "esnext",
@@ -13,9 +16,10 @@
         "strict": true,
         "strictNullChecks": false,
         "module": "esnext",
-        "compilerOptions": {
-            "typesRoot": ["./src/types"]
-        }
+        "typeRoots": [
+            "./src/types"
+        ],
+        "resolveJsonModule": true
     },
     "exclude": [
         "node_modules",

@@ -1,3 +1,8 @@
+const COMMON_TEXT_STYLE = {
+    marginTop: 10,
+    paddingBottom: 10
+};
+
 export const btnShadow = {
     shadowColor: '#000',
     shadowOffset: {
@@ -8,3 +13,5 @@ export const btnShadow = {
     shadowRadius: 3.84,
     elevation: 5
 };
+
+export const aboutTextStyle = COMMON_TEXT_STYLE;

@@ -2,11 +2,13 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
+import * as RNLocalize from 'react-native-localize';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
 import { MainContainer } from './components/common/functional-components/MainContainer';
 import { OfflineNotice } from './components/common/functional-components/OfflineNotice';
 import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
+import { setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
 // sentryInit(); disable sentry temporally
@@ -42,6 +44,7 @@ class App extends PureComponent<AppProps, AppState> {
         this.state = {
             hasInternetConnection: true
         };
+        setI18nConfig();
     }
 
     handleConnectivityChange = (connection: any) => {
@@ -50,12 +53,19 @@ class App extends PureComponent<AppProps, AppState> {
         });
     };
 
+    handleLocalizationChange = () => {
+        setI18nConfig();
+        this.forceUpdate();
+    };
+
     componentDidMount() {
         this.netinfoUnsubscribe = NetInfo.addEventListener(this.handleConnectivityChange);
+        RNLocalize.addEventListener('change', this.handleLocalizationChange);
     }
 
     componentWillUnmount() {
         controller.abort();
+        RNLocalize.removeEventListener('change', this.handleLocalizationChange);
         if (this.netinfoUnsubscribe) {
             this.netinfoUnsubscribe();
             this.netinfoUnsubscribe = null;
