@@ -8,8 +8,8 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
-import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
 import { deleteGroupForEver, updateUserGroup } from '../../../src/js/Utils/Helpers/actions/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const commonInputStyles = {
     height: 30,
@@ -40,13 +40,13 @@ const GroupSettingsScreen = (props: any) => {
             unmountOnBlur: true,
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true,
-            title: 'Ajustes'
+            title: `${translate('groups.settings.title')}`
         });
     }, []);
 
     function handleUserAvatar() {
         Alert.alert(
-            `Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo. \n\n ${group.group_name} \n\n ¿Seguro que quiere eliminar este grupo de tú lista?`,
+            `${translate('groups.settings.alert.0')} \n\n ${group.group_name} \n\n ${translate('groups.settings.alert.1')}`,
             undefined,
             [
                 {
@@ -103,7 +103,8 @@ const GroupSettingsScreen = (props: any) => {
                         fontSize: 15,
                         fontWeight: '500'
                     }}
-                >Editar nombre del grupo:
+                >
+                    {translate('groups.settings.formTexts.editName')}
                 </Text>
                 <TextInput
                     style={[
@@ -127,7 +128,11 @@ const GroupSettingsScreen = (props: any) => {
                 >
                     {errors.name && errors.name.message}
                 </Text>
-                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Editar descripción del grupo (opcional):</Text>
+                <Text
+                    style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}
+                >
+                    {translate('groups.settings.formTexts.editDescription')}
+                </Text>
                 <TextInput
                     // tslint:disable-next-line:max-line-length
                     style={[errors.description && errors.description.message ? [commonInputStyles, { borderColor: '#D84A05', height: 80 }] : [commonInputStyles, { height: 80 }]]}
@@ -137,15 +142,15 @@ const GroupSettingsScreen = (props: any) => {
                     multiline
                     autoCorrect={false}
                     numberOfLines={5}
-                    placeholder={FORM_FIELDS_CREATE_GROUP.group_description.help}
+                    placeholder={translate('groups.settings.formTexts.groupDescriptionHelp')}
                 />
-                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña:</Text>
+                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>{translate('groups.settings.formTexts.editPassword')}</Text>
                 {
                     !group.group_password ?
-                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!</Text> :
-                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Actualizar contraseña!</Text>
+                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>{translate('groups.settings.formTexts.info.0')}</Text> :
+                        <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>{translate('groups.settings.formTexts.info.1')}</Text>
                 }
-                <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!</Text>
+                <Text style={{ marginTop: 5, fontSize: 12, color: '#666' }}>{translate('groups.settings.formTexts.info.2')}</Text>
                 <TextInput
                     // tslint:disable-next-line:max-line-length
                     style={[errors.password && errors.password.message ? [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
@@ -154,16 +159,18 @@ const GroupSettingsScreen = (props: any) => {
                     }}
                     autoCorrect={false}
                     secureTextEntry
-                    placeholder={FORM_FIELDS_CREATE_GROUP.group_password.help}
+                    placeholder={translate('groups.settings.formTexts.passwordHelp')}
                 />
                 <Text
                     style={{
                         color: '#D84A05',
                         marginTop: 5,
                         marginBottom: 5
-                    }}>{errors.password && errors.password.message}
+                    }}
+                >
+                    {errors.password && errors.password.message}
                 </Text>
-                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Confirmar Contraseña:</Text>
+                <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>{translate('groups.settings.formTexts.confirmPassword')}</Text>
                 <TextInput
                     style={[errors.confirm_password && errors.confirm_password.message ?
                         [commonInputStyles, { borderColor: '#D84A05' }] :
@@ -184,7 +191,7 @@ const GroupSettingsScreen = (props: any) => {
                     {errors.confirm_password && errors.confirm_password.message}
                 </Text>
                 <CustomButton
-                    btnTitle='Eliminar Grupo!'
+                    btnTitle={translate('groups.settings.formTexts.deleteGroup')}
                     btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
                     btnRaised={false}
                     shadow={{}}
@@ -195,7 +202,7 @@ const GroupSettingsScreen = (props: any) => {
             {isLoading ?
                 <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                 <CustomButton
-                    btnTitle='Editar Grupo'
+                    btnTitle={translate('groups.settings.formTexts.editGroup')}
                     btnStyle={[btnStyleDefault, { marginTop: 15 }]}
                     action={handleSubmit(onSubmit)}
                 />

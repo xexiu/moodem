@@ -2,6 +2,7 @@ import React, { memo, useContext, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { AppContext } from '../store-context/AppContext';
 
@@ -38,7 +39,7 @@ const FormNickName = () => {
                     isLoading: false
                 };
             });
-            return toastRef.current.show('Ha de ser 4 carácteres o más', 3000);
+            return toastRef.current.show(`${translate('profile.formTexts.errors.0')}`, 3000);
         }
 
         try {
@@ -52,7 +53,7 @@ const FormNickName = () => {
                 }
             });
             resetValues();
-            toastRef.current.show('Actualizado!', 2000);
+            toastRef.current.show(`${translate('profile.formTexts.info.0')}`, 2000);
         } catch (error) {
             resetValues();
             toastRef.current.show(error.message, 2000);
@@ -75,7 +76,7 @@ const FormNickName = () => {
                     width: '80%'
                 }}
                 underlineColorAndroid='transparent'
-                placeholder='Cambiar nickname'
+                placeholder={translate('profile.formTexts.changeNickName')}
                 placeholderTextColor='#777'
                 autoCapitalize='none'
                 autoCorrect={false}

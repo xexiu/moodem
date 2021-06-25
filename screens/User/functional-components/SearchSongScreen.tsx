@@ -8,6 +8,7 @@ import { MediaListEmpty } from '../../../components/User/functional-components/M
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const SearchSongScreen = (props: any) => {
     const {
@@ -33,7 +34,7 @@ const SearchSongScreen = (props: any) => {
             unmountOnBlur: true,
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true,
-            title: `${allValues.songs.length} encontrado(s)`
+            title: `${allValues.songs.length} ${translate('songs.searchBar.placeholderFound')}`
         });
         socket.emit('search-songs', {
             chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
@@ -70,7 +71,7 @@ const SearchSongScreen = (props: any) => {
 
     function getSongs(data: any) {
         checkIfAlreadyOnList(songs, data.songs);
-        navigation.setOptions({ title: `${data.songs.length} encontrado(s)` });
+        navigation.setOptions({ title: `${data.songs.length} ${translate('songs.searchBar.placeholderFound')}` });
 
         return setAllValues(prevValues => {
             return {

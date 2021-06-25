@@ -59,5 +59,127 @@
             "The Moodem app does not sell any voluntarily personally identifiable information to third parties. To prevent unauthorized access, maintain data accuracy, and guarantee the correct use of information, we have established physical, electronic, and administrative procedures to safeguard and protect the information we collect online, in accordance with privacy policies.",
             "If you have other questions or concerns about our privacy policies and practices, please email contact.moodem@gmail.com"
         ]
+    },
+    "sideBarItems": {
+        "items": [
+            "Groups",
+            "Mi Profile"
+        ]
+    },
+    "songs": {
+        "searchBar": {
+            "placeholderSearch": "Find a song...",
+            "placeholderFound": "found"
+        }
+    },
+    "groups": {
+        "itemsBars": {
+            "titles": [
+                "My Groups",
+                "Publics",
+                "Privates"
+            ]
+        },
+        "createGroup": {
+            "title": "Create a new group",
+            "formTexts": {
+                "groupName": "Group Name:",
+                "groupNameInfo": "Enter a group name. (max. 50 characters)",
+                "groupDescription": "Description of the group (opcional):",
+                "info": [
+                    "- Create a public group: Don't enter a password!",
+                    "- Create a private group: Enter a password!",
+                    "- Valid Password: The password must contain word(s) and number(s). The password can't contain spaces and/or special characters!"
+                ]
+            },
+            "createGroupBtnTitle": "Create Group"
+        },
+        "settings": {
+            "title": "Preferences",
+            "formTexts": {
+                "editName": "Edit group name:",
+                "editDescription": "Edit group description (opcional):",
+                "editPassword": "Password:",
+                "groupDescriptionHelp": "Enter a description for your group (opcional). The description text must not exceed the limit of 200 characters!",
+                "passwordHelp": "Min 6 characters. Must contain word(s) and number(s)",
+                "confirmPassword": "Confirm Password:",
+                "deleteGroup": "Delete Group!",
+                "editGroup": "Edit Group",
+                "info": [
+                    "- This group is public! If you add a password, the group will convert to private!",
+                    "- Update Password!",
+                    "- Valid Password: The password must contain word(s) and number(s). The password can't contain spaces and/or special characters!"
+                ]
+            },
+            "alert": [
+                "This accion can not be undone and will errase ALL that has to do with this group.",
+                "Are you sure that you still want to delete this group?",
+                "Are you sure that you want to abandon this group:",
+                "All data related with this group will be lost!"
+            ],
+            "formErrors": [
+                "Incorrect Password: password must contain, at least one letter and one number.",
+                "Name of the group is incorrect or not permitted!",
+                "The name of the group has to be greater than",
+                "characters!",
+                "Password must be min",
+                "Password don't match"
+            ]
+        },
+        "msgMyGroups": [
+            "You have",
+            "groups owned",
+            "You have",
+            "groups owned",
+            "You don't have any group. Try and create one."
+        ],
+        "msgPublicGroups": [
+            "You joined",
+            "group",
+            "You joined",
+            "groups",
+            "You didn't joined any public groups."
+        ],
+        "msgPrivateGroups": [
+            "You joined",
+            "group",
+            "You joined",
+            "groups",
+            "You didn't joined any private groups."
+        ],
+        "searchBar": {
+            "placeholderMyGroups": "Search all groups...",
+            "placeholderPublicGroups": "Search public groups...",
+            "placeholderPrivateGroups": "Search private groups..."
+        }
+    },
+    "chat": {
+        "placeHolderChatButton": "Write something..."
+    },
+    "profile": {
+        "session": {
+            "close": "Close Session!"
+        },
+        "notVerifiedEmail": {
+            "text": [
+                "E-mail not verified.",
+                "Verify now!"
+            ]
+        },
+        "formTexts": {
+            "changeNickName": "Change nickname",
+            "changeEmail": "Change Email",
+            "changePassword": "Change Password",
+            "info": [
+                "Updated!"
+            ],
+            "errors": [
+                "Has to be 4 charaters or more..."
+            ]
+        },
+        "alertAvatars": "Are you sure that you want to change to this avatar?"
+    },
+    "mediaList": {
+        "empty": "The list is empty!"
     }
 }

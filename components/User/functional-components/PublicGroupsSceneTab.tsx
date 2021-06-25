@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
@@ -83,8 +84,8 @@ const PublicGroupsSceneTab = () => {
         }
         let msg = '';
         publicGroups.length === 1 ?
-            msg = `Te has unido a ${publicGroups.length} grupo.` :
-            msg = `Te has unido a ${publicGroups.length} grupos`;
+            msg = `${translate('groups.msgPublicGroups.0')} ${publicGroups.length} ${translate('groups.msgPublicGroups.1')}` :
+            msg = `${translate('groups.msgPublicGroups.2')} ${publicGroups.length} ${translate('groups.msgPublicGroups.3')}`;
 
         return (
             <View style={{ alignItems: 'center', marginBottom: 10 }}><Text style={{ color: '#666' }}>{msg}</Text></View>
@@ -104,7 +105,7 @@ const PublicGroupsSceneTab = () => {
         <View>
             <CommonTopSearchBar
                 customStyleContainer={{ marginLeft: 0 }}
-                placeholder='Buscar grupos públicos...'
+                placeholder={translate('groups.searchBar.placeholderPublicGroups')}
                 cancelSearch={() => {
                     console.log('Search Cancel');
                 }}
@@ -112,7 +113,7 @@ const PublicGroupsSceneTab = () => {
             />
             <CommonFlatList
                 style={{ marginTop: 10 }}
-                emptyListComponent={<MediaListEmpty msg={'Te has unido a 0 grupos públicos!'} />}
+                emptyListComponent={<MediaListEmpty msg={translate('groups.msgPublicGroups.4')} />}
                 headerComponent={gruopsLengthMsg()}
                 data={publicGroups}
                 action={memoizedItem}

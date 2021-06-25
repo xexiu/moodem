@@ -59,5 +59,127 @@
             "La app Moodem no vende ninguna información de identificación personal ofrecida voluntariamente a terceras partes. Para prevenir el acceso no autorizado, mantener la exactitud de los datos, y garantizar el uso correcto de a información, hemos instaurado procedimientos físicos, electrónicos y administrativos para salvaguardar y proteger la información que recogemos en línea, de acuerdo con las políticas privacidad.",
             "Si tiene otras preguntas o preocupaciones sobre nuestras políticas y prácticas de privacidad, por favor envíe un correo electrónico a contact.moodem@gmail.com"
         ]
+    },
+    "sideBarItems": {
+        "items": [
+            "Grupos",
+            "Mi Perfil"
+        ]
+    },
+    "songs": {
+        "searchBar": {
+            "placeholderSearch": "Encuentra una canción...",
+            "placeholderFound": "encontrado(s)"
+        }
+    },
+    "groups": {
+        "itemsBars": {
+            "titles": [
+                "Mis Grupos",
+                "Públicos",
+                "Privados"
+            ]
+        },
+        "createGroup": {
+            "title": "Crear un nuevo grupo",
+            "formTexts": {
+                "groupName": "Nombre del grupo:",
+                "groupNameInfo": "Ingresar un nombre de grupo. (max. 50 carácteres)",
+                "groupDescription": "Descripción del grupo (opcional):",
+                "info": [
+                    "- Crear un grupo público: No introducir contraseña!",
+                    "- Crear un grupo privado: Crear una contraseña!",
+                    "- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!"
+                ]
+            },
+            "createGroupBtnTitle": "Crear Grupo"
+        },
+        "settings": {
+            "title": "Ajustes",
+            "formTexts": {
+                "editName": "Editar nombre del grupo:",
+                "editDescription": "Editar descripción del grupo (opcional):",
+                "editPassword": "Contraseña:",
+                "groupDescriptionHelp": "Añade una descripción para tu grupo (opcional). La descripción no puede exceder más de 200 carácteres!",
+                "passwordHelp": "Min. 6 carácteres. Letra(s) y número(s).",
+                "confirmPassword": "Confirmar Contraseña:",
+                "deleteGroup": "Eliminar Grupo!",
+                "editGroup": "Editar Grupo",
+                "info": [
+                    "- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!",
+                    "- Actualizar contraseña!",
+                    "- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!"
+                ]
+            },
+            "alert": [
+                "Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo.",
+                "¿Seguro que quiere eliminar este grupo de tú lista?",
+                "Estás segur@ de que quieres abandonar el grupo:",
+                "¡Se perderán todos los datos relacionados con este grupo!"
+            ],
+            "formErrors": [
+                "Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.",
+                "Nombre del grupo incorrecto o no permitido!",
+                "El nombre del grupo ha de ser mayor que",
+                "carácteres!",
+                "La contaseña tiene que ser de mínimo",
+                "Las contraseñas no coinciden"
+            ]
+        },
+        "msgMyGroups": [
+            "Tienes",
+            "grupo administrado.",
+            "Tienes",
+            "groups administrados",
+            "No tienes ningún grupo! Prueba de crear uno."
+        ],
+        "msgPublicGroups": [
+            "Te has unido a",
+            "groupo",
+            "Te has unido a",
+            "grupos",
+            "No te has unido a ningún grupo público."
+        ],
+        "msgPrivateGroups": [
+            "Te has unido a",
+            "groupo",
+            "Te has unido a",
+            "grupos",
+            "No te has unido a ningún grupo privado."
+        ],
+        "searchBar": {
+            "placeholderMyGroups": "Buscar todos los grupos...",
+            "placeholderPublicGroups": "Buscar grupos publicos...",
+            "placeholderPrivateGroups": "Buscar grupos privados..."
+        }
+    },
+    "chat": {
+        "placeHolderChatButton": "Escribe algo..."
+    },
+    "profile": {
+        "session": {
+            "close": "Cerrar Sessión!"
+        },
+        "notVerifiedEmail": {
+            "text": [
+                "E-mail no verificado.",
+                "Verificar ahora!"
+            ]
+        },
+        "formTexts": {
+            "changeNickName": "Cambiar nickname",
+            "changeEmail": "Cambiar Email",
+            "changePassword": "Cambiar contraseña",
+            "info": [
+                "Actualizado!"
+            ],
+            "errors": [
+                "Ha de ser 4 carácteres o más..."
+            ]
+        },
+        "alertAvatars": "¿Estás segur@ de cambiar a este avatar?"
+    },
+    "mediaList": {
+        "empty": "La lista está vacia!"
     }
 }

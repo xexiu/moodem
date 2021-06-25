@@ -3,6 +3,7 @@ import React, { memo, useContext } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import { AppContext } from '../store-context/AppContext';
 
 const handleVerifyMsg = () => Alert.alert(
@@ -29,12 +30,12 @@ const VerifyEmailMsg = () => {
                 color='#dd0031'
                 size={24}
             />
-            <Text>E-mail no verificado.</Text>
+            <Text>{translate('profile.notVerifiedEmail.text.0')}</Text>
             <CustomButton
                 shadow={{}}
                 btnStyle={{ backgroundColor: 'transparent' }}
                 btnTitleStyle={{ color: '#00b7e0', fontSize: 14, paddingTop: 0 }}
-                btnTitle='Verificar ahora!'
+                btnTitle={translate('profile.notVerifiedEmail.text.1')}
                 action={() => {
                     user.sendEmailVerification()
                         .then(() => handleVerifyMsg())

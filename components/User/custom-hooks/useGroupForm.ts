@@ -2,32 +2,32 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { FORM_FIELDS_CREATE_GROUP } from '../../../src/js/Utils/constants/form';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const schema = yup.object().shape({
     name: yup.string()
         .trim()
-        .min(5, ({ min }) => `El nombre del grupo ha de ser mayor que ${min} carácteres!`)
+        .min(5, ({ min }) => `${translate('groups.settings.formErrors.2')} ${min} ${translate('groups.settings.formErrors.3')}`)
         .max(50)
-        .required(FORM_FIELDS_CREATE_GROUP.group_name.error),
+        .required(() => translate('groups.settings.formErrors.1')),
     description: yup.string().min(0).max(200).optional(),
     password: yup.string()
-        .min(6, ({ min }) => `La contaseña tiene que ser de mínimo ${min} carácteres!`)
+        .min(6, ({ min }) => `${translate('groups.settings.formErrors.4')} ${min} ${translate('groups.settings.formErrors.3')}`)
         .max(40)
         .optional()
         .notRequired()
-        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{6,40}$/, 'Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.'),
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{6,40}$/, () => translate('groups.settings.formErrors.0')),
     confirm_password: yup.string().oneOf
         (
             [yup.ref('password'), null],
-            FORM_FIELDS_CREATE_GROUP.group_password_confirm.error
+            () => translate('groups.settings.formErrors.5')
         )
         .when('password', {
             is: (value: any) => {
                 return !value;
             },
             then: yup.string().optional().notRequired(),
-            otherwise: yup.string().required(FORM_FIELDS_CREATE_GROUP.group_password_confirm.error)
+            otherwise: yup.string().required(() => translate('groups.settings.formErrors.5'))
         })
 });
 

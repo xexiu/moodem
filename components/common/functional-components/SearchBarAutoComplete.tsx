@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { memo, useState } from 'react';
 import { View } from 'react-native';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
 import SuggestionList from './SuggestionList';
 
@@ -59,7 +60,7 @@ const SearchBarAutoComplete = (props: any) => {
             }}
         >
             <CommonTopSearchBar
-                placeholder='Encuentra una canción...'
+                placeholder={translate('songs.searchBar.placeholderSearch')}
                 cancelSearch={() => setSuggestions([])}
                 onChangeText={onChangeText}
                 onEndEditingSearch={handleEndSearch}

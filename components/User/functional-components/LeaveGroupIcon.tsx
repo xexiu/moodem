@@ -1,9 +1,10 @@
 import { Alert } from 'react-native';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 export const LeaveGroupIcon = (group: any, callback: Function) => {
     function handleUserLeaveGroup() {
         Alert.alert(
-            `Estás segur@ de que quieres abandonar el grupo: \n\n ${group.group_name} \n\n ¡Se perderán todos los datos relacionados con este grupo!`,
+            `${translate('groups.settings.alert.2')} \n\n ${group.group_name} \n\n ${translate('groups.settings.alert.3')}`,
             undefined,
             [
                 {

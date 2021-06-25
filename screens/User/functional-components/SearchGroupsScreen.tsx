@@ -23,6 +23,7 @@ import {
     getAllGroups,
     saveJoinedUser
 } from '../../../src/js/Utils/Helpers/actions/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const SearchGroupsScreen = (props: any) => {
     const {
@@ -67,11 +68,11 @@ const SearchGroupsScreen = (props: any) => {
             unmountOnBlur: true,
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true,
-            title: `${allValues.searchedGroups.length} encontrado(s)`
+            title: `${allValues.searchedGroups.length} ${translate('songs.searchBar.placeholderFound')}`
         });
         fetchResults()
             .then((filteredGroups: any) => {
-                navigation.setOptions({ title: `${filteredGroups.length} encontrado(s)` });
+                navigation.setOptions({ title: `${filteredGroups.length} ${translate('songs.searchBar.placeholderFound')}` });
                 setAllValues(prev => {
                     return {
                         ...prev,

@@ -7,6 +7,7 @@ import { BodyContainer } from '../../../components/common/functional-components/
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { loadFromLocalStorage, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import { getAllRandomUserAvatars } from '../../../src/js/Utils/Helpers/actions/users';
 
 const controller = new AbortController();
@@ -72,7 +73,7 @@ const Avatars = (props: any) => {
 
     const handleUserAvatar = (url: string) => {
         Alert.alert(
-            '¿Estás segur@ de cambiar a este avatar?',
+            `${translate('profile.alertAvatars')}`,
             undefined,
             [
                 {

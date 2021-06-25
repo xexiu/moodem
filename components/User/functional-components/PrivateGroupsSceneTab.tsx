@@ -3,6 +3,7 @@ import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
 import { leaveGroup } from '../../../src/js/Utils/Helpers/actions/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
@@ -82,8 +83,8 @@ const PrivateGroupsSceneTab = () => {
         }
         let msg = '';
         privateGroups.length === 1 ?
-            msg = `Te has unido a ${privateGroups.length} grupo.` :
-            msg = `Te has unido a ${privateGroups.length} grupos.`;
+        msg = `${translate('groups.msgPrivateGroups.0')} ${privateGroups.length} ${translate('groups.msgPrivateGroups.1')}` :
+        msg = `${translate('groups.msgPrivateGroups.2')} ${privateGroups.length} ${translate('groups.msgPrivateGroups.3')}`;
 
         return (
             <View style={{ alignItems: 'center', marginBottom: 10 }}><Text style={{ color: '#666' }}>{msg}</Text></View>
@@ -103,14 +104,14 @@ const PrivateGroupsSceneTab = () => {
         <View>
             <CommonTopSearchBar
                 customStyleContainer={{ marginLeft: 0 }}
-                placeholder='Buscar grupos privados...'
+                placeholder={translate('groups.searchBar.placeholderPrivateGroups')}
                 cancelSearch={() => {
                 }}
                 onEndEditingSearch={handleEndSearch}
             />
             <CommonFlatList
                 style={{ marginTop: 10 }}
-                emptyListComponent={<MediaListEmpty msg={'Te has unido a 0 grupos privados!'} />}
+                emptyListComponent={<MediaListEmpty msg={translate('groups.msgPrivateGroups.4')} />}
                 headerComponent={gruopsLengthMsg()}
                 data={privateGroups}
                 action={memoizedItem}

@@ -16,17 +16,21 @@ const TabBar = (props: any) => {
                 return (
                     <TouchableOpacity
                         key={i}
+                        style={{
+                            borderWidth: 1,
+                            borderRadius: 10,
+                            marginLeft: 15,
+                            backgroundColor: props.navigationState.index === i ? '#666' : '#fff',
+                            borderColor: props.navigationState.index === i ? '#aaa' : '#eee'
+                        }}
                         onPress={() => {
                             return props.jumpTo(route.key);
                         }}
                     >
                         <Text
                             style={{
-                                marginLeft: 10,
-                                borderWidth: 1,
                                 padding: 5,
-                                borderColor: props.navigationState.index === i ? '#aaa' : '#eee',
-                                borderRadius: 10
+                                color: props.navigationState.index === i ? '#fff' : '#000'
                             }}
                         >
                             {route.title}

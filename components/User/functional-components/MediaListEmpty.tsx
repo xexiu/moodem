@@ -1,12 +1,13 @@
 import React, { memo } from 'react';
 import { Text, View } from 'react-native';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 type MediaProps = {
     msg?: string
 };
 
-export const MediaListEmpty = memo(({ msg = 'La lista está vacia!' }: MediaProps) => (
+export const MediaListEmpty = memo(({ msg = translate('mediaList.empty') }: MediaProps) => (
     <View style={{ alignItems: 'center', marginTop: 10, backgroundColor: 'transparent' }}>
-        <Text>La lista está vacia!</Text>
+        <Text>{msg}</Text>
     </View>
 ));

@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { DEFAULT_GROUP_AVATAR } from '../../../src/js/Utils/constants/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CommonFlatList from '../../common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../common/functional-components/CommonFlatListItem';
 import CommonTopSearchBar from '../../common/functional-components/CommonTopSearchBar';
@@ -71,8 +72,8 @@ const MyGroupsSceneTab = () => {
         }
         let msg = '';
         ownedGroups.length === 1 ?
-            msg = `Tienes ${ownedGroups.length} grupo administrado.` :
-            msg = `Tienes ${ownedGroups.length} administrados`;
+            msg = `${translate('groups.msgMyGroups.0')} ${ownedGroups.length} ${translate('groups.msgMyGroups.1')}` :
+            msg = `${translate('groups.msgMyGroups.2')} ${ownedGroups.length} ${translate('groups.msgMyGroups.3')}`;
 
         return (
             <View style={{ alignItems: 'center', marginBottom: 10 }}><Text style={{ color: '#666' }}>{msg}</Text></View>
@@ -95,7 +96,7 @@ const MyGroupsSceneTab = () => {
         <View>
             <CommonTopSearchBar
                 customStyleContainer={{ marginLeft: 0 }}
-                placeholder='Buscar todos los grupos...'
+                placeholder={translate('groups.searchBar.placeholderMyGroups')}
                 cancelSearch={() => {
                     console.log('Search Cancel');
                 }}
@@ -103,7 +104,7 @@ const MyGroupsSceneTab = () => {
             />
             <CommonFlatList
                 style={{ marginTop: 10 }}
-                emptyListComponent={<MediaListEmpty msg={'No tienes ningún grupo! Prueba de crear uno.'} />}
+                emptyListComponent={<MediaListEmpty msg={translate('groups.msgMyGroups.4')} />}
                 headerComponent={gruopsLengthMsg()}
                 data={ownedGroups}
                 action={memoizedItem}

@@ -4,6 +4,7 @@ import React, { memo } from 'react';
 import { hasNotch } from 'react-native-device-info';
 import FastImage from 'react-native-fast-image';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const DEFAULT_AVATAR_STYLE = {
     width: 30,
@@ -46,7 +47,7 @@ const MemoizedChat = (props: any) => {
             locale={dayjs.locale('es')}
             wrapInSafeArea
             loadEarlier
-            placeholder='Escribe algo...'
+            placeholder={translate('chat.placeHolderChatButton')}
             infiniteScroll
             renderUsernameOnMessage
             showAvatarForEveryMessage

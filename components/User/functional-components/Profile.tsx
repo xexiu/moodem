@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import { logOut } from '../../../src/js/Utils/Helpers/actions/users';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';
@@ -43,7 +44,7 @@ const Profile = (props: any) => {
             </ScrollView>
             <KeyboardSpacer />
             <CustomButton
-                btnTitle='Cerrar Sessión!'
+                btnTitle={translate('profile.session.close')}
                 btnStyle={{ backgroundColor: 'transparent', marginTop: 10 }}
                 btnRaised={false}
                 shadow={{}}

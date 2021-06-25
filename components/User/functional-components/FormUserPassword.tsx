@@ -2,6 +2,7 @@ import React, { memo, useContext, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { AppContext } from '../store-context/AppContext';
 
@@ -34,7 +35,7 @@ const FormUserPassword = () => {
         try {
             await user.updatePassword(allValues.userPassword);
             resetValues();
-            toastRef.current.show('Actualizado!', 2000);
+            toastRef.current.show(`${translate('profile.formTexts.info.0')}`, 2000);
         } catch (error) {
             console.error('handleUserPasswordChange Error', JSON.stringify(error));
             resetValues();
@@ -58,7 +59,7 @@ const FormUserPassword = () => {
                     width: '80%'
                 }}
                 underlineColorAndroid='transparent'
-                placeholder='Cambiar contraseña'
+                placeholder={translate('profile.formTexts.changePassword')}
                 placeholderTextColor='#777'
                 autoCapitalize='none'
                 secureTextEntry
