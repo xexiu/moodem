@@ -3,6 +3,15 @@ import memoize from 'lodash.memoize'; // Use for caching/memoize for better perf
 import { I18nManager } from 'react-native';
 import * as RNLocalize from 'react-native-localize';
 
+export * as RNLocalize from 'react-native-localize';
+
+export const locales = RNLocalize.getLocales();
+export const currencies = RNLocalize.getCurrencies();
+export const country = RNLocalize.getCountry();
+export const calendarType = RNLocalize.getCalendar();
+export const temperatureUnit = RNLocalize.getTemperatureUnit();
+export const timeZone = RNLocalize.getTimeZone();
+
 export const translationGetters = {
     // lazy requires (metro bundler does not support symlinks)
     es: () => require('../../../../translations/es.json') as any,

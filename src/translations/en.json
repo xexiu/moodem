@@ -7,8 +7,12 @@
             "Moodem is made without any profit motive and based on the preferences and desires of our users. At no time will the data of the users themselves be or are used for external purposes. Privacy is our first priority, in addition to committing not to save any history of chats or music / songs in our database. ",
             "All interactions (say chats / songs) are processed in real time with socket.io and no database acts as an intermediary.",
             "The information saved is the only one that is carried out when the user registers (name, email and password). The name of the groups created and the flow of the invitations and people belonging to said groups will be saved for the purpose of improvising the app and making proper use of it. ",
-            "Any suggestion, improvement or complaint, please, do not hesitate to write to us at the e-mail address: support.moodem@gmail.com",
+            "Any suggestion, improvement or complaint, please, do not hesitate to write to us at the e-mail address: contact.moodem@gmail.com",
             "Many Thanks!"
         ]
+    },
+    "copyright": {
+        "title": "Copyright",
+        "text": []
     }
 }

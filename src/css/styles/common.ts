@@ -15,3 +15,4 @@ export const btnShadow = {
 };
 
 export const aboutTextStyle = COMMON_TEXT_STYLE;
+export const copyrightTextStyle = COMMON_TEXT_STYLE;

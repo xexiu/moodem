@@ -2,13 +2,12 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
-import * as RNLocalize from 'react-native-localize';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
 import { MainContainer } from './components/common/functional-components/MainContainer';
 import { OfflineNotice } from './components/common/functional-components/OfflineNotice';
 import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
-import { setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
+import { RNLocalize, setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
 // sentryInit(); disable sentry temporally
