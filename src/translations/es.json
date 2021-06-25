@@ -7,7 +7,7 @@
             "Moodem está hecho sin ningún ánimo de lucro y en base a las preferencias y deseos de nuestro usuarios. En ningún momento los datos de los mismo usuarios serán o están usados como fines externos. La privacidad es nuestra primera prioridad, además de comprometernos a no guardar ningún historial de chats o música/canciones en nuestra base de datos.",
             "Todas las interacciones (digasé chats/cansiones) están procesadas en tiempo real con socket.io y ninguna base de datos actua como intermediaria.",
             "La información guardada es la única que se procede al registrarse el usuario (nombre, email y contraseña). El nombre de los grupos creados y el flujo de las invitaciones y personas pertenecientes a dichos grupos serán guardadas con fines de improvisar la app y hacer un uso adecuado de la misma.",
-            "Cualuquier sugerencia, mejora o queja, por favor, no dude en escribirnos a la dirección de e-mail: sergiu.mironescu@gmail.com",
+            "Cualuquier sugerencia, mejora o queja, por favor, no dude en escribirnos a la dirección de e-mail: support.moodem@gmail.com",
             "Muchas gracias!"
         ]
     }
