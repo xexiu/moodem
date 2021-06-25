@@ -1,26 +1,40 @@
-import React, { Component } from 'react';
-import { Keyboard, SafeAreaView, TouchableWithoutFeedback, View } from 'react-native';
+import React, { memo } from 'react';
+import { Keyboard, SafeAreaView, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
 import { bodyContainer } from '../../../src/css/styles/bodyContainer';
 
 type bodyProps = {
     children: React.ReactNode,
-    customBodyContainerStyle?: object
+    customBodyContainerStyle?: object,
+    useScrollView?: boolean
 };
-export default class BodyContainer extends Component<bodyProps> {
-    render() {
-        const {
-            children,
-            customBodyContainerStyle
-        } = this.props;
 
+export const BodyContainer = memo((props: bodyProps) => {
+    const {
+        children,
+        customBodyContainerStyle,
+        useScrollView = false
+    } = props;
+
+    function renderView() {
+        if (useScrollView) {
+            return (
+                <ScrollView>
+                    {children}
+                </ScrollView>
+            );
+        }
         return (
-            <SafeAreaView style={[bodyContainer, customBodyContainerStyle]}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={[bodyContainer, customBodyContainerStyle]}>
-                        {children}
-                    </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
+            <View onStartShouldSetResponder={() => true} style={[bodyContainer, customBodyContainerStyle]}>
+                {children}
+            </View>
         );
     }
-}
+
+    return (
+        <SafeAreaView style={[bodyContainer, customBodyContainerStyle]}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                {renderView()}
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
+    );
+});

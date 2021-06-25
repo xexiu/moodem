@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useEffect } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { Text, View } from 'react-native';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
+import { COMMON_TEXT_STYLE as faqTextStyle } from '../../../src/css/styles';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const FAQScreen = (props: any) => {
     const { navigation } = props;
@@ -22,22 +24,20 @@ const FAQScreen = (props: any) => {
 
     return (
         <BodyContainer>
-            <ScrollView>
-                <View style={{ marginTop: 5, padding: 10 }}>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>1. ¿Cómo usar Moodem?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>Se puede usar Moodem como chat general, chat por grupos, buscador de canciones y compartir las canciones en modo live con los grupos privados o el grupo general que la misma app brinda.</Text>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>2. ¿Cómo buscar canciones?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>Utilizando nuestro buscador que la app ofrece (parte superior). Se puede votar cancaciones y eliminarlas si eres administrador de un grupo dónde la canción es compartida.</Text>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>3. ¿Cómo unirse a los grupos?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>Abriendo el menú lateral -> Grupos -> Búscador de grupos en la parte superior -> Introducir contraseña del grupo al que quiere unirse.</Text>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>4. ¿Cómo crear un grupo?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>Abriendo el menú lateral -> Grupos -> Crear Grupo</Text>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>5. ¿Existe algún límite para buscar y compartir canciones?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>El límite es indefinido siempre y cuando no hay un uso excesivo de ello y el tráfico no sobrepasa los límites de nuestros servidores. Sin mencionar los límites que la API de soudcloud puede penalizar a la hora de hacer muchas requests.</Text>
-                    <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>6. ¿Existe algún límite para crear grupos?</Text>
-                    <Text style={{ marginTop: 10, paddingBottom: 10 }}>El límite es indefinido siempre y cuando no hay un uso excesivo de ello y el tráfico no sobrepasa los límites de nuestras base de datos.</Text>
-                </View>
-            </ScrollView>
+            <View style={{ marginTop: 5, padding: 10 }}>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.0')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.0')}</Text>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.1')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.1')}</Text>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.2')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.2')}</Text>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.3')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.3')}</Text>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.4')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.4')}</Text>
+                <Text style={{ fontWeight: '600', alignSelf: 'flex-start' }}>{translate('faq.questions.5')}</Text>
+                <Text style={faqTextStyle}>{translate('faq.text.5')}</Text>
+            </View>
         </BodyContainer>
     );
 };

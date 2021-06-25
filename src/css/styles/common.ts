@@ -1,4 +1,4 @@
-const COMMON_TEXT_STYLE = {
+export const COMMON_TEXT_STYLE = {
     marginTop: 10,
     paddingBottom: 10
 };
@@ -13,6 +13,3 @@ export const btnShadow = {
     shadowRadius: 3.84,
     elevation: 5
 };
-
-export const aboutTextStyle = COMMON_TEXT_STYLE;
-export const copyrightTextStyle = COMMON_TEXT_STYLE;

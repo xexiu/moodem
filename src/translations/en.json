@@ -13,6 +13,51 @@
     },
     "copyright": {
         "title": "Copyright",
-        "text": []
+        "copyright": "All rights reserved.",
+        "text": [
+            "Any unauthorized form of distribution, copying, duplication, reproduction, or sale (total or partial) of the content, both for personal and commercial use, will constitute an infringement of copyright and their respective authors.",
+            "By accessing this app, you confirm that you are familiar with, understand and fully accept the following copyright and rights clause and disclaimer. If not, you must leave this app, please.",
+            "Any type of total or partial reproduction of its content is totally prohibited, unless express authorization is requested, and in writing to contact.moodem@gmail.com",
+            "The facts, opinions and points of view that the people of the app express are only ours, and do not have to coincide with the policy, ideas, intentions, plans, strategies, or official position of any body, company, company, organization, service, or person.",
+            "When we use information from external sources for the preparation of the entries, these sources will be added by means of a hyperlink, or mentioned in some way to give them the recognition they deserve, which will also be done with images, etc. Nothing on this website will be copied and pasted from another source, unless we obtain your consent. If you believe or feel that we are violating someone's copyright, please tell us so we can remedy it as soon as possible.",
+            "The song search system is carried out by the youtube.com API, thus providing all the necessary information for said song. Say author, playing time, visits, etc.",
+            "The chat system used in the app is a bridge between socket.io and our code. Thus allowing light use between server and client. Any better or suggestion we are more than happy to hear it.",
+            "All trademarks or rights of any kind, registered names, logos or insignia, used or cited on this website, are the property of their respective owners. This website will in no way accept any responsibility derived from its infringement.",
+            "The comments of said chats, group names or anything outside the app, are the sole responsibility of the people who have written them, they will be solely responsible for any type of complaint, damage or litigation that they may cause, either directly or indirect. Regarding the comments in the chats, we do not guarantee the correctness, veracity or accuracy of said comments, nor if they are rude, politically correct or in any way inappropriate, although we will do everything possible to avoid it. You can correct us if you think appropriate, disagree with us, or ask us your questions, but please keep your composure as we reserve the right to delete and / or modify any comment for any reason that comes to mind (inappropriate, outside tone, obscene, insulting, ridiculous, etc.) Please be polite.",
+            "We do not have control of the information that you can access through the external links that are in our app, in the form of links or icons in the text itself, in the header, footer, sidebars, comment area, etc. . We cannot guarantee the correctness, accuracy or validity of the information provided by the websites / apps to which these links direct. We do not belong, work or own any of them, or any business that may appear in them."
+        ]
+    },
+    "faq": {
+        "questions": [
+            "1. How to use Moodem?",
+            "2. How to seach songs?",
+            "3. How to join groups?",
+            "4. How to create a group?",
+            "5. Is there a limit to seach and share songs?",
+            "6. Is there a limit to create groups?"
+        ],
+        "text": [
+            "Moodem can be used as a general chat, group chat, song search engine and share the songs in live mode with private groups or the general group that the same app provides.",
+            "Using our search engine that the app offers (top). You can vote for songs and delete them if you are the administrator of a group where the song is shared.",
+            "Opening the side menu -> Groups -> Search for groups at the top -> Enter password if it is a private group or directly join if it is a public group.",
+            "Opening the side menu -> Groups -> Create Group (+ icon in the lower right)",
+            "The limit is indefinite as long as there is no excessive use of it and the traffic does not exceed the limits of our servers. Not to mention the limits that the youtube API can penalize when making many requests.",
+            "The limit is indefinite as long as there is no excessive use of it and the traffic does not exceed the limits of our databases."
+        ]
+    },
+    "privacy": {
+        "title": "Privacy",
+        "subtitles": [
+            "Cookies",
+            "User data",
+            "Our commitment to data protection"
+        ],
+        "text": [
+            "This policy is based on our fundamental objective of providing our visitors with quality information and resources while maintaining individual anonymity and personal privacy. The following statement describes the privacy policy of the app (Moodem).",
+            "The Moodem app uses “cookies”, a small data file transferred to your mobile's hard drive, to anonymously collect information about data traffic. We send cookies when you use the app, respond to online surveys or questionnaires, or request information. Accepting cookies used by our app does not allow us to access your Personally Identifiable Information, but we can use cookies to identify your smart phone. The collective information collected allows us to analyze traffic patterns on our site. This helps us to serve you better by improving the content and making our app easier to use.",
+            "When you access our apps, information about the user and essential and accidental technical information is collected automatically, we refer to those categories collected collectively as 'access' information. No other information is collected through the app, except when you deliberately decide to reveal it (for example, by pressing a key to send us an email message).",
+            "The Moodem app does not sell any voluntarily personally identifiable information to third parties. To prevent unauthorized access, maintain data accuracy, and guarantee the correct use of information, we have established physical, electronic, and administrative procedures to safeguard and protect the information we collect online, in accordance with privacy policies.",
+            "If you have other questions or concerns about our privacy policies and practices, please email contact.moodem@gmail.com"
+        ]
     }
 }

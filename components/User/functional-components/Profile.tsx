@@ -3,7 +3,7 @@ import React, { useContext, useRef } from 'react';
 import { ScrollView } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { logOut } from '../../../src/js/Utils/Helpers/actions/users';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import CustomButton from '../../common/functional-components/CustomButton';

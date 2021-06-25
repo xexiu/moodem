@@ -4,6 +4,7 @@ import React, { memo, useCallback, useContext, useEffect, useState } from 'react
 import { View } from 'react-native';
 import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
+import convertToProxyURL from 'react-native-video-cache';
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
@@ -153,7 +154,7 @@ const BasePlayer = (props: any) => {
                     width: 100,
                     height: 100
                 }}
-                source={{ uri: item.url }}
+                source={{ uri: convertToProxyURL(item.url) }}
                 ref={basePlayer}
                 volume={1.0}
                 muted={false}

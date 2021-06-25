@@ -1,15 +1,10 @@
 import React, { memo } from 'react';
-import convertToProxyURL from 'react-native-video-cache';
 import CommonFlatListItem from './CommonFlatListItem';
 import { RemoveSongIcon } from './RemoveSongIcon';
 import { SendSongIcon } from './SendSongIcon';
 import { VoteSongIcon } from './VoteSongIcon';
 
 const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chevron = null }: any) => {
-    const proxyUrl = convertToProxyURL(item.url);
-    Object.assign(item, {
-        url: proxyUrl
-    });
     console.log('Render Item');
 
     const BUTTONGROUP_MAP = {

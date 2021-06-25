@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../../components/common/functional-components/MemoizedSongsList';
 import Player from '../../../components/common/functional-components/Player';
 import PreLoader from '../../../components/common/functional-components/PreLoader';

@@ -4,7 +4,7 @@ import React, { memo, useCallback, useContext, useEffect, useRef, useState } fro
 import { Keyboard, View } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { GiftedChat } from 'react-native-gifted-chat';
-import BodyContainer from '../../common/functional-components/BodyContainer';
+import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../store-context/AppContext';

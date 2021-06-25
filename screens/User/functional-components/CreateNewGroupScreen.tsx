@@ -1,7 +1,7 @@
 import React, { memo, useContext, useEffect } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
@@ -145,7 +145,9 @@ const CreateNewGroupScreen = (props: any) => {
                         color: '#D84A05',
                         marginTop: 5,
                         marginBottom: 5
-                    }}>{errors.confirm_password && errors.confirm_password.message}
+                    }}
+                >
+                    {errors.confirm_password && errors.confirm_password.message}
                 </Text>
             </ScrollView>
             {isLoading ?

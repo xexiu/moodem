@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef } from 'react';
 import Toast, { DURATION } from 'react-native-easy-toast';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 
 const PrivateMessagesScreen = (props: any) => {
     const { navigation } = props;

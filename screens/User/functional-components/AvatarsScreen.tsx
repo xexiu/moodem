@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { loadFromLocalStorage, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
@@ -99,24 +99,22 @@ const Avatars = (props: any) => {
     }
 
     return (
-        <BodyContainer>
-            <ScrollView>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 5, justifyContent: 'center' }}>
-                    {avatarUrls.map((avatarUrl: any, key: number) => (
-                        <TouchableOpacity
-                            key={key.toString()}
-                            onPress={() => handleUserAvatar(avatarUrl)}
-                        >
-                            <FastImage
-                                style={DEFAULT_AVATAR_STYLE}
-                                source={{
-                                    uri: avatarUrl,
-                                    priority: FastImage.priority.high
-                                }}
-                            />
-                        </TouchableOpacity>))}
-                </View>
-            </ScrollView>
+        <BodyContainer useScrollView={true}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 5, justifyContent: 'center' }}>
+                {avatarUrls.map((avatarUrl: any, key: number) => (
+                    <TouchableOpacity
+                        key={key.toString()}
+                        onPress={() => handleUserAvatar(avatarUrl)}
+                    >
+                        <FastImage
+                            style={DEFAULT_AVATAR_STYLE}
+                            source={{
+                                uri: avatarUrl,
+                                priority: FastImage.priority.high
+                            }}
+                        />
+                    </TouchableOpacity>))}
+            </View>
         </BodyContainer>
     );
 };

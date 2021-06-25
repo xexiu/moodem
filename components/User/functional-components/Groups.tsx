@@ -2,7 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import AbortController from 'abort-controller';
 import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
-import BodyContainer from '../../common/functional-components/BodyContainer';
+import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
 import PreLoader from '../../common/functional-components/PreLoader';
 import { AppContext } from '../store-context/AppContext';

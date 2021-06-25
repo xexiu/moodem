@@ -4,7 +4,7 @@ import React, { memo, useContext, useEffect, useRef } from 'react';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
 import { AppContext } from '../../User/store-context/AppContext';
-import BodyContainer from './BodyContainer';
+import { BodyContainer } from './BodyContainer';
 import BurgerMenuIcon from './BurgerMenuIcon';
 
 let serverError = false;

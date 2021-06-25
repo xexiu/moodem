@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { memo, useContext, useEffect } from 'react';
 import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';

@@ -27,7 +27,7 @@ const SideBarTopAvatar = (props: any) => {
                 ellipsizeMode='tail'
                 numberOfLines={1}
             >
-                Hola {user.displayName}!
+                {user.displayName}!
             </Text>
         </View>
     );

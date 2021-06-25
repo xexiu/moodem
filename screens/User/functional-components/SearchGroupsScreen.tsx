@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import BodyContainer from '../../../components/common/functional-components/BodyContainer';
+import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../../components/common/functional-components/CommonFlatListItem';
 import CustomModal from '../../../components/common/functional-components/CustomModal';
