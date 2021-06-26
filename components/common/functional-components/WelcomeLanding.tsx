@@ -33,7 +33,7 @@ const WelcomeLanding = (props: any) => {
         if (serverError) {
             serverError = false;
             // DevSettings.reload();
-            toastRef.current.close();
+            toastRef?.current?.close();
             return dispatchContextApp({
                 type: 'server_error', value: {
                     isServerError: false
@@ -46,7 +46,7 @@ const WelcomeLanding = (props: any) => {
         toastRef.current.show('Connecting to server...', DURATION.FOREVER);
 
         if (!serverError) {
-            console.error('getConnectionError', JSON.stringify(error));
+            console.error('getConnectionError', error);
             serverError = true;
             return dispatchContextApp({
                 type: 'server_error', value: {

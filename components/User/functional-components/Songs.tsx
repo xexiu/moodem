@@ -101,7 +101,7 @@ const Songs = (props: any) => {
             const dbGroups = snapshot.val() || [];
             return MAP_SONGS_ACTIONS.set_songs(dbGroups);
         } catch (error) {
-            console.error('getSongs Error', JSON.stringify(error));
+            console.error('getSongs Error', error);
         }
     }
 

@@ -62,7 +62,7 @@ const App = function Moodem() {
                         }
                     });
                 } catch (error) {
-                    console.error('Moodem Error', JSON.stringify(error));
+                    console.error('Moodem Error', error);
                     toastRef.current.show('Oops!! Hubo un problema...', DURATION.FOREVER);
                     return dispatchContextApp({
                         type: 'error_user', value: {

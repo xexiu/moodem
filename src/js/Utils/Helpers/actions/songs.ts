@@ -32,7 +32,7 @@ export async function saveSongOnDb(song: any, user: any, group: any) {
 
         await refGroup.update(_group);
     } catch (error) {
-        console.error('saveSongOnDb Error', JSON.stringify(error));
+        console.error('saveSongOnDb Error', error);
     }
 }
 
@@ -55,7 +55,7 @@ export async function updateSongExpiredOnDB(song: any, group: any) {
             await refGroup.update(dbgroup);
         }
     } catch (error) {
-        console.error('updateSongEpireOnDB Error', JSON.stringify(error));
+        console.error('updateSongEpireOnDB Error', error);
     }
 
 }
@@ -118,6 +118,6 @@ export async function removeSongFromDB(song: any, group: any) {
 
         await refGroup.child('group_songs').set(dbGroupSongs);
     } catch (error) {
-        console.error('removeSongFromDB Error', JSON.stringify(error));
+        console.error('removeSongFromDB Error', error);
     }
 }

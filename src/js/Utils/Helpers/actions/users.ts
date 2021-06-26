@@ -8,7 +8,7 @@ export async function resetPasswordHandler(validate: any) {
     try {
         return await firebase.auth().sendPasswordResetEmail(validate.email);
     } catch (error) {
-        console.error('loginHandler Error', JSON.stringify(error));
+        console.error('loginHandler Error', error);
         const errorCode = error.code;
         const errorMessage = error.message;
         console.warn(`Code: ${errorCode} and message: ${errorMessage}`);
@@ -19,7 +19,7 @@ export async function loginHandler(validate: any) {
     try {
         return await firebase.auth().signInWithEmailAndPassword(validate.email, validate.password);
     } catch (error) {
-        console.error('loginHandler Error', JSON.stringify(error));
+        console.error('loginHandler Error', error);
         console.log('Validate Error', error);
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -36,7 +36,7 @@ export async function registerNewUser(data: any) {
     try {
         return await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
     } catch (error) {
-        console.error('registerNewUser Error', JSON.stringify(error));
+        console.error('registerNewUser Error', error);
         const errorCode = error.code;
         const errorMessage = error.message;
         console.warn(`Code: ${errorCode} and message: ${errorMessage}`);
@@ -50,7 +50,7 @@ export async function updateProfile(auth: any, data: any) {
             photoURL: USER_AVATAR_DEFAULT
         });
     } catch (error) {
-        console.error('updateProfile Error', JSON.stringify(error));
+        console.error('updateProfile Error', error);
         console.warn(`Code: ${error}`);
     }
 }
@@ -65,7 +65,7 @@ export async function saveNewUserOnDB(user: any, validate: any) {
             photoURL: user.photoURL
         });
     } catch (error) {
-        console.error('saveNewUserOnDB Error', JSON.stringify(error));
+        console.error('saveNewUserOnDB Error', error);
         console.warn('error saving on DB ', error);
     }
 }
@@ -81,7 +81,7 @@ export async function getAllRandomUserAvatars() {
                 urls.push(url);
             }
         } catch (error) {
-            console.error('getAllRandomUserAvatars Error', JSON.stringify(error));
+            console.error('getAllRandomUserAvatars Error', error);
         }
     }
     return urls;
@@ -91,6 +91,6 @@ export async function logOut() {
     try {
         await firebase.auth().signOut();
     } catch (error) {
-        console.error('logOut Error', JSON.stringify(error));
+        console.error('logOut Error', error);
     }
 }

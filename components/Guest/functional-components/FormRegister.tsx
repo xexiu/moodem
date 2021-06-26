@@ -71,7 +71,7 @@ const FormRegister = () => {
                     }, auth.user);
                 }
             } catch (error) {
-                console.error('FormRegisterUser Error', JSON.stringify(error));
+                console.error('FormRegisterUser Error', error);
                 setIsLoading(false);
                 setErrorText(error);
             }

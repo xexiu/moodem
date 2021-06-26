@@ -7,7 +7,6 @@ const Sentry = require('@sentry/node');
 const { CaptureConsole } = require('@sentry/integrations');
 const ytsr = require('ytsr');
 const cliProgress = require('cli-progress');
-const youtubedl = require('youtube-dl-exec');
 
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
@@ -17,7 +16,9 @@ const ONE_DAY = ttl * 24;
 const THIRTY_DAYS = ONE_DAY * 30;
 const ONE_YEAR = THIRTY_DAYS * 365;
 const myCache = new NodeCache();
-const YOUTUBE_ROOT = 'https://www.youtube.com/watch?v=';
+// const YOUTUBE_ROOT = 'https://www.youtube.com/watch?v=';
+// eslint-disable-next-line max-len
+const COOKIE = 'CONSENT=YES+ES.en+20150705-15-0; YSC=RVeWb8KzEXc; LOGIN_INFO=AFmmF2swRgIhALFkP9EgTxgWwh8_Dx3Fa2g-WN-K4umS1JQyzndTP5DLAiEAyHfgMQ2jMlNpvltT8LdxKqTle8a4ZSjODYq-svrKlVA:QUQ3MjNmemFvaS1aNkFXVURieUYtMUtWbnR5bFMzRnJfa21CUXdhSTV4QXNPVnNfQWlabDBUZU1qaC1oMnh1eVNwa2pxVWxkN3duYWdhbkk5aHM1ai1JNHFORy1ZVHNvMWw3X2RBdlhKMGZaamFaa3JfeUZzVmhqTnFLS1BETlJTOFRfTmZ6TVQyd0tfUktlcEQ5X1hiNmROcU5hSEt6NC13; VISITOR_INFO1_LIVE=Foji98RNGoc; HSID=AFT92MyweZvASBFc8; SSID=Adqw7Q8srjSE8qVwE; APISID=aS1BdrF_061pvnJi/AK-F-FrDdaxvZ2M9S; SAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; __Secure-3PAPISID=vziALsWDJB_bSEjT/A7-31kdejYhj8pFGi; SID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQvrjB2Ws224CKFU_q-xDu6g.; __Secure-3PSID=7gd1s7_crFykFs0YacN6Na-duIl1hqXuQ1W1GFC3yPn-rdJQyzg_CthnHmIDweLdzl7x6w.; _gcl_au=1.1.1092345076.1615207146; PREF=tz=America.Bogota&f4=4000000&volume=100; SIDCC=AJi4QfHEidaBriNX7zfdqwhYttDNMZaRIs2EiVR8sxQEsgzh5tlYaBOoAUn9tNTUrmuHbD37LA; __Secure-3PSIDCC=AJi4QfHpDx-igRwtg57bWL78ZZK45bEB4srtDgZAfdcKm4cmO1a5l7jiJ0EVDsAKQlM_meAlN60';
 
 // Sentry.init({
 //   dsn: 'https://31ed020c1e8c41d0a2ca9739ecd11edb@o265570.ingest.sentry.io/5206914',
@@ -30,6 +31,37 @@ const YOUTUBE_ROOT = 'https://www.youtube.com/watch?v=';
 //   attachStacktrace: true
 // });
 
+// const getStream = async (url) => {
+//   console.info(`Downloading from ${url} ...`);
+
+//   let allReceived = false;
+//   return new Promise((resolve, reject) => {
+//     const stream = ytdl(url, {
+//       quality: 'highest',
+//       filter: (format) => format.container === 'mp4'
+//     })
+//       .on('progress', (_, totalDownloaded, total) => {
+//         if (!allReceived) {
+//           progressBar.start(total, 0, {
+//             mbTotal: (total / 1024 / 1024).toFixed(2),
+//             mbValue: 0
+//           });
+//           allReceived = true;
+//         }
+//         progressBar.increment();
+//         progressBar.update(totalDownloaded, {
+//           mbValue: (totalDownloaded / 1024 / 1024).toFixed(2)
+//         });
+//       })
+//       .on('end', () => {
+//         progressBar.stop();
+//         console.info('Successfully downloaded the stream!');
+//         return resolve(stream);
+//       });
+//     resolve(stream);
+//   });
+// };
+
 function makeRandomChars(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -41,34 +73,9 @@ function makeRandomChars(length) {
   return result;
 }
 
-function assignAudioProps(audio, audioProps) {
-  return Object.assign(audio, {
-    age_limit: audioProps.age_limit || 0,
-    artist: audioProps.artist || audioProps.uploader || 'Anonymous',
-    average_rating: audioProps.average_rating || 0,
-    categories: audioProps.categories || [],
-    description: audioProps.description || 'No description',
-    dislike_count: audioProps.dislike_count || 0,
-    duration: audioProps.duration || 0,
-    id: audioProps.id,
-    fps: audioProps.fps || 0,
-    height: audioProps.height || 0,
-    like_count: audioProps.like_count || 0,
-    tags: audioProps.tags || [],
-    thumbnail: (audioProps.thumbnails && audioProps.thumbnails[0].url) || 'No image',
-    title: audioProps.title || 'No title',
-    track: audioProps.track || 'No track',
-    vbr: audioProps.vbr || 0,
-    vcodec: audioProps.vcodec || 0,
-    view_count: audioProps.view_count || 0,
-    width: audioProps.width || 0
-  });
-}
-
 async function searchYoutubeForVideoIds(searchedText) {
   const videoIds = [];
   const options = {
-    pages: 1,
     limit: 20
   };
   const searchResults = await ytsr(searchedText, options);
@@ -140,37 +147,61 @@ async function getSong(videoId, hasExpired = false) {
   }
 
   try {
-    const audioYT = await youtubedl(`${YOUTUBE_ROOT}${videoId}`, {
-      dumpSingleJson: true,
-      noWarnings: true,
-      noCallHome: true,
-      noCheckCertificate: true,
-      preferFreeFormats: true,
-      referer: `https://www.${makeRandomChars(6)}.com`
+    const audioYT = await ytdl.getInfo(videoId, {
+      requestOptions: {
+        headers: {
+          Cookie: COOKIE,
+          'x-youtube-client-version': '2.20191008.04.01',
+          'x-youtube-client-name': '1',
+          'x-client-data': '',
+          'x-youtube-identity-token': 'QUFFLUhqbWtBX080QlRLNkQ3R2E2RXBWZGtXZFVjd1JuZ3w\u003d',
+          'Accept-Encoding': 'identity;q=1, *;q=0',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36',
+          referer: `https://${makeRandomChars(6)}.com`
+        }
+      }
     });
-
     // const info = await ytdl.getInfo(videoId);
     // const audio = ytdl.filterFormats(info.formats, 'audioandvideo');
-    const audioFormats = audioYT.formats.filter((format) => {
-      if (format.ext === 'mp4' && format.format_note !== 'tiny'
-        && format.quality > 1 && format.vcodec !== 'none' && format.acodec.indexOf('mp4') >= 0) {
-        assignAudioProps(format, audioYT);
-        return true;
-      }
-      return false;
-    });
-
+    const audioFormats = audioYT.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
     if (audioFormats && audioFormats.length) {
-      Object.assign(audioFormats[0], {
+      const hasHD1080p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '1080p');
+      const hasHD720p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '720p');
+      const hasHD480p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '480p');
+      const has360p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '360p');
+      const has240p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '240p');
+      const has144p = audioFormats.filter((audioFormat) => audioFormat.qualityLabel === '144p');
+
+      const audios = (hasHD1080p.length && hasHD1080p)
+        || (hasHD720p.length && hasHD720p)
+        || (hasHD480p.length && hasHD480p)
+        || (has360p.length && has360p)
+        || (has240p.length && has240p)
+        || (has144p.length && has144p)
+        || audioFormats;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const attr in audios[0]) {
+        if (attr !== 'url') {
+          delete audios[0][attr];
+        }
+      }
+
+      Object.assign(audios[0], {
+        id: audioYT.videoDetails.videoId,
+        title: audioYT.videoDetails.title,
+        duration: audioYT.videoDetails.lengthSeconds,
+        thumbnail: audioYT.videoDetails.thumbnails ? audioYT.videoDetails.thumbnails[0].url : 'No image',
         hasExpired: false,
+        details: audioYT.videoDetails,
         isCachedInServerNode: false
       });
 
-      cleanImageParams(audioFormats[0]);
-      cleanTitle(audioFormats[0]);
+      cleanImageParams(audios[0]);
+      cleanTitle(audios[0]);
 
-      myCache.set(key, { ...audioFormats[0] }, ONE_YEAR);
-      return { ...audioFormats[0] };
+      myCache.set(key, { ...audios[0] }, ONE_YEAR);
+      return { ...audios[0] };
     }
 
     return {};
@@ -224,41 +255,12 @@ function setExtraAttrs(audios, uid, isSearching = false) {
 }
 
 serverIO.use((socket, next) => {
+  // eslint-disable-next-line no-param-reassign
   socket.uid = socket.handshake.query.uid;
+  // eslint-disable-next-line no-param-reassign
   socket.displayName = socket.handshake.query.displayName;
   next(null, true);
 });
-
-const getStream = async (url) => {
-  console.info(`Downloading from ${url} ...`);
-
-  let allReceived = false;
-  return new Promise((resolve, reject) => {
-    const stream = ytdl(url, {
-      quality: 'highest',
-      filter: (format) => format.container === 'mp4'
-    })
-      .on('progress', (_, totalDownloaded, total) => {
-        if (!allReceived) {
-          progressBar.start(total, 0, {
-            mbTotal: (total / 1024 / 1024).toFixed(2),
-            mbValue: 0
-          });
-          allReceived = true;
-        }
-        progressBar.increment();
-        progressBar.update(totalDownloaded, {
-          mbValue: (totalDownloaded / 1024 / 1024).toFixed(2)
-        });
-      })
-      .on('end', () => {
-        progressBar.stop();
-        console.info('Successfully downloaded the stream!');
-        return resolve(stream);
-      });
-    resolve(stream);
-  });
-};
 
 serverIO.on('connection', (socket) => {
   socket.on('app-goes-to-background', () => {
@@ -438,8 +440,11 @@ serverIO.on('connection', (socket) => {
   socket.on('disconnect', (reason) => {
     console.log('DISCONNNECT SOCKET ID', socket.id, 'uid', socket.uid, 'With REASON', reason);
     socket.offAny();
+    // eslint-disable-next-line no-param-reassign
     delete socket.id;
+    // eslint-disable-next-line no-param-reassign
     delete socket.uid;
+    // eslint-disable-next-line no-param-reassign
     delete socket.displayName;
   });
 });

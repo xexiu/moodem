@@ -60,7 +60,7 @@ export async function leaveGroup(group: any, user: any) {
             }
         }
     } catch (error) {
-        console.error('leaveGroup Error', JSON.stringify(error));
+        console.error('leaveGroup Error', error);
     }
 }
 
@@ -79,7 +79,7 @@ export async function updateUserGroup(group: any, params: any) {
         await refOwnedGroups.update(dbgroup);
         return dbgroup;
     } catch (error) {
-        console.error('deleteGroupForEver Error', JSON.stringify(error));
+        console.error('deleteGroupForEver Error', error);
     }
 }
 
@@ -90,7 +90,7 @@ export async function deleteGroupForEver(group: any) {
         const refOwnedGroups = await firebase.database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
         await refOwnedGroups.remove();
     } catch (error) {
-        console.error('deleteGroupForEver Error', JSON.stringify(error));
+        console.error('deleteGroupForEver Error', error);
     }
 }
 
@@ -120,7 +120,7 @@ export async function createGroupHandler (validate: any, user: any) {
 
         return group.val();
     } catch (error) {
-        console.error('createGroupHandler Error', JSON.stringify(error));
+        console.error('createGroupHandler Error', error);
     }
 }
 
@@ -145,7 +145,7 @@ export async function getJoinedGroups(user: any) {
 
         return invitedGroups;
     } catch (error) {
-        console.error('getJoinedGroups Error', JSON.stringify(error));
+        console.error('getJoinedGroups Error', error);
     }
 }
 
@@ -165,7 +165,7 @@ export async function getOwnedGroupsFromDatabase (user: any) {
 
         return groups;
     } catch (error) {
-        console.error('getOwnedGroupsFromDatabase Error', JSON.stringify(error));
+        console.error('getOwnedGroupsFromDatabase Error', error);
     }
 }
 
@@ -193,7 +193,7 @@ export async function getAllGroups() {
 
         return allGroups;
     } catch (error) {
-        console.error('getAllGroups Error', JSON.stringify(error));
+        console.error('getAllGroups Error', error);
     }
 }
 
@@ -202,7 +202,7 @@ export async function getDefaultGroup () {
         const snapshot = await refGroupMoodem.once('value');
         return Object.values(snapshot.val() || []);
     } catch (error) {
-        console.error('getDefaultGroup Error', JSON.stringify(error));
+        console.error('getDefaultGroup Error', error);
     }
 }
 
@@ -215,7 +215,7 @@ export async function getUserGroups(user: any) {
         return [...defaultGroup, ...ownedGroups, ...joinedGroups as any];
 
     } catch (error) {
-        console.error('getUserGroups Error', JSON.stringify(error));
+        console.error('getUserGroups Error', error);
     }
 }
 
@@ -245,7 +245,7 @@ export async function addUserToJoinedGroupDB(group: any, user: any) {
         }
         return refJoinedGroup.update(dbgroup);
     } catch (error) {
-        console.error('addUserToJoinedGroupDB Error', JSON.stringify(error));
+        console.error('addUserToJoinedGroupDB Error', error);
     }
 }
 
@@ -279,6 +279,6 @@ export async function saveJoinedUser(group: any, user: any) {
             });
         }
     } catch (error) {
-        console.error('saveJoinedUser Error', JSON.stringify(error));
+        console.error('saveJoinedUser Error', error);
     }
 }

@@ -30,7 +30,7 @@ const FormUserEmail = () => {
             resetValues();
             toastRef.current.show(`${translate('profile.formTexts.info.0')}`, 2000);
         } catch (error) {
-            console.error('handleUserEmail Error', JSON.stringify(error));
+            console.error('handleUserEmail Error', error);
             resetValues();
             toastRef.current.show(error.message, 2000);
         }

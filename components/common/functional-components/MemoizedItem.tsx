@@ -42,7 +42,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             titleStyle={{ paddingBottom: 7 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${item.artist.replace('VEVO', '')}`}
+            subtitle={`${item.details.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic', width: 180 }}
             leftAvatar={{
                 source: {

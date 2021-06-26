@@ -37,7 +37,7 @@ const FormUserPassword = () => {
             resetValues();
             toastRef.current.show(`${translate('profile.formTexts.info.0')}`, 2000);
         } catch (error) {
-            console.error('handleUserPasswordChange Error', JSON.stringify(error));
+            console.error('handleUserPasswordChange Error', error);
             resetValues();
             toastRef.current.show(error.message, 2000);
         }

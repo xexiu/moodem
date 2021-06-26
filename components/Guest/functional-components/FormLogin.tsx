@@ -53,7 +53,7 @@ const FormLogin = (props: any) => {
                 modalRef.setAllValues((prev: any) => ({ ...prev, isVisible: false }));
                 setErrorText('');
             } catch (error) {
-                console.error('FormLogin Error', JSON.stringify(error));
+                console.error('FormLogin Error', error);
                 setIsLoading(false);
                 if (error.code === 'auth/wrong-password' || error.code === 'auth/too-many-requests') {
                     setErrorText(error.message);
