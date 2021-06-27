@@ -121,3 +121,29 @@ export async function removeSongFromDB(song: any, group: any) {
         console.error('removeSongFromDB Error', error);
     }
 }
+
+export async function uploadSongBytes(_songs: any) {
+    const metadata = { contentType: 'video/mp4' };
+    const chunks = [] as any;
+
+    _songs[0].chunks.forEach((chunk: any) => {
+        const cloneChunk = new Uint8Array(chunk);
+        chunks.push(cloneChunk);
+    });
+
+    let length = 0;
+    chunks.forEach((item: any) => {
+        length += item.length;
+    });
+
+    const mergedArray = new Uint8Array(length);
+    let offset = 0;
+    chunks.forEach((item: any) => {
+        mergedArray.set(item, offset);
+        offset += item.length;
+    });
+
+    firebase.storage().ref().child('songs').put(mergedArray, metadata).then((snapshot: any) => {
+        console.log('Uploaded a blob or file!');
+    });
+}
