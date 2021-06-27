@@ -4,20 +4,29 @@ const { options } = require('./ytdlConfig');
 const { getKey, setKey } = require('./cache');
 const { ONE_YEAR } = require('./constants');
 
-async function searchYoutubeForVideoIds(searchedText) {
+function getVideoIdsFromSearchResults(searchResults) {
     const videoIds = [];
 
+    const videos = searchResults.items.filter((video) => video.id && !video.isLive && !video.isUpcoming);
+    videos.map((video) => videoIds.push(video.id));
+    return videoIds;
+}
+
+async function searchYoutubeForVideoIds(searchedText) {
     try {
+        if (getKey(`__searchResults__${searchedText}`)) {
+            const searchResults = getKey(`__searchResults__${searchedText}`);
+            return getVideoIdsFromSearchResults(searchResults);
+        }
         const searchResults = await ytsr(searchedText, {
             limit: 20
         });
-        const videos = searchResults.items.filter((video) => video.id && !video.isLive && !video.isUpcoming);
-        videos.map((video) => videoIds.push(video.id));
-        return videoIds;
+        setKey(`__searchResults__${searchedText}`, searchResults, ONE_YEAR);
+        return getVideoIdsFromSearchResults(searchResults);
     } catch (error) {
         console.error('Error converting getSong', error);
     }
-    return videoIds;
+    return [];
 }
 
 function cleanTitle(audio) {
