@@ -1,7 +1,7 @@
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
 const { options } = require('./ytdlConfig');
-const { getKey, setKey } = require('./cache');
+const { getValueForKey, setKey } = require('./cache');
 const { ONE_YEAR } = require('./constants');
 
 function getVideoIdsFromSearchResults(searchResults) {
@@ -14,9 +14,9 @@ function getVideoIdsFromSearchResults(searchResults) {
 
 async function searchYoutubeForVideoIds(searchedText) {
     try {
-        if (getKey(`__searchResults__${searchedText}`)) {
-            const searchResults = getKey(`__searchResults__${searchedText}`);
-            return getVideoIdsFromSearchResults(searchResults);
+        const searchResultsCached = await getValueForKey(`__searchResults__${searchedText}`);
+        if (searchResultsCached) {
+            return getVideoIdsFromSearchResults(searchResultsCached);
         }
         const searchResults = await ytsr(searchedText, {
             limit: 20
@@ -109,9 +109,9 @@ function setExtraAttrs(audios, uid, isSearching = false) {
 async function getSongsOrCache(videoIds) {
     try {
         return await Promise.allSettled(videoIds.map(async (videoId) => {
-            if (getKey(`__youtube-songs__${videoId}`)) {
-                const audio = getKey(`__youtube-songs__${videoId}`);
-                return audio;
+            const audioCached = await getValueForKey(`__youtube-songs__${videoId}`);
+            if (audioCached) {
+                return audioCached;
             }
             const audio = await getSong(videoId);
             cleanImageParams(audio);

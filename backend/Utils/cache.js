@@ -5,8 +5,8 @@ const cache = new NodeCache();
 // memory-cache docs -> https://github.com/ptarjan/node-cache
 // Socket.io do -> https://socket.io/docs/server-api/#socket-id
 
-function getKey(key) {
-    const audioMem = cache.get(key);
+async function getValueForKey(key) {
+    const audioMem = await cache.get(key);
 
     if (audioMem && Object.keys(audioMem).length) {
         Object.assign(audioMem, {
@@ -24,6 +24,6 @@ function setKey(key, value, expire = FIVE_HOURS) {
 
 module.exports = {
     cache,
-    getKey,
+    getValueForKey,
     setKey
 };
