@@ -167,22 +167,23 @@ const BasePlayer = (props: any) => {
                     } else if (buffer.isBuffering) {
                         playPauseRef.current.setIsBuffering(buffer.isBuffering);
                     }
-                    MusicControl.updatePlayback({
-                        elapsedTime: seekRef.current.trackCurrentTime
-                    });
-                    seekRef.current.setTrackCurrentTime(seekRef.current.trackCurrentTime);
                 }}
                 onLoad={({ currentTime }) => {
+                    // This is called after onLoadStart
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(currentTime);
+                        basePlayer.current.seek(currentTime);
+                        MusicControl.updatePlayback({
+                            elapsedTime: currentTime
+                        });
                     }
-                    basePlayer.current.seek(currentTime);
                 }}
                 onLoadStart={() => {
+                    // This is called 1st - then onLoad is called
+                    // DON'T add  basePlayer.current.seek(0); here. it will cause an infinite buffering
                     if (!seekRef.current.isSliding) {
                         seekRef.current.setTrackCurrentTime(0);
                     }
-                    basePlayer.current.seek(0);
                     Object.assign(errorSongs, []);
                 }}
                 onError={(error: any) => {
