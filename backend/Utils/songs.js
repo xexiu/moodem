@@ -56,9 +56,10 @@ async function getSong(videoId) {
     try {
         // await getStreamBuffers(videoId);
         const audioYT = await ytdl.getInfo(videoId, options);
-        const audioFormats = audioYT.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
-        if (audioFormats && audioFormats.length) {
-            const audio = ytdl.chooseFormat(audioFormats, {
+
+        if (audioYT.formats && audioYT.formats.length) {
+            const audio = ytdl.chooseFormat(audioYT.formats, {
+                filter: 'audioandvideo',
                 quality: 'highestvideo'
             });
             Object.keys(audio).forEach((attr) => attr !== 'url' && delete audio[attr]);

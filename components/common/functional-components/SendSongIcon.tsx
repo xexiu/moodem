@@ -14,6 +14,9 @@ const SendSongIcon = (song: any) => {
         if (song.voted_users && isLoading) {
             setIsLoading(false);
         }
+        return () => {
+            controller.abort();
+        };
     }, [song.voted_users]);
 
     async function emitSendMedia() {
@@ -25,11 +28,11 @@ const SendSongIcon = (song: any) => {
         controller.abort();
     }
 
-    return !isServerError && {
-        name: 'arrow-right',
+    return !isServerError && !song.isMediaOnList && {
+        name: isLoading ? 'cloud-upload' : 'arrow-right',
         type: 'AntDesign',
-        size: 45,
-        color: '#90c520',
+        size: isLoading ? 25 : 45,
+        color: isLoading ? '#999' : '#90c520',
         raised: false,
         disabled: isLoading,
         iconStyle: {

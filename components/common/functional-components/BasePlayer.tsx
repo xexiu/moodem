@@ -137,7 +137,7 @@ const BasePlayer = (props: any) => {
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
             <Video
-                minLoadRetryCount={5}
+                pictureInPicture
                 onFullscreenPlayerWillDismiss={() => {
                     return basePlayer.current.setNativeProps({
                         paused: !item.isPlaying

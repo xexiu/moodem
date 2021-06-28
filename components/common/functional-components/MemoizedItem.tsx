@@ -27,7 +27,7 @@ const MemoizedItem = ({ index, item, handleOnClickItem, buttonActions = [], chev
     }
 
     function setChevron() {
-        if (!item.isMediaOnList && CHEVRON_MAP[chevron]) {
+        if (CHEVRON_MAP[chevron]) {
             return CHEVRON_MAP[chevron](item);
         }
 
