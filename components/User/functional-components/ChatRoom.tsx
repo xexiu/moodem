@@ -2,7 +2,9 @@ import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
+import FastImage from 'react-native-fast-image';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
@@ -11,6 +13,15 @@ import { AppContext } from '../store-context/AppContext';
 import HeaderChat from './HeaderChat';
 import MemoizedChat from './MemoizedChat';
 import SendBtnChat from './SendBtnChat';
+
+const DEFAULT_AVATAR_STYLE = {
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    marginBottom: 5
+};
 
 const ChatRoom = (props: any) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
@@ -23,13 +34,12 @@ const ChatRoom = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        if (!isServerError) {
+        if (!isServerError && isFocused) {
             socket.on('moodem-chat', setMessageList);
             socket.on('chat-messages', getMessage);
             socket.emit('moodem-chat',
                 {
-                    chatRoom: `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`,
-                    user
+                    chatRoom: `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`
                 });
         }
 
@@ -40,7 +50,7 @@ const ChatRoom = (props: any) => {
     }, [isServerError, group, isFocused]);
 
     const setMessageList = (messagesList: never[]) => {
-        socket.off('moodem-chat', setMessageList);
+        // socket.off('moodem-chat', setMessageList);
         return setValues(prev => {
             return {
                 ...prev,
@@ -57,6 +67,23 @@ const ChatRoom = (props: any) => {
                 messages: GiftedChat.append(prev.messages, msg)
             };
         });
+    }
+
+    function renderAvatar({ currentMessage }: any) {
+        return (
+            <TouchableOpacity
+                onPress={() => onPressAvatar(currentMessage)}
+                disabled={currentMessage.user._id === user.uid}
+            >
+                <FastImage
+                    style={DEFAULT_AVATAR_STYLE}
+                    source={{
+                        uri: currentMessage.user.avatar,
+                        priority: FastImage.priority.high
+                    }}
+                />
+            </TouchableOpacity>
+        );
     }
 
     const onPressAvatar = (currentMessage: any) => {
@@ -87,7 +114,7 @@ const ChatRoom = (props: any) => {
                     _id: message._id
                 }
             });
-    }, [group.group_id]);
+    }, []);
 
     const renderLoading = useCallback(() => {
         return (
@@ -144,9 +171,9 @@ const ChatRoom = (props: any) => {
                 group={group}
             />
             <MemoizedChat
+                chatRoom={`ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`}
                 socket={socket}
-                group={group}
-                onPressAvatar={onPressAvatar}
+                renderAvatar={renderAvatar}
                 messages={allValues.messages}
                 user={user}
                 memoizedRenderSendBtn={memoizedRenderSendBtn}

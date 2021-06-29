@@ -15,7 +15,7 @@ export const BodyContainer = memo((props: bodyProps) => {
         useScrollView = false
     } = props;
 
-    function renderView() {
+    function renderViewWithScroll() {
         if (useScrollView) {
             return (
                 <ScrollView>
@@ -31,9 +31,11 @@ export const BodyContainer = memo((props: bodyProps) => {
     }
 
     return (
-        <SafeAreaView style={[bodyContainer, customBodyContainerStyle]}>
+        <SafeAreaView
+            style={[bodyContainer, customBodyContainerStyle]}
+        >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                {renderView()}
+                {renderViewWithScroll()}
             </TouchableWithoutFeedback>
         </SafeAreaView>
     );
