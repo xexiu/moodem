@@ -5,14 +5,16 @@ import React, { memo, useEffect, useState } from 'react';
 import { hasNotch } from 'react-native-device-info';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
+import AvatarChat from './AvatarChat';
 
 const MemoizedChat = (props: any) => {
     const {
-        renderAvatar,
+        disablePressAvatar,
+        onPressAvatar,
         messages,
         user,
-        memoizedRenderSendBtn,
-        memoizedOnSend,
+        onChangeTextBtn,
+        sendMsgBtn,
         socket,
         chatRoom
     } = props;
@@ -35,7 +37,6 @@ const MemoizedChat = (props: any) => {
     function getUserTyping(data: any) {
         return setIsTyping(data.isTyping);
     }
-
     return (
         <GiftedChat
             onInputTextChanged={(text: string) => {
@@ -63,12 +64,16 @@ const MemoizedChat = (props: any) => {
             renderUsernameOnMessage
             showAvatarForEveryMessage
             messages={messages}
-            renderSend={(attrs) => memoizedRenderSendBtn(attrs)}
-            onSend={(msgs) => memoizedOnSend(msgs[0])}
+            renderSend={(attrs) => onChangeTextBtn(attrs)}
+            onSend={(msgs) => sendMsgBtn(msgs[0])}
             keyboardShouldPersistTaps='always'
             showUserAvatar
             inverted
-            renderAvatar={renderAvatar}
+            renderAvatar={({ currentMessage }) => <AvatarChat
+                currentMessage={currentMessage}
+                onPressAvatar={() => onPressAvatar(currentMessage)}
+                disablePressAvatar={disablePressAvatar}
+            />}
             user={{
                 _id: user.uid,
                 name: user.displayName,

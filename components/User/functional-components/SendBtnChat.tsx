@@ -8,7 +8,9 @@ const styles = {
         alignItems: 'center',
         alignSelf: 'center',
         marginRight: 10,
-        marginLeft: 10
+        marginLeft: 10,
+        paddingLeft: 10,
+        paddingRight: 10
     }
 };
 
