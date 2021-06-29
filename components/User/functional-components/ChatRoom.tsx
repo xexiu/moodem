@@ -59,8 +59,10 @@ const ChatRoom = (props: any) => {
         });
     }
 
-    const onPressAvatar = () => {
-        return navigation.navigate('PrivateUserMessageScreen');
+    const onPressAvatar = (currentMessage: any) => {
+        return navigation.navigate('PrivateUserMessageScreen', {
+            currentMessage
+        });
     };
 
     const memoizedRenderSendBtn = useCallback((attrs: any) => {
@@ -78,7 +80,8 @@ const ChatRoom = (props: any) => {
                     user: {
                         _id: message.user._id,
                         name: message.user.name,
-                        avatar: user.photoURL || ''
+                        avatar: user.photoURL || '',
+                        user_id: user.uid
                     },
                     createdAt: message.createdAt,
                     _id: message._id
@@ -141,6 +144,8 @@ const ChatRoom = (props: any) => {
                 group={group}
             />
             <MemoizedChat
+                socket={socket}
+                group={group}
                 onPressAvatar={onPressAvatar}
                 messages={allValues.messages}
                 user={user}

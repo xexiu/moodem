@@ -2,17 +2,7 @@ const app = require('express')();
 const serverHTTP = require('http').Server(app);
 const serverIO = require('socket.io')(serverHTTP);
 const { initSentry } = require('./Utils/sentry');
-const {
-    getSearchedSongs,
-    getWelcomeMsg,
-    getSongError,
-    getSongVote,
-    getSongRemoved,
-    getSongAdded,
-    getConnectedUsers,
-    getChatRoomMsgs,
-    getChatMsg
-} = require('./Utils/socket');
+const { MySocket } = require('./Utils/socket');
 
 // initSentry()
 
@@ -21,6 +11,7 @@ app.get('/', (req, res) => {
 });
 
 serverIO.use((socket, next) => {
+    this.mySocket = new MySocket(socket, serverIO);
     Object.assign(socket, {
         uid: socket.handshake.query.uid,
         displayName: socket.handshake.query.displayName
@@ -33,49 +24,36 @@ serverIO.on('connection', async (socket) => {
     // do nothing
         console.log('Onlineee');
     });
-    socket.on('search-songs', async (data) => {
-        await getSearchedSongs(data, socket, serverIO);
-    });
+    socket.on('search-songs', this.mySocket.handleGetSearchedSongs);
 
     // Welcome Msg
-    socket.on('emit-message-welcomeMsg', async (data) => {
-        await getWelcomeMsg(data, socket, serverIO);
-    });
+    socket.on('emit-message-welcomeMsg', this.mySocket.handleGetWelcomeMsg);
 
     //  Song Error
-    socket.on('send-song-error', async (data) => {
-        await getSongError(data, socket, serverIO);
-    });
+    socket.on('send-song-error', this.mySocket.handleGetSongError);
 
     // Vote
-    socket.on('send-message-vote-up', async (data) => {
-        await getSongVote(data, socket, serverIO);
-    });
+    socket.on('send-message-vote-up', this.mySocket.handleGetSongVote);
 
     // Remove song
-    socket.on('send-message-remove-song', async (data) => {
-        await getSongRemoved(data, socket, serverIO);
-    });
+    socket.on('send-message-remove-song', this.mySocket.handleGetSongRemoved);
 
     // Add song
-    socket.on('send-message-add-song', async (data) => {
-        await getSongAdded(data, socket, serverIO);
-    });
+    socket.on('send-message-add-song', this.mySocket.handleGetSongAdded);
 
-    socket.on('get-connected-users', async (data) => {
-        await getConnectedUsers(data, socket, serverIO);
-    });
+    // Get Connected Users on Chat Room
+    socket.on('get-connected-users', this.mySocket.handleGetConnectedUsers);
 
-    socket.on('moodem-chat', async (data) => {
-        await getChatRoomMsgs(data, socket, serverIO);
-    });
+    // Join Chat Room and get messages
+    socket.on('moodem-chat', this.mySocket.handleGetChatRoomMsgs);
 
-    socket.on('chat-messages', async (data) => {
-        await getChatMsg(data, socket, serverIO);
-    });
+    // Get Chat Room Messages
+    socket.on('chat-messages', this.mySocket.handleGetChatMsg);
+
+    // User is Typing
+    socket.on('user-typing', this.mySocket.hanldeGetUseIsTyping);
 
     // User has disconected
-
     socket.on('disconnect', (reason) => {
         console.log('DISCONNNECT SOCKET ID', socket.id, 'uid', socket.uid, 'With REASON', reason);
         socket.offAny();

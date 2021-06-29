@@ -4,6 +4,7 @@ import { BodyContainer }  from '../../../components/common/functional-components
 import { AppContext } from '../../../components/User/store-context/AppContext';
 
 const PrivateUserMessageScreen = (props: any) => {
+    const { currentMessage } = props.route.params;
     const { navigation } = props;
     const { user }: any = useContext(AppContext);
     const toastRef = useRef() as any;
@@ -14,7 +15,7 @@ const PrivateUserMessageScreen = (props: any) => {
             unmountOnBlur: true,
             headerBackTitleVisible: false,
             unmountInactiveRoutes: true,
-            title: `Chat Privado con ${user.displayName}`
+            title: `${currentMessage.user.name}`
         });
         toastRef.current.show('Próximamente...', DURATION.FOREVER);
     }, []);
