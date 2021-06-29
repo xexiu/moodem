@@ -10,7 +10,7 @@ import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 const PrivateUserMessageScreen = (props: any) => {
     const { currentMessage } = props.route.params;
     const { user, socket, group, isServerError }: any = useContext(AppContext);
-    const split = `${user.uid}--with--${group.group_user_owner_id}`.split('--with--');
+    const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const updatedRoomName = `${unique[0]}--with--${unique[1]}`;
     const { isLoading, messages } = useChatMessages(updatedRoomName, {
