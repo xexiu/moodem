@@ -17,7 +17,7 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
         if (navigationOptions) {
             navigation.setOptions(navigationOptions);
         }
-        if (!isServerError && isFocused) {
+        if (!isServerError) {
             socket.on('moodem-chat', setMessageList);
             socket.on('chat-messages', getMessage);
             socket.emit('moodem-chat', { chatRoom });
@@ -26,7 +26,7 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
             socket.off('moodem-chat', setMessageList);
             socket.off('chat-messages', getMessage);
         };
-    }, [isServerError, group, isFocused]);
+    }, [isServerError, chatRoom]);
 
     const setMessageList = (messagesList: never[]) => {
         return setValues(prev => {

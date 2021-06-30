@@ -23,7 +23,7 @@ const ChatRoom = (props: any) => {
         });
     }
 
-    if (isLoading || isServerError) {
+    function renderLoading() {
         return (
             <ChatLoading />
         );
@@ -37,6 +37,7 @@ const ChatRoom = (props: any) => {
                     Keyboard.dismiss();
                 }}
             />
+            {isLoading || isServerError && renderLoading()}
             <HeaderChat
                 group={group}
             />
