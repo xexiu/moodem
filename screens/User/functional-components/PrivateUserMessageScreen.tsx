@@ -1,4 +1,5 @@
-import React, { memo, useContext } from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { memo, useContext, useEffect } from 'react';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import useChatMessages from '../../../components/User/custom-hooks/useChatMessages';
 import ChatLoading from '../../../components/User/functional-components/ChatLoading';
@@ -9,7 +10,7 @@ import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 
 const PrivateUserMessageScreen = (props: any) => {
     const { currentMessage } = props.route.params;
-    const { user, socket, group, isServerError }: any = useContext(AppContext);
+    const { user, socket, isServerError }: any = useContext(AppContext);
     const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const updatedRoomName = `${unique[0]}--with--${unique[1]}`;

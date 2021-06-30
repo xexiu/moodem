@@ -23,6 +23,7 @@ class MySocket {
     constructor(socket, serverIO) {
         this.socket = socket;
         this.serverIO = serverIO;
+        this.chatRooms = chatRooms;
         this.handleGetWelcomeMsg = this.getWelcomeMsg.bind(this);
         this.handleGetSearchedSongs = this.getSearchedSongs.bind(this);
         this.handleGetSongError = this.getSongError.bind(this);

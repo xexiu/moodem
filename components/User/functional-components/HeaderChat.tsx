@@ -6,9 +6,7 @@ import HeaderChatIconMessages from './HeaderChatIconMessages';
 import HeaderChatTitle from './HeaderChatTitle';
 import HeaderChatUsers from './HeaderChatUsers';
 
-const HeaderChat = (props: any) => {
-    const { group } = props;
-
+const HeaderChat = ({ group }: any) => {
     return (
         <View
             style={{
