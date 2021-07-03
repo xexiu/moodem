@@ -9,7 +9,6 @@ if (__DEV__) {
 }
 import { AppRegistry } from 'react-native';
 import 'react-native-gesture-handler';
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import App from './App';
 
-AppRegistry.registerComponent('moodem', () => gestureHandlerRootHOC(App));
+AppRegistry.registerComponent('moodem', () => App);

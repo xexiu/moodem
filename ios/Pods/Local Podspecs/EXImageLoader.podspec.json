@@ -1,6 +1,6 @@
 {
   "name": "EXImageLoader",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "summary": "Image loader",
   "description": "Image loader",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "UMCore": [
 
     ],
-    "UMImageLoaderInterface": [
+    "ExpoModulesCore": [
 
     ]
   },

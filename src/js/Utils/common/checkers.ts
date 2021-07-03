@@ -1,4 +1,5 @@
 import { find, get, keys } from 'lodash';
+export { differenceWith, isEqual } from 'lodash';
 
 type anyObject = (any | any);
 

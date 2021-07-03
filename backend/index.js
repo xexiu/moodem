@@ -60,16 +60,7 @@ serverIO.on('connection', async (socket) => {
     socket.on('user-typing', this.mySocket.hanldeGetUserIsTyping);
 
     // Get User Private Messages
-    socket.on('get-private-messages', async (data) => {
-        const { uid } = data;
-        const userMessages = [];
-        const chatRooms = Object.keys(this.mySocket.chatRooms);
-        const userRooms = chatRooms.filter((chatRoom) => chatRoom.includes(uid));
-        userRooms.forEach((userRoom) => {
-            userMessages.push(...this.mySocket.chatRooms[userRoom].messages);
-        });
-        // debugger;
-    });
+    socket.on('get-private-messages', this.mySocket.handleUserPrivateMessages);
 
     // User has disconected
     socket.on('disconnect', (reason) => {

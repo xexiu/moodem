@@ -36,6 +36,7 @@ class MySocket {
         this.handleJoinChatRooms = this.joinChatRooms.bind(this);
         this.handleLeaveChatRooms = this.leaveChatRooms.bind(this);
         this.hanldeGetUserIsTyping = this.getUserIsTyping.bind(this);
+        this.handleUserPrivateMessages = this.getUserPrivateMessages.bind(this);
     }
 
     async getWelcomeMsg({ chatRoom }) {
@@ -171,6 +172,21 @@ class MySocket {
         buildMedia(chatRoom);
 
         this.socket.broadcast.to(chatRoom).emit('user-typing', { isTyping }); // send to all sockets in room/channel except sender
+    }
+
+    async getUserPrivateMessages({ uid }) {
+        const allUserPrivateMessages = [];
+        const userRooms = Object.keys(chatRooms).filter((room) => room.includes(uid));
+        userRooms.forEach((userRoom) => {
+            const { messages } = chatRooms[userRoom];
+            allUserPrivateMessages.push(...messages);
+        });
+
+        if (allUserPrivateMessages.length) {
+            this.serverIO.to(this.socket.id).emit('set-private-messages', allUserPrivateMessages);
+        } else {
+            this.serverIO.to(this.socket.id).emit('set-private-messages', allUserPrivateMessages);
+        }
     }
 }
 
