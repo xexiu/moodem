@@ -1,5 +1,4 @@
-import { CommonActions } from '@react-navigation/native';
-import React, { memo, useContext, useEffect } from 'react';
+import React, { memo, useContext } from 'react';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import useChatMessages from '../../../components/User/custom-hooks/useChatMessages';
 import ChatLoading from '../../../components/User/functional-components/ChatLoading';
@@ -8,19 +7,25 @@ import SendBtnChat from '../../../components/User/functional-components/SendBtnC
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 
-const PrivateUserMessageScreen = (props: any) => {
+type PropsPrivateMessageUserScreen = {
+    route: any,
+    currentMessage: any
+};
+
+const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
     const { currentMessage } = props.route.params;
-    const { user, socket, isServerError }: any = useContext(AppContext);
-    const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
-    const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
-    const updatedRoomName = `${unique[0]}--with--${unique[1]}`;
-    const { isLoading, messages } = useChatMessages(updatedRoomName, {
+    const navigationOptions = {
         headerMode: 'none',
         unmountOnBlur: true,
         headerBackTitleVisible: false,
         unmountInactiveRoutes: true,
         title: `${currentMessage.user.name}`
-    });
+    };
+    const { user, socket, isServerError }: any = useContext(AppContext);
+    const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
+    const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
+    const chatRoom = `${unique[0]}--with--${unique[1]}`;
+    const { isLoading, messages } = useChatMessages(chatRoom, navigationOptions);
 
     if (isLoading || isServerError) {
         return (
@@ -31,12 +36,12 @@ const PrivateUserMessageScreen = (props: any) => {
     return (
         <BodyContainer>
             <MemoizedChat
-                chatRoom={updatedRoomName}
+                chatRoom={chatRoom}
                 socket={socket}
                 messages={messages}
                 user={user}
                 onChangeTextBtn={(attrs: any) => <SendBtnChat attrs={attrs} />}
-                sendMsgBtn={(message: any) => sendMsg(socket, user, message, updatedRoomName)}
+                sendMsgBtn={(message: any) => sendMsg(socket, user, message, chatRoom)}
                 disablePressAvatar={true}
             />
         </BodyContainer>

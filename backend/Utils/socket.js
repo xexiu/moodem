@@ -31,11 +31,11 @@ class MySocket {
         this.handleGetSongRemoved = this.getSongRemoved.bind(this);
         this.handleGetSongAdded = this.getSongAdded.bind(this);
         this.handleGetConnectedUsers = this.getConnectedUsers.bind(this);
-        this.handleGetChatRoomMsgs = this.getChatRoomMsgs.bind(this);
+        this.handleGetChatMsgs = this.getChatMsgs.bind(this);
         this.handleGetChatMsg = this.getChatMsg.bind(this);
         this.handleJoinChatRooms = this.joinChatRooms.bind(this);
         this.handleLeaveChatRooms = this.leaveChatRooms.bind(this);
-        this.hanldeGetUseIsTyping = this.getUseIsTyping.bind(this);
+        this.hanldeGetUserIsTyping = this.getUserIsTyping.bind(this);
     }
 
     async getWelcomeMsg({ chatRoom }) {
@@ -126,41 +126,47 @@ class MySocket {
         }
     }
 
-    async getChatRoomMsgs({ chatRoom }) {
-        await this.socket.join(chatRoom);
+    async getChatMsgs({ chatRoom }) {
         buildMedia(chatRoom);
 
-        if (chatRooms[chatRoom].messages.length) {
-            this.serverIO.to(chatRoom).emit('moodem-chat', chatRooms[chatRoom].messages.slice().reverse());
+        const { messages } = chatRooms[chatRoom];
+
+        if (messages.length) {
+            this.serverIO.to(chatRoom).emit('set-chat-messages', messages.slice().reverse());
         } else {
-            this.serverIO.to(chatRoom).emit('moodem-chat', []);
+            this.serverIO.to(chatRoom).emit('set-chat-messages', []);
         }
     }
 
     async getChatMsg({ chatRoom, msg }) {
+        buildMedia(chatRoom);
+        const { messages } = chatRooms[chatRoom];
+
+        messages.push(msg);
+        this.serverIO.to(chatRoom).emit('set-chat-message', msg);
+    }
+
+    async joinChatRooms({ chatRoom }) {
         await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
-        if (msg) {
-            chatRooms[chatRoom].messages.push(msg);
-            this.serverIO.to(chatRoom).emit('chat-messages', msg);
-        }
+        const { uids } = chatRooms[chatRoom];
+
+        uids.add(this.socket.uid);
+
+        // const rooms = this.socket.rooms;
     }
 
-    async joinChatRooms(data) {
-        await this.socket.join(['room 237', 'room 238']);
+    async leaveChatRooms({ chatRoom }) {
+        await this.socket.leave(chatRoom);
+        buildMedia(chatRoom);
 
-        const rooms = Object.keys(this.socket.rooms);
-        console.log(rooms); // [ <socket.id>, 'room 237', 'room 238' ]
-        this.serverIO.to('room 237').to('room 238').emit('a new user has joined the room'); // broadcast to everyone in both rooms
+        const { uids } = chatRooms[chatRoom];
+        uids.delete(this.socket.uid);
+        // this.serverIO.to('room 237').emit(`user ${this.socket.id} has left the room`);
     }
 
-    async leaveChatRooms(data) {
-        await this.socket.leave('room 237');
-        this.serverIO.to('room 237').emit(`user ${this.socket.id} has left the room`);
-    }
-
-    async getUseIsTyping({ chatRoom, isTyping }) {
+    async getUserIsTyping({ chatRoom, isTyping }) {
         await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 

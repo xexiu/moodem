@@ -3,11 +3,22 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import React, { memo, useEffect, useState } from 'react';
 import { hasNotch } from 'react-native-device-info';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import AvatarChat from './AvatarChat';
 
-const MemoizedChat = (props: any) => {
+type PropsMemoizedChat = {
+    disablePressAvatar?: boolean,
+    onPressAvatar?: Function,
+    messages: IMessage[],
+    user: any,
+    onChangeTextBtn: Function,
+    sendMsgBtn: Function,
+    socket: any,
+    chatRoom: string
+};
+
+const MemoizedChat = (props: PropsMemoizedChat) => {
     const {
         disablePressAvatar,
         onPressAvatar,
@@ -22,15 +33,23 @@ const MemoizedChat = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        socket.on('user-typing', getUserTyping);
-        if (!isFocused) {
+        if (isFocused) {
+            socket.on('user-typing', getUserTyping);
+
             socket.emit('user-typing', {
                 chatRoom,
                 isTyping: false
             });
         }
         return () => {
-            socket.off('user-typing', getUserTyping);
+            if (isFocused) {
+                socket.off('user-typing', getUserTyping);
+                socket.emit('moodem-chat-leave', { chatRoom });
+                socket.emit('user-typing', {
+                    chatRoom,
+                    isTyping: false
+                });
+            }
         };
     }, [isFocused]);
 

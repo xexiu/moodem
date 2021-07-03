@@ -45,13 +45,19 @@ serverIO.on('connection', async (socket) => {
     socket.on('get-connected-users', this.mySocket.handleGetConnectedUsers);
 
     // Join Chat Room and get messages
-    socket.on('moodem-chat', this.mySocket.handleGetChatRoomMsgs);
+    socket.on('moodem-chat-join', this.mySocket.handleJoinChatRooms);
+
+    // Leave chat room
+    socket.on('moodem-chat-leave', this.mySocket.handleLeaveChatRooms);
 
     // Get Chat Room Messages
-    socket.on('chat-messages', this.mySocket.handleGetChatMsg);
+    socket.on('get-chat-messages', this.mySocket.handleGetChatMsgs);
+
+    // Get Chat Room Message
+    socket.on('get-chat-message', this.mySocket.handleGetChatMsg);
 
     // User is Typing
-    socket.on('user-typing', this.mySocket.hanldeGetUseIsTyping);
+    socket.on('user-typing', this.mySocket.hanldeGetUserIsTyping);
 
     // Get User Private Messages
     socket.on('get-private-messages', async (data) => {

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
 import { Keyboard } from 'react-native';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
@@ -11,22 +10,26 @@ import HeaderChat from './HeaderChat';
 import MemoizedChat from './MemoizedChat';
 import SendBtnChat from './SendBtnChat';
 
-const ChatRoom = (props: any) => {
+type PropsChat = {
+    navigation?: any
+};
+
+const ChatRoom = (props: PropsChat) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const { navigation } = props;
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`;
     const { isLoading, messages } = useChatMessages(chatRoom);
 
+    if (isLoading || isServerError) {
+        return (
+            <ChatLoading />
+        );
+    }
+
     function onPressAvatar(currentMessage: any) {
         return navigation.navigate('PrivateUserMessageScreen', {
             currentMessage
         });
-    }
-
-    function renderLoading() {
-        return (
-            <ChatLoading />
-        );
     }
 
     return (
@@ -37,7 +40,6 @@ const ChatRoom = (props: any) => {
                     Keyboard.dismiss();
                 }}
             />
-            {isLoading || isServerError && renderLoading()}
             <HeaderChat
                 group={group}
             />
@@ -52,10 +54,6 @@ const ChatRoom = (props: any) => {
             />
         </BodyContainer>
     );
-};
-
-ChatRoom.propTypes = {
-    navigation: PropTypes.object
 };
 
 export default memo(ChatRoom);

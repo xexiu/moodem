@@ -7,7 +7,7 @@ const HeaderChatTitle = (props: any) => {
         group
     } = props;
     return (
-        <Text>{`${group.group_name} Chat`}</Text>
+        <Text>{`${group.group_name}`}</Text>
     );
 };
 

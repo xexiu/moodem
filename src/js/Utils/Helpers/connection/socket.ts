@@ -1,5 +1,5 @@
 export function sendMsg(socket: any, user: any, message: any, chatRoom: string) {
-    return socket.emit('chat-messages',
+    return socket.emit('get-chat-message',
         {
             chatRoom,
             msg: {
