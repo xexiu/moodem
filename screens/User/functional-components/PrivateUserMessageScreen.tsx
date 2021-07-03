@@ -21,10 +21,10 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
         unmountInactiveRoutes: true,
         title: `${currentMessage.user.name}`
     };
-    const { user, socket, isServerError }: any = useContext(AppContext);
+    const { user, group, socket, isServerError }: any = useContext(AppContext);
     const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
-    const chatRoom = `${unique[0]}--with--${unique[1]}`;
+    const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
     const { isLoading, messages } = useChatMessages(chatRoom, navigationOptions);
 
     if (isLoading || isServerError) {

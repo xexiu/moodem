@@ -14,7 +14,6 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
     const navigation = useNavigation();
 
     useEffect(() => {
-        console.log('Effect useChatMEssages');
         if (navigationOptions) {
             navigation.setOptions(navigationOptions);
         }
