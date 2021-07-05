@@ -176,17 +176,10 @@ const BasePlayer = (props: any) => {
                         MusicControl.updatePlayback({
                             elapsedTime: currentTime
                         });
+                        Object.assign(errorSongs, []);
                     }
                 }}
-                onLoadStart={() => {
-                    // This is called 1st - then onLoad is called
-                    // DON'T add  basePlayer.current.seek(0); here. it will cause an infinite buffering
-                    if (!seekRef.current.isSliding) {
-                        seekRef.current.setTrackCurrentTime(0);
-                    }
-                    Object.assign(errorSongs, []);
-                }}
-                onError={(error: any) => {
+                onError={({ error} : any) => {
                     if (error.localizedDescription === 'Cannot Decode') {
                         console.error('Song Error -> Cannot Decode', 'Error: ', error);
                         return;
@@ -218,6 +211,8 @@ const BasePlayer = (props: any) => {
                                 song: item
                             });
                         }
+                    } else {
+                        console.error('Song Error', 'Error: ', error);
                     }
                 }}
                 paused={!item.isPlaying}

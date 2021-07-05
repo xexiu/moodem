@@ -44,6 +44,8 @@ class MySocket {
             await this.socket.join(chatRoom);
             buildMedia(chatRoom);
 
+            // sockets in room --> this.serverIO.sockets.adapter.rooms.get(chatRoom).size
+
             const groupName = chatRoom.replace(/(.*?_GroupName_)/g, '');
             this.serverIO.to(this.socket.id).emit('get-message-welcomeMsg',
                 {
@@ -76,17 +78,19 @@ class MySocket {
         try {
             const audio = await getSong(song.id, true);
 
-            Object.assign(audio, {
-                voted_users: song.voted_users,
-                hasExpired: false,
-                user: song.user,
-                isPlaying: song.isPlaying
-            });
+            if (audio && Object.keys(audio).length) {
+                Object.assign(audio, {
+                    voted_users: song.voted_users,
+                    hasExpired: false,
+                    user: song.user,
+                    isPlaying: song.isPlaying
+                });
 
-            if (song.isSearching) {
-                this.serverIO.to(this.socket.id).emit('song-error-searching', { song: audio });
-            } else {
-                this.serverIO.to(this.socket.id).emit('song-error', { song: audio });
+                if (song.isSearching) {
+                    this.serverIO.to(this.socket.id).emit('song-error-searching', { song: audio });
+                } else {
+                    this.serverIO.to(this.socket.id).emit('song-error', { song: audio });
+                }
             }
         } catch (error) {
             console.error('Error getSongError', error);
