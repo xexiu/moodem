@@ -44,8 +44,6 @@ class MySocket {
             await this.socket.join(chatRoom);
             buildMedia(chatRoom);
 
-            // sockets in room --> this.serverIO.sockets.adapter.rooms.get(chatRoom).size
-
             const groupName = chatRoom.replace(/(.*?_GroupName_)/g, '');
             this.serverIO.to(this.socket.id).emit('get-message-welcomeMsg',
                 {
@@ -56,10 +54,7 @@ class MySocket {
         }
     }
 
-    async getSearchedSongs({ chatRoom, searchedText }) {
-        await this.socket.join(chatRoom);
-        buildMedia(chatRoom);
-
+    async getSearchedSongs({ searchedText }) {
         try {
             const videoIds = await searchYoutubeForVideoIds(searchedText);
             const songs = await getAllSongs(videoIds);
@@ -72,7 +67,6 @@ class MySocket {
     }
 
     async getSongError({ song, chatRoom }) {
-        await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
         try {
@@ -87,9 +81,9 @@ class MySocket {
                 });
 
                 if (song.isSearching) {
-                    this.serverIO.to(this.socket.id).emit('song-error-searching', { song: audio });
+                    this.serverIO.to(chatRoom).emit('song-error-searching', { song: audio });
                 } else {
-                    this.serverIO.to(this.socket.id).emit('song-error', { song: audio });
+                    this.serverIO.to(chatRoom).emit('song-error', { song: audio });
                 }
             }
         } catch (error) {
@@ -98,26 +92,23 @@ class MySocket {
     }
 
     async getSongVote({ song, chatRoom, isVotingSong = false }) {
-        await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
         this.serverIO.to(chatRoom).emit('song-voted', { song, isVotingSong });
     }
 
     async getSongRemoved({ song, chatRoom, isRemovingSong = false }) {
-        await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
         this.serverIO.to(chatRoom).emit('song-removed', { song, isRemovingSong });
     }
 
     async getSongAdded({ song, chatRoom, isAddingSong = false }) {
-        await this.socket.join(chatRoom);
+        buildMedia(chatRoom);
         this.serverIO.to(chatRoom).emit('song-added', { song, isAddingSong });
     }
 
     async getConnectedUsers({ chatRoom, leaveChatRoom }) {
-        await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
         if (leaveChatRoom) {
@@ -158,8 +149,6 @@ class MySocket {
         const { uids } = chatRooms[chatRoom];
 
         uids.add(this.socket.uid);
-
-        // const rooms = this.socket.rooms;
     }
 
     async leaveChatRooms({ chatRoom }) {
@@ -172,7 +161,6 @@ class MySocket {
     }
 
     async getUserIsTyping({ chatRoom, isTyping }) {
-        await this.socket.join(chatRoom);
         buildMedia(chatRoom);
 
         this.socket.broadcast.to(chatRoom).emit('user-typing', { isTyping }); // send to all sockets in room/channel except sender

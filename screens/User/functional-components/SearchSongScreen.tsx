@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../../components/common/functional-components/MemoizedSongsList';
-import Player from '../../../components/common/functional-components/Player';
+import PlayerControls from '../../../components/common/functional-components/PlayerControls';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { MediaListEmpty } from '../../../components/User/functional-components/MediaListEmpty';
 import { AppContext } from '../../../components/User/store-context/AppContext';
@@ -12,9 +12,10 @@ import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelp
 
 const SearchSongScreen = (props: any) => {
     const {
+        chatRoom,
         searchedText
     } = props.route.params;
-    const { group, socket } = useContext(AppContext) as any;
+    const { socket } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs
@@ -37,7 +38,6 @@ const SearchSongScreen = (props: any) => {
             title: `${allValues.songs.length} ${translate('songs.searchBar.placeholderFound')}`
         });
         socket.emit('search-songs', {
-            chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
             searchedText
         });
 
@@ -120,7 +120,8 @@ const SearchSongScreen = (props: any) => {
 
         return (
             <BodyContainer>
-                <Player
+                <PlayerControls
+                    chatRoom={chatRoom}
                     isPlaying={allValues.songs[indexItem].isPlaying}
                     item={allValues.songs[indexItem]}
                     handleOnClickItem={onClickUseCallBack}
@@ -128,6 +129,7 @@ const SearchSongScreen = (props: any) => {
                     indexItem={indexItem}
                 />
                 <MemoizedSongsList
+                    chatRoom={chatRoom}
                     data={allValues.songs}
                     chevron={'send_media'}
                     indexItem={indexItem}

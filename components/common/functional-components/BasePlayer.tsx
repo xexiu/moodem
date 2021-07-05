@@ -22,6 +22,7 @@ function configMusicControl() {
 
 const BasePlayer = (props: any) => {
     const {
+        chatRoom,
         repeatRef,
         seekRef,
         playPauseRef,
@@ -201,13 +202,13 @@ const BasePlayer = (props: any) => {
                             if (item.isSearching) {
                                 console.error('Song Error on Searched Songs', 'Error: ', error);
                                 return socket.emit('send-song-error', {
-                                    chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                                    chatRoom,
                                     song: item
                                 });
                             }
                             console.error('Song Error on Songs', 'Error: ', error);
                             return socket.emit('send-song-error', {
-                                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                                chatRoom,
                                 song: item
                             });
                         }

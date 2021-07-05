@@ -45,12 +45,12 @@ const CreateNewGroupScreen = (props: any) => {
         if (dataInput) {
             try {
                 setIsLoading(true);
-                const data = await createGroupHandler(dataInput, user);
+                const group = await createGroupHandler(dataInput, user);
                 await dispatchContextApp(
                     {
                         type: 'set_new_group',
                         value: {
-                            group: data
+                            group
                         }
                     });
                 setIsLoading(false);

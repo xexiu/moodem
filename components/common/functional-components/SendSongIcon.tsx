@@ -5,7 +5,7 @@ import { AppContext } from '../../User/store-context/AppContext';
 
 const controller = new AbortController();
 
-const SendSongIcon = (song: any) => {
+const SendSongIcon = (song: any, chatRoom: string) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation();
@@ -22,7 +22,7 @@ const SendSongIcon = (song: any) => {
     async function emitSendMedia() {
         await socket.emit('send-message-add-song', {
             song,
-            chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+            chatRoom,
             isAddingSong: true
         });
         controller.abort();

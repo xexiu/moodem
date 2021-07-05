@@ -6,7 +6,7 @@ import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/son
 import firebase from '../../../src/js/Utils/Helpers/services/firebase';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
-import Player from '../../common/functional-components/Player';
+import PlayerControls from '../../common/functional-components/PlayerControls';
 import PreLoader from '../../common/functional-components/PreLoader';
 import SearchBarAutoComplete from '../../common/functional-components/SearchBarAutoComplete';
 import { AppContext } from '../store-context/AppContext';
@@ -27,14 +27,13 @@ const Songs = (props: any) => {
     } = useContext(SongsContext) as any;
     const toastRef = useRef() as any;
     const flatListRef = useRef() as any;
+    const chatRoom = `GroupId_${group.group_id}_GroupName_${group.group_name}`;
 
     useEffect(() => {
         getSongs();
 
         if (!isServerError) {
-            socket.emit('emit-message-welcomeMsg', {
-                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`
-            });
+            socket.emit('emit-message-welcomeMsg', { chatRoom });
             socket.on('get-message-welcomeMsg', getWelcomeMsg);
             socket.on('song-added', getSong);
             socket.on('song-removed', getRemovedSong);
@@ -149,7 +148,8 @@ const Songs = (props: any) => {
 
         return (
             <BodyContainer>
-                <Player
+                <PlayerControls
+                    chatRoom={chatRoom}
                     isPlaying={songs[indexItem].isPlaying}
                     item={songs[indexItem]}
                     handleOnClickItem={onClickUseCallBack}
@@ -157,6 +157,7 @@ const Songs = (props: any) => {
                     indexItem={indexItem}
                 />
                 <MemoizedSongsList
+                    chatRoom={chatRoom}
                     reference={flatListRef}
                     checkSizeChangeHandler={checkSizeChangeHandler}
                     data={songs}
@@ -194,6 +195,7 @@ const Songs = (props: any) => {
 
         return (
             <SearchBarAutoComplete
+                chatRoom={chatRoom}
                 songs={songs}
                 navigation={navigation}
             />

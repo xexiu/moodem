@@ -6,7 +6,7 @@ import { AppContext } from '../../User/store-context/AppContext';
 
 const controller = new AbortController();
 
-const RemoveSongIcon = (song: any) => {
+const RemoveSongIcon = (song: any, chatRoom: string) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,7 +25,7 @@ const RemoveSongIcon = (song: any) => {
         await socket.emit('send-message-remove-song',
             {
                 song,
-                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                chatRoom,
                 user_id: user.uid,
                 isRemovingSong: true
             });

@@ -24,10 +24,12 @@ serverIO.on('connection', async (socket) => {
     // do nothing
         console.log('Onlineee');
     });
-    socket.on('search-songs', this.mySocket.handleGetSearchedSongs);
 
     // Welcome Msg
     socket.on('emit-message-welcomeMsg', this.mySocket.handleGetWelcomeMsg);
+
+    // Search Songs
+    socket.on('search-songs', this.mySocket.handleGetSearchedSongs);
 
     //  Song Error
     socket.on('send-song-error', this.mySocket.handleGetSongError);

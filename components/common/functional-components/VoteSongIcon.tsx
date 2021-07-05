@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Button from '../../../components/User/functional-components/Button';
-import { isEmpty } from '../../../src/js/Utils/common/checkers';
 import { saveVotesForSongOnDb } from '../../../src/js/Utils/Helpers/actions/songs';
 import { AppContext } from '../../User/store-context/AppContext';
 
@@ -15,7 +14,7 @@ const format = (n: number) => {
     if (n >= 1e12) return +(n / 1e12).toFixed(1) + 'T';
 };
 
-const VoteSongIcon = (song: any) => {
+const VoteSongIcon = (song: any, chatRoom: string) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +33,7 @@ const VoteSongIcon = (song: any) => {
         await socket.emit('send-message-vote-up',
             {
                 song,
-                chatRoom: `GroupId_${group.group_id}_GroupName_${group.group_name}`,
+                chatRoom,
                 user_id: user.uid
             });
         controller.abort();

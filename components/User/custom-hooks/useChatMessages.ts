@@ -18,25 +18,6 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
             navigation.setOptions(navigationOptions);
         }
 
-        function getMessageList(messagesList: never[]) {
-            return setValues(prev => {
-                return {
-                    ...prev,
-                    isLoading: false,
-                    messages: [...messagesList]
-                };
-            });
-        }
-
-        function getMessage(_msg: any) {
-            return setValues(prev => {
-                return {
-                    ...prev,
-                    messages: GiftedChat.append(prev.messages, _msg)
-                };
-            });
-        }
-
         if (!isServerError && isFocused) {
             // Emit
             socket.emit('moodem-chat-join', { chatRoom });
@@ -56,6 +37,25 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
             }
         };
     }, [isFocused]);
+
+    function getMessageList(messagesList: never[]) {
+        return setValues(prev => {
+            return {
+                ...prev,
+                isLoading: false,
+                messages: [...messagesList]
+            };
+        });
+    }
+
+    function getMessage(_msg: any) {
+        return setValues(prev => {
+            return {
+                ...prev,
+                messages: GiftedChat.append(prev.messages, _msg)
+            };
+        });
+    }
 
     return { isLoading: allValues.isLoading, messages: allValues.messages };
 }

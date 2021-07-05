@@ -22,12 +22,12 @@ const PrivateGroupsSceneTab = () => {
     const privateGroups = groups.filter((group: any) => {
         return !!group.group_password && group.group_user_owner_id !== user.uid;
     });
-    const keyExtractor = useCallback((item: any) => item.group_id, []);
-    const memoizedItem = useCallback(({ item }) => (
+    const keyExtractor = useCallback((group: any) => group.group_id, []);
+    const memoizedItem = useCallback(({ item: group }) => (
         <View style={{ position: 'relative' }}>
             <CommonFlatListItem
                 bottomDivider
-                title={item.group_name}
+                title={group.group_name}
                 titleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 titleStyle={{ marginTop: -17 }}
                 leftAvatar={{
@@ -37,27 +37,27 @@ const PrivateGroupsSceneTab = () => {
                 }}
                 subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
                 subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}
-                subtitle={item.group_description}
-                chevron={item.group_user_owner_id !== user.uid &&
-                    item.group_name !== 'Moodem' && LeaveGroupIcon(item, async () => {
-                        await leaveGroup(item, user);
+                subtitle={group.group_description}
+                chevron={group.group_user_owner_id !== user.uid &&
+                    group.group_name !== 'Moodem' && LeaveGroupIcon(group, async () => {
+                        await leaveGroup(group, user);
                         await dispatchContextApp(
                             {
                                 type: 'delete_owned_group',
                                 value: {
-                                    group: item
+                                    group
                                 }
                             });
                     })}
                 buttonGroup={[
                     {
-                        element: () => <GroupUsersIcon users={item.group_users} />
+                        element: () => <GroupUsersIcon users={group.group_users} />
                     },
                     {
-                        element: () => <GroupSongsIcon songs={item.group_songs} />
+                        element: () => <GroupSongsIcon songs={group.group_songs} />
                     },
                     {
-                        element: () => <GroupPrivateIcon group={item} />
+                        element: () => <GroupPrivateIcon group={group} />
                     }
                 ]}
                 action={async () => {
@@ -65,8 +65,8 @@ const PrivateGroupsSceneTab = () => {
                         {
                             type: 'set_current_group',
                             value: {
-                                group: Object.assign(item, {
-                                    group_songs: item.group_songs || []
+                                group: Object.assign(group, {
+                                    group_songs: group.group_songs || []
                                 })
                             }
                         });

@@ -9,8 +9,9 @@ import PlayerControlTimeSeek from './PlayerControlTimeSeek';
 import { SongInfoContainer } from './SongInfoContainer';
 import SongInfoTitle from './SongInfoTitle';
 
-const Player = (props: any) => {
+const PlayerControls = (props: any) => {
     const {
+        chatRoom,
         items,
         isPlaying,
         item,
@@ -65,6 +66,7 @@ const Player = (props: any) => {
                     indexItem={indexItem}
                 />
                 <BasePlayer
+                    chatRoom={chatRoom}
                     repeatRef={repeatRef}
                     basePlayer={basePlayer}
                     seekRef={seekRef}
@@ -105,4 +107,4 @@ const Player = (props: any) => {
     );
 };
 
-export default Player;
+export default PlayerControls;

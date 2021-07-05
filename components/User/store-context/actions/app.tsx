@@ -17,7 +17,6 @@ export type State = {
     user: userProps;
     groups: string[];
     group: groupType;
-    params: any,
     isServerError: boolean;
     isLoading: boolean;
     socket: any
@@ -33,7 +32,6 @@ export const initialValue: State = {
         user_owner_id: '',
         group_users: []
     },
-    params: null,
     isServerError: false,
     isLoading: true,
     socket: {

@@ -3,6 +3,7 @@ import MemoizedItems from './MemoizedItems';
 
 const MemoizedSongsList = (props: any) => {
     const {
+        chatRoom,
         data,
         buttonActions,
         handleOnClickItem = Function,
@@ -13,6 +14,7 @@ const MemoizedSongsList = (props: any) => {
 
     return (
         <MemoizedItems
+            chatRoom={chatRoom}
             reference={reference}
             data={data}
             handleOnClickItem={handleOnClickItem}

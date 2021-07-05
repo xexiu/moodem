@@ -14,13 +14,15 @@ type PropsItems = {
     buttonActions?: string[],
     chevron?: string,
     reference?: any,
-    checkSizeChangeHandler?: Function
+    checkSizeChangeHandler?: Function,
+    chatRoom?: string
 };
 
 // tslint:disable-next-line:max-line-length
-const MemoizedItems = ({ reference, data, handleOnClickItem, buttonActions, chevron, checkSizeChangeHandler }: PropsItems) => {
+const MemoizedItems = ({ chatRoom, reference, data, handleOnClickItem, buttonActions, chevron, checkSizeChangeHandler }: PropsItems) => {
     const renderItem = useCallback(({ item, index }: PropsItem) => (
         <MemoizedItem
+            chatRoom={chatRoom}
             index={index}
             votedUsers={item.voted_users ? item.voted_users.length : 0}
             item={item}
