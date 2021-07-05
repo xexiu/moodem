@@ -4,11 +4,57 @@ const { options } = require('./ytdlConfig');
 const { getValueForKey, setKey } = require('./cache');
 const { ONE_YEAR } = require('./constants');
 
+function cleanTitle(title) {
+    let sanitizeTitle = '';
+
+    if (title) {
+        sanitizeTitle = title
+            .replace('(Official Music Video)', '')
+            .replace('(Official Video)', '');
+        return sanitizeTitle;
+    }
+    return sanitizeTitle;
+}
+
+function deleteObjAttrsExcept(object, exceptAttr) {
+    // eslint-disable-next-line no-param-reassign
+    Object.keys(object).forEach((attr) => attr !== exceptAttr && delete object[attr]);
+}
+
+function assignAttrs(object = {}, attrs = {}) {
+    return Object.assign(object, {
+        id: attrs.videoId || 'No Song ID',
+        title: cleanTitle(attrs.title) || 'No Song title',
+        author: {
+            name: attrs.author.name || 'Anonymous Author',
+            user: attrs.author.user || 'No Author User',
+            id: attrs.author.id || 'No Author ID'
+        },
+        averageRating: attrs.averageRating || 0,
+        category: attrs.category || 'No Category',
+        description: attrs.description || 'No Description',
+        keywords: attrs.keywords || [],
+        likes: attrs.likes || 0,
+        viewCount: attrs.viewCount || '0',
+        duration: attrs.lengthSeconds || '0',
+        thumbnail: attrs.thumbnails ? attrs.thumbnails[0].url : 'No image',
+        hasExpired: false,
+        isCachedInServerNode: false
+    });
+}
+
 function getVideoIdsFromSearchResults(searchResults) {
     const videoIds = [];
+    const { items } = searchResults;
 
-    const videos = searchResults.items.filter((video) => video.id && !video.isLive && !video.isUpcoming);
-    videos.map((video) => videoIds.push(video.id));
+    items.filter((video) => {
+        if (video.id && !video.isLive && !video.isUpcoming) {
+            videoIds.push(video.id);
+            return true;
+        }
+        return false;
+    });
+
     return videoIds;
 }
 
@@ -24,32 +70,9 @@ async function searchYoutubeForVideoIds(searchedText) {
         setKey(`__searchResults__${searchedText}`, searchResults, ONE_YEAR);
         return getVideoIdsFromSearchResults(searchResults);
     } catch (error) {
-        console.error('Error converting getSong', error);
+        console.error('Error searchYoutubeForVideoIds getSong', error);
     }
     return [];
-}
-
-function cleanTitle(audio) {
-    if (audio.title) {
-        Object.assign(audio, {
-            title: audio.title.replace('(Official Music Video)', '')
-                .replace('(Official Video)', '')
-        });
-        return audio.title;
-    }
-    return audio.title;
-}
-
-function cleanImageParams(audio) {
-    if (audio.thumbnail) {
-        if (audio.thumbnail.indexOf('hqdefault.jpg') >= 0) {
-            Object.assign(audio, {
-                thumbnail: audio.thumbnail.replace(/(\?.*)/g, '')
-            });
-            return audio.thumbnail;
-        }
-    }
-    return audio.thumbnail;
 }
 
 async function getSong(videoId) {
@@ -62,16 +85,8 @@ async function getSong(videoId) {
             const audio = ytdl.chooseFormat(formats, {
                 quality: 'highestvideo'
             });
-            Object.keys(audio).forEach((attr) => attr !== 'url' && delete audio[attr]);
-            Object.assign(audio, {
-                id: audioYT.videoDetails.videoId,
-                title: audioYT.videoDetails.title,
-                duration: audioYT.videoDetails.lengthSeconds,
-                thumbnail: audioYT.videoDetails.thumbnails ? audioYT.videoDetails.thumbnails[0].url : 'No image',
-                hasExpired: false,
-                details: audioYT.videoDetails,
-                isCachedInServerNode: false
-            });
+            deleteObjAttrsExcept(audio, 'url');
+            assignAttrs(audio, audioYT.videoDetails);
             return { ...audio };
         }
 
@@ -89,7 +104,6 @@ function setExtraAttrs(audios, uid, isSearching = false) {
     audios.forEach((track) => {
         Object.assign(track, {
             id: track.id,
-            details: track.details,
             isSearching,
             isPlaying: false,
             isMediaOnList: false,
@@ -115,8 +129,6 @@ async function getSongsOrCache(videoIds) {
                 return audioCached;
             }
             const audio = await getSong(videoId);
-            cleanImageParams(audio);
-            cleanTitle(audio);
             setKey(`__youtube-songs__${videoId}`, { ...audio }, ONE_YEAR);
 
             return audio;
@@ -151,8 +163,6 @@ async function getAllSongs(videoIds) {
 
 module.exports = {
     searchYoutubeForVideoIds,
-    cleanTitle,
-    cleanImageParams,
     getSong,
     setExtraAttrs,
     getAllSongs

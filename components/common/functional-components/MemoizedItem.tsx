@@ -30,7 +30,7 @@ const MemoizedItem = ({ chatRoom, index, item: song, handleOnClickItem, buttonAc
             titleProps={{ ellipsizeMode: 'tail', numberOfLines: 2 }}
             titleStyle={{ paddingBottom: 7 }}
             subTitleProps={{ ellipsizeMode: 'tail', numberOfLines: 1 }}
-            subtitle={`${song.details.author.name.replace('VEVO', '')}`}
+            subtitle={`${song.author.name.replace('VEVO', '')}`}
             subtitleStyle={{ fontSize: 12, color: '#999', fontStyle: 'italic', width: 180 }}
             leftAvatar={{
                 source: {
