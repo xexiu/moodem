@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { COMMON_TEXT_STYLE as copyrightTextStyle } from '../../../src/css/styles';
 import { getCurrentYear } from '../../../src/js/Utils/common/date';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const year = getCurrentYear();
@@ -15,11 +16,8 @@ const CopyrightScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: translate('copyright.title'),
-            headerMode: 'none',
-            unmountOnBlur: true,
-            headerBackTitleVisible: false,
-            unmountInactiveRoutes: true
+            ...COMMON_NAVIGATION_OPTIONS,
+            title: translate('copyright.title')
         });
         return () => {
 

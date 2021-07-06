@@ -7,6 +7,7 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import { MediaListEmpty } from '../../../components/User/functional-components/MediaListEmpty';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
@@ -31,10 +32,7 @@ const SearchSongScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerMode: 'none',
-            unmountOnBlur: true,
-            headerBackTitleVisible: false,
-            unmountInactiveRoutes: true,
+            ...COMMON_NAVIGATION_OPTIONS,
             title: `${allValues.songs.length} ${translate('songs.searchBar.placeholderFound')}`
         });
         socket.emit('search-songs', {

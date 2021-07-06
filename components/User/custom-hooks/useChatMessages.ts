@@ -1,23 +1,17 @@
 import { useIsFocused } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { AppContext } from '../store-context/AppContext';
 
-function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
+function useChatMessages(chatRoom: string) {
     const { socket, isServerError }: any = useContext(AppContext);
     const [allValues, setValues] = useState({
         messages: [],
         isLoading: true
     });
     const isFocused = useIsFocused();
-    const navigation = useNavigation();
 
     useEffect(() => {
-        if (navigationOptions) {
-            navigation.setOptions(navigationOptions);
-        }
-
         if (!isServerError && isFocused) {
             // Emit
             socket.emit('moodem-chat-join', { chatRoom });

@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { memo, useContext } from 'react';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import useChatMessages from '../../../components/User/custom-hooks/useChatMessages';
@@ -5,6 +6,7 @@ import ChatLoading from '../../../components/User/functional-components/ChatLoad
 import MemoizedChat from '../../../components/User/functional-components/MemoizedChat';
 import SendBtnChat from '../../../components/User/functional-components/SendBtnChat';
 import { AppContext } from '../../../components/User/store-context/AppContext';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 
 type PropsPrivateMessageUserScreen = {
@@ -14,18 +16,16 @@ type PropsPrivateMessageUserScreen = {
 
 const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
     const { currentMessage } = props.route.params;
-    const navigationOptions = {
-        headerMode: 'none',
-        unmountOnBlur: true,
-        headerBackTitleVisible: false,
-        unmountInactiveRoutes: true,
+    const navigation = useNavigation();
+    navigation.setOptions({
+        ...COMMON_NAVIGATION_OPTIONS,
         title: `${currentMessage.user.name}`
-    };
+    });
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
-    const { isLoading, messages } = useChatMessages(chatRoom, navigationOptions);
+    const { isLoading, messages } = useChatMessages(chatRoom);
 
     if (isLoading || isServerError) {
         return (

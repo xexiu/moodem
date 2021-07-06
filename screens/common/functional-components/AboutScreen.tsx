@@ -4,6 +4,7 @@ import React, { memo, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { COMMON_TEXT_STYLE as aboutTextStyle } from '../../../src/css/styles';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const AboutScreen = (props: any) => {
@@ -12,11 +13,8 @@ const AboutScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: translate('about.title'),
-            headerMode: 'none',
-            unmountOnBlur: true,
-            unmountInactiveRoutes: true,
-            headerBackTitleVisible: false
+            ...COMMON_NAVIGATION_OPTIONS,
+            title: translate('about.title')
         });
         return () => {
 

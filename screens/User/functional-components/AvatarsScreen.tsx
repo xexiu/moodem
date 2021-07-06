@@ -7,6 +7,7 @@ import { BodyContainer } from '../../../components/common/functional-components/
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { loadFromLocalStorage, saveOnLocalStorage } from '../../../src/js/Utils/common/storageConfig';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import { getAllRandomUserAvatars } from '../../../src/js/Utils/Helpers/actions/users';
 
@@ -44,12 +45,7 @@ const Avatars = (props: any) => {
     }
 
     useEffect(() => {
-        navigation.setOptions({
-            headerMode: 'none',
-            unmountOnBlur: true,
-            headerBackTitleVisible: false,
-            unmountInactiveRoutes: true
-        });
+        navigation.setOptions(COMMON_NAVIGATION_OPTIONS);
         getAllRandomAvatars();
         return () => {
             controller.abort();

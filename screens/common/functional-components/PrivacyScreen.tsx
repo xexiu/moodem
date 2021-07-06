@@ -4,6 +4,7 @@ import React, { memo, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { COMMON_TEXT_STYLE as privacyTextStyle } from '../../../src/css/styles';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const PrivacyScreen = (props: any) => {
@@ -12,11 +13,8 @@ const PrivacyScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: translate('privacy.title'),
-            headerMode: 'none',
-            unmountOnBlur: true,
-            unmountInactiveRoutes: true,
-            headerBackTitleVisible: false
+            ...COMMON_NAVIGATION_OPTIONS,
+            title: translate('privacy.title')
         });
         return () => {
 

@@ -7,18 +7,14 @@ import { View } from 'react-native';
 import BgImage from '../../../components/common/functional-components/BgImage';
 import Login from '../../../components/Guest/functional-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 
 const GuestScreen = (props: any) => {
     const { navigation } = props;
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        navigation.setOptions({
-            headerShown: false,
-            unmountOnBlur: true,
-            unmountInactiveRoutes: true,
-            headerMode: 'none'
-        });
+        navigation.setOptions(COMMON_NAVIGATION_OPTIONS);
         return () => {
 
         };

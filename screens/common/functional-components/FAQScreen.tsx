@@ -4,6 +4,7 @@ import React, { memo, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { COMMON_TEXT_STYLE as faqTextStyle } from '../../../src/css/styles';
+import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const FAQScreen = (props: any) => {
@@ -11,12 +12,7 @@ const FAQScreen = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        navigation.setOptions({
-            headerMode: 'none',
-            unmountOnBlur: true,
-            unmountInactiveRoutes: true,
-            headerBackTitleVisible: false
-        });
+        navigation.setOptions(COMMON_NAVIGATION_OPTIONS);
         return () => {
 
         };
