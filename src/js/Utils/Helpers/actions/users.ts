@@ -1,12 +1,11 @@
 import { USER_AVATAR_DEFAULT } from '../../constants/users';
-import firebase from '../services/firebase';
+import { auth, database, storage } from '../services/firebase';
 
-const storage = firebase.storage();
-const storageRefAllRandomUserAvatars = storage.ref('assets/images/random_user_avatars');
+const storageRefAllRandomUserAvatars = storage().ref('assets/images/random_user_avatars');
 
 export async function resetPasswordHandler(validate: any) {
     try {
-        return await firebase.auth().sendPasswordResetEmail(validate.email);
+        return await auth().sendPasswordResetEmail(validate.email);
     } catch (error) {
         console.error('loginHandler Error', error);
         const errorCode = error.code;
@@ -17,7 +16,7 @@ export async function resetPasswordHandler(validate: any) {
 
 export async function loginHandler(validate: any) {
     try {
-        return await firebase.auth().signInWithEmailAndPassword(validate.email, validate.password);
+        return await auth().signInWithEmailAndPassword(validate.email, validate.password);
     } catch (error) {
         console.error('loginHandler Error', error);
         console.log('Validate Error', error);
@@ -34,18 +33,24 @@ export async function loginHandler(validate: any) {
 
 export async function registerNewUser(data: any) {
     try {
-        return await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
+        return await auth().createUserWithEmailAndPassword(data.email, data.password);
     } catch (error) {
         console.error('registerNewUser Error', error);
+        if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+        }
+        if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+        }
         const errorCode = error.code;
         const errorMessage = error.message;
         console.warn(`Code: ${errorCode} and message: ${errorMessage}`);
     }
 }
 
-export async function updateProfile(auth: any, data: any) {
+export async function updateProfile(_auth: any, data: any) {
     try {
-        return await auth.user.updateProfile({
+        return await _auth.user.updateProfile({
             displayName: data.name,
             photoURL: USER_AVATAR_DEFAULT
         });
@@ -57,7 +62,7 @@ export async function updateProfile(auth: any, data: any) {
 
 export async function saveNewUserOnDB(user: any, validate: any) {
     try {
-        return await firebase.database().ref(`Users/${user.uid}`).set({
+        return await database().ref(`Users/${user.uid}`).set({
             user_id: user.uid,
             email: validate.email,
             password: validate.password,
@@ -89,7 +94,7 @@ export async function getAllRandomUserAvatars() {
 
 export async function logOut() {
     try {
-        await firebase.auth().signOut();
+        await auth().signOut();
     } catch (error) {
         console.error('logOut Error', error);
     }

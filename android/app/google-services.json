@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "272375868512",
+    "firebase_url": "https://moodem-dc82a-default-rtdb.firebaseio.com",
+    "project_id": "moodem-dc82a",
+    "storage_bucket": "moodem-dc82a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272375868512:android:d20dc2ca3d6798633de705",
+        "android_client_info": {
+          "package_name": "com.moodem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272375868512-d2kit95viedcslr4056clfp0nsm8anj2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJIyteacUfUL-SyWf2PD4FObVxNvy_whI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272375868512-d2kit95viedcslr4056clfp0nsm8anj2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "272375868512-r0rg50619b2mje2uoegqpde90at3gpl9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "me.sergiumironescu.Moodem",
+                "app_store_id": "1575394735"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

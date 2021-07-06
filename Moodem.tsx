@@ -14,7 +14,7 @@ import { SongsContextProvider } from './components/User/store-context/SongsConte
 import GuestScreen from './screens/Guest/functional-components/GuestScreen';
 import { Avatars } from './screens/User/functional-components/AvatarsScreen';
 import { getUserGroups } from './src/js/Utils/Helpers/actions/groups';
-import firebase from './src/js/Utils/Helpers/services/firebase';
+import { auth } from './src/js/Utils/Helpers/services/firebase';
 import { IP, socketConf } from './src/js/Utils/Helpers/services/socket';
 
 const Stack = createStackNavigator();
@@ -38,28 +38,12 @@ const App = function Moodem() {
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
-        firebase.auth().onAuthStateChanged(async (_user: any) => {
+        auth().onAuthStateChanged(async (_user: any) => {
             const socket = io(IP, { ...socketConf, query: getUserUidAndName(_user) } as any);
 
             if (_user) {
                 try {
-                    const groups = await getUserGroups(_user) as any;
-                    const group = groups[0];
-                    setSocket(socket);
-
-                    return dispatchContextApp({
-                        type: 'user_groups',
-                        value: {
-                            user: _user,
-                            groups,
-                            group: Object.assign(group, {
-                                group_songs: group.group_songs || []
-                            }),
-                            isLoading: false,
-                            isServerError: false,
-                            socket
-                        }
-                    });
+                    return initMoodem(_user, socket);
                 } catch (error) {
                     console.error('Moodem Error', error);
                     toastRef.current.show('Oops!! Hubo un problema...', DURATION.FOREVER);
@@ -89,6 +73,26 @@ const App = function Moodem() {
             controller.abort();
         };
     }, []);
+
+    async function initMoodem(_user: any, socket: any) {
+        const groups = await getUserGroups(_user) as any;
+        const group = groups[0];
+        setSocket(socket);
+
+        return dispatchContextApp({
+            type: 'user_groups',
+            value: {
+                user: _user,
+                groups,
+                group: Object.assign(group, {
+                    group_songs: group.group_songs || []
+                }),
+                isLoading: false,
+                isServerError: false,
+                socket
+            }
+        });
+    }
 
     if (isLoading) {
         return (

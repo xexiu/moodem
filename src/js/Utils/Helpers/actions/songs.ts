@@ -1,7 +1,7 @@
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
 import { hasObjWithProp, isEmpty } from '../../../Utils/common/checkers';
-import firebase from '../services/firebase';
+import { database, storage } from '../services/firebase';
 
 export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
     songs.filter((song: any) => {
@@ -17,7 +17,7 @@ export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
 
 export async function saveSongOnDb(song: any, user: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
-    const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+    const refGroup = database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
 
     try {
         const dbgroup = await refGroup.once('value');
@@ -40,7 +40,7 @@ export async function updateSongExpiredOnDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
 
     try {
-        const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+        const refGroup = await database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
         const snapshot = await refGroup.once('value');
         const dbgroup = await snapshot.val();
 
@@ -62,7 +62,7 @@ export async function updateSongExpiredOnDB(song: any, group: any) {
 
 export async function saveVotesForSongOnDb(song: any, user: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
-    const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+    const refGroup = database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
     const dbgroup = await refGroup.once('value');
     const _group = await dbgroup.val();
     const dbGroupSongs = _group.group_songs;
@@ -104,7 +104,7 @@ export async function saveVotesForSongOnDb(song: any, user: any, group: any) {
 
 export async function removeSongFromDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
-    const refGroup = firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+    const refGroup = database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
 
     try {
         const dbgroup = await refGroup.once('value');
@@ -143,7 +143,7 @@ export async function uploadSongBytes(_songs: any) {
         offset += item.length;
     });
 
-    firebase.storage().ref().child('songs').put(mergedArray, metadata).then((snapshot: any) => {
+    storage().ref().child('songs').put(mergedArray, metadata).then((snapshot: any) => {
         console.log('Uploaded a blob or file!');
     });
 }

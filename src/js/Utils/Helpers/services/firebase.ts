@@ -1,11 +1,9 @@
-import * as firebase from 'firebase';
-import { firebaseConfig } from '../../constants/firebase';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
-// Optional import the services that you want to use
-// If you enabled Analytics in your project, add the Firebase SDK for Analytics
-// import 'firebase/analytics';
-// Add the Firebase products that you want to use
-// import '@firebase/auth';
-// import 'firebase/firestore';
-
-export default !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+export {
+    auth,
+    database,
+    storage
+};

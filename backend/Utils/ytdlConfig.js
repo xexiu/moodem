@@ -1,5 +1,9 @@
+const HttpsProxyAgent = require('https-proxy-agent');
 const { COOKIE } = require('./constants');
 const { makeRandomChars } = require('./generators');
+
+const proxy = process.env.http_proxy || 'http://143.110.219.91:3000';
+const agent = HttpsProxyAgent(proxy);
 
 const headers = {
     Cookie: COOKIE,

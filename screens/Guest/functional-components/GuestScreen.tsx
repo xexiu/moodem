@@ -14,7 +14,10 @@ const GuestScreen = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        navigation.setOptions(COMMON_NAVIGATION_OPTIONS);
+        navigation.setOptions({
+            ...COMMON_NAVIGATION_OPTIONS,
+            headerShown: false
+        });
         return () => {
 
         };

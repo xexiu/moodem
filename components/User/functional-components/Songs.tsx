@@ -3,7 +3,7 @@ import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { updateSongExpiredOnDB } from '../../../src/js/Utils/Helpers/actions/songs';
-import firebase from '../../../src/js/Utils/Helpers/services/firebase';
+import { database } from '../../../src/js/Utils/Helpers/services/firebase';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import MemoizedSongsList from '../../common/functional-components/MemoizedSongsList';
 import PlayerControls from '../../common/functional-components/PlayerControls';
@@ -95,7 +95,7 @@ const Songs = (props: any) => {
         }
         const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
         try {
-            const refGroup = await firebase.database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+            const refGroup = await database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
             const snapshot = await refGroup.child('group_songs').once('value');
             const dbGroups = snapshot.val() || [];
             return MAP_SONGS_ACTIONS.set_songs(dbGroups);
