@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import useChatMessages from '../../../components/User/custom-hooks/useChatMessages';
 import ChatLoading from '../../../components/User/functional-components/ChatLoading';
@@ -17,15 +18,31 @@ type PropsPrivateMessageUserScreen = {
 const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
     const { currentMessage } = props.route.params;
     const navigation = useNavigation();
-    navigation.setOptions({
+    const navigationOptions = {
         ...COMMON_NAVIGATION_OPTIONS,
-        title: `${currentMessage.user.name}`
-    });
+        title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{currentMessage.user.name}</Text></View>)
+    };
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
-    const { isLoading, messages } = useChatMessages(chatRoom);
+    const { isLoading, messages, connectedUsers } = useChatMessages(chatRoom, navigationOptions);
+
+    useEffect(() => {
+        navigation.setOptions({
+            title: (<View><Text style={isOnline()}>{currentMessage.user.name}</Text></View>)
+        });
+    }, [connectedUsers]);
+
+    function isOnline() {
+        return {
+            borderWidth: 1,
+            borderColor: connectedUsers > 1 ? 'green' : '#999',
+            padding: 5,
+            borderRadius: 10,
+            color: connectedUsers > 1 ? '#000' : '#999'
+        };
+    }
 
     if (isLoading || isServerError) {
         return (

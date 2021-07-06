@@ -18,7 +18,7 @@ const ChatRoom = (props: PropsChat) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
     const { navigation } = props;
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`;
-    const { isLoading, messages } = useChatMessages(chatRoom);
+    const { isLoading, messages, connectedUsers } = useChatMessages(chatRoom);
 
     if (isLoading || isServerError) {
         return (
@@ -42,6 +42,7 @@ const ChatRoom = (props: PropsChat) => {
             />
             <HeaderChat
                 group={group}
+                connectedUsers={connectedUsers}
             />
             <MemoizedChat
                 chatRoom={chatRoom}

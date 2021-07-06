@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useNavigation } from '@react-navigation/native';
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
@@ -17,7 +16,7 @@ const HeaderChatIconMessages = () => {
                 width: 50
             }}
             Component={TouchableScale}
-            name={'message'}
+            name={'inbox'} // move-to-inbox when not read message
             type={'Entypo'}
             size={25}
             color='#1E90FF'

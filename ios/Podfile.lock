@@ -384,7 +384,7 @@ PODS:
   - Sentry/Core (7.0.0)
   - UMAppLoader (2.2.0)
   - UMCore (7.1.1)
-  - UMReactNativeAdapter (6.3.1):
+  - UMReactNativeAdapter (6.3.2):
     - ExpoModulesCore
     - React-Core
     - UMCore
@@ -643,7 +643,7 @@ SPEC CHECKSUMS:
   Sentry: 89d26e036063b9cb9caa59b6951dd2f8277aa13b
   UMAppLoader: 21af63390e55c82e037fb9752d93114a80ecf16e
   UMCore: 2f671796d7439604a1cf8ac7bbe5809cd5c50437
-  UMReactNativeAdapter: e4531a851dd900fda34b635b28a16085292d7f5b
+  UMReactNativeAdapter: ca78f6b52ddfec008ae42d3d6f9ea97ab69c1dc0
   UMTaskManagerInterface: 2be431101b73604e64fbfffcf759336f9d8fccbb
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 

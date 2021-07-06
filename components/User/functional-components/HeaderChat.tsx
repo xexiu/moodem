@@ -1,11 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { View } from 'react-native';
 import HeaderChatIconMessages from './HeaderChatIconMessages';
 import HeaderChatTitle from './HeaderChatTitle';
 import HeaderChatUsers from './HeaderChatUsers';
 
-const HeaderChat = ({ group }: any) => {
+type PropsHeaderChat = {
+    group: any,
+    connectedUsers: number
+};
+
+const HeaderChat = ({ group, connectedUsers }: PropsHeaderChat) => {
     return (
         <View
             style={{
@@ -21,16 +25,11 @@ const HeaderChat = ({ group }: any) => {
                 group={group}
             />
             <HeaderChatUsers
-                chatRoom={`ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`}
+                connectedUsers={connectedUsers}
             />
             <HeaderChatIconMessages />
         </View>
     );
-};
-
-HeaderChat.propTypes = {
-    props: PropTypes.any,
-    group: PropTypes.object
 };
 
 export default memo(HeaderChat);
