@@ -1,4 +1,28 @@
 {
+    "register": {
+        "title": "Register",
+        "inputName": "Name (max. 30 characters)",
+        "inputPassword": "Password",
+        "inputConfirmPassword": "Confirm Password",
+        "placeholderInputPassword": "Enter a password (min. 6 characters)",
+        "placeholderInputName": "Enter a nickname...",
+        "placeholderInputEmail": "Enter a valid e-mail...",
+        "inputNameError": "Incorrect Characters! Allowed: Letters, numbers.",
+        "inputEmailError": "Incorrect e-mail or invalid!",
+        "inputPasswordError": "Incorrect password!",
+        "inputConfirmPasswordError": "Re-enter your password!"
+    },
+    "login": {
+        "title": "Log in",
+        "header": "You have the keys!",
+        "wrongPassword": "Incorrect Password. Please, try again or try reseting your password!",
+        "userNotFound": "User not found or not registered. Please, try again or register!",
+        "tooManyRequests": "You have exceeded the maximum intents. Please, try again in some moments..."
+    },
+    "forgotPassword": {
+        "title": "Forgot Password?",
+        "resetPassword": "Reset Password!"
+    },
     "about": {
         "title": "About us",
         "text": [

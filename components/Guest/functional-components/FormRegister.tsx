@@ -4,15 +4,10 @@ import { useForm } from 'react-hook-form';
 import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { registerText } from '../../../src/css/styles/register';
-import { FORM_FIELDS_REGISTER } from '../../../src/js/Utils/constants/form';
-import {
-    addUserToJoinedGroupDB
-} from '../../../src/js/Utils/Helpers/actions/groups';
-import {
-    registerNewUser,
-    saveNewUserOnDB,
-    updateProfile
-} from '../../../src/js/Utils/Helpers/actions/users';
+import { addUserToJoinedGroupDB } from '../../../src/js/Utils/Helpers/actions/groups';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
+import { saveNewUserOnDB, updateProfile } from '../../../src/js/Utils/Helpers/actions/users';
+import { auth } from '../../../src/js/Utils/Helpers/services/firebase';
 import CustomButton from '../../common/functional-components/CustomButton';
 import PreLoader from '../../common/functional-components/PreLoader';
 
@@ -27,14 +22,14 @@ const commonInputStyles = {
 };
 
 const schema = yup.object().shape({
-    name: yup.string().min(3).max(30).required(FORM_FIELDS_REGISTER.name.error),
-    email: yup.string().email(FORM_FIELDS_REGISTER.email.error).required(FORM_FIELDS_REGISTER.email.error),
-    password: yup.string().min(6).required(FORM_FIELDS_REGISTER.password.error),
-    confirm_password: yup.string().oneOf([yup.ref('password'), null], FORM_FIELDS_REGISTER.confirmar_password.error)
-        .required(FORM_FIELDS_REGISTER.confirmar_password.help)
+    name: yup.string().min(3).max(30).required(translate('register.inputNameError')),
+    email: yup.string().email(translate('register.inputEmailError')).required(translate('register.inputEmailError')),
+    password: yup.string().min(6).required(translate('register.inputPasswordError')),
+    confirm_password: yup.string().oneOf([yup.ref('password'), null], translate('register.inputConfirmPasswordError'))
+        .required(translate('register.inputConfirmPasswordError'))
 });
 
-const FormRegister = () => {
+const FormRegister = ({ initMoodem }: any) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
@@ -52,28 +47,32 @@ const FormRegister = () => {
         };
     }, [register]);
 
-    async function onSubmit(dataInput: object) {
-        if (dataInput) {
+    async function onSubmit(data: any) {
+        if (data) {
             setIsLoading(true);
             try {
-                const auth = await registerNewUser(dataInput);
-                if (auth && auth.message) {
-                    setIsLoading(false);
-                    setErrorText(auth.message);
-                } else {
-                    await updateProfile(auth, dataInput);
-                    setIsLoading(false);
-                    setErrorText('');
-                    await saveNewUserOnDB(auth.user, dataInput);
-                    await addUserToJoinedGroupDB({
-                        group_name: 'Moodem',
-                        group_id: '-MbrDH40rJYRzCq-v58a'
-                    }, auth.user);
-                }
+                const _auth = await auth().createUserWithEmailAndPassword(data.email, data.password);
+                await updateProfile(_auth, data);
+                const { _user } = auth().currentUser || null as any;
+                await saveNewUserOnDB(_user, data);
+                await addUserToJoinedGroupDB({
+                    group_name: 'Moodem',
+                    group_id: '-MbrDH40rJYRzCq-v58a'
+                }, _user);
+                setErrorText('');
+                return initMoodem();
             } catch (error) {
-                console.error('FormRegisterUser Error', error);
+                console.log('FormRegisterUser Error', error);
                 setIsLoading(false);
-                setErrorText(error);
+                if (error.code === 'auth/wrong-password') {
+                    setErrorText(translate('login.wrongPassword'));
+                } else if (error.code === 'auth/user-not-found') {
+                    setErrorText(translate('login.userNotFound'));
+                } else if (error.code === 'auth/too-many-requests') {
+                    setErrorText(translate('login.tooManyRequests'));
+                } else {
+                    setErrorText(error.message);
+                }
             }
         }
     }
@@ -87,7 +86,7 @@ const FormRegister = () => {
                     fontSize: 15,
                     fontWeight: '500'
                 }}
-            >Nombre (max. 30 carácteres)
+            >{translate('register.inputName')}
             </Text>
             <TextInput
                 style={[
@@ -100,7 +99,7 @@ const FormRegister = () => {
                 autoCorrect={false}
                 autoFocus
                 maxLength={30}
-                placeholder={FORM_FIELDS_REGISTER.name.help}
+                placeholder={translate('register.placeholderInputName')}
             />
             <Text
                 style={{
@@ -121,16 +120,18 @@ const FormRegister = () => {
                 }}
                 autoCorrect={false}
                 autoCapitalize={'none'}
-                placeholder={FORM_FIELDS_REGISTER.email.help}
+                placeholder={translate('register.placeholderInputEmail')}
             />
             <Text
                 style={{
                     color: '#D84A05',
                     marginTop: 5,
                     marginBottom: 5
-                }}>{errors.email && errors.email.message}
+                }}
+            >
+                {errors.email && errors.email.message}
             </Text>
-            <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Contraseña</Text>
+            <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>{translate('register.inputPassword')}</Text>
             <TextInput
                 style={[errors.password && errors.password.message ?
                     [commonInputStyles, { borderColor: '#D84A05' }] : [commonInputStyles]]}
@@ -139,16 +140,18 @@ const FormRegister = () => {
                 }}
                 autoCorrect={false}
                 secureTextEntry
-                placeholder={FORM_FIELDS_REGISTER.password.help}
+                placeholder={translate('register.placeholderInputPassword')}
             />
             <Text
                 style={{
                     color: '#D84A05',
                     marginTop: 5,
                     marginBottom: 5
-                }}>{errors.password && errors.password.message}
+                }}
+            >
+                {errors.password && errors.password.message}
             </Text>
-            <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>Confirmar Contraseña</Text>
+            <Text style={{ marginTop: 5, fontSize: 15, fontWeight: '500' }}>{translate('register.inputConfirmPassword')}</Text>
             <TextInput
                 style={[errors.confirm_password && errors.confirm_password.message ?
                     [commonInputStyles, { borderColor: '#D84A05' }] :
@@ -164,7 +167,9 @@ const FormRegister = () => {
                     color: '#D84A05',
                     marginTop: 5,
                     marginBottom: 5
-                }}>{errors.confirm_password && errors.confirm_password.message}
+                }}
+            >
+                {errors.confirm_password && errors.confirm_password.message}
             </Text>
             {
                 !!errorText &&
@@ -175,7 +180,8 @@ const FormRegister = () => {
             {isLoading ?
                 <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                 <CustomButton
-                    btnTitle='Registrarme'
+                    btnDisabled={isLoading}
+                    btnTitle={translate('register.title')}
                     btnStyle={[{ backgroundColor: '#00b7e0' }, { marginTop: 15 }]}
                     action={handleSubmit(onSubmit)}
                 />

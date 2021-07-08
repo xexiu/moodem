@@ -5,7 +5,8 @@ import { Text, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import { loginText } from '../../../src/css/styles/login';
 import { FORM_FIELDS_LOGIN } from '../../../src/js/Utils/constants/form';
-import { resetPasswordHandler } from '../../../src/js/Utils/Helpers/actions/users';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
+import { auth } from '../../../src/js/Utils/Helpers/services/firebase';
 import CustomButton from '../../common/functional-components/CustomButton';
 import PreLoader from '../../common/functional-components/PreLoader';
 
@@ -18,7 +19,7 @@ const commonInputStyles = {
 };
 
 const schema = yup.object().shape({
-    email: yup.string().email(FORM_FIELDS_LOGIN.email.error).required(FORM_FIELDS_LOGIN.email.error)
+    email: yup.string().email(translate('register.inputEmailError')).required(translate('register.inputEmailError'))
 });
 
 const ResetPassword = () => {
@@ -32,21 +33,28 @@ const ResetPassword = () => {
         register('email');
     }, [register]);
 
-    async function onSubmit(dataInput: object) {
-        if (dataInput) {
+    async function onSubmit(data: any) {
+        if (data) {
             setIsLoading(true);
             try {
-                await resetPasswordHandler(dataInput);
+                await auth().sendPasswordResetEmail(data.email);
                 setErrorText('Email enviado correctamente!');
                 setIsLoading(false);
-            } catch (err) {
+            } catch (error) {
+                console.error('ResetPassword Error', error);
                 setIsLoading(false);
-                setErrorText(err);
+                if (error.code === 'auth/wrong-password') {
+                    setErrorText(translate('login.wrongPassword'));
+                } else if (error.code === 'auth/user-not-found') {
+                    setErrorText(translate('login.userNotFound'));
+                } else if (error.code === 'auth/too-many-requests') {
+                    setErrorText(translate('login.tooManyRequests'));
+                } else {
+                    setErrorText(error.message);
+                }
             }
         }
     }
-
-    console.log('Reset Password');
 
     return (
         <View style={{ alignItems: 'center', padding: 5 }}>
@@ -60,7 +68,7 @@ const ResetPassword = () => {
                 }}
                 autoCorrect={false}
                 autoCapitalize={'none'}
-                placeholder={FORM_FIELDS_LOGIN.email.help}
+                placeholder={translate('register.placeholderInputEmail')}
                 autoFocus
             />
             <Text
@@ -76,7 +84,7 @@ const ResetPassword = () => {
             {isLoading ?
                 <PreLoader containerStyle={{ alignItems: 'center' }} /> :
                 <CustomButton
-                    btnTitle={'Resetear Contraseña!'}
+                    btnTitle={translate('forgotPassword.resetPassword')}
                     action={handleSubmit(onSubmit)}
                 />
             }

@@ -95,7 +95,7 @@ const Songs = (props: any) => {
         }
         const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
         try {
-            const refGroup = await database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+            const refGroup = database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
             const snapshot = await refGroup.child('group_songs').once('value');
             const dbGroups = snapshot.val() || [];
             return MAP_SONGS_ACTIONS.set_songs(dbGroups);
@@ -105,7 +105,7 @@ const Songs = (props: any) => {
     }
 
     function getWelcomeMsg({ welcomeMsg }: any) {
-        toastRef.current.show(welcomeMsg, 1000);
+        toastRef.current.show(welcomeMsg, 2000);
     }
 
     function getSong({ song }: any) {

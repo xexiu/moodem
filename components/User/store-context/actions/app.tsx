@@ -19,7 +19,8 @@ export type State = {
     group: groupType;
     isServerError: boolean;
     isLoading: boolean;
-    socket: any
+    socket: any,
+    error: any,
 };
 
 export const initialValue: State = {
@@ -42,7 +43,8 @@ export const initialValue: State = {
         close: () => {},
         disconnect: () => {},
         emit: (str: string, param: any) => {}
-    }
+    },
+    error: null
 };
 
 export function deleteOwnedGroup(result: State, action: actionType) {

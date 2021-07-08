@@ -12,6 +12,7 @@ import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navig
 const GuestScreen = (props: any) => {
     const { navigation } = props;
     const isFocused = useIsFocused();
+    const { initMoodem } = props.route.params;
 
     useEffect(() => {
         navigation.setOptions({
@@ -26,8 +27,8 @@ const GuestScreen = (props: any) => {
     return (
         <View style={{ alignItems: 'center' }}>
             <BgImage />
-            <Login />
-            <Register />
+            <Login initMoodem={initMoodem} />
+            <Register initMoodem={initMoodem} />
         </View>
     );
 };

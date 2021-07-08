@@ -40,7 +40,7 @@ export async function updateSongExpiredOnDB(song: any, group: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
 
     try {
-        const refGroup = await database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
+        const refGroup = database().ref(`${'Groups/'}${groupName}/${group.group_id}`);
         const snapshot = await refGroup.once('value');
         const dbgroup = await snapshot.val();
 

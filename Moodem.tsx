@@ -38,60 +38,59 @@ const App = function Moodem() {
     useEffect(() => {
         console.log('1. ON EFFECT Moodem');
 
-        auth().onAuthStateChanged(async (_user: any) => {
-            const socket = io(IP, { ...socketConf, query: getUserUidAndName(_user) } as any);
-
-            if (_user) {
-                try {
-                    return initMoodem(_user, socket);
-                } catch (error) {
-                    console.error('Moodem Error', error);
-                    toastRef.current.show('Oops!! Hubo un problema...', DURATION.FOREVER);
-                    return dispatchContextApp({
-                        type: 'error_user', value: {
-                            error,
-                            user: null,
-                            isLoading: true,
-                            isServerError: false,
-                            socket
-                        }
-                    });
-                }
-            } else {
-                return dispatchContextApp({
-                    type: 'guest', value: {
-                        user: null,
-                        isLoading: false,
-                        isServerError: false,
-                        socket
-                    }
-                });
-            }
-        });
+        initMoodem();
 
         return () => {
             controller.abort();
         };
     }, []);
 
-    async function initMoodem(_user: any, socket: any) {
-        const groups = await getUserGroups(_user) as any;
-        const group = groups[0];
-        setSocket(socket);
+    async function initMoodem() {
+        try {
+            const currentUser = auth().currentUser || null as any;
+            const _user = currentUser && currentUser._user;
 
-        return dispatchContextApp({
-            type: 'user_groups',
-            value: {
-                user: _user,
-                groups,
-                group: Object.assign(group, {
-                    group_songs: group.group_songs || []
-                }),
-                isLoading: false,
-                isServerError: false,
-                socket
+            if (_user) {
+                const socket = io(IP, { ...socketConf, query: getUserUidAndName(_user) } as any);
+                const groups = await getUserGroups(_user) as any;
+                const group = groups[0];
+                setSocket(socket);
+
+                return dispatchContextApp({
+                    type: 'user_groups',
+                    value: {
+                        user: _user,
+                        groups,
+                        group: Object.assign(group, {
+                            group_songs: group.group_songs || []
+                        }),
+                        isLoading: false,
+                        isServerError: false,
+                        socket
+                    }
+                });
             }
-        });
+            return dispatchContextApp({
+                type: 'guest', value: {
+                    user: null,
+                    isLoading: false,
+                    isServerError: false,
+                    socket: null
+                }
+            });
+        } catch (error) {
+            console.error('Moodem Error initMoodem', error);
+            toastRef.current.show('Oops!! Hubo un problema...', DURATION.FOREVER);
+            return dispatchContextApp({
+                type: 'error_user', value: {
+                    error,
+                    user: null,
+                    isLoading: false,
+                    isServerError: false,
+                    socket: null
+                }
+            });
+        }
     }
 
     if (isLoading) {
@@ -124,7 +123,7 @@ const App = function Moodem() {
 
     return (
         <CommonStackWrapper>
-            <Stack.Screen name='Guest' component={GuestScreen} />
+            <Stack.Screen name='Guest' component={GuestScreen} initialParams={{ initMoodem }}/>
             <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
         </CommonStackWrapper>
     );

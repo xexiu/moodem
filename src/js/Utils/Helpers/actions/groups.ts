@@ -27,8 +27,8 @@ export function filterSearchedPrivateGroups(group: any, searchedText: string, us
 
 export async function leaveGroup(group: any, user: any) {
     try {
-        const refJoinedGroup = await database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
-        const refInvitedGroups = await database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`);
+        const refJoinedGroup = database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        const refInvitedGroups = database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`);
         const snapshotInvited = await refInvitedGroups.once('value');
         const snapshot = await refJoinedGroup.child('group_users').once('value');
         const groupUsers = snapshot.val();
@@ -66,7 +66,7 @@ export async function leaveGroup(group: any, user: any) {
 
 export async function updateUserGroup(group: any, params: any) {
     try {
-        const refOwnedGroups = await database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        const refOwnedGroups = database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
         const snapshot = await refOwnedGroups.once('value');
         const dbgroup = snapshot.val();
 
@@ -87,7 +87,7 @@ export async function deleteGroupForEver(group: any) {
 
     // TODO: delete also users that have joined
     try {
-        const refOwnedGroups = await database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
+        const refOwnedGroups = database().ref(`Groups/${group.group_user_owner_id}/${group.group_id}`);
         await refOwnedGroups.remove();
     } catch (error) {
         console.error('deleteGroupForEver Error', error);
@@ -101,7 +101,7 @@ export async function createGroupHandler (validate: any, user: any) {
     }
 
     try {
-        const newGroup = await database().ref(`Groups/${user.uid}`).push({
+        const newGroup = database().ref(`Groups/${user.uid}`).push({
             group_songs: [],
             group_name: validate.name,
             group_password: validate.password || '',
@@ -115,7 +115,7 @@ export async function createGroupHandler (validate: any, user: any) {
             }]
         });
         await newGroup.ref.update({ group_id: newGroup.key });
-        const refOwnedGroups = await database().ref().child(`Groups/${user.uid}/${newGroup.key}`);
+        const refOwnedGroups = database().ref().child(`Groups/${user.uid}/${newGroup.key}`);
         const group = await refOwnedGroups.once('value');
 
         return group.val();
@@ -128,14 +128,14 @@ export async function getJoinedGroups(user: any) {
     const invitedGroups = [] as any;
 
     try {
-        const refInvitedGroups = await database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`);
+        const refInvitedGroups = database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`);
         const snapshot = await refInvitedGroups.once('value');
 
         if (snapshot.val()) {
             const groups = Object.values(snapshot.val())[0] as any;
             await Promise.all(groups.joined_groups.map(async (group: any) => {
                 // tslint:disable-next-line:max-line-length
-                const refInvitedGroup = await database().ref(`Groups/${group.user_owned_id}/${group.group_id}`);
+                const refInvitedGroup = database().ref(`Groups/${group.user_owned_id}/${group.group_id}`);
                 const invitedGroup = await refInvitedGroup.once('value');
                 if (invitedGroup.val()) {
                     invitedGroups.push(invitedGroup.val());
@@ -152,7 +152,7 @@ export async function getJoinedGroups(user: any) {
 export async function getOwnedGroupsFromDatabase (user: any) {
     const groups = [] as any;
     try {
-        const refOwnedGroups = await database().ref(`Groups/${user.uid}`) as any;
+        const refOwnedGroups = database().ref(`Groups/${user.uid}`) as any;
         const snapshot = await refOwnedGroups.once('value');
 
         if (snapshot.val()) {
@@ -223,7 +223,7 @@ export async function addUserToJoinedGroupDB(group: any, user: any) {
     const groupName = `${group.group_name === 'Moodem' ? 'Moodem' : group.group_user_owner_id}`;
 
     try {
-        const refJoinedGroup = await database().ref(`Groups/${groupName}/${group.group_id}`);
+        const refJoinedGroup = database().ref(`Groups/${groupName}/${group.group_id}`);
         const snapshot = await refJoinedGroup.once('value');
         const dbgroup = snapshot.val();
 
@@ -243,14 +243,14 @@ export async function addUserToJoinedGroupDB(group: any, user: any) {
                 });
             }
         }
-        return refJoinedGroup.update(dbgroup);
+        refJoinedGroup.update(dbgroup);
     } catch (error) {
         console.error('addUserToJoinedGroupDB Error', error);
     }
 }
 
 export async function saveJoinedUser(group: any, user: any) {
-    const refUserGroups = await database().ref(`Groups/${user.uid}`);
+    const refUserGroups = database().ref(`Groups/${user.uid}`);
 
     try {
         const snapshot = await refUserGroups.child(`${user.uid}_Joined_Groups`).once('value');
@@ -271,7 +271,7 @@ export async function saveJoinedUser(group: any, user: any) {
             }
             await refUserGroups.child(`${user.uid}_Joined_Groups/${key}`).update(invitedGroups);
         } else {
-            await database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`).push({
+            database().ref(`Groups/${user.uid}/${user.uid}_Joined_Groups`).push({
                 joined_groups: [{
                     user_owned_id: group.group_user_owner_id,
                     group_id: group.group_id

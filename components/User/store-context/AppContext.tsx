@@ -13,6 +13,7 @@ import {
 
 const MAP_ACTIONS = {
     server_error: updateCommonState,
+    error_user: updateCommonState,
     user_groups: updateCommonState,
     guest: updateCommonState,
     set_current_group: updateCommonState,
@@ -25,6 +26,8 @@ const MAP_ACTIONS = {
 function updateState(result: State, action: actionType) {
     if (MAP_ACTIONS[action.type]) {
         return MAP_ACTIONS[action.type](result, action);
+    } else if (action.type === 'reset') {
+        return { ...initialValue };
     }
     return result;
 }

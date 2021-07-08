@@ -22,7 +22,15 @@ const Profile = (props: any) => {
 
     async function handleLogOut() {
         await logOut();
-        await dispatchContextApp({ type: 'reset' });
+        await dispatchContextApp({
+            type: 'guest',
+            value: {
+                user: null,
+                isLoading: false,
+                isServerError: false,
+                socket: null
+            }
+        });
         return navigation.navigate('Drawer', {
             screen: 'Guest'
         });

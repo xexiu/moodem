@@ -2,9 +2,10 @@ import React, { memo, useRef } from 'react';
 import { View } from 'react-native';
 import CustomButton from '../../../components/common/functional-components/CustomButton';
 import CustomModal from '../../../components/common/functional-components/CustomModal';
+import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import FormLogin from './FormLogin';
 
-const Login = () => {
+const Login = ({ initMoodem }: any) => {
     const modalRef = useRef() as any;
 
     function toggleModal() {
@@ -12,7 +13,7 @@ const Login = () => {
             return {
                 ...prev,
                 isVisible: true,
-                element: () => <FormLogin modalRef={modalRef.current} />
+                element: () => <FormLogin modalRef={modalRef.current} initMoodem={initMoodem} />
             };
         });
     }
@@ -20,7 +21,7 @@ const Login = () => {
     return (
         <View style={{ alignItems: 'center', padding: 5 }}>
             <CustomButton
-                btnTitle='Iniciar Sesión'
+                btnTitle={translate('login.title')}
                 action={toggleModal}
             />
             <CustomModal

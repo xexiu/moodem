@@ -1,4 +1,28 @@
 {
+    "register": {
+        "title": "Registrarse",
+        "inputName": "Nombre (max. 30 carácteres)",
+        "inputPassword": "Contraseña",
+        "inputConfirmPassword": "Confirmar Contraseña",
+        "placeholderInputPassword": "Ingresa una contraseá (min. 6 carácteres)",
+        "placeholderInputName": "Ingresa un nickname...",
+        "placeholderInputEmail": "Ingresa un e-mail valido...",
+        "inputNameError": "Carácteres incorectos. Permitidos: Letras, números",
+        "inputEmailError": "E-mail incorrecto o inválido!",
+        "inputPasswordError": "Contraseña incorrecta!",
+        "inputConfirmPasswordError": "Repite tu contraseña!"
+    },
+    "login": {
+        "title": "Iniciar Sesión",
+        "header": "Tú tienes las llaves!",
+        "wrongPassword": "Contraseña incorrecta. Porfavor, prueba de nuevo o intenta resetear tú contraseá!",
+        "userNotFound": "Usuario no encontrado o no registrado. Porfavor, prueba de nuevo o registrate!",
+        "tooManyRequests": "Has excedido los intentos máximos permitidos. Por favor, intentalo de nuevo en unos momentos..."
+    },
+    "forgotPassword": {
+        "title": "¿Has olvidado la contraseña?",
+        "resetPassword": "Resetear Contraseña!"
+    },
     "about": {
         "title": "Sobre Nosotros",
         "text": [

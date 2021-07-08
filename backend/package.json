@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "https-proxy-agent": "^5.0.0",
     "memory-cache": "^0.2.0",
+    "miniget": "^4.2.1",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
     "socket.io": "^4.1.2",
