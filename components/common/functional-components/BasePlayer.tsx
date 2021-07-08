@@ -1,7 +1,8 @@
 import { useIsFocused } from '@react-navigation/native';
 import { debounce } from 'lodash';
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
+import Toast from 'react-native-easy-toast';
 import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
 import convertToProxyURL from 'react-native-video-cache';
@@ -32,10 +33,11 @@ const BasePlayer = (props: any) => {
         items,
         indexItem
     } = props;
-    const { group, socket, isServerError } = useContext(AppContext) as any;
+    const { socket, isServerError } = useContext(AppContext) as any;
     const { dispatchContextSongs } = useContext(SongsContext) as any;
     const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
+    const toastRef = useRef() as any;
 
     useEffect(() => {
         if (!item.isSearching) {
@@ -137,6 +139,10 @@ const BasePlayer = (props: any) => {
 
     return (
         <View style={{ flex: 1, width: 100, position: 'relative' }}>
+            <Toast
+                position={'top'}
+                ref={toastRef}
+            />
             <Video
                 pictureInPicture
                 onFullscreenPlayerWillDismiss={() => {
@@ -180,7 +186,8 @@ const BasePlayer = (props: any) => {
                         Object.assign(errorSongs, []);
                     }
                 }}
-                onError={({ error} : any) => {
+                onError={({ error }: any) => {
+                    toastRef.current.show(error.localizedDescription, 500);
                     if (error.localizedDescription === 'Cannot Decode') {
                         console.error('Song Error -> Cannot Decode', 'Error: ', error);
                         return;
@@ -192,11 +199,10 @@ const BasePlayer = (props: any) => {
                     });
                     seekRef.current.setTrackCurrentTime(0);
 
-                    Object.assign(item, {
-                        hasExpired: true
-                    });
-
                     if (!errorSongs.includes(item.id)) {
+                        Object.assign(item, {
+                            hasExpired: true
+                        });
                         errorSongs.push(item.id);
                         if (!isServerError) {
                             if (item.isSearching) {

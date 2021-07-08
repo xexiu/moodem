@@ -93,12 +93,18 @@ export function updateSong(result: State, action: actionType) {
 
     if (index !== undefined) {
         if (indexItem === index) {
-            songs[index].isPlaying = !songs[index].isPlaying;
+            Object.assign(songs[index], {
+                isPlaying: !songs[index].isPlaying
+            });
         } else {
             if (songs[result.indexItem]) {
-                songs[result.indexItem].isPlaying = false;
+                Object.assign(songs[result.indexItem], {
+                    isPlaying: false
+                });
             }
-            songs[index].isPlaying = !songs[index].isPlaying;
+            Object.assign(songs[index], {
+                isPlaying: !songs[index].isPlaying
+            });
         }
     }
     return { ...result, ...value };
@@ -108,7 +114,9 @@ export function resetSongs(result: State) {
     const { songs, indexItem } = result;
 
     if (songs.length) {
-        songs[indexItem].isPlaying = false;
+        Object.assign(songs[indexItem], {
+            isPlaying: false
+        });
     }
 
     Object.assign(result, {

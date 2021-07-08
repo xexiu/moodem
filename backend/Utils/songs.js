@@ -1,5 +1,6 @@
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
+const youtubedl = require('youtube-dl');
 const { options } = require('./ytdlConfig');
 const { getValueForKey, setKey } = require('./cache');
 const { ONE_YEAR } = require('./constants');
@@ -75,21 +76,33 @@ async function searchYoutubeForVideoIds(searchedText) {
     return [];
 }
 
+async function getSongInfo(videoId) {
+    return new Promise((resolve, reject) => {
+        youtubedl.getInfo(videoId, (err, info) => {
+            if (err) reject(err);
+            resolve(info);
+        });
+    });
+}
+
 async function getSong(videoId) {
     try {
         // await getStreamBuffers(videoId);
-        const audioYT = await ytdl.getInfo(videoId, options);
+        const audioYT = await ytdl.getInfo(videoId, options); // await getSongInfo(videoId);
+        // eslint-disable-next-line max-len
+        // await getSongInfo(videoId);
+        // eslint-disable-next-line max-len
+        // const formats = audioYT.formats.filter((format) => format.acodec !== 'none' && format.vcodes !== 'none' && format.container === 'm4a_dash');
         const formats = audioYT.formats.filter((format) => format.hasAudio && format.hasVideo && format.container === 'mp4');
 
         if (formats && formats.length) {
-            const audio = ytdl.chooseFormat(formats, {
-                quality: 'highestvideo'
-            });
-            deleteObjAttrsExcept(audio, 'url');
-            assignAttrs(audio, audioYT.videoDetails);
-            return { ...audio };
+            // const audio = ytdl.chooseFormat(formats, {
+            //     quality: 'highestvideo'
+            // });
+            deleteObjAttrsExcept(formats[0], 'url');
+            assignAttrs(formats[0], audioYT.videoDetails);
+            return { ...formats[0] };
         }
-
         return {};
     } catch (error) {
         console.error('Error converting getSong', error);
