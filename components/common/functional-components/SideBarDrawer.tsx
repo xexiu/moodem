@@ -1,7 +1,4 @@
-/* eslint-disable max-len */
-/* tslint:disable:max-line-length */
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
 import SideBarTopAvatar from '../../../components/common/functional-components/SideBarTopAvatar';
 import { SideBarFooter } from '../../../components/User/functional-components/SideBarFooter';
@@ -45,11 +42,6 @@ const SideBarDrawer = (props: any) => {
             {props.children}
         </Drawer.Navigator>
     );
-};
-
-SideBarDrawer.propTypes = {
-    route: PropTypes.object,
-    navigation: PropTypes.object
 };
 
 export default memo(SideBarDrawer);

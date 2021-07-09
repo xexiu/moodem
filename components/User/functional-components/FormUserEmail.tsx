@@ -2,6 +2,7 @@ import React, { memo, useContext, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import { Icon } from 'react-native-elements';
+import { commonFormContainer} from '../../../src/css/styles/form';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import CustomButton from '../../common/functional-components/CustomButton';
 import { AppContext } from '../store-context/AppContext';
@@ -43,14 +44,7 @@ const FormUserEmail = () => {
                 ref={toastRef}
             />
             <TextInput
-                style={{
-                    borderWidth: 1,
-                    fontStyle: 'italic',
-                    padding: 5,
-                    borderColor: '#eee',
-                    borderRadius: 5,
-                    width: '80%'
-                }}
+                style={commonFormContainer}
                 underlineColorAndroid='transparent'
                 placeholder={translate('profile.formTexts.changeEmail')}
                 placeholderTextColor='#777'

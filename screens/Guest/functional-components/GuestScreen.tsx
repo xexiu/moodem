@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { useIsFocused } from '@react-navigation/native';
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { useEffect } from 'react';
 import { View } from 'react-native';
@@ -31,12 +30,6 @@ const GuestScreen = (props: any) => {
             <Register initMoodem={initMoodem} />
         </View>
     );
-};
-
-GuestScreen.propTypes = {
-    route: PropTypes.object,
-    navigation: PropTypes.object,
-    navigationOptions: PropTypes.any
 };
 
 export default memo(GuestScreen);

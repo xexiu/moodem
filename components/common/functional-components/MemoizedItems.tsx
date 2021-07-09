@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo, useCallback } from 'react';
 import { MediaListEmpty } from '../../User/functional-components/MediaListEmpty';
 import CommonFlatList from './CommonFlatList';
@@ -44,15 +43,6 @@ const MemoizedItems = ({ chatRoom, reference, data, handleOnClickItem, buttonAct
             onContentSizeChange={checkSizeChangeHandler}
         />
     );
-};
-
-MemoizedItems.propTypes = {
-    data: PropTypes.array.isRequired,
-    handleOnClickItem: PropTypes.func.isRequired
-};
-
-MemoizedItems.defaultProps = {
-    data: []
 };
 
 export default memo(MemoizedItems);

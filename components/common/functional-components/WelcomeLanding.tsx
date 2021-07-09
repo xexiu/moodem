@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useRef } from 'react';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Songs from '../../User/functional-components/Songs';
@@ -9,7 +7,8 @@ import BurgerMenuIcon from './BurgerMenuIcon';
 
 let serverError = false;
 
-const WelcomeLanding = () => {
+const WelcomeLanding = (props: any) => {
+    const { navigation } = props;
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef() as any;
 
@@ -68,10 +67,6 @@ const WelcomeLanding = () => {
             />
         </BodyContainer>
     );
-};
-
-WelcomeLanding.propTypes = {
-    navigation: PropTypes.any
 };
 
 export default memo(WelcomeLanding);

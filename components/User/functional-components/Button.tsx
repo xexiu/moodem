@@ -1,9 +1,25 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-const Button = (props: any) => {
+type propsButton = {
+    containerStyle: object,
+    disabled: boolean,
+    text: string | number,
+    iconName: string,
+    iconType: string,
+    iconColor: string,
+    iconSize: number,
+    iconReverse: boolean,
+    iconStyle: object,
+    action: any,
+    disabledStyle: object,
+    textStyle: object,
+    iconColorDisabled: string,
+    iconRaised: boolean
+};
+
+const Button = (props: propsButton) => {
     const {
         text,
         action,
@@ -47,26 +63,6 @@ const Button = (props: any) => {
             <Text style={textStyle}>{text}</Text>
         </TouchableOpacity>
     );
-};
-
-Button.propTypes = {
-    containerStyle: PropTypes.object,
-    disabled: PropTypes.bool,
-    text: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
-    iconName: PropTypes.string.isRequired,
-    iconType: PropTypes.string,
-    iconColor: PropTypes.string,
-    iconSize: PropTypes.number,
-    iconReverse: PropTypes.bool,
-    iconStyle: PropTypes.object,
-    action: PropTypes.func,
-    disabledStyle: PropTypes.object,
-    textStyle: PropTypes.object,
-    iconColorDisabled: PropTypes.string,
-    iconRaised: PropTypes.bool
 };
 
 export default memo(Button);

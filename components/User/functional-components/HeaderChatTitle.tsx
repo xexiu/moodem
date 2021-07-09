@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Text } from 'react-native';
 
@@ -9,11 +8,6 @@ const HeaderChatTitle = (props: any) => {
     return (
         <Text>{`${group.group_name}`}</Text>
     );
-};
-
-HeaderChatTitle.propTypes = {
-    props: PropTypes.any,
-    group: PropTypes.any
 };
 
 export default memo(HeaderChatTitle);

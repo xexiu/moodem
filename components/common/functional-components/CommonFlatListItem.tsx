@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { ListItem } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
@@ -23,7 +21,29 @@ const DEFAULT_CONTAINER_STYLE = {
     elevation: 2
 };
 
-const CommonFlatListItem = (props: any) => {
+type PropsCommonFlatList = {
+    title: string,
+    titleStyle: object,
+    subtitle: string | number,
+    subtitleStyle: object,
+    leftAvatar: any,
+    bottomDivider: boolean,
+    rightTitle: string,
+    action: any,
+    topDivider: boolean,
+    titleProps: object,
+    contentContainerStyle: string[] | object,
+    chevron: any,
+    avatarStyle: object,
+    buttonGroup: any,
+    friction: number,
+    tension: number,
+    customView: any,
+    subTitleProps: any,
+    disabled: boolean
+};
+
+const CommonFlatListItem = (props: PropsCommonFlatList) => {
     const {
         title,
         titleStyle,
@@ -102,34 +122,6 @@ const CommonFlatListItem = (props: any) => {
                 />}
         </ListItem>
     );
-};
-
-CommonFlatListItem.propTypes = {
-    title: PropTypes.string,
-    titleStyle: PropTypes.object,
-    subtitle: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
-    subtitleStyle: PropTypes.object,
-    leftAvatar: PropTypes.object,
-    bottomDivider: PropTypes.bool,
-    rightTitle: PropTypes.string,
-    action: PropTypes.func,
-    topDivider: PropTypes.bool,
-    titleProps: PropTypes.object,
-    contentContainerStyle: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ]),
-    chevron: PropTypes.any,
-    avatarStyle: PropTypes.object,
-    buttonGroup: PropTypes.any,
-    friction: PropTypes.number,
-    tension: PropTypes.number,
-    customView: PropTypes.any,
-    subTitleProps: PropTypes.any,
-    disabled: PropTypes.bool
 };
 
 export default memo(CommonFlatListItem);

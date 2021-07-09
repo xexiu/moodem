@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import PropTypes from 'prop-types';
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Alert, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -45,7 +43,10 @@ const Avatars = (props: any) => {
     }
 
     useEffect(() => {
-        navigation.setOptions(COMMON_NAVIGATION_OPTIONS);
+        navigation.setOptions({
+            ...COMMON_NAVIGATION_OPTIONS,
+            title: 'Avatars'
+        });
         getAllRandomAvatars();
         return () => {
             controller.abort();
@@ -114,17 +115,6 @@ const Avatars = (props: any) => {
             </View>
         </BodyContainer>
     );
-};
-
-Avatars.navigationOptions = () => ({
-    unmountOnBlur: true,
-    title: 'Avatars',
-    headerBackTitle: ''
-});
-
-Avatars.propTypes = {
-    route: PropTypes.object,
-    navigation: PropTypes.object
 };
 
 memo(Avatars);

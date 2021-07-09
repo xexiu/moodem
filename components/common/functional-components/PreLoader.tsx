@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { View } from 'react-native';
 import * as Progress from 'react-native-progress';
@@ -31,11 +30,6 @@ const PreLoader = ({ size = 30, containerStyle, borderWidth = 1, name, color= '#
             {buildProgress({ size, containerStyle, borderWidth, name, color, progress })}
         </View>
     );
-};
-
-PreLoader.propTypes = {
-    size: PropTypes.number,
-    containerStyle: PropTypes.object
 };
 
 export default memo(PreLoader);

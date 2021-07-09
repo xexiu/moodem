@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Dimensions, ImageBackground, View } from 'react-native';
 
@@ -36,11 +35,6 @@ const defaultStyleLogo = {
     width,
     height: 400,
     marginTop: 50
-};
-
-BgImage.propTypes = {
-    source: PropTypes.object,
-    style: PropTypes.object
 };
 
 export default memo(BgImage);

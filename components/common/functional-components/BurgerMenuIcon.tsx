@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
@@ -14,12 +13,16 @@ const DEFAULT_CONTAINER_STYLE = {
     alignItems: 'center'
 };
 
-const BurgerMenuIcon = (props: any) => {
-    const {
-      action = () => console.log('Pressed Menu Icon'),
-      customStyle
-    } = props;
+type PropsBurgerMenuIcon = {
+    action?: any,
+    customStyle?: object
+};
 
+function defaultOnPress() {
+    console.log('Pressed Menu Icon');
+}
+
+const BurgerMenuIcon = ({ action = defaultOnPress(), customStyle}: PropsBurgerMenuIcon) => {
     return (
       <Icon
           containerStyle={[
@@ -33,11 +36,6 @@ const BurgerMenuIcon = (props: any) => {
           onPress={action}
       />
     );
-};
-
-BurgerMenuIcon.propTypes = {
-    action: PropTypes.func,
-    customStyle: PropTypes.object
 };
 
 export default memo(BurgerMenuIcon);

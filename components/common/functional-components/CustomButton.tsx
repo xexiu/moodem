@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Button } from 'react-native-elements';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
@@ -8,7 +7,21 @@ function defaultAction(evt) {
     return console.log('Button Pressed CustomButton');
 }
 
-const CustomButton = (props: any) => {
+type PropsCustomBtn = {
+    btnTitle: string | React.ReactElement,
+    btnStyle: string[] | object,
+    btnType: 'solid' | 'clear' | 'outline',
+    btnCustomStyle: object,
+    btnTitleStyle: object,
+    btnRaised: boolean,
+    shadow: object,
+    action: any,
+    btnDisabled: boolean,
+    btnIcon: any,
+    btnViewComponent: any
+};
+
+const CustomButton = (props: PropsCustomBtn) => {
     const {
         btnDisabled = false,
         btnTitle = 'No button title provided!',
@@ -18,7 +31,7 @@ const CustomButton = (props: any) => {
         btnRaised = false,
         btnType = 'solid',
         btnIcon,
-        shadow = {}, //btnShadow,
+        shadow = {}, // btnShadow,
         btnViewComponent,
         action = defaultAction.bind(this)
     } = props;
@@ -37,25 +50,6 @@ const CustomButton = (props: any) => {
             ViewComponent={btnViewComponent}
         />
     );
-};
-
-CustomButton.propTypes = {
-    btnTitle: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
-    btnStyle: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ]),
-    btnCustomStyle: PropTypes.object,
-    btnTitleStyle: PropTypes.object,
-    btnRaised: PropTypes.bool,
-    shadow: PropTypes.object,
-    action: PropTypes.func,
-    btnDisabled: PropTypes.bool,
-    btnIcon: PropTypes.element,
-    btnViewComponent: PropTypes.elementType
 };
 
 export default memo(CustomButton);

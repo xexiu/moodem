@@ -3,11 +3,13 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "bundle:ios": "react-native bundle --entry-file index.ts --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
+    "bundle:android": "react-native bundle --platform android --dev false --entry-file index.ts --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "postinstall": "yarn run bundle:ios",
     "test": "jest --watch --coverage=false --changedSince=origin/master",
     "testDebug": "jest -o --watch --coverage=false",
     "testFinal": "jest",
-    "updateSnapshots": "jest -u --coverage=false",
-    "postinstall": "jetify"
+    "updateSnapshots": "jest -u --coverage=false"
   },
   "jest": {
     "preset": "react-native",
@@ -48,7 +50,6 @@
     "i18n-js": "^3.8.0",
     "jsdom-quokka-plugin": "^1.0.16",
     "lodash.memoize": "^4.1.2",
-    "prop-types": "^15.7.2",
     "react": "~17.0.2",
     "react-devtools": "^4.13.5",
     "react-hook-form": "^7.10.1",

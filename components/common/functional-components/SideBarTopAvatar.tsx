@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import PropTypes from 'prop-types';
 import React, { memo, useContext } from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -7,7 +5,13 @@ import { AppContext } from '../../../components/User/store-context/AppContext';
 import { avatarContainer, avatarImage } from '../../../src/css/styles/avatar';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 
-const SideBarTopAvatar = (props: any) => {
+type propsSideBarTopAvatar = {
+    navigation: any,
+    user: object,
+    group: object
+};
+
+const SideBarTopAvatar = (props: propsSideBarTopAvatar) => {
     const { navigation } = props;
     const { user }: any = useContext(AppContext);
 
@@ -31,12 +35,6 @@ const SideBarTopAvatar = (props: any) => {
             </Text>
         </View>
     );
-};
-
-SideBarTopAvatar.propTypes = {
-    navigation: PropTypes.object,
-    user: PropTypes.object,
-    group: PropTypes.object
 };
 
 export default memo(SideBarTopAvatar);

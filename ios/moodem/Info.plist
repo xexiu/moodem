@@ -38,6 +38,8 @@
 					<true />
 				</dict>
 			</dict>
+			<key>NSAllowsArbitraryLoadsInWebContent</key>
+			<true />
 		</dict>
 		<key>NSCalendarsUsageDescription</key>
 		<string>Allow moodem to access your calendar</string>
