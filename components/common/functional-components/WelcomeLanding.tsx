@@ -18,7 +18,6 @@ const WelcomeLanding = (props: any) => {
 
         return () => {
             console.log('OFF WELCOME');
-            socket.off('get-medias-group');
             socket.off('connect_error', getConnectionError);
             socket.off('disconnect');
 

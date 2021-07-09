@@ -21,6 +21,7 @@ node_modules/**/*
 node_modules
 npm-debug.*
 coverage
+backend
 
 # macOS
 .DS_Store
