@@ -200,9 +200,6 @@ const BasePlayer = (props: any) => {
                     seekRef.current.setTrackCurrentTime(0);
 
                     if (!errorSongs.includes(item.id)) {
-                        Object.assign(item, {
-                            hasExpired: true
-                        });
                         errorSongs.push(item.id);
                         if (!isServerError) {
                             if (item.isSearching) {
