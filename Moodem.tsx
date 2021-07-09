@@ -47,7 +47,7 @@ const App = function Moodem() {
 
     async function initMoodem() {
         try {
-            const currentUser = auth().currentUser || null as any;
+            const currentUser = auth() && auth().currentUser || null as any;
             const _user = currentUser && currentUser._user;
 
             if (_user) {

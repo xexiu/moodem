@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { memo, useState } from 'react';
 import { View } from 'react-native';
@@ -10,11 +11,11 @@ const GOOGLE_AC_URL: string = `https://clients1.google.com/complete/search`;
 const SearchBarAutoComplete = (props: any) => {
     const {
         chatRoom,
-        songs,
-        navigation
+        songs
     } = props;
     const [suggestions, setSuggestions] = useState([]);
     const source = axios.CancelToken.source();
+    const navigation = useNavigation();
 
     function handleEndSearch(searchedText: string) {
         setSuggestions([]);

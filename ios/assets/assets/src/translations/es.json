@@ -1,0 +1,209 @@
+{
+    "register": {
+        "title": "Registrarse",
+        "inputName": "Nombre (max. 30 carácteres)",
+        "inputPassword": "Contraseña",
+        "inputConfirmPassword": "Confirmar Contraseña",
+        "placeholderInputPassword": "Ingresa una contraseá (min. 6 carácteres)",
+        "placeholderInputName": "Ingresa un nickname...",
+        "placeholderInputEmail": "Ingresa un e-mail valido...",
+        "inputNameError": "Carácteres incorectos. Permitidos: Letras, números",
+        "inputEmailError": "E-mail incorrecto o inválido!",
+        "inputPasswordError": "Contraseña incorrecta!",
+        "inputConfirmPasswordError": "Repite tu contraseña!"
+    },
+    "login": {
+        "title": "Iniciar Sesión",
+        "header": "Tú tienes las llaves!",
+        "wrongPassword": "Contraseña incorrecta. Porfavor, prueba de nuevo o intenta resetear tú contraseá!",
+        "userNotFound": "Usuario no encontrado o no registrado. Porfavor, prueba de nuevo o registrate!",
+        "tooManyRequests": "Has excedido los intentos máximos permitidos. Por favor, intentalo de nuevo en unos momentos..."
+    },
+    "forgotPassword": {
+        "title": "¿Has olvidado la contraseña?",
+        "resetPassword": "Resetear Contraseña!"
+    },
+    "about": {
+        "title": "Sobre Nosotros",
+        "text": [
+            "Somos una app destinada a la interacción de música entre nuestros usuario brindando un sistema de chat y compartir en modo real (live) las canciones que nuestro buscador (gracias a la API de youtube) ofrece a la hora de interactuar con el mismo.",
+            "Todo o en gran parte de nuestro código está implementado en base a la arquitectura de react native (https://reactnative.dev/) y frameworks o dependencias externas, cuyo reponsabilidad se dirige a los mismos autores.",
+            "Moodem está hecho sin ningún ánimo de lucro y en base a las preferencias y deseos de nuestro usuarios. En ningún momento los datos de los mismo usuarios serán o están usados como fines externos. La privacidad es nuestra primera prioridad, además de comprometernos a no guardar ningún historial de chats o música/canciones en nuestra base de datos.",
+            "Todas las interacciones (digasé chats/cansiones) están procesadas en tiempo real con socket.io y ninguna base de datos actua como intermediaria.",
+            "La información guardada es la única que se procede al registrarse el usuario (nombre, email y contraseña). El nombre de los grupos creados y el flujo de las invitaciones y personas pertenecientes a dichos grupos serán guardadas con fines de improvisar la app y hacer un uso adecuado de la misma.",
+            "Cualuquier sugerencia, mejora o queja, por favor, no dude en escribirnos a la dirección de e-mail: contact.moodem@gmail.com",
+            "Muchas gracias!"
+        ]
+    },
+    "copyright": {
+        "title": "Copyright",
+        "copyright": "Todos los derechos reservados.",
+        "text": [
+            "Cualquier forma no autorizada de distribución, copia, duplicación, reproducción, o venta (total o parcial) del contenido, tanto para uso personal como comercial, constituirá una infracción de los derechos de copyright y de sus respectivos autores.",
+            "Al acceder a esta app, confirmas estar familiarizado, comprender y aceptar totalmente el siguiente copyright y cláusula de derechos y exención de responsabilidades. De no ser así, debes abandonar esta app, por favor.",
+            "Cualquier tipo de reproducción total o parcial de su contenido está totalmente prohibida, a menos que se solicite una autorización expresa, y por escrito a contact.moodem@gmail.com",
+            "Los hechos, opiniones y puntos de vista que expresamos las personas de la app, son solamente nuestros, y no tienen por qué coincidir con la política, las ideas, intenciones, planes, estrategias, ni postura oficial de ningún organismo, empresa, compañía, organización, servicio, o persona.",
+            "Cuando utilicemos información procedente de fuentes externas para la elaboración de las entradas, dichas fuentes serán añadidas mediante un hipervínculo, o mencionadas de alguna manera para proporcionarles el reconocimiento que se merecen, lo que se hará igualmente con imágenes, etc. Nada en esta web será copiar y pegar de otra fuente, a menos que obtengamos su consentimiento. Si crees o sientes que estamos violando los derechos de autor de alguien, por favor dínoslo para remediarlo lo antes posible.",
+            "El sistema de búsqueda de las canciones se realiza por la API de youtube.com, viniendo asi, toda la información necesaria de dicha canción. Digasé autor, tiempo de reproducción, visitas, etc.",
+            "El sistema de chat utilizado en la app es un puente entre socket.io y nuestro código. Permitiendo así, el uso ligero entre servidor y cliente. Cualquier mejor o sugerencia estamos más que encantad@s en escucharla.",
+            "Todas las marcas o derechos de cualquier tipo, nombres registrados, logos o insignias, usados o citados en esta web, son propiedad de sus respectivos dueños. Esta web de ninguna forma aceptará responsabilidad alguna derivada de su infracción.",
+            "Los comentarios de dichos chats, nombres de grupos o cualquier cosa ajena a la app, son responsabilidad única de las personas que los han escrito, éstas serán las únicas responsables de cualquier tipo de queja, daño o litigio que pudieran causar, bien de forma directa o indirecta. Respecto a los comentarios en los chats, no garantizamos la corrección, veracidad ni exactitud de dichos comentarios, así como tampoco si son rudos, políticamente correctos o en cualquier forma inapropiados, aunque haremos todo lo posible por evitarlo. Puedes corregirnos si lo crees oportuno, estar en desacuerdo con nosotros, o preguntarnos tus dudas, pero por favor mantén la compostura ya que nos reservamos el derecho de borrar y/o modificar cualquier comentario por cualquier razón que nos venga en mente (inapropiados, fuera de tono, obscenos, insultantes, ridículos, etc.) Por favor sé educado.",
+            "No tenemos control de la información a la que puedieras acceder a través de los enlaces externos que hay en nuestra app, en forma de vínculos o iconos en el propio texto, en la cabecera, pie de página, barras laterales, zona de comentarios, etc. No podemos garantizar la corrección, exactitud o validez de la información que proporcionan las webs/apps a las que dirigen dichos enlaces. No pertenecemos, trabajamos ni poseemos ninguna de ellas, ni ningún negocio que pudiera aparecer en ellas."
+        ]
+    },
+    "faq": {
+        "questions": [
+            "1. ¿Cómo usar Moodem?",
+            "2. ¿Cómo buscar canciones?",
+            "3. ¿Cómo unirse a los grupos?",
+            "4. ¿Cómo crear un grupo?",
+            "5. ¿Existe algún límite para buscar y compartir canciones?",
+            "6. ¿Existe algún límite para crear grupos?"
+        ],
+        "text": [
+            "Se puede usar Moodem como chat general, chat por grupos, buscador de canciones y compartir las canciones en modo live con los grupos privados o el grupo general que la misma app brinda.",
+            "Utilizando nuestro buscador que la app ofrece (parte superior). Se puede votar cancaciones y eliminarlas si eres administrador de un grupo dónde la canción es compartida.",
+            "Abriendo el menú lateral -> Grupos -> Búscador de grupos en la parte superior -> Introducir contraseña si se trata de un grupo privado o directamente unirse si se trata de un grupo público.",
+            "Abriendo el menú lateral -> Grupos -> Crear Grupo (icono + en la parte inferior derecha)",
+            "El límite es indefinido siempre y cuando no hay un uso excesivo de ello y el tráfico no sobrepasa los límites de nuestros servidores. Sin mencionar los límites que la API de youtube puede penalizar a la hora de hacer muchas requests.",
+            "El límite es indefinido siempre y cuando no hay un uso excesivo de ello y el tráfico no sobrepasa los límites de nuestras base de datos."
+        ]
+    },
+    "privacy": {
+        "title": "Privacidad",
+        "subtitles": [
+            "Cookies",
+            "Datos del usuario",
+            "Nuestro compromiso para la protección de los datos"
+        ],
+        "text": [
+            "Esta política se basa en nuestro objetivo fundamental de ofrecer a nuestros visitantes información y recursos de calidad y al mismo tiempo mantener el anonimato individual y la privacidad personal. La siguiente declaración describe la política de privacidad de la app (Moodem).",
+            "La app Moodem utiliza “cookies” un pequeño archivo de datos trasferido al disco duro de su móvil, para recopilar de manera anónima información sobre el tráfico de datos. Enviamos cookies cuando usted hace uso de la app, responde a encuestas o cuestionarios en línea, o solicita información. Aceptar cookies utilizados por nuestra app no nos permite acceder a su Información de Identificación Personal, pero podemos utilizar cookies para identificar su smart phone. La información colectiva recogida nos permite analizar modelos de tráfico en nuestro sitio. Esto nos ayuda a ofrecerle un mejor servicio al mejorar el contenido y hacer más fácil el uso de nuestra app.",
+            "Cuando usted accede a nuestras app, la información sobre el usuario y la información técnica esencial y accidental es recopilada de manera automática, nos referimos a esas categorías recogidas de manera colectiva como  información de 'acceso'. Ninguna otra información es recogida a través de la app, excepto cuando usted deliberadamente decide revelarla (por ejemplo, pulsando una tecla para enviarnos un mensaje de correo electrónico).",
+            "La app Moodem no vende ninguna información de identificación personal ofrecida voluntariamente a terceras partes. Para prevenir el acceso no autorizado, mantener la exactitud de los datos, y garantizar el uso correcto de a información, hemos instaurado procedimientos físicos, electrónicos y administrativos para salvaguardar y proteger la información que recogemos en línea, de acuerdo con las políticas privacidad.",
+            "Si tiene otras preguntas o preocupaciones sobre nuestras políticas y prácticas de privacidad, por favor envíe un correo electrónico a contact.moodem@gmail.com"
+        ]
+    },
+    "sideBarItems": {
+        "items": [
+            "Grupos",
+            "Mi Perfil"
+        ]
+    },
+    "songs": {
+        "searchBar": {
+            "placeholderSearch": "Encuentra una canción...",
+            "placeholderFound": "encontrado(s)"
+        }
+    },
+    "groups": {
+        "itemsBars": {
+            "titles": [
+                "Mis Grupos",
+                "Públicos",
+                "Privados"
+            ]
+        },
+        "createGroup": {
+            "title": "Crear un nuevo grupo",
+            "formTexts": {
+                "groupName": "Nombre del grupo:",
+                "groupNameInfo": "Ingresar un nombre de grupo. (max. 50 carácteres)",
+                "groupDescription": "Descripción del grupo (opcional):",
+                "info": [
+                    "- Crear un grupo público: No introducir contraseña!",
+                    "- Crear un grupo privado: Crear una contraseña!",
+                    "- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!"
+                ]
+            },
+            "createGroupBtnTitle": "Crear Grupo"
+        },
+        "settings": {
+            "title": "Ajustes",
+            "formTexts": {
+                "editName": "Editar nombre del grupo:",
+                "editDescription": "Editar descripción del grupo (opcional):",
+                "editPassword": "Contraseña:",
+                "groupDescriptionHelp": "Añade una descripción para tu grupo (opcional). La descripción no puede exceder más de 200 carácteres!",
+                "passwordHelp": "Min. 6 carácteres. Letra(s) y número(s).",
+                "confirmPassword": "Confirmar Contraseña:",
+                "deleteGroup": "Eliminar Grupo!",
+                "editGroup": "Editar Grupo",
+                "info": [
+                    "- Este grupo es público! Si crea una contraseña, el grupo se convertirá en privado!",
+                    "- Actualizar contraseña!",
+                    "- Contraseña válida: Ha de contener letra(s) y número(s). No puede contener espacios y/o carácteres espaciales!"
+                ]
+            },
+            "alert": [
+                "Esta acción no se puede deshacer y elimina TODO lo relacionado con este grupo.",
+                "¿Seguro que quiere eliminar este grupo de tú lista?",
+                "Estás segur@ de que quieres abandonar el grupo:",
+                "¡Se perderán todos los datos relacionados con este grupo!"
+            ],
+            "formErrors": [
+                "Contaseña incorrecta: la contraseña ha de tener almenos una letra y un número.",
+                "Nombre del grupo incorrecto o no permitido!",
+                "El nombre del grupo ha de ser mayor que",
+                "carácteres!",
+                "La contaseña tiene que ser de mínimo",
+                "Las contraseñas no coinciden"
+            ]
+        },
+        "msgMyGroups": [
+            "Tienes",
+            "grupo administrado.",
+            "Tienes",
+            "groups administrados",
+            "No tienes ningún grupo! Prueba de crear uno."
+        ],
+        "msgPublicGroups": [
+            "Te has unido a",
+            "groupo",
+            "Te has unido a",
+            "grupos",
+            "No te has unido a ningún grupo público."
+        ],
+        "msgPrivateGroups": [
+            "Te has unido a",
+            "groupo",
+            "Te has unido a",
+            "grupos",
+            "No te has unido a ningún grupo privado."
+        ],
+        "searchBar": {
+            "placeholderMyGroups": "Buscar todos los grupos...",
+            "placeholderPublicGroups": "Buscar grupos publicos...",
+            "placeholderPrivateGroups": "Buscar grupos privados..."
+        }
+    },
+    "chat": {
+        "placeHolderChatButton": "Escribe algo..."
+    },
+    "profile": {
+        "session": {
+            "close": "Cerrar Sessión!"
+        },
+        "notVerifiedEmail": {
+            "text": [
+                "E-mail no verificado.",
+                "Verificar ahora!"
+            ]
+        },
+        "formTexts": {
+            "changeNickName": "Cambiar nickname",
+            "changeEmail": "Cambiar Email",
+            "changePassword": "Cambiar contraseña",
+            "info": [
+                "Actualizado!"
+            ],
+            "errors": [
+                "Ha de ser 4 carácteres o más..."
+            ]
+        },
+        "alertAvatars": "¿Estás segur@ de cambiar a este avatar?"
+    },
+    "mediaList": {
+        "empty": "La lista está vacia!"
+    }
+}

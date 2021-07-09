@@ -16,8 +16,7 @@ import { MediaListEmpty } from './MediaListEmpty';
 let lastDataLength = 0;
 let isFirstLanding = true;
 
-const Songs = (props: any) => {
-    const { navigation } = props;
+const Songs = () => {
     const { group, isServerError, socket, user } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
@@ -197,7 +196,6 @@ const Songs = (props: any) => {
             <SearchBarAutoComplete
                 chatRoom={chatRoom}
                 songs={songs}
-                navigation={navigation}
             />
         );
     }

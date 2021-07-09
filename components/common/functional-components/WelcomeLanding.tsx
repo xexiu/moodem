@@ -9,8 +9,7 @@ import BurgerMenuIcon from './BurgerMenuIcon';
 
 let serverError = false;
 
-const WelcomeLanding = (props: any) => {
-    const { navigation } = props;
+const WelcomeLanding = () => {
     const { dispatchContextApp, group, isServerError, socket }: any = useContext(AppContext);
     const toastRef = useRef() as any;
 
@@ -20,7 +19,6 @@ const WelcomeLanding = (props: any) => {
 
         return () => {
             console.log('OFF WELCOME');
-            socket.off('emit-set-medias');
             socket.off('get-medias-group');
             socket.off('connect_error', getConnectionError);
             socket.off('disconnect');
@@ -36,7 +34,8 @@ const WelcomeLanding = (props: any) => {
             toastRef?.current?.close();
             return dispatchContextApp({
                 type: 'server_error', value: {
-                    isServerError: false
+                    isServerError: false,
+                    isLoading: false
                 }
             });
         }
@@ -50,7 +49,8 @@ const WelcomeLanding = (props: any) => {
             serverError = true;
             return dispatchContextApp({
                 type: 'server_error', value: {
-                    isServerError: true
+                    isServerError: true,
+                    isLoading: false
                 }
             });
         }
@@ -61,7 +61,7 @@ const WelcomeLanding = (props: any) => {
             <BurgerMenuIcon
                 action={() => navigation.openDrawer()}
             />
-            <Songs navigation={navigation} />
+            <Songs />
             <Toast
                 position={isServerError ? 'bottom' : 'top'}
                 ref={toastRef}
