@@ -4,7 +4,7 @@ import React, { memo, useCallback, useContext, useEffect, useRef, useState } fro
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import CommonFlatList from '../../../components/common/functional-components/CommonFlatList';
 import CommonFlatListItem from '../../../components/common/functional-components/CommonFlatListItem';
-import CustomModal from '../../../components/common/functional-components/CustomModal';
+// import CustomModal from '../../../components/common/functional-components/CustomModal';
 import PreLoader from '../../../components/common/functional-components/PreLoader';
 import AddGroupIcon from '../../../components/User/functional-components/AddGroupIcon';
 import { GroupPrivateIcon } from '../../../components/User/functional-components/GroupPrivateIcon';

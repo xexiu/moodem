@@ -10,9 +10,9 @@ export const offlineContainer = {
     flexDirection: 'row',
     width,
     position: 'absolute',
-    top: 35,
+    top: 35
 } as ViewStyle;
 
 export const offlineText = {
-    color: '#fff',
+    color: '#fff'
 } as TextStyle;

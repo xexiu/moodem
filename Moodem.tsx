@@ -115,7 +115,7 @@ const App = function Moodem() {
             <SongsContextProvider>
                 <CommonStackWrapper>
                     <Stack.Screen name='Drawer' component={SideBarDrawer} options={{ headerShown: false }} />
-                    <Stack.Screen name='Avatars' component={Avatars} options={Avatars.navigationOptions} />
+                    <Stack.Screen name='Avatars' component={Avatars} />
                 </CommonStackWrapper>
             </SongsContextProvider>
         );

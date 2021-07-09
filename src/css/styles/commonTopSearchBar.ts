@@ -1,9 +1,3 @@
-import { Dimensions } from 'react-native';
-
-const {
-    width
-} = Dimensions.get('window');
-
 export const commonTopSeachBarContainer = {
     marginLeft: 35,
     padding: 0,
