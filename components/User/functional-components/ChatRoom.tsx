@@ -1,4 +1,4 @@
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import { Keyboard } from 'react-native';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
@@ -16,9 +16,18 @@ type PropsChat = {
 
 const ChatRoom = (props: PropsChat) => {
     const { user, group, socket, isServerError }: any = useContext(AppContext);
+    const [unreadMsgs, setUnreadMsgs] = useState({});
     const { navigation } = props;
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`;
     const { isLoading, messages, connectedUsers } = useChatMessages(chatRoom);
+
+    /* TO-DO */
+    // Get unread messages from sender
+
+    // socket.on('unread-messages', data => {
+    //     console.log('Received data', data);
+    //     setUnreadMsgs(data.msg);
+    // });
 
     if (isLoading || isServerError) {
         return (

@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import useChatMessages from '../../../components/User/custom-hooks/useChatMessages';
 import ChatLoading from '../../../components/User/functional-components/ChatLoading';
 import MemoizedChat from '../../../components/User/functional-components/MemoizedChat';
 import SendBtnChat from '../../../components/User/functional-components/SendBtnChat';
 import { AppContext } from '../../../components/User/store-context/AppContext';
+import { avatarChat } from '../../../src/css/styles/avatar';
 import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 
@@ -30,9 +32,40 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: (<View><Text style={isOnline()}>{currentMessage.user.name}</Text></View>)
+            title: (<View
+                style={{
+                    position: 'relative',
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                }}
+            >
+                <FastImage
+                    style={[avatarChat, {marginRight: 10 }]}
+                    source={{
+                        uri: currentMessage.user.avatar,
+                        priority: FastImage.priority.high
+                    }}
+                />
+                <Text style={isOnline()}>{currentMessage.user.name}</Text>
+            </View>)
         });
+        return () => {
+            socket.off('reciever-unread-messages');
+        };
     }, [connectedUsers]);
+
+    /* TO-DO */
+    // Send unread messages to receiver
+
+    // if (connectedUsers === 1 && messages.length) {
+    //     const msg = Object.assign(messages[0], {
+    //         receiver: currentMessage.user._id,
+    //         sender: user.uid
+    //     });
+    //     socket.emit('reciever-unread-messages', {
+    //         msg
+    //     });
+    // }
 
     function isOnline() {
         return {
