@@ -52,7 +52,7 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
         return () => {
             socket.off('reciever-unread-messages');
         };
-    }, [connectedUsers]);
+    }, [connectedUsers, isServerError]);
 
     /* TO-DO */
     // Send unread messages to receiver

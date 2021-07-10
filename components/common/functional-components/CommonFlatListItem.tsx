@@ -23,24 +23,24 @@ const DEFAULT_CONTAINER_STYLE = {
 
 type PropsCommonFlatList = {
     title: string,
-    titleStyle: object,
-    subtitle: string | number,
-    subtitleStyle: object,
-    leftAvatar: any,
-    bottomDivider: boolean,
-    rightTitle: string,
-    action: any,
-    topDivider: boolean,
-    titleProps: object,
-    contentContainerStyle: string[] | object,
-    chevron: any,
-    avatarStyle: object,
-    buttonGroup: any,
-    friction: number,
-    tension: number,
-    customView: any,
-    subTitleProps: any,
-    disabled: boolean
+    titleStyle?: object,
+    subtitle?: string | number,
+    subtitleStyle?: object,
+    leftAvatar?: any,
+    bottomDivider?: boolean,
+    rightTitle?: string,
+    action?: any,
+    topDivider?: boolean,
+    titleProps?: object,
+    contentContainerStyle?: string[] | object,
+    chevron?: any,
+    avatarStyle?: object,
+    buttonGroup?: any,
+    friction?: number,
+    tension?: number,
+    customView?: any,
+    subTitleProps?: any,
+    disabled?: boolean
 };
 
 const CommonFlatListItem = (props: PropsCommonFlatList) => {

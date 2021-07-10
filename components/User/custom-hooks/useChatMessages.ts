@@ -44,7 +44,7 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
                 AppState.removeEventListener('change', getInactiveUsers);
             }
         };
-    }, [isFocused]);
+    }, [isFocused, isServerError]);
 
     function getInactiveUsers(data: any) {
         if (data !== 'active') {

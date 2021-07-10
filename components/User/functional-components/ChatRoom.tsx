@@ -29,12 +29,6 @@ const ChatRoom = (props: PropsChat) => {
     //     setUnreadMsgs(data.msg);
     // });
 
-    if (isLoading || isServerError) {
-        return (
-            <ChatLoading />
-        );
-    }
-
     function onPressAvatar(currentMessage: any) {
         return navigation.navigate('PrivateUserMessageScreen', {
             currentMessage
@@ -53,15 +47,18 @@ const ChatRoom = (props: PropsChat) => {
                 group={group}
                 connectedUsers={connectedUsers}
             />
-            <MemoizedChat
-                chatRoom={chatRoom}
-                socket={socket}
-                messages={messages}
-                user={user}
-                onChangeTextBtn={(attrs: any) => <SendBtnChat attrs={attrs} />}
-                sendMsgBtn={(message: any) => sendMsg(socket, user, message, chatRoom)}
-                onPressAvatar={onPressAvatar}
-            />
+            {isLoading || isServerError ?
+                <ChatLoading /> :
+                <MemoizedChat
+                    chatRoom={chatRoom}
+                    socket={socket}
+                    messages={messages}
+                    user={user}
+                    onChangeTextBtn={(attrs: any) => <SendBtnChat attrs={attrs} />}
+                    sendMsgBtn={(message: any) => sendMsg(socket, user, message, chatRoom)}
+                    onPressAvatar={onPressAvatar}
+                />
+            }
         </BodyContainer>
     );
 };
