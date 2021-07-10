@@ -1,8 +1,7 @@
 export const COMMON_NAVIGATION_OPTIONS = {
     headerShown: true,
-    headerMode: 'none',
     unmountOnBlur: true,
-    headerBackTitleVisible: true,
-    headerBackTitle: ' ',
+    headerBackTitleVisible: false,
+    headerBackTitle: '',
     unmountInactiveRoutes: true
 };
