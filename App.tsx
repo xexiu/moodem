@@ -10,7 +10,7 @@ import Moodem from './Moodem';
 import { RNLocalize, setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
-// sentryInit(); disable sentry temporally
+sentryInit();
 
 const controller = new AbortController();
 LogBox.ignoreAllLogs();

@@ -31,7 +31,7 @@ const SideBarTopAvatar = (props: propsSideBarTopAvatar) => {
                 ellipsizeMode='tail'
                 numberOfLines={1}
             >
-                {user.displayName}!
+                {user.displayName}
             </Text>
         </View>
     );
