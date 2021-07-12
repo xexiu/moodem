@@ -2,15 +2,20 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
+import { isEmulator } from 'react-native-device-info';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
+import BgImage from './components/common/functional-components/BgImage';
+import { BodyContainer } from './components/common/functional-components/BodyContainer';
 import { MainContainer } from './components/common/functional-components/MainContainer';
 import { OfflineNotice } from './components/common/functional-components/OfflineNotice';
+import PreLoader from './components/common/functional-components/PreLoader';
 import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
+import NotificationsService from './NotificationsService';
 import { RNLocalize, setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
-sentryInit();
+// sentryInit();
 
 const controller = new AbortController();
 LogBox.ignoreAllLogs();
@@ -19,18 +24,14 @@ LogBox.ignoreLogs([
     'Constants.manifest is null because the embedded app.config could not be read.'
 ]);
 
-type AppProps = {
-    netinfoUnsubscribe: any;
-    handleConnectivityChange: (param: any) => void;
-    hasInternetConnection: boolean;
-};
-
 type AppState = {
     hasInternetConnection: boolean;
+    deviceConfig: any,
+    isLoading: boolean
 };
-
-class App extends PureComponent<AppProps, AppState> {
-    public netinfoUnsubscribe: any;
+class App extends PureComponent<{}, AppState> {
+    notifications: NotificationsService;
+    netinfoUnsubscribe: any;
 
     constructor(props: any) {
         const transaction = Sentry.startTransaction({
@@ -41,14 +42,27 @@ class App extends PureComponent<AppProps, AppState> {
         transaction.finish();
         super(props);
         this.state = {
-            hasInternetConnection: true
+            hasInternetConnection: true,
+            deviceConfig: null,
+            isLoading: true
         };
+
         setI18nConfig();
+
+        this.notifications = new NotificationsService(
+            this.onRegister.bind(this),
+            this.onNotif.bind(this)
+        );
     }
+
+    onNotif = (notif: any) => {
+        console.log('Notification Clicked', notif.title, notif.message);
+    };
 
     handleConnectivityChange = (connection: any) => {
         this.setState({
-            hasInternetConnection: connection.isConnected
+            hasInternetConnection: connection.isConnected,
+            isLoading: !connection.isConnected
         });
     };
 
@@ -57,13 +71,46 @@ class App extends PureComponent<AppProps, AppState> {
         this.forceUpdate();
     };
 
-    componentDidMount() {
+    onRegister = (token: any) => {
+        this.setState({
+            deviceConfig: token
+        }, () => {
+            this.notifications.checkPermission((data: any) => {
+                if (data) {
+                    Object.assign(this.state.deviceConfig, {
+                        hasPushPermissions: data.authorizationStatus > 1 ? true : false
+                    });
+                }
+                this.commonInit();
+            });
+        });
+    };
+
+    commonInit() {
         this.netinfoUnsubscribe = NetInfo.addEventListener(this.handleConnectivityChange);
         RNLocalize.addEventListener('change', this.handleLocalizationChange);
     }
 
+    async init() {
+        try {
+            const _isEmulator = await isEmulator();
+            if (_isEmulator) {
+                this.commonInit();
+            } else {
+                this.notifications._onRegister.bind(this.onRegister);
+            }
+        } catch (error) {
+            console.error('Error Init App', error);
+        }
+    }
+
+    componentDidMount() {
+        this.init();
+    }
+
     componentWillUnmount() {
         controller.abort();
+        // PushNotification.unregister();
         RNLocalize.removeEventListener('change', this.handleLocalizationChange);
         if (this.netinfoUnsubscribe) {
             this.netinfoUnsubscribe();
@@ -73,7 +120,9 @@ class App extends PureComponent<AppProps, AppState> {
 
     render() {
         const {
-            hasInternetConnection
+            hasInternetConnection,
+            isLoading,
+            deviceConfig
         } = this.state;
 
         if (!hasInternetConnection) {
@@ -82,10 +131,30 @@ class App extends PureComponent<AppProps, AppState> {
             );
         }
 
+        if (isLoading) {
+            return (
+                <BodyContainer>
+                    <BgImage />
+                    <PreLoader
+                        containerStyle={{
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                        size={50}
+                    />
+                </BodyContainer>
+            );
+        }
+
+        console.log('HEYYY');
+
         return (
             <MainContainer>
                 <ErrorBoundary>
-                    <AppContextProvider>
+                    <AppContextProvider
+                        deviceConfig={deviceConfig}
+                        notificationsManager={this.notifications}
+                    >
                         <Moodem />
                     </AppContextProvider>
                 </ErrorBoundary>

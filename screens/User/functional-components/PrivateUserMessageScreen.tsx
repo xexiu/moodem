@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import React, { memo, useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -17,18 +18,21 @@ type PropsPrivateMessageUserScreen = {
     currentMessage: any
 };
 
+let isFistLanding = false;
+
 const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
-    const { currentMessage } = props.route.params;
+    const { currentMessage: prevMessage } = props.route.params;
     const navigation = useNavigation();
     const navigationOptions = {
         ...COMMON_NAVIGATION_OPTIONS,
-        title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{currentMessage.user.name}</Text></View>)
+        title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{prevMessage.user.name}</Text></View>)
     };
     const { user, group, socket, isServerError }: any = useContext(AppContext);
-    const split = `${user.uid}--with--${currentMessage.user._id}`.split('--with--');
+    const split = `${user.uid}--with--${prevMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
     const { isLoading, messages, connectedUsers } = useChatMessages(chatRoom, navigationOptions);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         navigation.setOptions({
@@ -42,30 +46,47 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
                 <FastImage
                     style={[avatarChat, {marginRight: 10 }]}
                     source={{
-                        uri: currentMessage.user.avatar,
+                        uri: prevMessage.user.avatar,
                         priority: FastImage.priority.high
                     }}
                 />
-                <Text style={isOnline()}>{currentMessage.user.name}</Text>
+                <Text style={isOnline()}>{prevMessage.user.name}</Text>
             </View>)
         });
+        if (connectedUsers === 1 && messages.length && hasPushPermission() && isFocused) {
+            if (messages.length === 1) {
+                isFistLanding = true;
+                return socket.emit('push-notification-received-msg', {
+                    user_receiver_msg: prevMessage,
+                    user_sender_msg: messages[0]
+                });
+            }
+            if (!isFistLanding) {
+                isFistLanding = true;
+                return;
+            }
+            socket.emit('push-notification-received-msg', {
+                user_receiver_msg: prevMessage,
+                user_sender_msg: messages[0]
+            });
+        } else if (connectedUsers > 2) {
+            socket.off('push-notification-received-msg');
+        } else {
+            isFistLanding = false;
+        }
+
         return () => {
             socket.off('reciever-unread-messages');
+            socket.off('push-notification-received-msg');
         };
-    }, [connectedUsers, isServerError]);
+    }, [connectedUsers, isServerError, isFocused, messages.length]);
+
+    function hasPushPermission() {
+        return prevMessage.user ? prevMessage.user.hasPushPermissions : false;
+    }
 
     /* TO-DO */
     // Send unread messages to receiver
-
-    // if (connectedUsers === 1 && messages.length) {
-    //     const msg = Object.assign(messages[0], {
-    //         receiver: currentMessage.user._id,
-    //         sender: user.uid
-    //     });
-    //     socket.emit('reciever-unread-messages', {
-    //         msg
-    //     });
-    // }
 
     function isOnline() {
         return {

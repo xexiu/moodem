@@ -8,17 +8,17 @@ function defaultAction(evt) {
 }
 
 type PropsCustomBtn = {
-    btnTitle: string | React.ReactElement,
-    btnStyle: string[] | object,
-    btnType: 'solid' | 'clear' | 'outline',
-    btnCustomStyle: object,
-    btnTitleStyle: object,
-    btnRaised: boolean,
-    shadow: object,
-    action: any,
-    btnDisabled: boolean,
-    btnIcon: any,
-    btnViewComponent: any
+    btnTitle?: string | React.ReactElement,
+    btnStyle?: string[] | object,
+    btnType?: 'solid' | 'clear' | 'outline',
+    btnCustomStyle?: object,
+    btnTitleStyle?: object,
+    btnRaised?: boolean,
+    shadow?: object,
+    action?: any,
+    btnDisabled?: boolean,
+    btnIcon?: any,
+    btnViewComponent?: any
 };
 
 const CustomButton = (props: PropsCustomBtn) => {

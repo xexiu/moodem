@@ -2,6 +2,10 @@ export const IP = 'http://192.168.20.26:3000'; // Mobile --> http://172.20.10.9:
 export const socketConf = {
     secure: true,
     transports: ['websocket'],
+    withCredentials: false,
+    // extraHeaders: {
+    //     cookie: 'test=1234'
+    // },
     jsonp: false,
     reconnection: true,
     // tslint:disable-next-line:max-line-length

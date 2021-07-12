@@ -40,11 +40,11 @@ const reducer = (state: any, action: any) => {
 
 const AppContext = createContext<State>(initialValue);
 
-const AppContextProvider = ({ children }: AppProps): JSX.Element => {
+const AppContextProvider = ({ children, deviceConfig, notificationsManager }: AppProps): JSX.Element => {
     const [state, dispatchContextApp] = useReducer(reducer, initialValue);
 
     return (
-        <AppContext.Provider value={{ ...initialValue, ...state, dispatchContextApp }}>
+        <AppContext.Provider value={{ ...initialValue, ...state, dispatchContextApp, deviceConfig }}>
             {children}
         </AppContext.Provider>
     );

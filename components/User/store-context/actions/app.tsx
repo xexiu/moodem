@@ -6,6 +6,8 @@ export type userProps = {
 
 export type AppProps = {
     children: React.ReactNode;
+    deviceConfig: any;
+    notificationsManager: any;
 };
 
 export type actionType = {
