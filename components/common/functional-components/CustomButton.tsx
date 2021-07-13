@@ -2,10 +2,7 @@ import React, { memo } from 'react';
 import { Button } from 'react-native-elements';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
 
-function defaultAction(evt) {
-    // eslint-disable-next-line
-    return console.log('Button Pressed CustomButton');
-}
+function defaultAction(evt) {}
 
 type PropsCustomBtn = {
     btnTitle?: string | React.ReactElement,

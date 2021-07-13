@@ -17,7 +17,6 @@ const WelcomeLanding = (props: any) => {
         socket.on('connect', setServerConnectedBack);
 
         return () => {
-            console.log('OFF WELCOME');
             socket.off('connect_error', getConnectionError);
             socket.off('disconnect');
 

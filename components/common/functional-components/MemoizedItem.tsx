@@ -5,8 +5,6 @@ import { SendSongIcon } from './SendSongIcon';
 import { VoteSongIcon } from './VoteSongIcon';
 
 const MemoizedItem = ({ chatRoom, index, item: song, handleOnClickItem, buttonActions = [], chevron = null }: any) => {
-    console.log('Render Item');
-
     const BUTTONGROUP_MAP = {
         votes: VoteSongIcon,
         remove: RemoveSongIcon

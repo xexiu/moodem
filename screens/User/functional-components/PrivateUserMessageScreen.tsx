@@ -10,7 +10,7 @@ import MemoizedChat from '../../../components/User/functional-components/Memoize
 import SendBtnChat from '../../../components/User/functional-components/SendBtnChat';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { avatarChat } from '../../../src/css/styles/avatar';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 
 type PropsPrivateMessageUserScreen = {
@@ -24,7 +24,7 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
     const { currentMessage: prevMessage } = props.route.params;
     const navigation = useNavigation();
     const navigationOptions = {
-        ...COMMON_NAVIGATION_OPTIONS,
+        ...NavigationOptions(navigation),
         title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{prevMessage.user.name}</Text></View>)
     };
     const { user, group, socket, isServerError }: any = useContext(AppContext);

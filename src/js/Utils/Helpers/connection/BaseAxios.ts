@@ -32,10 +32,8 @@ function executeRequest(method: any, pathname: string, data: any, options: any) 
         try {
             const res = await baseAxiosRequest
                 .request(reqObj);
-            console.log('Axios', res);
             resolve(res);
         } catch (error) {
-            console.log('Axios', error.response);
             reject(error);
         }
     });
@@ -43,7 +41,6 @@ function executeRequest(method: any, pathname: string, data: any, options: any) 
 
 export default {
     get(pathname: any, options: any) {
-        console.log('BaseApi', options);
         return executeRequest('get', pathname, null, options);
     },
 

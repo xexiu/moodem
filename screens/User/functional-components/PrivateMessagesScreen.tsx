@@ -6,7 +6,7 @@ import CommonFlatListItem from '../../../components/common/functional-components
 import ChatLoading from '../../../components/User/functional-components/ChatLoading';
 import { MediaListEmpty } from '../../../components/User/functional-components/MediaListEmpty';
 import { AppContext } from '../../../components/User/store-context/AppContext';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 
 const PrivateMessagesScreen = (props: any) => {
@@ -21,7 +21,7 @@ const PrivateMessagesScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            ...COMMON_NAVIGATION_OPTIONS,
+            ...NavigationOptions(navigation),
             title: 'Mensajes Privados'
         });
 

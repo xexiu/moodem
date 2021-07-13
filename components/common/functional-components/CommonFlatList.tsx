@@ -43,7 +43,7 @@ export default class CommonFlatList extends Component<CommonFlatListProps> {
             data,
             extraData,
             keyExtractor = (item: any, index: number) => String(index),
-            action = (item: any) => console.log('Item from CommonFlatList: ', item),
+            action = (item: any) => {},
             viewabilityConfig,
             onViewableItemsChanged,
             style

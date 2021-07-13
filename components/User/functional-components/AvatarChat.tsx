@@ -4,9 +4,7 @@ import FastImage from 'react-native-fast-image';
 import { avatarChat } from '../../../src/css/styles/avatar';
 import { AppContext } from '../store-context/AppContext';
 
-function defaultPressChatAvatar() {
-    console.log('Pressed Chat Avatar');
-}
+function defaultPressChatAvatar() {}
 
 const AvatarChat = ({ currentMessage, onPressAvatar = defaultPressChatAvatar, disablePressAvatar = false }: any) => {
     const { user }: any = useContext(AppContext);

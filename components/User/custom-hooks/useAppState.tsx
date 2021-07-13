@@ -15,7 +15,6 @@ function useAppState() {
 
     const _handleAppStateChange = async (data: any) => {
         if (data === 'active') {
-            console.log('App has come to the foreground!');
             // clearInterval when your app has come back to the foreground
             if (timer) {
                 await BackgroundTimer.clearInterval(timer);
@@ -26,7 +25,6 @@ function useAppState() {
             await BackgroundTimer.stop();
         } else {
             // app goes to background
-            console.log('app goes to background');
             // tell the server that your app is still online when your app detect that it goes to background
             if (isIPhone) {
                 await BackgroundTimer.start();
@@ -39,7 +37,6 @@ function useAppState() {
                 }, FIVE_SECODS);
             }
             appState.current = data;
-            console.log('AppState', appState.current);
         }
     };
 

@@ -14,7 +14,7 @@ import { MediaListEmpty } from '../../../components/User/functional-components/M
 import ShowPopUpPasswordGroup from '../../../components/User/functional-components/ShowPopUpPasswordGroup';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 import {
     addUserToJoinedGroupDB,
@@ -65,7 +65,7 @@ const SearchGroupsScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            ...COMMON_NAVIGATION_OPTIONS,
+            ...NavigationOptions(navigation),
             title: `${allValues.searchedGroups.length} ${translate('songs.searchBar.placeholderFound')}`
         });
         fetchResults()

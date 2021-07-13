@@ -16,7 +16,6 @@ const Groups = (props: any) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('3 Groups');
         if (isFocused) {
             setIsLoading(false);
         }

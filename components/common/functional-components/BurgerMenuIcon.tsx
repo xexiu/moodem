@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { memo } from 'react';
 import { Icon } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale';
@@ -18,23 +17,21 @@ type PropsBurgerMenuIcon = {
     customStyle?: object
 };
 
-function defaultOnPress() {
-    console.log('Pressed Menu Icon');
-}
+function defaultOnPress() { }
 
-const BurgerMenuIcon = ({ action = defaultOnPress(), customStyle}: PropsBurgerMenuIcon) => {
+const BurgerMenuIcon = ({ action = defaultOnPress(), customStyle }: PropsBurgerMenuIcon) => {
     return (
-      <Icon
-          containerStyle={[
-              DEFAULT_CONTAINER_STYLE
-            , customStyle]}
-          Component={TouchableScale}
-          name='menu'
-          type='simple-line-icons'
-          size={35}
-          color='#444'
-          onPress={action}
-      />
+        <Icon
+            containerStyle={[
+                DEFAULT_CONTAINER_STYLE
+                , customStyle]}
+            Component={TouchableScale}
+            name='menu'
+            type='simple-line-icons'
+            size={35}
+            color='#444'
+            onPress={action}
+        />
     );
 };
 

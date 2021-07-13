@@ -106,9 +106,7 @@ const PublicGroupsSceneTab = () => {
             <CommonTopSearchBar
                 customStyleContainer={{ marginLeft: 0 }}
                 placeholder={translate('groups.searchBar.placeholderPublicGroups')}
-                cancelSearch={() => {
-                    console.log('Search Cancel');
-                }}
+                cancelSearch={() => {}}
                 onEndEditingSearch={handleEndSearch}
             />
             <CommonFlatList

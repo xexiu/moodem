@@ -7,7 +7,7 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import useGroupForm from '../../../components/User/custom-hooks/useGroupForm';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { btnStyleDefault } from '../../../src/css/styles/customButton';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 import { createGroupHandler } from '../../../src/js/Utils/Helpers/actions/groups';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
@@ -34,7 +34,7 @@ const CreateNewGroupScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            ...COMMON_NAVIGATION_OPTIONS,
+            ...NavigationOptions(navigation),
             title: `${translate('groups.createGroup.title')}`
         });
     }, []);

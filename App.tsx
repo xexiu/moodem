@@ -15,7 +15,7 @@ import NotificationsService from './NotificationsService';
 import { RNLocalize, setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
-// sentryInit();
+sentryInit();
 
 const controller = new AbortController();
 LogBox.ignoreAllLogs();
@@ -55,9 +55,7 @@ class App extends PureComponent<{}, AppState> {
         );
     }
 
-    onNotif = (notif: any) => {
-        console.log('Notification Clicked', notif.title, notif.message);
-    };
+    onNotif = (notif: any) => {};
 
     handleConnectivityChange = (connection: any) => {
         this.setState({
@@ -145,8 +143,6 @@ class App extends PureComponent<{}, AppState> {
                 </BodyContainer>
             );
         }
-
-        console.log('HEYYY');
 
         return (
             <MainContainer>

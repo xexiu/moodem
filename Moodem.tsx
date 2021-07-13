@@ -37,8 +37,6 @@ const App = function Moodem() {
     const toastRef = useRef() as any;
 
     useEffect(() => {
-        console.log('1. ON EFFECT Moodem');
-
         initMoodem();
 
         return () => {

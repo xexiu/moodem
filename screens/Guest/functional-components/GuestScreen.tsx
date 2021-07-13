@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import BgImage from '../../../components/common/functional-components/BgImage';
 import Login from '../../../components/Guest/functional-components/Login';
 import Register from '../../../components/Guest/functional-components/Register';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 
 const GuestScreen = (props: any) => {
     const { navigation } = props;
@@ -15,7 +15,7 @@ const GuestScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            ...COMMON_NAVIGATION_OPTIONS,
+            ...NavigationOptions(navigation),
             headerShown: false
         });
         return () => {

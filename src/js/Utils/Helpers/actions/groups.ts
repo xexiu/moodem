@@ -96,7 +96,6 @@ export async function deleteGroupForEver(group: any) {
 
 export async function createGroupHandler (validate: any, user: any) {
     if (validate.name === 'Moodem') {
-        console.log('Group Name Moodem is reserved', 'Error: ', validate.group_name);
         return;
     }
 

@@ -28,9 +28,7 @@ export default class NotificationsService {
             }
         });
 
-        PushNotification.getChannels((channels) => {
-            console.log(channels);
-        });
+        PushNotification.getChannels((channels) => {});
     }
 
     configure() {
@@ -42,11 +40,11 @@ export default class NotificationsService {
             onNotification: this.onNotification.bind(this), // handler.onNotification.bind(handler),
 
     // (optional) Called when Action is pressed (Android)
-            onAction: () => console.log('onAction NotificationsService'), // handler.onAction.bind(handler),
+            onAction: () => {}, // handler.onAction.bind(handler),
 
     // tslint:disable-next-line:max-line-length
     // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-            onRegistrationError: () => console.log('onRegistrationError NotificationsService'), // handler.onRegistrationError.bind(handler),
+            onRegistrationError: () => {}, // handler.onRegistrationError.bind(handler),
 
     // IOS ONLY (optional): default: all - Permissions to register.
             permissions: {

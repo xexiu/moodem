@@ -41,7 +41,6 @@ const Songs = () => {
         }
 
         return () => {
-            console.log('OFF SONGS');
             socket.off('emit-message-welcomeMsg', getWelcomeMsg);
             socket.off('get-message-welcomeMsg', getWelcomeMsg);
             socket.off('send-song-error', getSongWithError);

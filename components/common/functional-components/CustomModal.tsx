@@ -8,7 +8,7 @@ import Modal from 'react-native-modal';
 const CustomModal = forwardRef((props: any, ref: any) => {
     const {
         showRemoveIcon = true,
-        onBackdropPress = console.log('Modal Pressed outside view'),
+        onBackdropPress = () => {},
         action = onBackdropPress,
         onModalHide
     } = props;

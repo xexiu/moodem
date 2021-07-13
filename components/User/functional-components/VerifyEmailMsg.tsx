@@ -10,7 +10,7 @@ const handleVerifyMsg = () => Alert.alert(
     'Please check your email for the confirmation link.',
     null,
     [
-        { text: 'OK', onPress: () => console.log('Pressed OK') }
+        { text: 'OK', onPress: () => {} }
     ],
     { cancelable: false }
 );

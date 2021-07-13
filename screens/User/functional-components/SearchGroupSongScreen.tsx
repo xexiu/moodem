@@ -2,7 +2,7 @@ import React, { memo, useContext, useEffect, useRef } from 'react';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { AppContext } from '../../../components/User/store-context/AppContext';
-import { COMMON_NAVIGATION_OPTIONS } from '../../../src/js/Utils/constants/navigation';
+import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 
 const SearchGroupSongScreen = (props: any) => {
     const { navigation } = props;
@@ -11,7 +11,7 @@ const SearchGroupSongScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            ...COMMON_NAVIGATION_OPTIONS,
+            ...NavigationOptions(navigation),
             title: `Lista Canciones: ${group.group_name}`
         });
         toastRef.current.show('Próximamente...', DURATION.FOREVER);

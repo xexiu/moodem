@@ -9,7 +9,7 @@ export const LeaveGroupIcon = (group: any, callback: Function) => {
             [
                 {
                     text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
+                    onPress: () => {},
                     style: 'cancel'
                 },
                 {
