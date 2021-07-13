@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		778B69E3DCF36B38284B161D /* libPods-moodem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D43FF9D506E70904424FA7E9 /* libPods-moodem.a */; };
+		AA23CACF269DECA300ED3B86 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA23CACE269DECA200ED3B86 /* HomeKit.framework */; };
 		AA27079D2686964300AD04B5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA27079C2686964300AD04B5 /* StoreKit.framework */; };
 		AA9276902694CDED00F5A494 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA92768F2694CDED00F5A494 /* GoogleService-Info.plist */; };
 		AAD9B89A25F2786100DB2039 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = AAD9B89925F2786100DB2039 /* main.jsbundle */; };
@@ -43,6 +44,7 @@
 		7560B744626E4AAAB09B2761 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		8AC623DBF3A3E2CB072F81F2 /* Pods-moodem.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-moodem.release.xcconfig"; path = "Target Support Files/Pods-moodem/Pods-moodem.release.xcconfig"; sourceTree = "<group>"; };
 		AA0CCF2C2684086D00581AF1 /* libCocoaAsyncSocket.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libCocoaAsyncSocket.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA23CACE269DECA200ED3B86 /* HomeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HomeKit.framework; path = System/Library/Frameworks/HomeKit.framework; sourceTree = SDKROOT; };
 		AA27079C2686964300AD04B5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		AA27079E2686966100AD04B5 /* Moodem.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Moodem.entitlements; path = moodem/Moodem.entitlements; sourceTree = "<group>"; };
 		AA92768F2694CDED00F5A494 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "moodem/GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA23CACF269DECA300ED3B86 /* HomeKit.framework in Frameworks */,
 				778B69E3DCF36B38284B161D /* libPods-moodem.a in Frameworks */,
 				AA27079D2686964300AD04B5 /* StoreKit.framework in Frameworks */,
 			);
@@ -87,6 +90,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA23CACE269DECA200ED3B86 /* HomeKit.framework */,
 				AA27079C2686964300AD04B5 /* StoreKit.framework */,
 				AA0CCF2C2684086D00581AF1 /* libCocoaAsyncSocket.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
@@ -396,7 +400,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = moodem/Moodem.entitlements;
-				CURRENT_PROJECT_VERSION = 0.8;
+				CURRENT_PROJECT_VERSION = 0.9;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = F75SA5C83A;
 				"DEVELOPMENT_TEAM[sdk=*]" = F75SA5C83A;
@@ -421,7 +425,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = moodem/Moodem.entitlements;
-				CURRENT_PROJECT_VERSION = 0.8;
+				CURRENT_PROJECT_VERSION = 0.9;
 				DEVELOPMENT_TEAM = F75SA5C83A;
 				INFOPLIST_FILE = moodem/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

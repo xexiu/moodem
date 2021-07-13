@@ -5,7 +5,8 @@ import { View } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import MusicControl, { Command } from 'react-native-music-control';
 import Video from 'react-native-video';
-import convertToProxyURL from 'react-native-video-cache';
+// tslint:disable-next-line:max-line-length
+// import convertToProxyURL from 'react-native-video-cache'; <-- Issue with external playing (For example Samsung TV) song is not loading - On Local, everything works fine (emulator)
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
@@ -144,6 +145,7 @@ const BasePlayer = (props: any) => {
                 ref={toastRef}
             />
             <Video
+                minLoadRetryCount={5} // retry 5 times
                 pictureInPicture
                 onFullscreenPlayerWillDismiss={() => {
                     return basePlayer.current.setNativeProps({
@@ -161,7 +163,7 @@ const BasePlayer = (props: any) => {
                     width: 100,
                     height: 100
                 }}
-                source={{ uri: convertToProxyURL(item.url) }}
+                source={{ uri: item.url }}
                 ref={basePlayer}
                 volume={1.0}
                 muted={false}
