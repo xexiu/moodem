@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 
 const FIVE_SECODS = 5000;
