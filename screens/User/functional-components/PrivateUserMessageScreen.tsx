@@ -24,7 +24,7 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
         ...NavigationOptions(navigation),
         title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{prevMessage.user.name}</Text></View>)
     };
-    const { user, group, socket, isServerError, notificationsManager }: any = useContext(AppContext);
+    const { user, group, socket, isServerError }: any = useContext(AppContext);
     const split = `${user.uid}--with--${prevMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
