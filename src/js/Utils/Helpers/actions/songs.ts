@@ -77,12 +77,12 @@ const allSettled = (promises: any) => {
 async function getSongsOrCache(videoIds: any) {
     try {
         return await allSettled(videoIds.map(async (videoId: string) => {
-            const audioCached = await loadFromLocalStorage(`__youtubeSongs__${videoId}`);
+            const audioCached = await loadFromLocalStorage(`youtubeSongs-${videoId}`);
             if (audioCached) {
                 return audioCached;
             }
             const audio = await getSong(videoId);
-            await saveOnLocalStorage(`__youtubeSongs__${videoId}`, audio);
+            await saveOnLocalStorage(`youtubeSongs-${videoId}`, audio);
             return audio;
         }));
     } catch (error) {
