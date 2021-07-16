@@ -5,6 +5,28 @@ import { loadFromLocalStorage, saveOnLocalStorage } from '../../../Utils/common/
 import { OPTIONS } from '../../constants/extractor';
 import { database, storage } from '../services/firebase';
 
+export function setExtraAttrs(audios: any, uid: string, isSearching = false) {
+    const audiosArr = [] as any;
+
+    audios.forEach((track: any) => {
+        Object.assign(track, {
+            id: track.id,
+            isSearching,
+            isPlaying: false,
+            isMediaOnList: false,
+            boosts_count: 0,
+            voted_users: [],
+            boosted_users: [],
+            user: {
+                uid
+            }
+        });
+        audiosArr.push(track);
+    });
+
+    return audiosArr;
+}
+
 function cleanTitle(title: string) {
     let sanitizeTitle = '';
 

@@ -10,6 +10,7 @@ import { SongsContext } from '../../../components/User/store-context/SongsContex
 import { checkIfAlreadyOnList } from '../../../src/js/Utils/common/checkers';
 import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
 import { getAllSongs } from '../../../src/js/Utils/Helpers/actions/songs';
+import { setExtraAttrs } from '../../../src/js/Utils/Helpers/actions/songs';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const SearchSongScreen = (props: any) => {
@@ -17,7 +18,7 @@ const SearchSongScreen = (props: any) => {
         chatRoom,
         searchedText
     } = props.route.params;
-    const { socket } = useContext(AppContext) as any;
+    const { user, socket } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs
@@ -76,7 +77,7 @@ const SearchSongScreen = (props: any) => {
         return setAllValues(prevValues => {
             return {
                 ...prevValues,
-                songs: [...songsYT],
+                songs: [...setExtraAttrs(songsYT, user.uid, true)],
                 indexItem: 0,
                 isLoading: false
             };
