@@ -24,7 +24,7 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
         ...NavigationOptions(navigation),
         title: (<View style={isOnline()}><Text style={{ color: '#999' }}>{prevMessage.user.name}</Text></View>)
     };
-    const { user, group, socket, isServerError }: any = useContext(AppContext);
+    const { user, group, socket, isServerError, notificationsManager }: any = useContext(AppContext);
     const split = `${user.uid}--with--${prevMessage.user._id}`.split('--with--');
     const unique = [...new Set(split)].sort((a, b) => (a < b ? -1 : 1));
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}_${unique[0]}--with--${unique[1]}`;
@@ -79,6 +79,25 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
         );
     }
 
+    function setBadge(message: any) {
+        if (messages.length) {
+            const lastMsg = messages[0];
+            const badge = lastMsg.badge ? lastMsg.badge + 1 : 0;
+
+            Object.assign(message, {
+                badge
+            });
+        } else {
+            Object.assign(message, {
+                badge: 1
+            });
+        }
+        socket.emit('push-notification-received-msg', {
+            user_receiver_msg: prevMessage,
+            user_sender_msg: message
+        });
+    }
+
     return (
         <BodyContainer>
             <MemoizedChat
@@ -88,30 +107,14 @@ const PrivateUserMessageScreen = (props: PropsPrivateMessageUserScreen) => {
                 user={user}
                 onChangeTextBtn={(attrs: any) => <SendBtnChat attrs={attrs} />}
                 sendMsgBtn={(message: any) => {
-                    // Check if users connected = 1
-                    // then add bad increase
-                    // then emit push notification
                     if (connectedUsers === 1 && hasPushPermission()) {
-                        Object.assign(message, {
-                            msg: {
-                                badge: messages[0].badge ? messages[0].badge++ : 0
-                            }
-                        });
-                        socket.emit('push-notification-received-msg', {
-                            user_receiver_msg: prevMessage,
-                            user_sender_msg: messages[0]
-                        });
+                        setBadge(message);
                     } else if (connectedUsers === 2) {
+                        // Reset Badge
                         Object.assign(message, {
-                            msg: {
-                                badge: 0
-                            }
+                            badge: 0
                         });
                     }
-
-                    // if users connected = 2
-                    // then reset badge to 0
-                    // dont emit
                     return sendMsg(socket, user, message, chatRoom);
                 }}
                 disablePressAvatar={true}

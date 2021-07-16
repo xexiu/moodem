@@ -17,7 +17,7 @@ let lastDataLength = 0;
 let isFirstLanding = true;
 
 const Songs = () => {
-    const { group, isServerError, socket, user, deviceConfigPushNotif } = useContext(AppContext) as any;
+    const { group, isServerError, socket, user } = useContext(AppContext) as any;
     const {
         dispatchContextSongs,
         songs,

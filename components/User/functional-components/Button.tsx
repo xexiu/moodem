@@ -3,20 +3,20 @@ import { Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 type propsButton = {
-    containerStyle: object,
-    disabled: boolean,
-    text: string | number,
-    iconName: string,
-    iconType: string,
-    iconColor: string,
-    iconSize: number,
-    iconReverse: boolean,
-    iconStyle: object,
-    action: any,
-    disabledStyle: object,
-    textStyle: object,
-    iconColorDisabled: string,
-    iconRaised: boolean
+    containerStyle?: object,
+    disabled?: boolean,
+    text?: string | number,
+    iconName?: string,
+    iconType?: string,
+    iconColor?: string,
+    iconSize?: number,
+    iconReverse?: boolean,
+    iconStyle?: object,
+    action?: any,
+    disabledStyle?: object,
+    textStyle?: object,
+    iconColorDisabled?: string,
+    iconRaised?: boolean
 };
 
 const Button = (props: propsButton) => {

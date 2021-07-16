@@ -2,18 +2,28 @@ import { useIsFocused } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
+import { isEmulator } from 'react-native-device-info';
 import { GiftedChat } from 'react-native-gifted-chat';
+import PushNotification from 'react-native-push-notification';
+import NotificationsService from '../../../NotificationsService';
+
 import { AppContext } from '../store-context/AppContext';
 
-function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
+function useChatMessages(chatRoom: string | any, navigationOptions?: any, onRegister?: any, onNotification?: any) {
     const { socket, isServerError }: any = useContext(AppContext);
     const [allValues, setValues] = useState({
         messages: [],
         connectedUsers: 0,
-        isLoading: true
+        isLoading: true,
+        deviceConfig: null,
+        notificationClicked: null
     });
     const isFocused = useIsFocused();
     const navigation = useNavigation();
+    const notifications = new NotificationsService(
+        onRegister || _onRegister,
+        onNotification || _onNotification
+    );
 
     useEffect(() => {
         if (navigationOptions) {
@@ -31,6 +41,7 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
             socket.on('set-chat-messages', getMessageList);
             socket.on('set-chat-message', getMessage);
             socket.on('users-connected-to-room', setConnectedUsers);
+            PushNotification.unregister();
         }
         return () => {
             if (isFocused) {
@@ -45,6 +56,32 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
             }
         };
     }, [isFocused, isServerError]);
+
+    function _onRegister(deviceConfig: any) {
+        notifications.checkPermission((data: any) => {
+            if (data) {
+                Object.assign(deviceConfig, {
+                    hasPushPermissions: data.authorizationStatus > 1 ? true : false
+                });
+            }
+            setValues(prev => {
+                return {
+                    ...prev,
+                    deviceConfig,
+                    isLoading: false
+                };
+            });
+        });
+    }
+
+    function _onNotification(notif: any) {
+        return setValues(prev => {
+            return {
+                ...prev,
+                notificationClicked: notif
+            };
+        });
+    }
 
     function getInactiveUsers(data: any) {
         if (data !== 'active') {
@@ -65,11 +102,13 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
         });
     }
 
-    function getMessageList(messagesList: never[]) {
+    async function getMessageList(messagesList: never[]) {
+        const _isEmulator = await isEmulator();
+
         return setValues(prev => {
             return {
                 ...prev,
-                isLoading: false,
+                isLoading: _isEmulator ? false : true,
                 messages: [...messagesList]
             };
         });
@@ -84,7 +123,13 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any) {
         });
     }
 
-    return { isLoading: allValues.isLoading, messages: allValues.messages, connectedUsers: allValues.connectedUsers };
+    return {
+        isLoading: allValues.isLoading,
+        messages: allValues.messages,
+        connectedUsers: allValues.connectedUsers,
+        deviceConfig: allValues.deviceConfig,
+        notificationClicked: allValues.notificationClicked
+    };
 }
 
 export default useChatMessages;

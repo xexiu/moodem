@@ -18,3 +18,23 @@ export function isNothing(obj: object) {
 export function getKeyNumber(obj: object, number = 0 as number) {
     return get(keys(obj), number);
 }
+
+export function checkIfValidPromise(song: any, songConverted: any) {
+    if (song.status !== 'rejected' && Object.keys(song.value).length) {
+        songConverted.push(song.value);
+        return true;
+    }
+    return false;
+}
+
+export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
+    songs.filter((song: any) => {
+        return !searchedSongs.some((searchedSong: any) => {
+            if (song.id === searchedSong.id && song.isMediaOnList) {
+                Object.assign(searchedSong, {
+                    isMediaOnList: true
+                });
+            }
+        });
+    });
+}

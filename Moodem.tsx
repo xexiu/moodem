@@ -32,7 +32,7 @@ function getUserUidAndName(user: any) {
     return `uid=${guestUID}&displayName=Guest`;
 }
 const App = function Moodem() {
-    const { dispatchContextApp, user, isLoading, deviceConfig }: any = useContext(AppContext);
+    const { dispatchContextApp, user, isLoading }: any = useContext(AppContext);
     const { setSocket } = useAppState();
     const toastRef = useRef() as any;
 
@@ -59,9 +59,7 @@ const App = function Moodem() {
                 return dispatchContextApp({
                     type: 'user_groups',
                     value: {
-                        user: Object.assign(_user, {
-                            deviceConfig
-                        }),
+                        user: _user,
                         groups,
                         group: Object.assign(group, {
                             group_songs: group.group_songs || []

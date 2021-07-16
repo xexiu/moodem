@@ -96,7 +96,7 @@ const MemoizedChat = (props: PropsMemoizedChat) => {
             user={{
                 _id: user.uid,
                 name: user.displayName,
-                avatar: user.avatar
+                avatar: user.photoURL || ''
             }}
         />
     );

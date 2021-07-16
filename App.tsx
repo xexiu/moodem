@@ -2,7 +2,6 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import React, { PureComponent } from 'react';
 import { LogBox } from 'react-native';
-import { isEmulator } from 'react-native-device-info';
 import { ErrorBoundary } from './components/common/class-components/ErrorBoundary';
 import BgImage from './components/common/functional-components/BgImage';
 import { BodyContainer } from './components/common/functional-components/BodyContainer';
@@ -11,7 +10,6 @@ import { OfflineNotice } from './components/common/functional-components/Offline
 import PreLoader from './components/common/functional-components/PreLoader';
 import { AppContextProvider } from './components/User/store-context/AppContext';
 import Moodem from './Moodem';
-import NotificationsService from './NotificationsService';
 import { RNLocalize, setI18nConfig } from './src/js/Utils/Helpers/actions/translationHelpers';
 import { sentryInit } from './src/js/Utils/Helpers/services/sentry';
 
@@ -26,11 +24,9 @@ LogBox.ignoreLogs([
 
 type AppState = {
     hasInternetConnection: boolean;
-    deviceConfig: any,
     isLoading: boolean
 };
 class App extends PureComponent<{}, AppState> {
-    notifications: NotificationsService;
     netinfoUnsubscribe: any;
 
     constructor(props: any) {
@@ -43,19 +39,11 @@ class App extends PureComponent<{}, AppState> {
         super(props);
         this.state = {
             hasInternetConnection: true,
-            deviceConfig: null,
             isLoading: true
         };
 
         setI18nConfig();
-
-        this.notifications = new NotificationsService(
-            this.onRegister.bind(this),
-            this.onNotif.bind(this)
-        );
     }
-
-    onNotif = (notif: any) => {};
 
     handleConnectivityChange = (connection: any) => {
         this.setState({
@@ -69,41 +57,9 @@ class App extends PureComponent<{}, AppState> {
         this.forceUpdate();
     };
 
-    onRegister = (token: any) => {
-        this.setState({
-            deviceConfig: token
-        }, () => {
-            this.notifications.checkPermission((data: any) => {
-                if (data) {
-                    Object.assign(this.state.deviceConfig, {
-                        hasPushPermissions: data.authorizationStatus > 1 ? true : false
-                    });
-                }
-                this.commonInit();
-            });
-        });
-    };
-
-    commonInit() {
+    componentDidMount() {
         this.netinfoUnsubscribe = NetInfo.addEventListener(this.handleConnectivityChange);
         RNLocalize.addEventListener('change', this.handleLocalizationChange);
-    }
-
-    async init() {
-        try {
-            const _isEmulator = await isEmulator();
-            if (_isEmulator) {
-                this.commonInit();
-            } else {
-                this.notifications._onRegister.bind(this.onRegister);
-            }
-        } catch (error) {
-            console.error('Error Init App', error);
-        }
-    }
-
-    componentDidMount() {
-        this.init();
     }
 
     componentWillUnmount() {
@@ -119,8 +75,7 @@ class App extends PureComponent<{}, AppState> {
     render() {
         const {
             hasInternetConnection,
-            isLoading,
-            deviceConfig
+            isLoading
         } = this.state;
 
         if (!hasInternetConnection) {
@@ -147,10 +102,7 @@ class App extends PureComponent<{}, AppState> {
         return (
             <MainContainer>
                 <ErrorBoundary>
-                    <AppContextProvider
-                        deviceConfig={deviceConfig}
-                        notificationsManager={this.notifications}
-                    >
+                    <AppContextProvider>
                         <Moodem />
                     </AppContextProvider>
                 </ErrorBoundary>

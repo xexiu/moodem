@@ -1,18 +1,110 @@
 // @ts-ignore
 import ytdl from 'react-native-ytdl';
-import { hasObjWithProp, isEmpty } from '../../../Utils/common/checkers';
+import { checkIfValidPromise, hasObjWithProp, isEmpty } from '../../../Utils/common/checkers';
+import { loadFromLocalStorage, saveOnLocalStorage } from '../../../Utils/common/storageConfig';
+import { OPTIONS } from '../../constants/extractor';
 import { database, storage } from '../services/firebase';
 
-export function checkIfAlreadyOnList(songs: string[], searchedSongs: string[]) {
-    songs.filter((song: any) => {
-        return !searchedSongs.some((searchedSong: any) => {
-            if (song.id === searchedSong.id && song.isMediaOnList) {
-                Object.assign(searchedSong, {
-                    isMediaOnList: true
-                });
-            }
-        });
+function cleanTitle(title: string) {
+    let sanitizeTitle = '';
+
+    if (title) {
+        sanitizeTitle = title
+            .replace('(Official Music Video)', '')
+            .replace('(Official Video)', '');
+        return sanitizeTitle;
+    }
+    return sanitizeTitle;
+}
+
+function deleteObjAttrsExcept(object: any, exceptAttr: any) {
+    // eslint-disable-next-line no-param-reassign
+    Object.keys(object).forEach((attr) => attr !== exceptAttr && delete object[attr]);
+}
+
+function assignAttrs(object: any, attrs: any) {
+    return Object.assign(object, {
+        id: attrs.videoId || 'No Song ID',
+        title: cleanTitle(attrs.title) || 'No Song title',
+        author: {
+            name: attrs.author.name || 'Anonymous Author',
+            user: attrs.author.user || 'No Author User',
+            id: attrs.author.id || 'No Author ID'
+        },
+        averageRating: attrs.averageRating || 0,
+        category: attrs.category || 'No Category',
+        description: attrs.description || 'No Description',
+        keywords: attrs.keywords || [],
+        likes: attrs.likes || 0,
+        viewCount: attrs.viewCount || '0',
+        duration: attrs.lengthSeconds || '0',
+        thumbnail: attrs.thumbnails ? attrs.thumbnails[0].url : 'No image'
     });
+}
+
+export async function getSong(videoId: string) {
+    try {
+        // await getStreamBuffers(videoId);
+        const audioYT = await ytdl.getInfo(videoId, OPTIONS); // await getSongInfo(videoId);
+        // eslint-disable-next-line max-len
+        // await getSongInfo(videoId);
+        // eslint-disable-next-line max-len
+        // tslint:disable-next-line:max-line-length
+        // const formats = audioYT.formats.filter((format) => format.acodec !== 'none' && format.vcodes !== 'none' && format.container === 'm4a_dash');
+        const formats = audioYT.formats.filter((format: any) => format.hasAudio && format.hasVideo && format.container === 'mp4' && !format.isLive);
+
+        if (formats && formats.length) {
+            const audio = formats[0];
+            deleteObjAttrsExcept(audio, 'url');
+            assignAttrs(audio, audioYT.videoDetails);
+            return { ...audio };
+        }
+        return {};
+    } catch (error) {
+        console.error('Error converting getSong', error);
+    }
+
+    return {};
+}
+
+const allSettled = (promises: any) => {
+    return Promise.all(promises.map((promise: any) => promise
+        .then((value: any) => ({ state: 'fulfilled', value }))
+        .catch((reason: any) => ({ state: 'rejected', reason }))
+    ));
+};
+
+async function getSongsOrCache(videoIds: any) {
+    try {
+        return await allSettled(videoIds.map(async (videoId: string) => {
+            const audioCached = await loadFromLocalStorage(`__youtubeSongs__${videoId}`);
+            if (audioCached) {
+                return audioCached;
+            }
+            const audio = await getSong(videoId);
+            await saveOnLocalStorage(`__youtubeSongs__${videoId}`, audio);
+            return audio;
+        }));
+    } catch (error) {
+        console.error('Error getSongsOrCache', error);
+    }
+    return {};
+}
+
+export async function getAllSongs(videoIds: any) {
+    const songsCoverted = [] as any;
+    try {
+        const songs = await getSongsOrCache(videoIds) as any;
+
+        if (songs && Object.keys(songs).length) {
+            songs.filter((song: any) => checkIfValidPromise(song, songsCoverted), songsCoverted);
+        }
+
+        return songsCoverted;
+    } catch (error) {
+        console.error('Error getAllSongs', error);
+    }
+    return songsCoverted;
 }
 
 export async function saveSongOnDb(song: any, user: any, group: any) {

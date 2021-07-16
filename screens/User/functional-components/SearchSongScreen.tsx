@@ -7,8 +7,9 @@ import PreLoader from '../../../components/common/functional-components/PreLoade
 import { MediaListEmpty } from '../../../components/User/functional-components/MediaListEmpty';
 import { AppContext } from '../../../components/User/store-context/AppContext';
 import { SongsContext } from '../../../components/User/store-context/SongsContext';
+import { checkIfAlreadyOnList } from '../../../src/js/Utils/common/checkers';
 import { NavigationOptions } from '../../../src/js/Utils/Helpers/actions/navigation';
-import { checkIfAlreadyOnList } from '../../../src/js/Utils/Helpers/actions/songs';
+import { getAllSongs } from '../../../src/js/Utils/Helpers/actions/songs';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 
 const SearchSongScreen = (props: any) => {
@@ -67,14 +68,15 @@ const SearchSongScreen = (props: any) => {
         });
     }
 
-    function getSongs(data: any) {
-        checkIfAlreadyOnList(songs, data.songs);
-        navigation.setOptions({ title: `${data.songs.length} ${translate('songs.searchBar.placeholderFound')}` });
+    async function getSongs({ videoIds}: any) {
+        const songsYT = await getAllSongs(videoIds);
+        checkIfAlreadyOnList(songs, songsYT);
+        navigation.setOptions({ title: `${songsYT.length} ${translate('songs.searchBar.placeholderFound')}` });
 
         return setAllValues(prevValues => {
             return {
                 ...prevValues,
-                songs: [...data.songs],
+                songs: [...songsYT],
                 indexItem: 0,
                 isLoading: false
             };

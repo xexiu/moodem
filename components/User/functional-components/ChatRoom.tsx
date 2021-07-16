@@ -1,5 +1,7 @@
 import React, { memo, useContext, useState } from 'react';
 import { Keyboard } from 'react-native';
+import { isEmulator } from 'react-native-device-info';
+import NotificationsService from '../../../NotificationsService';
 import { sendMsg } from '../../../src/js/Utils/Helpers/connection/socket';
 import { BodyContainer } from '../../common/functional-components/BodyContainer';
 import BurgerMenuIcon from '../../common/functional-components/BurgerMenuIcon';
@@ -19,7 +21,13 @@ const ChatRoom = (props: PropsChat) => {
     const [unreadMsgs, setUnreadMsgs] = useState({});
     const { navigation } = props;
     const chatRoom = `ChatRoom-GroupId_${group.group_id}_GroupName_${group.group_name}`;
-    const { isLoading, messages, connectedUsers } = useChatMessages(chatRoom);
+    const { isLoading, deviceConfig, messages, connectedUsers } = useChatMessages(chatRoom, null, null, null);
+
+    // function onNotification({ data }: any) {
+    //     console.log('NOTIIIF');
+    //     const { userSender } = data;
+    //     return onPressAvatar(userSender);
+    // }
 
     /* TO-DO */
     // Get unread messages from sender
@@ -55,7 +63,7 @@ const ChatRoom = (props: PropsChat) => {
                     messages={messages}
                     user={user}
                     onChangeTextBtn={(attrs: any) => <SendBtnChat attrs={attrs} />}
-                    sendMsgBtn={(message: any) => sendMsg(socket, user, message, chatRoom)}
+                    sendMsgBtn={(message: any) => sendMsg(socket, user, message, chatRoom, deviceConfig)}
                     onPressAvatar={onPressAvatar}
                 />
             }

@@ -34,7 +34,7 @@ const Avatars = (props: any) => {
                 return setUrls(avatarsUrlsFromStorage);
             }
             const urls = await getAllRandomUserAvatars();
-            await saveOnLocalStorage('randomUserAvatars', urls, null);
+            await saveOnLocalStorage('randomUserAvatars', urls);
             setUrls(urls);
             setIsLoading(false);
         } catch (error) {
