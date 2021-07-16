@@ -41,10 +41,12 @@ function useChatMessages(chatRoom: string | any, navigationOptions?: any, onRegi
             socket.on('set-chat-messages', getMessageList);
             socket.on('set-chat-message', getMessage);
             socket.on('users-connected-to-room', setConnectedUsers);
-            PushNotification.unregister();
         }
         return () => {
             if (isFocused) {
+                PushNotification.unregister();
+                PushNotification.cancelAllLocalNotifications();
+                PushNotification.clearAllNotifications();
                 socket.off('set-chat-messages', getMessageList);
                 socket.off('set-chat-message', getMessage);
                 socket.off('users-connected-to-room', setConnectedUsers);
