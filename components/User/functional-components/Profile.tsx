@@ -3,6 +3,7 @@ import React, { useContext, useRef } from 'react';
 import { ScrollView } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import PushNotification from 'react-native-push-notification';
 import { BodyContainer } from '../../../components/common/functional-components/BodyContainer';
 import { translate } from '../../../src/js/Utils/Helpers/actions/translationHelpers';
 import { logOut } from '../../../src/js/Utils/Helpers/actions/users';
@@ -22,6 +23,7 @@ const Profile = (props: any) => {
 
     async function handleLogOut() {
         await logOut();
+        PushNotification.abandonPermissions();
         await dispatchContextApp({
             type: 'guest',
             value: {
