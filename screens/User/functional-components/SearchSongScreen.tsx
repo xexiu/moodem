@@ -72,12 +72,13 @@ const SearchSongScreen = (props: any) => {
     async function getSongs({ videoIds}: any) {
         const songsYT = await getAllSongs(videoIds);
         checkIfAlreadyOnList(songs, songsYT);
+        const audios = setExtraAttrs(songsYT, user.uid, true);
         navigation.setOptions({ title: `${songsYT.length} ${translate('songs.searchBar.placeholderFound')}` });
 
         return setAllValues(prevValues => {
             return {
                 ...prevValues,
-                songs: [...setExtraAttrs(songsYT, user.uid, true)],
+                songs: [...audios],
                 indexItem: 0,
                 isLoading: false
             };
