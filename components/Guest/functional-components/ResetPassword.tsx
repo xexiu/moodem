@@ -41,7 +41,7 @@ const ResetPassword = () => {
                 setErrorText('Email enviado correctamente!');
                 setIsLoading(false);
             } catch (error) {
-                console.error('ResetPassword Error', error);
+                console.warn('ResetPassword Error', error);
                 setIsLoading(false);
                 if (error.code === 'auth/wrong-password') {
                     setErrorText(translate('login.wrongPassword'));

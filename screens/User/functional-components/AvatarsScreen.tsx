@@ -38,7 +38,7 @@ const Avatars = (props: any) => {
             setUrls(urls);
             setIsLoading(false);
         } catch (error) {
-            console.error('getAllRandomAvatars Error', error);
+            console.warn('getAllRandomAvatars Error', error);
         }
     }
 

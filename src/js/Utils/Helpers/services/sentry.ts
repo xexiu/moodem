@@ -8,7 +8,7 @@ export const sentryInit = () => Sentry.init({
     debug: __DEV__ ? false : false,
     integrations: [
         new CaptureConsole({
-            levels: ['error']
+            levels: ['error', 'warn']
         }),
         new Sentry.ReactNativeTracing({
             tracingOrigins: ['localhost', 'my-site-url.com', /^\//],

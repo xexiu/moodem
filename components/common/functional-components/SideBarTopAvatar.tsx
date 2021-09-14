@@ -6,9 +6,7 @@ import { avatarContainer, avatarImage } from '../../../src/css/styles/avatar';
 import { USER_AVATAR_DEFAULT } from '../../../src/js/Utils/constants/users';
 
 type propsSideBarTopAvatar = {
-    navigation: any,
-    user: object,
-    group: object
+    navigation: any
 };
 
 const SideBarTopAvatar = (props: propsSideBarTopAvatar) => {

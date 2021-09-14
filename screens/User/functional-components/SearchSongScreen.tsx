@@ -34,6 +34,7 @@ const SearchSongScreen = (props: any) => {
 
     useEffect(() => {
         navigation.setOptions({
+            headerShown: false,
             ...NavigationOptions(navigation),
             title: `${allValues.songs.length} ${translate('songs.searchBar.placeholderFound')}`
         });

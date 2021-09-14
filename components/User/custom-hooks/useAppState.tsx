@@ -40,10 +40,10 @@ function useAppState() {
     };
 
     useEffect(() => {
-        AppState.addEventListener('change', _handleAppStateChange);
+        const state = AppState.addEventListener('change', _handleAppStateChange);
 
         return () => {
-            AppState.removeEventListener('change', _handleAppStateChange);
+            state.remove();
         };
     }, [socket]);
     return { setSocket };

@@ -14,8 +14,6 @@ target 'moodem' do
     :hermes_enabled => false
   )
 
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '7.0.0'
-
   # React Native and its dependencies
   pod 'FBLazyVector', :path => "#{rnPrefix}/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "#{rnPrefix}/React/FBReactNativeSpec"

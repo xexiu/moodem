@@ -14,7 +14,8 @@
                 "safe": false,
                 "allowUndefined": false
             }
-        ]
+        ],
+        "react-native-reanimated/plugin"
     ],
     "env": {
         "production": {

@@ -10,7 +10,7 @@ export async function updateProfile(_auth: any, data: any) {
             photoURL: USER_AVATAR_DEFAULT
         });
     } catch (error) {
-        console.error('updateProfile Error', error);
+        console.warn('updateProfile Error', error);
         console.warn(`Code: ${error}`);
     }
 }
@@ -25,7 +25,7 @@ export async function saveNewUserOnDB(user: any, validate: any) {
             photoURL: user.photoURL
         });
     } catch (error) {
-        console.error('saveNewUserOnDB Error', error);
+        console.warn('saveNewUserOnDB Error', error);
         console.warn('error saving on DB ', error);
     }
 }
@@ -41,7 +41,7 @@ export async function getAllRandomUserAvatars() {
                 urls.push(url);
             }
         } catch (error) {
-            console.error('getAllRandomUserAvatars Error', error);
+            console.warn('getAllRandomUserAvatars Error', error);
         }
     }
     return urls;
@@ -51,6 +51,6 @@ export async function logOut() {
     try {
         await auth().signOut();
     } catch (error) {
-        console.error('logOut Error', error);
+        console.warn('logOut Error', error);
     }
 }

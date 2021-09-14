@@ -26,12 +26,18 @@ const SideBarDrawer = (props: any) => {
 
     return (
         <Drawer.Navigator
-            drawerContentOptions={{
-                activeTintColor: '#dd0031',
-                itemStyle: { marginVertical: 0 }
+            screenOptions={{
+                headerShown: false,
+                drawerStyle: {
+                    width: 240
+                },
+                drawerItemStyle: {
+                    marginVertical: 0,
+                    paddingVertical: 0
+                },
+                drawerType: 'slide'
             }}
             initialRouteName={group.group_name}
-            drawerType='slide'
             drawerContent={(_props) => itemsDrawer({ ..._props })}
         >
             <Drawer.Screen name={group.group_name} component={WelcomeLanding} />

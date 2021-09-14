@@ -151,7 +151,7 @@ const SearchGroupsScreen = (props: any) => {
             await dispatchContextSongs({ type: 'reset_all' });
             return navigation.goBack();
         } catch (error) {
-            console.error(error.name, error.message);
+            console.warn(error.name, error.message);
         }
     }
 

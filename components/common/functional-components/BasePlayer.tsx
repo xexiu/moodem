@@ -10,7 +10,6 @@ import convertToProxyURL from 'react-native-video-cache'; // <-- Issue with exte
 import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
-const errorSongs = [] as any;
 let errorIntents = 0;
 
 function configMusicControl() {
@@ -187,13 +186,12 @@ const BasePlayer = (props: any) => {
                         MusicControl.updatePlayback({
                             elapsedTime: currentTime
                         });
-                        Object.assign(errorSongs, []);
                     }
                 }}
                 onError={({ error }: any) => {
                     toastRef.current.show(error.localizedDescription, 500);
                     if (error.localizedDescription === 'Cannot Decode') {
-                        console.error('Song Error -> Cannot Decode', 'Error: ', error);
+                        console.warn('Song Error -> Cannot Decode', 'Error: ', error);
                         return;
                     }
                     playPauseRef.current.setIsBuffering(true);
@@ -203,25 +201,24 @@ const BasePlayer = (props: any) => {
                     });
                     seekRef.current.setTrackCurrentTime(0);
 
-                    if (!errorSongs.includes(item.id) || errorIntents <= 3) {
+                    if (errorIntents <= 3) {
                         errorIntents++;
-                        errorSongs.push(item.id);
                         if (!isServerError) {
                             if (item.isSearching) {
-                                console.error('Song Error on Searched Songs', 'Error: ', error);
+                                console.warn('Song Error on Searched Songs', 'Error: ', error);
                                 return socket.emit('send-song-error', {
                                     chatRoom,
                                     song: item
                                 });
                             }
-                            console.error('Song Error on Songs', 'Error: ', error);
+                            console.warn('Song Error on Songs', 'Error: ', error);
                             return socket.emit('send-song-error', {
                                 chatRoom,
                                 song: item
                             });
                         }
                     } else {
-                        console.error('Song Error', 'Error: ', error);
+                        console.warn('Song Error', 'Error: ', error);
                     }
                 }}
                 paused={!item.isPlaying}

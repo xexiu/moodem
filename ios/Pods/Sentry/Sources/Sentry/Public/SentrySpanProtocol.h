@@ -4,7 +4,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class SentrySpanId, SentryId;
+@class SentrySpanId, SentryId, SentryTraceHeader;
 
 NS_SWIFT_NAME(Span)
 @protocol SentrySpan <SentrySerializable>
@@ -28,6 +28,11 @@ NS_SWIFT_NAME(Span)
  * An arbitrary mapping of additional metadata of the span.
  */
 @property (nullable, readonly) NSDictionary<NSString *, id> *data;
+
+/**
+ * key-value pairs holding additional data about the span.
+ */
+@property (readonly) NSDictionary<NSString *, NSString *> *tags;
 
 /**
  * Whether the span is finished.
@@ -63,6 +68,21 @@ NS_SWIFT_NAME(Span)
               forKey:(NSString *)key NS_SWIFT_NAME(setExtra(value:key:));
 
 /**
+ * Removes a data value.
+ */
+- (void)removeDataForKey:(NSString *)key NS_SWIFT_NAME(removeData(key:));
+
+/**
+ * Sets a tag value.
+ */
+- (void)setTagValue:(NSString *)value forKey:(NSString *)key NS_SWIFT_NAME(setTag(value:key:));
+
+/**
+ * Removes a tag value.
+ */
+- (void)removeTagForKey:(NSString *)key NS_SWIFT_NAME(removeTag(key:));
+
+/**
  * Finishes the span by setting the end time.
  */
 - (void)finish;
@@ -73,6 +93,13 @@ NS_SWIFT_NAME(Span)
  * @param status The status of this span
  *  */
 - (void)finishWithStatus:(SentrySpanStatus)status NS_SWIFT_NAME(finish(status:));
+
+/**
+ * Returns the trace information that could be sent as a sentry-trace header.
+ *
+ * @return SentryTraceHeader.
+ */
+- (SentryTraceHeader *)toTraceHeader;
 
 @end
 

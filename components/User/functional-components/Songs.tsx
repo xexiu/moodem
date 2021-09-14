@@ -98,7 +98,7 @@ const Songs = () => {
             const dbGroups = snapshot.val() || [];
             return MAP_SONGS_ACTIONS.set_songs(dbGroups);
         } catch (error) {
-            console.error('getSongs Error', error);
+            console.warn('getSongs Error', error);
         }
     }
 

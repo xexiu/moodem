@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: any, info: any) {
-        console.error('ErrorBoundary Error', error, 'Info. ', info);
+        console.warn('ErrorBoundary Error', error, 'Info. ', info);
     }
 
     resetError = () => {

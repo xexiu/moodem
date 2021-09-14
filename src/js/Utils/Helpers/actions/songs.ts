@@ -84,7 +84,7 @@ export async function getSong(videoId: string) {
         }
         return {};
     } catch (error) {
-        console.error('Error converting getSong', error);
+        console.warn('Error converting getSong', error);
     }
 
     return {};
@@ -109,7 +109,7 @@ async function getSongsOrCache(videoIds: any) {
             return audio;
         }));
     } catch (error) {
-        console.error('Error getSongsOrCache', error);
+        console.warn('Error getSongsOrCache', error);
     }
     return {};
 }
@@ -125,7 +125,7 @@ export async function getAllSongs(videoIds: any) {
 
         return songsCoverted;
     } catch (error) {
-        console.error('Error getAllSongs', error);
+        console.warn('Error getAllSongs', error);
     }
     return songsCoverted;
 }
@@ -147,7 +147,7 @@ export async function saveSongOnDb(song: any, user: any, group: any) {
 
         await refGroup.update(_group);
     } catch (error) {
-        console.error('saveSongOnDb Error', error);
+        console.warn('saveSongOnDb Error', error);
     }
 }
 
@@ -170,7 +170,7 @@ export async function updateSongExpiredOnDB(song: any, group: any) {
             await refGroup.update(dbgroup);
         }
     } catch (error) {
-        console.error('updateSongEpireOnDB Error', error);
+        console.warn('updateSongEpireOnDB Error', error);
     }
 
 }
@@ -233,7 +233,7 @@ export async function removeSongFromDB(song: any, group: any) {
 
         await refGroup.child('group_songs').set(dbGroupSongs);
     } catch (error) {
-        console.error('removeSongFromDB Error', error);
+        console.warn('removeSongFromDB Error', error);
     }
 }
 

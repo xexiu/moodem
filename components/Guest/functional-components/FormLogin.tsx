@@ -52,7 +52,7 @@ const FormLogin = ({ modalRef, initMoodem }: any) => {
                 setErrorText('');
                 return initMoodem();
             } catch (error) {
-                console.error('FormLogin Error', error);
+                console.warn('FormLogin Error', error);
                 setIsLoading(false);
                 if (error.code === 'auth/wrong-password') {
                     setErrorText(translate('login.wrongPassword'));

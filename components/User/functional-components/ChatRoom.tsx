@@ -46,6 +46,7 @@ const ChatRoom = (props: PropsChat) => {
     return (
         <BodyContainer>
             <BurgerMenuIcon
+                customStyle={{ top: 0}}
                 action={() => {
                     navigation.openDrawer();
                     Keyboard.dismiss();

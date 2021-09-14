@@ -27,7 +27,7 @@ const BurgerMenuIcon = ({ action = defaultOnPress(), customStyle }: PropsBurgerM
                 , customStyle]}
             Component={TouchableScale}
             name='menu'
-            type='simple-line-icons'
+            type='Entypo'
             size={35}
             color='#444'
             onPress={action}
