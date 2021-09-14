@@ -45,7 +45,7 @@ function deleteObjAttrsExcept(object: any, exceptAttr: any) {
 }
 
 function assignAttrs(object: any, attrs: any) {
-    return Object.assign(object, {
+    const song = Object.assign(object, {
         id: attrs.videoId || 'No Song ID',
         title: cleanTitle(attrs.title) || 'No Song title',
         author: {
@@ -62,6 +62,7 @@ function assignAttrs(object: any, attrs: any) {
         duration: attrs.lengthSeconds || '0',
         thumbnail: attrs.thumbnails ? attrs.thumbnails[0].url : 'No image'
     });
+    return song;
 }
 
 export async function getSong(videoId: string) {

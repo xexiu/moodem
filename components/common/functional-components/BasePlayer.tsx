@@ -11,6 +11,7 @@ import { AppContext } from '../../User/store-context/AppContext';
 import { SongsContext } from '../../User/store-context/SongsContext';
 
 const errorSongs = [] as any;
+let errorIntents = 0;
 
 function configMusicControl() {
     MusicControl.enableControl('play', true);
@@ -202,7 +203,8 @@ const BasePlayer = (props: any) => {
                     });
                     seekRef.current.setTrackCurrentTime(0);
 
-                    if (!errorSongs.includes(item.id)) {
+                    if (!errorSongs.includes(item.id) || errorIntents <= 3) {
+                        errorIntents++;
                         errorSongs.push(item.id);
                         if (!isServerError) {
                             if (item.isSearching) {
